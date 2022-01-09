@@ -28,9 +28,11 @@ void UParentMovementComponent::BeginPlay()
 	{
 		AttachParentComponent->Mobility = EComponentMobility::Type::Movable;
 
+		SourceTransform = AttachParentComponent->GetRelativeTransform();
 		DestinationTransform = AttachParentComponent->GetRelativeTransform() + GetRelativeTransform();
 		DestinationTransform.SetRotation((AttachParentComponent->GetRelativeRotation() + GetRelativeRotation()).Quaternion());
 	}
+
 	
 }
 

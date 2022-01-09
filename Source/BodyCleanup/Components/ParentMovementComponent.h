@@ -21,7 +21,13 @@ protected :
 	float	InterpSpeed = 1.f;
 
 	UPROPERTY(VisibleAnywhere)
+	FTransform	SourceTransform;
+
+	UPROPERTY(VisibleAnywhere)
 	FTransform	DestinationTransform;
+
+	UPROPERTY(VisibleAnywhere)
+	FTransform	GoalTransform;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool	bIsUpdateLocation = true;
@@ -31,6 +37,9 @@ protected :
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool	bIsUpdateScale = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<class ABaseLevelActor*>	InteractiveActors;
 
 protected:
 	// Called when the game starts
