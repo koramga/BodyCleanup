@@ -63,6 +63,13 @@ enum class EAnimationState : uint8
 	Complete,
 };
 
+UENUM(BlueprintType)
+enum class EParentMovementAction : uint8
+{
+	On,
+	OnOff,
+};
+
 template <typename Enumeration>
 static FORCEINLINE FString GetEnumerationToString(const Enumeration InValue)
 {

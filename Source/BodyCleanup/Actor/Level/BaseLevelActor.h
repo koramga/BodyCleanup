@@ -19,5 +19,11 @@ public :
 protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class ULevelComponent* LevelComponent;
-	
+
+#if WITH_EDITOR
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ULineBatchComponent* LineBatchComponent;
+
+#endif
 };

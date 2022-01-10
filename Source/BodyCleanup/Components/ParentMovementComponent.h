@@ -26,9 +26,6 @@ protected :
 	UPROPERTY(VisibleAnywhere)
 	FTransform	DestinationTransform;
 
-	UPROPERTY(VisibleAnywhere)
-	FTransform	GoalTransform;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool	bIsUpdateLocation = true;
 
@@ -38,8 +35,23 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool	bIsUpdateScale = true;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EParentMovementAction							MovementAction = EParentMovementAction::OnOff;
+
+	UPROPERTY(VisibleAnywhere)
+	bool											bIsOn = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<class ABaseLevelActor*>	InteractiveActors;
+	TArray<TSoftObjectPtr<class ABaseActor>>		InteractiveActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName											InteractiveComponentTagName;
+
+	UPROPERTY(VisibleAnywhere)
+	int32											InteractiveComponentCount;
+
+	UPROPERTY(VisibleAnywhere)
+	TSet<TSoftObjectPtr<UPrimitiveComponent>>		InteractiveOverlappedComponents;
 
 protected:
 	// Called when the game starts
@@ -49,5 +61,25 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+#if WITH_EDITOR
+public:
+	virtual void PreEditChange(FProperty* PropertyThatWillChange) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif // WITH_EDITOR
+
+
+private :
+	UFUNCTION()
+	void __OnInteractiveComponentOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void __OnInteractiveComponentOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 		
+private :
+	void __UpdateToDestination(float DeltaTime);
+	void __UpdateToSource(float DeltaTime);
+	bool __CheckIsOn();
+
+public :
+	bool IsOn() const;
 };
