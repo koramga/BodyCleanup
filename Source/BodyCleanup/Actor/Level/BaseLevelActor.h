@@ -20,10 +20,18 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class ULevelComponent* LevelComponent;
 
-#if WITH_EDITOR
+//#if WITH_EDITOR
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+//	ULineBatchComponent* LineBatchComponent;
+//
+//#endif
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ULineBatchComponent* LineBatchComponent;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-#endif
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 };
