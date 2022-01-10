@@ -21,7 +21,7 @@ protected:
 	USceneComponent*		HorseComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	TSet<AActor*>			VaccumOverlapActors;
+	TSet<TSoftObjectPtr<AActor>>			VaccumOverlapActors;
 
 	UPROPERTY(VisibleAnywhere)
 	UPrimitiveComponent*	VaccumPrimitiveComponent;
@@ -35,10 +35,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual void MoveForward(float InputAxis) override;
-	virtual void MoveRight(float InputAxis) override;
-	virtual void InputPressedMouseLeftClick()	override;
-	virtual void InputReleasedMouseLeftClick()	override; 
+	virtual void MoveForward(float InputAxis)		override;
+	virtual void MoveRight(float InputAxis)			override;
+	virtual void InputPressedMouseLeftClick()		override;
+	virtual void InputReleasedMouseLeftClick()		override;
+	virtual void InputPressedMouseRightClick()		override;
+	virtual void InputReleasedMouseRightClick()		override;
 	
 private :
 	UFUNCTION()

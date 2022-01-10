@@ -36,6 +36,7 @@ public:
 
 public :
 	void SetFlyMode(ACharacter* InputFollowCharacter);
+	bool IsFlyMode() const;
 
 public:
 	virtual void MoveForward(float InputAxis) override;

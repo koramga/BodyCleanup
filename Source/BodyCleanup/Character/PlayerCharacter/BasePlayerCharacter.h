@@ -50,4 +50,6 @@ public :
 	virtual void InputStopJumping();
 	virtual void InputPressedMouseLeftClick();
 	virtual void InputReleasedMouseLeftClick();
+	virtual void InputPressedMouseRightClick();
+	virtual void InputReleasedMouseRightClick();
 };

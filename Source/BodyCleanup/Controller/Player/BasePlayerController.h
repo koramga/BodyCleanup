@@ -44,8 +44,9 @@ private :
 	void __InputPressedMouseLeftClick();
 	void __InputReleasedMouseLeftClick();
 	void __InputPressedMouseRightClick();
+	void __InputReleasedMouseRightClick();
 	void __InputPressedSwapCharacter();
-	void __InputPressedReturnTank();
+	void __InputPressedReturnToTank();
 	void __InputPressedJump();
 	void __InputReleasedJump();
 };

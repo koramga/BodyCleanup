@@ -34,10 +34,16 @@ void UInteractiveMovementComponent::TickComponent(float DeltaTime, ELevelTick Ti
 	{
 		AActor* Owner = GetOwner();
 
-		Owner->SetActorTransform(InteractiveTransform);
+		Owner->SetActorLocation(InteractiveTransform.GetLocation());
+		Owner->SetActorRotation(InteractiveTransform.GetRotation());
 	}
 
 	SetComponentTickEnabled(true);
+
+	//if (InteractiveAction == EInteractiveAction::Holding
+	//	|| InteractiveAction == EInteractiveAction::Absorbing)
+	//{
+	//}
 }
 
 EInteractiveAction UInteractiveMovementComponent::GetInteractiveAction() const
@@ -75,6 +81,7 @@ void UInteractiveMovementComponent::SetInteractiveAction(EInteractiveAction Inpu
 			Cast<ABaseActor>(Owner)->SetEnableSimulations(false);
 			Cast<ABaseActor>(Owner)->SetCollisionProfileNames(TEXT("OverlapAll"));
 		}
+
 	}
 }
 

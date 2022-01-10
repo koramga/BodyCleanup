@@ -21,8 +21,9 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputMouseLeftClick", IE_Pressed, this, &ABasePlayerController::__InputPressedMouseLeftClick);
 	InputComponent->BindAction("InputMouseLeftClick", IE_Released, this, &ABasePlayerController::__InputReleasedMouseLeftClick);
 	InputComponent->BindAction("InputMouseRightClick", IE_Pressed, this, &ABasePlayerController::__InputPressedMouseRightClick);
+	InputComponent->BindAction("InputMouseRightClick", IE_Released, this, &ABasePlayerController::__InputReleasedMouseRightClick);
 	InputComponent->BindAction("InputSwapCharacter", IE_Pressed, this, &ABasePlayerController::__InputPressedSwapCharacter);
-	InputComponent->BindAction("InputReturnTank", IE_Pressed, this, &ABasePlayerController::__InputPressedReturnTank);
+	InputComponent->BindAction("InputReturnToTank", IE_Pressed, this, &ABasePlayerController::__InputPressedReturnToTank);
 	InputComponent->BindAction("InputJump", IE_Pressed, this, &ABasePlayerController::__InputPressedJump);
 	InputComponent->BindAction("InputJump", IE_Released, this, &ABasePlayerController::__InputReleasedJump);
 	InputComponent->BindAxis("MoveForward", this, &ABasePlayerController::__InputMoveForward);
@@ -72,6 +73,22 @@ void ABasePlayerController::__InputReleasedMouseLeftClick()
 
 void ABasePlayerController::__InputPressedMouseRightClick()
 {
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		PlayerCharacter->InputPressedMouseRightClick();
+	}
+}
+
+void ABasePlayerController::__InputReleasedMouseRightClick()
+{
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		PlayerCharacter->InputReleasedMouseRightClick();
+	}
 }
 
 void ABasePlayerController::__InputPressedSwapCharacter()
@@ -83,20 +100,38 @@ void ABasePlayerController::__InputPressedSwapCharacter()
 		if (Morse == PlayerCharacter)
 		{
 			Possess(Tank);
+			//if (false == Tank->IsFlyMode())
+			//{
+			//	Tank->SetFlyMode(Morse);
+			//}
 
-			Tank->SetFlyMode(nullptr);
+			if (Tank->IsFlyMode())
+			{
+				Tank->SetFlyMode(nullptr);
+			}
+
 		}
 		else
 		{
 			Possess(Morse);
 
-			Tank->SetFlyMode(Morse);
+			//Tank->SetFlyMode(Morse);
 		}
 	}
 }
 
-void ABasePlayerController::__InputPressedReturnTank()
+void ABasePlayerController::__InputPressedReturnToTank()
 {
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (Tank == PlayerCharacter)
+	{
+		if (false == Tank->IsFlyMode())
+		{
+			Tank->SetFlyMode(Morse);
+		}
+	}
+
 }
 
 void ABasePlayerController::__InputPressedJump()

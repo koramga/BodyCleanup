@@ -79,17 +79,17 @@ void AMorse::Tick(float DeltaTime)
 
 				UInteractiveMovementComponent* InputInteractiveMovementComponent = nullptr;
 
-				for (AActor* VaccumActor : VaccumOverlapActors)
+				for (TSoftObjectPtr<AActor> VaccumActor : VaccumOverlapActors)
 				{
 					InputInteractiveMovementComponent = nullptr;
 
 					if (VaccumActor->IsA(ABaseLevelActor::StaticClass()))
 					{
-						InputInteractiveMovementComponent = Cast<ABaseActor>(VaccumActor)->GetInteractiveMovementComponent();
+						InputInteractiveMovementComponent = Cast<ABaseActor>(VaccumActor.Get())->GetInteractiveMovementComponent();
 					}
 					else if (VaccumActor->IsA(ABaseCharacter::StaticClass()))
 					{
-						InputInteractiveMovementComponent = Cast<ABaseCharacter>(VaccumActor)->GetInteractiveMovementComponent();
+						InputInteractiveMovementComponent = Cast<ABaseCharacter>(VaccumActor.Get())->GetInteractiveMovementComponent();
 					}
 
 					if (IsValid(InputInteractiveMovementComponent))
@@ -131,6 +131,53 @@ void AMorse::InputReleasedMouseLeftClick()
 	{
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
 	}
+}
+
+void AMorse::InputPressedMouseRightClick()
+{
+	if (IsValid(PlayerCharacterAnimInstance))
+	{
+		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
+	}
+
+	for (TSoftObjectPtr<AActor> VaccumOverlapActor : VaccumOverlapActors)
+	{
+		UInteractiveMovementComponent* VaccumInteractiveMovementComponent = nullptr;
+
+		if (VaccumOverlapActor->IsA(ABaseCharacter::StaticClass()))
+		{
+			VaccumInteractiveMovementComponent = Cast<ABaseCharacter>(VaccumOverlapActor.Get())->GetInteractiveMovementComponent();
+		}
+		else if (VaccumOverlapActor->IsA(ABaseActor::StaticClass()))
+		{
+			VaccumInteractiveMovementComponent = Cast<ABaseActor>(VaccumOverlapActor.Get())->GetInteractiveMovementComponent();
+		}
+
+		if (IsValid(VaccumInteractiveMovementComponent))
+		{
+			if (EInteractiveAction::Holding == VaccumInteractiveMovementComponent->GetInteractiveAction())
+			{
+				//여기서 쏴져야한다.
+
+				//VaccumInteractiveMovementComponent->AddForce(GetActorForwardVector() * 1000.f);
+
+				VaccumInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::None);
+
+				//VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(VaccumInteractiveMovementComponent->GetOwner()->GetActorLocation() + GetActorForwardVector() * 1000.f);
+
+				VaccumInteractiveMovementComponent->Velocity = GetActorForwardVector() * 1000.f;
+				VaccumInteractiveMovementComponent->SetUpdatedComponent(VaccumInteractiveMovementComponent->GetOwner()->GetRootComponent());
+				
+				VaccumInteractiveMovementComponent->UpdateComponentVelocity();
+
+				//UE_LOG(LogTemp, Display, TEXT("Velocity : <%.2f, %.2f, %.2f>"), VaccumInteractiveMovementComponent->GetComponentVe.X, VaccumInteractiveMovementComponent->Velocity.Y, VaccumInteractiveMovementComponent->Velocity.Z);
+			}
+		}
+	}
+}
+
+void AMorse::InputReleasedMouseRightClick()
+{
 }
 
 void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

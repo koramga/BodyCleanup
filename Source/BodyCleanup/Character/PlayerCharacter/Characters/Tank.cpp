@@ -56,6 +56,16 @@ void ATank::SetFlyMode(ACharacter* InputFollowCharacter)
 	FollowCharacter = InputFollowCharacter;
 }
 
+bool ATank::IsFlyMode() const
+{
+	if (IsValid(FollowCharacter))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void ATank::MoveForward(float InputAxis)
 {
 	Super::MoveForward(InputAxis);

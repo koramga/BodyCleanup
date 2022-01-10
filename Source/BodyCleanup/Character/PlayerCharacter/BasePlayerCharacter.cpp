@@ -167,3 +167,11 @@ void ABasePlayerCharacter::InputReleasedMouseLeftClick()
 {
 
 }
+
+void ABasePlayerCharacter::InputPressedMouseRightClick()
+{
+}
+
+void ABasePlayerCharacter::InputReleasedMouseRightClick()
+{
+}
