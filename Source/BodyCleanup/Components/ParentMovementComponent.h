@@ -75,4 +75,5 @@ private :
 
 public :
 	bool IsOn() const;
+	const TArray<TSoftObjectPtr<class ABaseActor>>& GetInteractiveActors() const;
 };

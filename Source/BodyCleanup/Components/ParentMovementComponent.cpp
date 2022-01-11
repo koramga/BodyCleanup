@@ -202,3 +202,8 @@ bool UParentMovementComponent::IsOn() const
 {
 	return bIsOn;
 }
+
+const TArray<TSoftObjectPtr<class ABaseActor>>& UParentMovementComponent::GetInteractiveActors() const
+{
+	return InteractiveActors;
+}

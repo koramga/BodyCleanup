@@ -3,6 +3,11 @@
 #pragma once
 
 #include "../BaseActor.h"
+
+#if WITH_EDITOR
+#include "Engine/Classes/Components/LineBatchComponent.h"
+#endif // WITH_EDITOR
+
 #include "BaseLevelActor.generated.h"
 
 /**
@@ -20,12 +25,33 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class ULevelComponent* LevelComponent;
 
-//#if WITH_EDITOR
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-//	ULineBatchComponent* LineBatchComponent;
-//
-//#endif
+#if WITH_EDITOR
+
+	//UPROPERTY(EditInstanceOnly, Category = "DrawData")
+	//ULineBatchComponent* LineBatchComponent;
+
+	bool	bIsSelected = false;
+
+	UPROPERTY(EditInstanceOnly, Category = "DrawData")
+	FLinearColor			LineColor = FLinearColor::Red;
+
+#endif
+
+#if WITH_EDITOR
+
+protected :	
+	virtual void PreEditChange(FProperty* PropertyThatWillChange) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual void PostEditMove(bool bFinished) override;
+	UFUNCTION()
+	void OnChangeSelectObject(UObject* SelectionObj);
+
+	void DisplayLinkConnection(bool bShow = true);
+
+#endif
+
+protected :
+	void GetComponentByLinkConnect(USceneComponent* SceneComponent, TArray<FBatchedLine>& BatchLines);
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,4 +60,7 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+//public :
+//	void AddBatchLine(const FVector& End);
 };
