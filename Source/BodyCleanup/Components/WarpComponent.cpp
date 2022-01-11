@@ -12,6 +12,8 @@ UWarpComponent::UWarpComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	SetMobility(EComponentMobility::Static);
+
 	// ...
 }
 
@@ -22,38 +24,17 @@ void UWarpComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-
 	UPrimitiveComponent* ParentComponent = Cast<UPrimitiveComponent>(GetAttachParent());
 
 	if (IsValid(ParentComponent))
 	{
 		ParentComponent->OnComponentBeginOverlap.AddDynamic(this, &UWarpComponent::__OnParentComponentOverlapBegin);
 		ParentComponent->OnComponentEndOverlap.AddDynamic(this, &UWarpComponent::__OnParentComponentOverlapEnd);
+	}
 
-		if (EWarpType::Point == WarpType)
-		{
-			TArray<UActorComponent*> MarkupComponents = WarpActor->GetComponentsByClass(UMarkupComponent::StaticClass());
-
-			if (MarkupComponents.Num() > 0)
-			{
-				MarkupComponent = MarkupComponents[0];
-
-				if (false == MarkupComponentName.IsNone())
-				{
-					for (UActorComponent* MarkupActorComponent : MarkupComponents)
-					{
-						if (EMarkupType::Point == Cast<UMarkupComponent>(MarkupActorComponent)->GetMarkupType())
-						{
-							if (MarkupActorComponent->GetName() == MarkupComponentName.ToString())
-							{
-								MarkupComponent = MarkupActorComponent;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+	if (EWarpType::Point == WarpType)
+	{
+		MarkupComponent = FindMarkupComponent();
 	}
 }
 
@@ -95,5 +76,50 @@ void UWarpComponent::__OnParentComponentOverlapEnd(UPrimitiveComponent* Overlapp
 EWarpType UWarpComponent::GetWarpType() const
 {
 	return WarpType;
+}
+
+TSoftObjectPtr<class UMarkupComponent> UWarpComponent::GetMarkupComponent() const
+{
+	return MarkupComponent;
+}
+
+TSoftObjectPtr<class ABaseActor> UWarpComponent::GetWarpActor() const
+{
+	return WarpActor;
+}
+
+TSoftObjectPtr<class UMarkupComponent> UWarpComponent::FindMarkupComponent() const
+{
+	TSoftObjectPtr<class UMarkupComponent> FindMarkupComponent = nullptr;
+
+	if (EWarpType::Point == WarpType)
+	{
+		if (WarpActor.IsValid())
+		{
+			TArray<UActorComponent*> MarkupComponents = WarpActor->GetComponentsByClass(UMarkupComponent::StaticClass());
+
+			if (MarkupComponents.Num() > 0)
+			{
+				FindMarkupComponent = MarkupComponents[0];
+
+				if (false == MarkupComponentName.IsNone())
+				{
+					for (UActorComponent* MarkupActorComponent : MarkupComponents)
+					{
+						if (EMarkupType::Point == Cast<UMarkupComponent>(MarkupActorComponent)->GetMarkupType())
+						{
+							if (MarkupActorComponent->GetName() == MarkupComponentName.ToString())
+							{
+								FindMarkupComponent = MarkupActorComponent;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return FindMarkupComponent;
 }
 

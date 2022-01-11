@@ -17,7 +17,8 @@ public:
 	UMarkupComponent();
 
 protected :
-	EMarkupType		MarkupType;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EMarkupType		MarkupType = EMarkupType::Point;
 
 protected:
 	// Called when the game starts

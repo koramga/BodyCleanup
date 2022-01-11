@@ -4,6 +4,8 @@
 #include "BaseLevelActor.h"
 #include "../../Components/LevelComponent.h"
 #include "../../Components/ParentMovementComponent.h"
+#include "../../Components/WarpComponent.h"
+#include "../../Components/MarkupComponent.h"
 
 #if WITH_EDITOR
 #include "Engine/Level.h"
@@ -125,6 +127,32 @@ void ABaseLevelActor::GetComponentByLinkConnect(USceneComponent* SceneComponent,
 				if (IsValid(InteractiveActor.Get()))
 				{
 					BatchLines.Add(FBatchedLine(GetActorLocation(), InteractiveActor->GetActorLocation(), LineColor, 0.f, 2.f, 0));
+				}
+			}
+		}
+	}
+	else if (SceneComponent->IsA(UWarpComponent::StaticClass()))
+	{
+		UWarpComponent* WarpComponent = Cast<UWarpComponent>(SceneComponent);
+
+		if (IsValid(WarpComponent))
+		{
+			if (EWarpType::Point == WarpComponent->GetWarpType())
+			{
+				TSoftObjectPtr<class ABaseActor> WarpBaseActor = WarpComponent->GetWarpActor();
+
+				if (WarpBaseActor.IsValid())
+				{
+					TSoftObjectPtr<class UMarkupComponent> MarkupComponent = WarpComponent->FindMarkupComponent();
+
+					FVector Location = WarpBaseActor->GetActorLocation();
+
+					if (MarkupComponent.IsValid())
+					{
+						Location = MarkupComponent->GetComponentToWorld().GetLocation();
+					}
+
+					BatchLines.Add(FBatchedLine(GetActorLocation(), Location, LineColor, 0.f, 2.f, 0));
 				}
 			}
 		}

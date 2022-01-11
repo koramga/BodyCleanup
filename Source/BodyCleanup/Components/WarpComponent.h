@@ -20,13 +20,13 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EWarpType	WarpType = EWarpType::Point;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "WarpType == ELevelType::Point", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "WarpType == EWarpType::Point", EditConditionHides, ToolTip = ""))
 	TSoftObjectPtr<class ABaseActor>	WarpActor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "WarpType == ELevelType::Point", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "WarpType == EWarpType::Point", EditConditionHides, ToolTip = ""))
 	FName								MarkupComponentName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "WarpType == ELevelType::Level", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "WarpType == EWarpType::Level", EditConditionHides, ToolTip = ""))
 	FName								LevelName;
 
 	UPROPERTY(VisibleAnywhere)
@@ -50,4 +50,7 @@ private:
 
 public :
 	EWarpType GetWarpType() const;		
+	TSoftObjectPtr<class UMarkupComponent> GetMarkupComponent() const;
+	TSoftObjectPtr<class ABaseActor> GetWarpActor() const;
+	TSoftObjectPtr<class UMarkupComponent> FindMarkupComponent() const;
 };
