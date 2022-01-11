@@ -191,9 +191,14 @@ void ABasePlayerController::BeginPlay()
 			}
 		}
 	}
+
 }
 
 void ABasePlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+
+	SetControlRotation(FRotator(0.f, QUARTER_VIEW_ANGLE, 0.f));
+
+	UpdateRotation(DeltaTime);
 }

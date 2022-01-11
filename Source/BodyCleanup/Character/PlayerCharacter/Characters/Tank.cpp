@@ -32,6 +32,10 @@ void ATank::Tick(float DeltaTime)
 		SetActorLocation(NextLocation);
 		SetActorRotation(FollowCharacter->GetActorRotation());
 	}
+	else
+	{
+
+	}
 }
 
 void ATank::SetFlyMode(ACharacter* InputFollowCharacter)

@@ -99,7 +99,7 @@ void ABasePlayerCharacter::MoveForward(float InputAxis)
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		//const FRotator YawRotation(0, Rotation.Yaw, 0);
-		const FRotator YawRotation(0, 0, 0);
+		const FRotator YawRotation(0, QUARTER_VIEW_ANGLE, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -134,7 +134,7 @@ void ABasePlayerCharacter::MoveRight(float InputAxis)
 		//	if (Cast<ACPlayerController>(Controller)->bOnClick) return;
 			// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, 0, 0);
+		const FRotator YawRotation(0, QUARTER_VIEW_ANGLE, 0.f);
 
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);

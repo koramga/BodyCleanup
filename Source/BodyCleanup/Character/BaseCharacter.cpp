@@ -85,7 +85,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 				fAngle = 360 - fAngle;
 			}
 
-			Angle = fAngle;
+			Angle = fAngle - QUARTER_VIEW_ANGLE;
 		}
 
 		if (IsValid(BaseAnimInstance))
