@@ -70,6 +70,19 @@ enum class EParentMovementAction : uint8
 	OnOff,
 };
 
+UENUM(BlueprintType)
+enum class EWarpType : uint8
+{
+	Level,
+	Point,
+};
+
+UENUM(BlueprintType)
+enum class EMarkupType : uint8
+{
+	Point,
+};
+
 template <typename Enumeration>
 static FORCEINLINE FString GetEnumerationToString(const Enumeration InValue)
 {
