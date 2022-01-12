@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -46,8 +46,8 @@ enum class EInteractiveAction : uint8
 UENUM(BlueprintType)
 enum class EInteractiveType : uint8
 {
-	Rigid,				//������� ���������� �ʴ´�.
-	Junk,				//������� �������� ��������.
+	Rigid,				//당겨지되 먹혀지지는 않는다.
+	Junk,				//당겨지되 먹혀지고 먹혀진다.
 };
 
 UENUM(BlueprintType)
@@ -83,6 +83,32 @@ UENUM(BlueprintType)
 enum class EMarkupType : uint8
 {
 	Point,
+};
+
+UENUM(BlueprintType)
+enum class ETriggerComponentFromType : uint8
+{
+	//부모 Component로부터 Trigger가 설정됩니다.
+	ParentComponent,		
+	//Component TagName으로 부터 Trigger가 설정됩니다.
+	ComponentTagName,		
+	//Component 이름으로부터 Trigger가 설정됩니다.
+	ComponentName,			
+	//Actor의 모든 Trigger로부터 Trigger가 설정됩니다.
+	Actor,					
+	//Actor의 Component Name으로부터 Trigger가 설정됩니다.
+	ActorComponentName,		
+	//Actor의 Component Tag Name으로부터 Trigger가 설정됩니다.
+	ActorComponentTagName,	
+};
+
+UENUM(BlueprintType)
+enum class ETriggerComponentTickType : uint8
+{
+	//한 번의 Trigger에만 반응합니다.
+	Tick,
+	//On/Off Trigger에 반응합니다. Tick에 비해 비용이 많이 비쌉니다.
+	TickTock,					
 };
 
 template <typename Enumeration>

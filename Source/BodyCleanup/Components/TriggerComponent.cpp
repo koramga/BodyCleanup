@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TriggerComponent.h"
@@ -20,7 +20,33 @@ void UTriggerComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	if (ETriggerComponentFromType::ParentComponent == TriggerComponentFromType)
+	{
+		UPrimitiveComponent* AttachParentComponent = Cast<UPrimitiveComponent>(GetAttachParent());
+
+		AttachParentComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
+		AttachParentComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
+	}
+	else if (ETriggerComponentFromType::ComponentTagName == TriggerComponentFromType)
+	{
+
+	}
+	else if (ETriggerComponentFromType::ComponentName == TriggerComponentFromType)
+	{
+
+	}
+	else if (ETriggerComponentFromType::Actor == TriggerComponentFromType)
+	{
+
+	}
+	else if (ETriggerComponentFromType::ActorComponentName == TriggerComponentFromType)
+	{
+
+	}
+	else if (ETriggerComponentFromType::ActorComponentTagName == TriggerComponentFromType)
+	{
+
+	}
 }
 
 
@@ -30,6 +56,16 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//TriggerTickComponents.is(OtherComp)
+}
+
+void UTriggerComponent::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
 }
 
 bool UTriggerComponent::IsOnTrigger() const
