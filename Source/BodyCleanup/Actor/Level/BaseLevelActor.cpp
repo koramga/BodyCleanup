@@ -3,8 +3,8 @@
 
 #include "BaseLevelActor.h"
 #include "../../Components/LevelComponent.h"
-#include "../../Components/ParentMovementComponent.h"
-#include "../../Components/WarpComponent.h"
+#include "../../Components/Actions/ParentMovementComponent.h"
+#include "../../Components/Actions/WarpComponent.h"
 #include "../../Components/MarkupComponent.h"
 
 #if WITH_EDITOR
@@ -114,6 +114,8 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 
 void ABaseLevelActor::GetComponentByLinkConnect(USceneComponent* SceneComponent, TArray<FBatchedLine>& BatchLines)
 {
+	
+
 	if (SceneComponent->IsA(UParentMovementComponent::StaticClass()))
 	{
 		UParentMovementComponent* ParentMovementComponent = Cast<UParentMovementComponent>(SceneComponent);

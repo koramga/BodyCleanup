@@ -1,0 +1,10 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "LevelTriggerInterface.h"
+
+// Add default functionality here for any ILevelTriggerInterface functions that are not pure virtual.
+bool ILevelTriggerInterface::IsOnTrigger() const
+{
+	return false;
+}

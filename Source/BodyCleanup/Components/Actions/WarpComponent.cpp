@@ -2,8 +2,8 @@
 
 
 #include "WarpComponent.h"
-#include "../Actor/BaseActor.h"
-#include "MarkupComponent.h"
+#include "../../Actor/BaseActor.h"
+#include "../MarkupComponent.h"
 
 // Sets default values for this component's properties
 UWarpComponent::UWarpComponent()

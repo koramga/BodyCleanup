@@ -2,13 +2,12 @@
 
 #pragma once
 
-#include "../ExDefines.h"
-#include "Components/SceneComponent.h"
+#include "../ActionComponent.h"
 #include "ParentMovementComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BODYCLEANUP_API UParentMovementComponent : public USceneComponent
+class BODYCLEANUP_API UParentMovementComponent : public UActionComponent
 {
 	GENERATED_BODY()
 
