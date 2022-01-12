@@ -14,10 +14,10 @@ struct FTriggerActorWithName
 
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<TSoftObjectPtr<class ABaseActor>>		TriggerActors;
+	TSoftObjectPtr<AActor>							Actor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FName>									Name;
+	TArray<FName>									Names;
 };
 
 
@@ -44,17 +44,23 @@ protected :
 	FName										ComponentName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Actor", EditConditionHides, ToolTip = ""))
-	TArray<TSoftObjectPtr<class ABaseActor>>	TriggerActors;
+	TArray<TSoftObjectPtr<AActor>>	TriggerActors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ActorComponentName || TriggerComponentFromType == ETriggerComponentFromType::ActorComponentTagName", EditConditionHides, ToolTip = ""))
-	TArray<FTriggerActorWithName>				TriggerActorWithName;
+	TArray<FTriggerActorWithName>				TriggerActorWithNames;
 
 protected :
 	UPROPERTY(VisibleAnywhere)
-	TArray<USceneComponent*>					TriggerComponents;
+	TArray<TSoftObjectPtr<UActorComponent>>					TriggerComponents;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<USceneComponent*>					TriggerTickComponents;
+	TArray<TSoftObjectPtr<UActorComponent>>					TriggerTickComponents;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<TSoftObjectPtr<ILevelTriggerInterface>>			ObserverTriggerLevelInterfaces;
+
+	UPROPERTY(VisibleAnywhere)
+	bool													bIsTick = false;
 
 protected:
 	// Called when the game starts
@@ -64,6 +70,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+protected :
+	USceneComponent* FindComponentByName(USceneComponent* SceneComponent, const FName& Name);
+	USceneComponent* FindTriggerComponentByName(USceneComponent* SceneComponent, const FName& Name);
+	void FindTriggerComponent(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents, USceneComponent* SceneComponent);
+	void FindTriggerComponentByTagName(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents, AActor* Actor, const FName& TagName);
+
 private:
 	UFUNCTION()
 	void __OnTriggerComponentOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -71,6 +83,15 @@ private:
 	UFUNCTION()
 	void __OnTriggerComponentOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+private :
+	void __GetTriggerComponents(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents);
+	bool __ProcessIsTick();
+	void __ProcessTick(bool bInputIsTick);
+
 public:
-	virtual bool IsOnTrigger() const;
+	virtual bool IsOnTrigger() const override;
+	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
+	virtual void CallTriggerObservers(bool bInputIsTick) override;
+	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) override;
+	virtual void CalledTriggerObservers(TSoftObjectPtr<UActorComponent> CallerActorComponent, bool bInputIsTick) override;
 };
