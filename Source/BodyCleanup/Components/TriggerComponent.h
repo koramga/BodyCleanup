@@ -34,9 +34,6 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (ToolTip = "Trigger Action을 정의합니다."))
 	ETriggerComponentFromType					TriggerComponentFromType = ETriggerComponentFromType::ParentComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger")
-	ETriggerComponentTickType					TriggerComponentTickType = ETriggerComponentTickType::Tick;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentTagName", EditConditionHides, ToolTip = ""))
 	FName										ComponentTagName;
 
@@ -54,21 +51,17 @@ protected :
 	TArray<TSoftObjectPtr<UActorComponent>>					TriggerComponents;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<TSoftObjectPtr<UActorComponent>>					TriggerTickComponents;
+	TArray<TSoftObjectPtr<UActorComponent>>					TriggerOnComponents;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<TSoftObjectPtr<ILevelTriggerInterface>>			ObserverTriggerLevelInterfaces;
 
 	UPROPERTY(VisibleAnywhere)
-	bool													bIsTick = false;
+	bool													bIsOnTrigger = false;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected :
 	USceneComponent* FindComponentByName(USceneComponent* SceneComponent, const FName& Name);
@@ -85,13 +78,17 @@ private:
 
 private :
 	void __GetTriggerComponents(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents);
-	bool __ProcessIsTick();
-	void __ProcessTick(bool bInputIsTick);
+	void __ProcessTrigger(bool bInputIsOnTrigger);
+
+protected:
+	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
+	virtual void CallTriggerObservers(bool bIsInputOnTrigger) override;
+	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) override;
+	virtual void CalledTriggerObservers(TSoftObjectPtr<UActorComponent> CallerActorComponent, bool bIsInputOnTrigger) override;
+
+protected :
+	virtual void UpdateTrigger(bool bInputIsOnTrigger);
 
 public:
 	virtual bool IsOnTrigger() const override;
-	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
-	virtual void CallTriggerObservers(bool bInputIsTick) override;
-	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) override;
-	virtual void CalledTriggerObservers(TSoftObjectPtr<UActorComponent> CallerActorComponent, bool bInputIsTick) override;
 };

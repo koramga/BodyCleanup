@@ -35,33 +35,16 @@ void UTriggerComponent::BeginPlay()
 			PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
 		}
 	}
+	else
+	{
+		for (TSoftObjectPtr<UActorComponent> TriggerComponent : TriggerComponents)
+		{
+			Cast<ILevelTriggerInterface>(TriggerComponent.Get())->AddTriggerObserver(this);
+		}
+	}
 }
 
 
-// Called every frame
-void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-
-	//if (ETriggerComponentTickType::Tick == TriggerComponentTickType)
-	//{
-	//	if (false == bIsTick)
-	//	{
-	//		if (TriggerComponents.Num() == TriggerTickComponents.Num())
-	//		{
-	//
-	//		}
-	//
-	//		bIsTick = __ProcessIsTick();
-	//	}
-	//}
-	//else
-	//{
-	//	bIsTick = __ProcessIsTick();
-	//}
-}
 
 USceneComponent* UTriggerComponent::FindComponentByName(USceneComponent* SceneComponent, const FName& Name)
 {
@@ -76,7 +59,7 @@ USceneComponent* UTriggerComponent::FindComponentByName(USceneComponent* SceneCo
 
 	for (USceneComponent* ChildComponent : ChildrenComponents)
 	{
-		return FindComponentByName(SceneComponent, Name);
+		return FindComponentByName(ChildComponent, Name);
 	}
 
 	return nullptr;
@@ -95,7 +78,7 @@ void UTriggerComponent::FindTriggerComponent(TArray<TSoftObjectPtr<UActorCompone
 
 	for (USceneComponent* ChildComponent : ChildrenComponents)
 	{
-		FindTriggerComponent(InputTriggerComponents, SceneComponent);
+		FindTriggerComponent(InputTriggerComponents, ChildComponent);
 	}
 }
 
@@ -125,7 +108,7 @@ USceneComponent* UTriggerComponent::FindTriggerComponentByName(USceneComponent* 
 
 	for (USceneComponent* ChildComponent : ChildrenComponents)
 	{
-		return FindTriggerComponentByName(SceneComponent, Name);
+		return FindTriggerComponentByName(ChildComponent, Name);
 	}
 
 	return nullptr;
@@ -133,22 +116,22 @@ USceneComponent* UTriggerComponent::FindTriggerComponentByName(USceneComponent* 
 
 void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (TriggerComponents.Find(OtherComp) >= 0)
+	if (TriggerComponents.Find(OverlappedComp) >= 0)
 	{
-		if (false == TriggerTickComponents.Find(OtherComp))
+		if (TriggerOnComponents.Find(OverlappedComp) < 0)
 		{
-			TriggerTickComponents.Add(OtherComp);
+			TriggerOnComponents.Add(OverlappedComp);
 		}
 
-		__ProcessTick(bIsTick);
+		__ProcessTrigger(true);
 	}
 }
 
 void UTriggerComponent::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	TriggerTickComponents.Remove(OtherComp);
+	TriggerOnComponents.Remove(OverlappedComp);
 
-	__ProcessTick(bIsTick);
+	__ProcessTrigger(false);
 }
 
 void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents)
@@ -162,8 +145,6 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorCompo
 		if (IsValid(AttachParentComponent))
 		{
 			InputTriggerComponents.Add(AttachParentComponent);
-			//AttachParentComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
-			//AttachParentComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
 		}
 	}
 	else if (ETriggerComponentFromType::ComponentTagName == TriggerComponentFromType)
@@ -177,8 +158,6 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorCompo
 			if (IsValid(PrimitiveComponent))
 			{
 				InputTriggerComponents.Add(PrimitiveComponent);
-				//PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
-				//PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
 			}
 		}
 	}
@@ -189,15 +168,17 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorCompo
 		if (IsValid(PrimitiveComponent))
 		{
 			InputTriggerComponents.Add(PrimitiveComponent);
-			//PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
-			//PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
 		}
 	}
 	else if (ETriggerComponentFromType::Actor == TriggerComponentFromType)
 	{
 		for (TSoftObjectPtr<AActor> TriggerActor : TriggerActors)
 		{
+			//UE_LOG(LogTemp, Display, TEXT("Koramga : <%s>(%s) : %s"), *GetOwner()->GetName(), *GetName(), *TriggerActor->GetName());
+
 			FindTriggerComponent(InputTriggerComponents, TriggerActor->GetRootComponent());
+
+			//UE_LOG(LogTemp, Display, TEXT("Koramga : <%s>(%s)"), *InputTriggerComponents[0]->GetOwner()->GetName(), *InputTriggerComponents[0]->GetName());
 		}
 	}
 	else if (ETriggerComponentFromType::ActorComponentName == TriggerComponentFromType)
@@ -228,60 +209,27 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorCompo
 	}
 }
 
-bool UTriggerComponent::__ProcessIsTick()
+void UTriggerComponent::__ProcessTrigger(bool bInputIsOnTrigger)
 {
-	if (ETriggerComponentFromType::Actor == TriggerComponentFromType
-		|| ETriggerComponentFromType::ActorComponentName == TriggerComponentFromType
-		|| ETriggerComponentFromType::ActorComponentTagName == TriggerComponentFromType)
+	if (bInputIsOnTrigger)
 	{
-		TriggerTickComponents.Empty();
-
-		for (TSoftObjectPtr<UActorComponent> TriggerComponent : TriggerComponents)
+		if (false == bIsOnTrigger)
 		{
-			if (TriggerComponent.IsValid())
+			if (TriggerOnComponents.Num() == TriggerComponents.Num())
 			{
-				ILevelTriggerInterface* LevelTriggerInterface = Cast<ILevelTriggerInterface>(TriggerComponent.Get());
-
-				if (nullptr != LevelTriggerInterface)
-				{
-					if (LevelTriggerInterface->IsOnTrigger())
-					{
-						TriggerTickComponents.Add(TriggerComponent);
-					}
-				}
-			}
-		}
-	}
-
-	if (TriggerComponents.Num() == TriggerTickComponents.Num())
-	{
-		return true;
-	}
-
-	return false;
-}
-
-void UTriggerComponent::__ProcessTick(bool bInputIsTick)
-{
-	if (bInputIsTick)
-	{
-		if (false == bIsTick)
-		{
-			if (TriggerTickComponents.Num() == TriggerComponents.Num())
-			{
-				bIsTick = !bInputIsTick;
-				CallTriggerObservers(bIsTick);
+				bIsOnTrigger = bInputIsOnTrigger;
+				UpdateTrigger(bIsOnTrigger);
 			}
 		}
 	}
 	else
 	{
-		if (bIsTick)
+		if (bIsOnTrigger)
 		{
-			if (TriggerTickComponents.Num() != TriggerComponents.Num())
+			if (TriggerOnComponents.Num() != TriggerComponents.Num())
 			{
-				bIsTick = !bInputIsTick;
-				CallTriggerObservers(bIsTick);
+				bIsOnTrigger = bInputIsOnTrigger;
+				UpdateTrigger(bIsOnTrigger);
 			}
 		}
 	}
@@ -289,7 +237,7 @@ void UTriggerComponent::__ProcessTick(bool bInputIsTick)
 
 bool UTriggerComponent::IsOnTrigger() const
 {
-	return bIsTick;
+	return bIsOnTrigger;
 }
 
 void UTriggerComponent::GetTriggerLocation(TArray<FVector>& TriggerLocations)
@@ -311,32 +259,39 @@ void UTriggerComponent::GetTriggerLocation(TArray<FVector>& TriggerLocations)
 	}
 }
 
-void UTriggerComponent::CallTriggerObservers(bool bInputIsTick)
+void UTriggerComponent::CallTriggerObservers(bool bIsInputOnTrigger)
 {
 	for (TSoftObjectPtr<ILevelTriggerInterface> ObserverLevelTriggerInterface : ObserverTriggerLevelInterfaces)
 	{
-		ObserverLevelTriggerInterface->CalledTriggerObservers(this, bInputIsTick);
+		ObserverLevelTriggerInterface->CalledTriggerObservers(this, bIsInputOnTrigger);
 	}
 }
 
 void UTriggerComponent::AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface)
 {
+	//UE_LOG(LogTemp, Display, TEXT("Koramga : (%s)<%s> Add Trigger Observer"), *GetOwner()->GetName(), *GetName());
+
 	ObserverTriggerLevelInterfaces.Add(LevelTriggerInterface);
 }
 
-void UTriggerComponent::CalledTriggerObservers(TSoftObjectPtr<UActorComponent> CallerActorComponent, bool bInputIsTick)
+void UTriggerComponent::CalledTriggerObservers(TSoftObjectPtr<UActorComponent> CallerActorComponent, bool bIsInputOnTrigger)
 {
-	if (bInputIsTick)
+	if (bIsInputOnTrigger)
 	{
 		if (TriggerComponents.Find(CallerActorComponent) >= 0)
 		{
-			TriggerTickComponents.Add(CallerActorComponent);
+			TriggerOnComponents.Add(CallerActorComponent);
 		}
 	}
 	else
 	{
-		TriggerTickComponents.Remove(CallerActorComponent);
+		TriggerOnComponents.Remove(CallerActorComponent);
 	}
 
-	__ProcessTick(bInputIsTick);
+	__ProcessTrigger(bIsInputOnTrigger);
+}
+
+void UTriggerComponent::UpdateTrigger(bool bInputIsOnTrigger)
+{
+	CallTriggerObservers(bInputIsOnTrigger);
 }

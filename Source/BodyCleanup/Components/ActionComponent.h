@@ -14,6 +14,30 @@ class BODYCLEANUP_API UActionComponent : public UTriggerComponent, public ILevel
 {
 	GENERATED_BODY()
 
+public :
+	UActionComponent();
+
+protected :
+	//TickTock Type을 정의합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupAction")
+	EActionComponentActionType	ActionType;
+
+protected :
+	//사용자가 원하는 형태로의 변형이 이루어지고 있는지를 판단한다. 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool						bIsUpdateAfterTransformed = false;
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
 public:
-	virtual void OnTrigger(class ILevelTrigger* LevelTrigger, bool bIsOnTrigger) override;
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private :
+	virtual void OnTrigger(bool bInputIsOnTrigger) override;
+
+protected :
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 };

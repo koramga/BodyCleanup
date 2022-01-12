@@ -103,12 +103,12 @@ enum class ETriggerComponentFromType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ETriggerComponentTickType : uint8
+enum class EActionComponentActionType : uint8
 {
 	//한 번의 Trigger에만 반응합니다.
-	Tick,
-	//On/Off Trigger에 반응합니다. Tick에 비해 비용이 많이 비쌉니다.
-	TickTock,					
+	On,
+	//여러 번의 Trigger에 반응합니다.
+	OnOff,					
 };
 
 template <typename Enumeration>
