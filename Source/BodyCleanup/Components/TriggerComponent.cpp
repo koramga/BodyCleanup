@@ -142,7 +142,7 @@ void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* Ov
 
 		if (TriggerOnData == nullptr)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Create : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+			//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Create : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
 
 			FTriggerOnData& Data = TriggerOnComponents.Add(OverlappedComp, FTriggerOnData(OverlappedComp));
 			Data.OtherComps.Add(OtherComp);
@@ -152,7 +152,7 @@ void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* Ov
 		{
 			if (TriggerOnData->OtherComps.Find(OtherComp) < 0)
 			{
-				UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Add : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+				//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Add : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
 
 				TriggerOnData->OtherComps.Add(OtherComp);
 			}
@@ -166,13 +166,13 @@ void UTriggerComponent::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* Over
 
 	if (nullptr != TriggerOnData)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Remove : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+		//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Remove : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
 
 		TriggerOnData->OtherComps.Remove(OtherComp);
 
 		if (TriggerOnData->OtherComps.Num() <= 0)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Delete : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+			//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Delete : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
 			TriggerOnComponents.Remove(OverlappedComp);
 			__ProcessTrigger(false);
 		}
@@ -226,7 +226,7 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorCompo
 			//UE_LOG(LogTemp, Display, TEXT("Koramga : <%s>(%s)"), *InputTriggerComponents[0]->GetOwner()->GetName(), *InputTriggerComponents[0]->GetName());
 		}
 	}
-	else if (ETriggerComponentFromType::ActorComponentName == TriggerComponentFromType)
+	else if (ETriggerComponentFromType::ActorTriggerComponentName == TriggerComponentFromType)
 	{
 		for (FTriggerActorWithName& TriggerActorWithName : TriggerActorWithNames)
 		{
@@ -234,12 +234,17 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorCompo
 			{
 				for (FName& Name : TriggerActorWithName.Names)
 				{
-					InputTriggerComponents.Add(FindTriggerComponentByName(TriggerActorWithName.Actor->GetRootComponent(), Name));
+					USceneComponent* FindSceneComponent = FindTriggerComponentByName(TriggerActorWithName.Actor->GetRootComponent(), Name);
+
+					if (IsValid(FindSceneComponent))
+					{
+						InputTriggerComponents.Add(FindSceneComponent);
+					}
 				}
 			}
 		}
 	}
-	else if (ETriggerComponentFromType::ActorComponentTagName == TriggerComponentFromType)
+	else if (ETriggerComponentFromType::ActorTriggerComponentTagName == TriggerComponentFromType)
 	{
 		for (FTriggerActorWithName& TriggerActorWithName : TriggerActorWithNames)
 		{
@@ -275,6 +280,39 @@ void UTriggerComponent::__ProcessTrigger(bool bInputIsOnTrigger)
 			{
 				bIsOnTrigger = bInputIsOnTrigger;
 				UpdateTrigger(bIsOnTrigger);
+			}
+		}
+	}
+}
+
+void UTriggerComponent::__FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Actors, TSoftObjectPtr<UTriggerComponent> TriggerComponent)
+{
+	if (ETriggerComponentFromType::ParentComponent == TriggerComponent->TriggerComponentFromType
+		|| ETriggerComponentFromType::ComponentName == TriggerComponent->TriggerComponentFromType
+		|| ETriggerComponentFromType::ComponentTagName == TriggerComponent->TriggerComponentFromType)
+	{
+		//원형의 자료를 얻을 수 있다.
+		for (const auto& TriggerOnComponent : TriggerComponent->TriggerOnComponents)
+		{
+			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : TriggerOnComponent.Value.OtherComps)
+			{
+				if (Actors.Find(PrimitiveComponent->GetOwner()) < 0)
+				{
+					Actors.Add(PrimitiveComponent->GetOwner());
+				}
+			}
+		}
+	}
+	else
+	{
+		//한 단계 Trigger를 더 올라간다.
+		for (TSoftObjectPtr<UActorComponent> TriggerComponent : TriggerComponent->TriggerComponents)
+		{
+			TSoftObjectPtr<UTriggerComponent> SetTriggerComponent = Cast<UTriggerComponent>(TriggerComponent.Get());
+
+			if (SetTriggerComponent.IsValid())
+			{
+				__FindTriggerOnActors(Actors, SetTriggerComponent);
 			}
 		}
 	}
@@ -339,4 +377,9 @@ void UTriggerComponent::CalledTriggerObservers(TSoftObjectPtr<UActorComponent> C
 void UTriggerComponent::UpdateTrigger(bool bInputIsOnTrigger)
 {
 	CallTriggerObservers(bInputIsOnTrigger);
+}
+
+void UTriggerComponent::FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Actors)
+{
+	__FindTriggerOnActors(Actors, this);
 }

@@ -96,12 +96,12 @@ enum class ETriggerComponentFromType : uint8
 	ComponentTagName,		
 	//Component 이름으로부터 Trigger가 설정됩니다.
 	ComponentName,			
-	//Actor의 모든 Trigger로부터 Trigger가 설정됩니다.
+	//Actor의 모든 Trigger Component로부터 Trigger가 설정됩니다.
 	Actor,					
-	//Actor의 Component Name으로부터 Trigger가 설정됩니다.
-	ActorComponentName,		
-	//Actor의 Component Tag Name으로부터 Trigger가 설정됩니다.
-	ActorComponentTagName,	
+	//Actor의 Trigger Component Name으로부터 Trigger가 설정됩니다.
+	ActorTriggerComponentName,		
+	//Actor의 Trigger Component Tag Name으로부터 Trigger가 설정됩니다.
+	ActorTriggerComponentTagName,	
 };
 
 UENUM(BlueprintType)

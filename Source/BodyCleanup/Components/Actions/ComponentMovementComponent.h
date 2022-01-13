@@ -54,12 +54,15 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	FTransform	DestinationDeltaTransform;
 
+	//Action의 범위를 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	EActionComponentToType	ActionComponentToType = EActionComponentToType::ParentComponent;
 
+	//Move Action을 수행할 Component의 이름일 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::ComponentName", EditConditionHides))
 	FName					MovementComponentName;
 
+	//Move Action을 수행할 TagName을 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::ComponentTagName", EditConditionHides))
 	FName					MovementComponentTagName;
 

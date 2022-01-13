@@ -65,8 +65,6 @@ protected :
 	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
 	TArray<TSoftObjectPtr<UActorComponent>>					TriggerComponents;
 
-		//TArray<TSoftObjectPtr<UActorComponent>>					TriggerOnComponents;
-
 	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
 	TMap<TSoftObjectPtr<UActorComponent>, FTriggerOnData>		TriggerOnComponents;
 
@@ -97,6 +95,7 @@ private:
 private :
 	void __GetTriggerComponents(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents);
 	void __ProcessTrigger(bool bInputIsOnTrigger);
+	void __FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Actors, TSoftObjectPtr<UTriggerComponent> TriggerComponent);
 
 protected:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
@@ -106,6 +105,7 @@ protected:
 
 protected :
 	virtual void UpdateTrigger(bool bInputIsOnTrigger);
+	void FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Actors);
 
 public:
 	virtual bool IsOnTrigger() const override;

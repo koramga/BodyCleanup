@@ -14,6 +14,7 @@
 #include "Engine/Classes/Engine/Selection.h"
 #endif // WITH_EDITOR
 #include "DrawDebugHelpers.h"
+#include "../../Components/Interfaces/LevelTriggerInterface.h"
 
 ABaseLevelActor::ABaseLevelActor()
 {
@@ -78,15 +79,6 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 		return;
 	}
 
-	if (bShow)
-	{
-		UE_LOG(LogTemp, Display, TEXT("DrawLinkConnect True : <%s>"), *GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("DrawLinkConnect False : <%s>"), *GetName());
-	}
-
 	ULineBatchComponent* LineBatchComponent = GetWorld()->PersistentLineBatcher;
 
 	if (IsValid(LineBatchComponent))
@@ -100,12 +92,6 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 			GetComponentByLinkConnect(GetRootComponent(), BatchLines);
 
 			LineBatchComponent->DrawLines(BatchLines);
-
-			//GetComponents();
-
-			//UE_LOG(LogTemp, Display, TEXT("DrawLines")); 
-			//
-			//LineBatchComponent->DrawLine(GetActorLocation(), FVector(0.f, 0.f, 0.f), FColor::Red, 0, 2.f, 0.f);
 		}
 	}
 }
@@ -114,51 +100,24 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 
 void ABaseLevelActor::GetComponentByLinkConnect(USceneComponent* SceneComponent, TArray<FBatchedLine>& BatchLines)
 {
-	
-
-	if (SceneComponent->IsA(UParentMovementComponent::StaticClass()))
+	if (SceneComponent->IsA(UWarpComponent::StaticClass()))
 	{
-		UParentMovementComponent* ParentMovementComponent = Cast<UParentMovementComponent>(SceneComponent);
+		FVector WarpLocation = Cast<UWarpComponent>(SceneComponent)->GetWarpLocation();
 
-		if (IsValid(ParentMovementComponent))
+		BatchLines.Add(FBatchedLine(GetActorLocation(), WarpLocation, FColor::Blue, 0.f, 2.f, 0));
+	}
+
+	if (SceneComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
+	{
+		TArray<FVector> TriggerLocations;
+
+		Cast<ILevelTriggerInterface>(SceneComponent)->GetTriggerLocation(TriggerLocations);
+
+		for (const FVector& Location : TriggerLocations)
 		{
-			const TArray<TSoftObjectPtr<ABaseActor>>& InteractiveActors = ParentMovementComponent->GetInteractiveActors();
-
-			for (TSoftObjectPtr<ABaseActor> InteractiveActor : InteractiveActors)
-			{
-				if (IsValid(InteractiveActor.Get()))
-				{
-					BatchLines.Add(FBatchedLine(GetActorLocation(), InteractiveActor->GetActorLocation(), LineColor, 0.f, 2.f, 0));
-				}
-			}
+			BatchLines.Add(FBatchedLine(GetActorLocation(), Location, FColor::Red, 0.f, 2.f, 0));
 		}
 	}
-	//else if (SceneComponent->IsA(UWarpComponent::StaticClass()))
-	//{
-	//	UWarpComponent* WarpComponent = Cast<UWarpComponent>(SceneComponent);
-	//
-	//	if (IsValid(WarpComponent))
-	//	{
-	//		if (EWarpType::Location == WarpComponent->GetWarpType())
-	//		{
-	//			TSoftObjectPtr<class ABaseActor> WarpBaseActor = WarpComponent->GetWarpActor();
-	//
-	//			if (WarpBaseActor.IsValid())
-	//			{
-	//				TSoftObjectPtr<class UMarkupComponent> MarkupComponent = WarpComponent->FindMarkupComponent();
-	//
-	//				FVector Location = WarpBaseActor->GetActorLocation();
-	//
-	//				if (MarkupComponent.IsValid())
-	//				{
-	//					Location = MarkupComponent->GetComponentToWorld().GetLocation();
-	//				}
-	//
-	//				BatchLines.Add(FBatchedLine(GetActorLocation(), Location, LineColor, 0.f, 2.f, 0));
-	//			}
-	//		}
-	//	}
-	//}
 
 	TArray<USceneComponent*> ChildrenComponents;
 

@@ -32,9 +32,6 @@ protected :
 
 	bool	bIsSelected = false;
 
-	UPROPERTY(EditInstanceOnly, Category = "DrawData")
-	FLinearColor			LineColor = FLinearColor::Red;
-
 #endif
 
 #if WITH_EDITOR

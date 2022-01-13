@@ -35,10 +35,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-private :
-	virtual void OnTrigger(bool bInputIsOnTrigger) override;
-
 protected :
+	virtual void OnTrigger(bool bInputIsOnTrigger) override;
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 protected:

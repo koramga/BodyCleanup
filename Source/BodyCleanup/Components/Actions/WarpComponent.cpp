@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "WarpComponent.h"
@@ -11,8 +11,6 @@ UWarpComponent::UWarpComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	SetMobility(EComponentMobility::Static);
 
 	// ...
 }
@@ -31,13 +29,45 @@ void UWarpComponent::BeginPlay()
 	}
 }
 
-
-// Called every frame
-void UWarpComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UWarpComponent::OnTrigger(bool bInputIsOnTrigger)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::OnTrigger(bInputIsOnTrigger);
 
-	// ...
+	if (EWarpType::Location == WarpType)
+	{
+		if (bInputIsOnTrigger)
+		{
+			//반응하면 됩니다.
+			TArray<TSoftObjectPtr<AActor>> Actors;
+
+			FindTriggerOnActors(Actors);
+
+			if (Actors.Num() > 0)
+			{
+				FVector Location = GetOwner()->GetActorLocation();
+
+				if (WarpActor.IsValid())
+				{
+					Location = WarpActor->GetActorLocation();
+				}
+
+				if (MarkupComponent.IsValid())
+				{
+					Location = MarkupComponent->GetComponentToWorld().GetLocation();
+				}
+
+				for (TSoftObjectPtr<AActor> Actor : Actors)
+				{
+					Actor->SetActorLocation(Location);
+				}
+			}
+		}
+	}
+	else
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), LevelName);
+	}
+
 }
 
 EWarpType UWarpComponent::GetWarpType() const
