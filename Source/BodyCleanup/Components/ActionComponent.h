@@ -40,7 +40,11 @@ private :
 
 protected :
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
-	
+
+protected:
+	USceneComponent* FindMarkupComponentByName(USceneComponent* SceneComponent, const FName& Name) const;
+	void FindMarkupComponentByTagName(TArray<TSoftObjectPtr<UActorComponent>>& InputMarkupComponents, AActor* Actor, const FName& TagName) const;
+
 public :
 	bool IsUpdateDestinationTransformed() const;
 };

@@ -39,3 +39,13 @@ EMarkupType UMarkupComponent::GetMarkupType() const
 	return MarkupType;
 }
 
+FVector UMarkupComponent::GetMarkupLocation() const
+{
+	return GetComponentToWorld().GetLocation();
+}
+
+FTransform UMarkupComponent::GetMarkupTransform() const
+{
+	return GetComponentToWorld();
+}
+

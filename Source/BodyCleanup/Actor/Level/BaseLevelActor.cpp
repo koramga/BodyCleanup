@@ -133,32 +133,32 @@ void ABaseLevelActor::GetComponentByLinkConnect(USceneComponent* SceneComponent,
 			}
 		}
 	}
-	else if (SceneComponent->IsA(UWarpComponent::StaticClass()))
-	{
-		UWarpComponent* WarpComponent = Cast<UWarpComponent>(SceneComponent);
-
-		if (IsValid(WarpComponent))
-		{
-			if (EWarpType::Point == WarpComponent->GetWarpType())
-			{
-				TSoftObjectPtr<class ABaseActor> WarpBaseActor = WarpComponent->GetWarpActor();
-
-				if (WarpBaseActor.IsValid())
-				{
-					TSoftObjectPtr<class UMarkupComponent> MarkupComponent = WarpComponent->FindMarkupComponent();
-
-					FVector Location = WarpBaseActor->GetActorLocation();
-
-					if (MarkupComponent.IsValid())
-					{
-						Location = MarkupComponent->GetComponentToWorld().GetLocation();
-					}
-
-					BatchLines.Add(FBatchedLine(GetActorLocation(), Location, LineColor, 0.f, 2.f, 0));
-				}
-			}
-		}
-	}
+	//else if (SceneComponent->IsA(UWarpComponent::StaticClass()))
+	//{
+	//	UWarpComponent* WarpComponent = Cast<UWarpComponent>(SceneComponent);
+	//
+	//	if (IsValid(WarpComponent))
+	//	{
+	//		if (EWarpType::Location == WarpComponent->GetWarpType())
+	//		{
+	//			TSoftObjectPtr<class ABaseActor> WarpBaseActor = WarpComponent->GetWarpActor();
+	//
+	//			if (WarpBaseActor.IsValid())
+	//			{
+	//				TSoftObjectPtr<class UMarkupComponent> MarkupComponent = WarpComponent->FindMarkupComponent();
+	//
+	//				FVector Location = WarpBaseActor->GetActorLocation();
+	//
+	//				if (MarkupComponent.IsValid())
+	//				{
+	//					Location = MarkupComponent->GetComponentToWorld().GetLocation();
+	//				}
+	//
+	//				BatchLines.Add(FBatchedLine(GetActorLocation(), Location, LineColor, 0.f, 2.f, 0));
+	//			}
+	//		}
+	//	}
+	//}
 
 	TArray<USceneComponent*> ChildrenComponents;
 

@@ -75,8 +75,10 @@ enum class EParentMovementAction : uint8
 UENUM(BlueprintType)
 enum class EWarpType : uint8
 {
+	//Warp를 이용하여 Level을 이동합니다.
 	Level,
-	Point,
+	//Warp를 이용하여 위치를 이동합니다.
+	Location,
 };
 
 UENUM(BlueprintType)
