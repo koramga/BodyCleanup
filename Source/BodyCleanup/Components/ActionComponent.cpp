@@ -23,7 +23,7 @@ void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UActionComponent::OnTrigger(bool bInputIsOnTrigger)
 {
-	bIsUpdateAfterTransformed = bInputIsOnTrigger;
+	bIsUpdateDestinationTransformed = bInputIsOnTrigger;
 }
 
 void UActionComponent::UpdateTrigger(bool bInputIsOnTrigger)
@@ -32,7 +32,7 @@ void UActionComponent::UpdateTrigger(bool bInputIsOnTrigger)
 
 	if (EActionComponentActionType::On == ActionType)
 	{
-		if (false == bIsUpdateAfterTransformed)
+		if (false == bIsUpdateDestinationTransformed)
 		{
 			if (true == bInputIsOnTrigger)
 			{
@@ -44,4 +44,9 @@ void UActionComponent::UpdateTrigger(bool bInputIsOnTrigger)
 	{
 		OnTrigger(bIsOnTrigger);
 	}	
+}
+
+bool UActionComponent::IsUpdateDestinationTransformed() const
+{
+	return bIsUpdateDestinationTransformed;
 }

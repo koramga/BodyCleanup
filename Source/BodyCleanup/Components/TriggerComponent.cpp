@@ -59,10 +59,25 @@ USceneComponent* UTriggerComponent::FindComponentByName(USceneComponent* SceneCo
 
 	for (USceneComponent* ChildComponent : ChildrenComponents)
 	{
-		return FindComponentByName(ChildComponent, Name);
+		USceneComponent* FindComponent = FindComponentByName(ChildComponent, Name);
+
+		if(IsValid(FindComponent))
+		{
+			return FindComponent;
+		}
 	}
 
 	return nullptr;
+}
+
+void UTriggerComponent::FindComponentByTriggreName(TArray<TSoftObjectPtr<USceneComponent>>& TagComponents, AActor* Actor, const FName& TagName)
+{
+	TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(USceneComponent::StaticClass(), TagName);
+
+	for (UActorComponent* TriggerComponent : ActorTriggerComponents)
+	{
+		TagComponents.Add(TriggerComponent);
+	}
 }
 
 void UTriggerComponent::FindTriggerComponent(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents, USceneComponent* SceneComponent)
@@ -108,7 +123,12 @@ USceneComponent* UTriggerComponent::FindTriggerComponentByName(USceneComponent* 
 
 	for (USceneComponent* ChildComponent : ChildrenComponents)
 	{
-		return FindTriggerComponentByName(ChildComponent, Name);
+		USceneComponent* FindTriggerComponent = FindTriggerComponentByName(ChildComponent, Name);
+
+		if (IsValid(FindTriggerComponent))
+		{
+			return FindTriggerComponent;
+		}
 	}
 
 	return nullptr;
@@ -118,20 +138,45 @@ void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* Ov
 {
 	if (TriggerComponents.Find(OverlappedComp) >= 0)
 	{
-		if (TriggerOnComponents.Find(OverlappedComp) < 0)
-		{
-			TriggerOnComponents.Add(OverlappedComp);
-		}
+		FTriggerOnData* TriggerOnData = TriggerOnComponents.Find(OverlappedComp);
 
-		__ProcessTrigger(true);
+		if (TriggerOnData == nullptr)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Create : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+
+			FTriggerOnData& Data = TriggerOnComponents.Add(OverlappedComp, FTriggerOnData(OverlappedComp));
+			Data.OtherComps.Add(OtherComp);
+			__ProcessTrigger(true);
+		}
+		else
+		{
+			if (TriggerOnData->OtherComps.Find(OtherComp) < 0)
+			{
+				UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Add : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+
+				TriggerOnData->OtherComps.Add(OtherComp);
+			}
+		}
 	}
 }
 
 void UTriggerComponent::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	TriggerOnComponents.Remove(OverlappedComp);
+	FTriggerOnData* TriggerOnData = TriggerOnComponents.Find(OverlappedComp);
 
-	__ProcessTrigger(false);
+	if (nullptr != TriggerOnData)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Remove : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+
+		TriggerOnData->OtherComps.Remove(OtherComp);
+
+		if (TriggerOnData->OtherComps.Num() <= 0)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Delete : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+			TriggerOnComponents.Remove(OverlappedComp);
+			__ProcessTrigger(false);
+		}
+	}
 }
 
 void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents)
@@ -280,7 +325,7 @@ void UTriggerComponent::CalledTriggerObservers(TSoftObjectPtr<UActorComponent> C
 	{
 		if (TriggerComponents.Find(CallerActorComponent) >= 0)
 		{
-			TriggerOnComponents.Add(CallerActorComponent);
+			TriggerOnComponents.Add(CallerActorComponent, FTriggerOnData(CallerActorComponent));
 		}
 	}
 	else

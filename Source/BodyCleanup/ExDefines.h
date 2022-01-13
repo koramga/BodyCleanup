@@ -103,6 +103,17 @@ enum class ETriggerComponentFromType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EActionComponentToType : uint8
+{
+	//부모 Component를 Action 합니다.
+	ParentComponent,
+	//Component TagName으로 부터 Action이 결정됩니다.
+	ComponentTagName,
+	//Component 이름으로부터 Action이 결정됩니다.
+	ComponentName,
+};
+
+UENUM(BlueprintType)
 enum class EActionComponentActionType : uint8
 {
 	//한 번의 Trigger에만 반응합니다.

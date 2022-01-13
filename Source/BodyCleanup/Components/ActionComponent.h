@@ -19,13 +19,13 @@ public :
 
 protected :
 	//TickTock Type을 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupAction")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ActionComponent")
 	EActionComponentActionType	ActionType;
 
 protected :
 	//사용자가 원하는 형태로의 변형이 이루어지고 있는지를 판단한다. 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool						bIsUpdateAfterTransformed = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|ActionComponent")
+	bool						bIsUpdateDestinationTransformed = false;
 
 protected:
 	// Called when the game starts
@@ -40,4 +40,7 @@ private :
 
 protected :
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
+	
+public :
+	bool IsUpdateDestinationTransformed() const;
 };

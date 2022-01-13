@@ -20,6 +20,21 @@ public :
 	TArray<FName>									Names;
 };
 
+USTRUCT(BlueprintType, Blueprintable)
+struct FTriggerOnData
+{
+	GENERATED_BODY()
+
+public:
+	TSoftObjectPtr<UActorComponent>	OverlappedComp;
+	TArray<TSoftObjectPtr<UPrimitiveComponent>>	OtherComps;
+
+	FTriggerOnData()
+		:OverlappedComp(nullptr) {}
+
+	FTriggerOnData(TSoftObjectPtr<UActorComponent> _OverlappedComp)
+		: OverlappedComp(_OverlappedComp) {}
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BODYCLEANUP_API UTriggerComponent: public USceneComponent, public ILevelTriggerInterface
@@ -31,32 +46,34 @@ public:
 	UTriggerComponent();
 
 protected :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (ToolTip = "Trigger Action을 정의합니다."))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (ToolTip = "Trigger Action을 정의합니다."))
 	ETriggerComponentFromType					TriggerComponentFromType = ETriggerComponentFromType::ParentComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentTagName", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentTagName", EditConditionHides, ToolTip = ""))
 	FName										ComponentTagName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentName", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentName", EditConditionHides, ToolTip = ""))
 	FName										ComponentName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Actor", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Actor", EditConditionHides, ToolTip = ""))
 	TArray<TSoftObjectPtr<AActor>>	TriggerActors;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SetupTrigger", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ActorComponentName || TriggerComponentFromType == ETriggerComponentFromType::ActorComponentTagName", EditConditionHides, ToolTip = ""))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ActorComponentName || TriggerComponentFromType == ETriggerComponentFromType::ActorComponentTagName", EditConditionHides, ToolTip = ""))
 	TArray<FTriggerActorWithName>				TriggerActorWithNames;
 
 protected :
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
 	TArray<TSoftObjectPtr<UActorComponent>>					TriggerComponents;
 
-	UPROPERTY(VisibleAnywhere)
-	TArray<TSoftObjectPtr<UActorComponent>>					TriggerOnComponents;
+		//TArray<TSoftObjectPtr<UActorComponent>>					TriggerOnComponents;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
+	TMap<TSoftObjectPtr<UActorComponent>, FTriggerOnData>		TriggerOnComponents;
+
+	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
 	TArray<TSoftObjectPtr<ILevelTriggerInterface>>			ObserverTriggerLevelInterfaces;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
 	bool													bIsOnTrigger = false;
 
 protected:
@@ -65,6 +82,7 @@ protected:
 
 protected :
 	USceneComponent* FindComponentByName(USceneComponent* SceneComponent, const FName& Name);
+	void FindComponentByTriggreName(TArray<TSoftObjectPtr<USceneComponent>>& TagComponents, AActor* Actor, const FName& TagName);
 	USceneComponent* FindTriggerComponentByName(USceneComponent* SceneComponent, const FName& Name);
 	void FindTriggerComponent(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents, USceneComponent* SceneComponent);
 	void FindTriggerComponentByTagName(TArray<TSoftObjectPtr<UActorComponent>>& InputTriggerComponents, AActor* Actor, const FName& TagName);
