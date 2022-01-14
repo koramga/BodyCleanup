@@ -22,7 +22,7 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsValid(FollowCharacter))
+	if (FollowCharacter.IsValid())
 	{
 		FVector GoalLocation = FollowCharacter->GetActorLocation();
 		GoalLocation.Z += 150.f;
@@ -38,9 +38,9 @@ void ATank::Tick(float DeltaTime)
 	}
 }
 
-void ATank::SetFlyMode(ACharacter* InputFollowCharacter)
+void ATank::SetFlyMode(TSoftObjectPtr<ACharacter> InputFollowCharacter)
 {
-	if (IsValid(InputFollowCharacter))
+	if (InputFollowCharacter.IsValid())
 	{
 		SetEnableCapsuleCollision(false);
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
@@ -62,7 +62,7 @@ void ATank::SetFlyMode(ACharacter* InputFollowCharacter)
 
 bool ATank::IsFlyMode() const
 {
-	if (IsValid(FollowCharacter))
+	if (FollowCharacter.IsValid())
 	{
 		return true;
 	}

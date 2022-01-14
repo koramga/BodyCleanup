@@ -6,6 +6,7 @@
 #include "../../Character/PlayerCharacter/Characters/Tank.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../AI/Player/BasePlayerAIController.h"
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -29,6 +30,14 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveForward", this, &ABasePlayerController::__InputMoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ABasePlayerController::__InputMoveRight);
 
+}
+
+void ABasePlayerController::InputPressedSwapCharacter()
+{
+}
+
+void ABasePlayerController::InputPressedReturnToCharacter()
+{
 }
 
 void ABasePlayerController::__InputMoveForward(float InputAxis)
@@ -93,51 +102,16 @@ void ABasePlayerController::__InputReleasedMouseRightClick()
 
 void ABasePlayerController::__InputPressedSwapCharacter()
 {
-	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
-
-	if (IsValid(PlayerCharacter))
-	{
-		if (Morse == PlayerCharacter)
-		{
-			Possess(Tank);
-			//if (false == Tank->IsFlyMode())
-			//{
-			//	Tank->SetFlyMode(Morse);
-			//}
-
-			if (Tank->IsFlyMode())
-			{
-				Tank->SetFlyMode(nullptr);
-			}
-
-		}
-		else
-		{
-			Possess(Morse);
-
-			//Tank->SetFlyMode(Morse);
-		}
-	}
+	InputPressedSwapCharacter();
 }
 
 void ABasePlayerController::__InputPressedReturnToTank()
 {
-	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
-
-	if (Tank == PlayerCharacter)
-	{
-		if (false == Tank->IsFlyMode())
-		{
-			Tank->SetFlyMode(Morse);
-		}
-	}
-
+	InputPressedReturnToCharacter();
 }
 
 void ABasePlayerController::__InputPressedJump()
 {
-	UE_LOG(LogTemp, Display, TEXT("Jump"));
-
 	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
 	if (IsValid(PlayerCharacter))
@@ -159,39 +133,6 @@ void ABasePlayerController::__InputReleasedJump()
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AActor* PlayerStartActor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
-
-	if (IsValid(PlayerStartActor))
-	{
-		APlayerStart* PlayerStart = Cast<APlayerStart>(PlayerStartActor);
-
-		FActorSpawnParameters ActorSpawnParam;
-
-		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		ActorSpawnParam.Owner = this;
-
-		if (IsValid(MorseCharacterClass.Get()))
-		{
-			Morse = GetWorld()->SpawnActor<AMorse>(MorseCharacterClass, PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation(), ActorSpawnParam);
-
-			if (IsValid(Morse))
-			{
-				Possess(Morse);
-			}
-		}
-
-		if (IsValid(TankCharacterClass.Get()))
-		{
-			Tank = GetWorld()->SpawnActor<ATank>(TankCharacterClass, PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation(), ActorSpawnParam);
-
-			if (IsValid(Tank))
-			{
-				Tank->SetFlyMode(Morse);
-			}
-		}
-	}
-
 }
 
 void ABasePlayerController::PlayerTick(float DeltaTime)

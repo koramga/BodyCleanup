@@ -24,7 +24,7 @@ protected :
 	bool	bIsDead;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ACharacter* FollowCharacter;
+	TSoftObjectPtr<ACharacter> FollowCharacter;
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,7 +35,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public :
-	void SetFlyMode(ACharacter* InputFollowCharacter);
+	void SetFlyMode(TSoftObjectPtr<ACharacter> InputFollowCharacter);
 	bool IsFlyMode() const;
 
 public:

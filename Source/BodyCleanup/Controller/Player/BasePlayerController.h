@@ -17,18 +17,6 @@ class BODYCLEANUP_API ABasePlayerController : public APlayerController
 public :
 	ABasePlayerController();
 
-protected :
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class AMorse>		MorseCharacterClass;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class ATank>		TankCharacterClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class AMorse* Morse;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class ATank* Tank;
 
 protected :
 	// Begin PlayerController interface
@@ -37,6 +25,10 @@ protected :
 protected :
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
+
+protected :
+	virtual void InputPressedSwapCharacter();
+	virtual void InputPressedReturnToCharacter();
 
 private :
 	void __InputMoveForward(float InputAxis);
