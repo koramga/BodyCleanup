@@ -85,7 +85,9 @@ void ABaseCharacter::Tick(float DeltaTime)
 				fAngle = 360 - fAngle;
 			}
 
-			Angle = fAngle - QUARTER_VIEW_ANGLE;
+			//Angle = fAngle + QUARTER_VIEW_ANGLE;
+
+			//UE_LOG(LogTemp, Display, TEXT("Angle : %.2f"), fAngle);
 		}
 
 		if (IsValid(BaseAnimInstance))

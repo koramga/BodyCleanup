@@ -59,10 +59,8 @@ void AMorse::Tick(float DeltaTime)
 			{
 				//Look Mouse
 				//UE_LOG(LogTemp, Display, TEXT("HitActor : <%s>"), *Hit.Actor->GetName());
+
 				FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
-				tempRot.Yaw -= QUARTER_VIEW_ANGLE;
-				tempRot.Pitch = 0;
-				tempRot.Roll = 0;
 				SetActorRotation(tempRot);
 			}
 		}
