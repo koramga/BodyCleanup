@@ -49,10 +49,11 @@ public:
 	UTriggerComponent();
 
 protected :
-	bool										bIsCanControlTriggerComponentFromType = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool										bIsCanControlTriggerComponentFromType;
 
 	//Trigger Action을 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "bIsCanControlTriggerComponentFromType"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "bIsCanControlTriggerComponentFromType == true"))
 	ETriggerComponentFromType					TriggerComponentFromType = ETriggerComponentFromType::Parent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Setup", EditConditionHides))

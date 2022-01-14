@@ -11,6 +11,7 @@ UTriggerComponent::UTriggerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
+	bIsCanControlTriggerComponentFromType = true;
 }
 
 
