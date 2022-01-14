@@ -28,5 +28,5 @@ public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
 	virtual void CallTriggerObservers(bool bInputIsTick) = 0;
 	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) = 0;
-	virtual void CalledTriggerObservers(TSoftObjectPtr<UActorComponent> CallerActorComponent, bool bInputIsTick) = 0;
+	virtual void CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bInputIsTick) = 0;
 };

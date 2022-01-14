@@ -99,7 +99,7 @@ void AGroupPlayerController::InputPressedSwapCharacter()
 		{
 			Possess(Morse.Get());
 			SubPlayerController->Possess(Tank.Get());
-			Tank->SetFlyMode(Morse);
+			//Tank->SetFlyMode(Morse);
 		}
 	}
 }
@@ -112,6 +112,8 @@ void AGroupPlayerController::InputPressedReturnToCharacter()
 	{
 		if (false == Tank->IsFlyMode())
 		{
+			Possess(Morse.Get());
+			SubPlayerController->Possess(Tank.Get());
 			Tank->SetFlyMode(Morse);
 		}
 	}

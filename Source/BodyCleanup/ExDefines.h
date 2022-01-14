@@ -88,20 +88,31 @@ enum class EMarkupType : uint8
 };
 
 UENUM(BlueprintType)
+enum class ENameType : uint8
+{
+	Name,
+	Tag,
+};
+
+UENUM(BlueprintType)
 enum class ETriggerComponentFromType : uint8
 {
 	//부모 Component로부터 Trigger가 설정됩니다.
-	ParentComponent,		
+	Parent,
+	//사용자가 설정한 Setup에 맞게 Trigger가 설정됩니다.
+	Setup,
+	//사용자가 설정할 수 없습니다. 만약 사용자가 강제로 설정한다면 Trigger가 동작되지 않습니다.
+	Action,
 	//Component TagName으로 부터 Trigger가 설정됩니다.
-	ComponentTagName,		
-	//Component 이름으로부터 Trigger가 설정됩니다.
-	ComponentName,			
-	//Actor의 모든 Trigger Component로부터 Trigger가 설정됩니다.
-	Actor,					
-	//Actor의 Trigger Component Name으로부터 Trigger가 설정됩니다.
-	ActorTriggerComponentName,		
-	//Actor의 Trigger Component Tag Name으로부터 Trigger가 설정됩니다.
-	ActorTriggerComponentTagName,	
+	//ComponentTagName,		
+	////Component 이름으로부터 Trigger가 설정됩니다.
+	//ComponentName,			
+	////Actor의 모든 Trigger Component로부터 Trigger가 설정됩니다.
+	//Actor,					
+	////Actor의 Trigger Component Name으로부터 Trigger가 설정됩니다.
+	//ActorTriggerComponentName,		
+	////Actor의 Trigger Component Tag Name으로부터 Trigger가 설정됩니다.
+	//ActorTriggerComponentTagName,	
 };
 
 UENUM(BlueprintType)

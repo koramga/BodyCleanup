@@ -50,18 +50,23 @@ void AMorse::Tick(float DeltaTime)
 
 	if (IsValid(BaseController))
 	{
-		FHitResult Hit;
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
-
-		if (Hit.bBlockingHit)
+		if (BaseController->IsA(APlayerController::StaticClass()))
 		{
-			if (Hit.Actor != this)
-			{
-				//Look Mouse
-				//UE_LOG(LogTemp, Display, TEXT("HitActor : <%s>"), *Hit.Actor->GetName());
+			FHitResult Hit;
+			UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
 
-				FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
-				SetActorRotation(tempRot);
+			if (Hit.bBlockingHit)
+			{
+				if (Hit.Actor != this)
+				{
+					//Look Mouse
+					//UE_LOG(LogTemp, Display, TEXT("HitActor : <%s>"), *Hit.Actor->GetName());
+
+					FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
+					tempRot.Pitch = 0;
+					tempRot.Roll = 0;
+					SetActorRotation(tempRot);
+				}
 			}
 		}
 	}
