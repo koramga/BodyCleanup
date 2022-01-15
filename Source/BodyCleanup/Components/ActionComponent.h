@@ -9,6 +9,7 @@
 /**
  * 
  */
+
 UCLASS()
 class BODYCLEANUP_API UActionComponent : public UTriggerComponent, public ILevelActionInterface
 {

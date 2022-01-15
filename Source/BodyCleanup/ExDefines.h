@@ -45,6 +45,13 @@ enum class EInteractiveAction : uint8
 };
 
 UENUM(BlueprintType)
+enum class EInteractiveObjectType : uint8
+{
+	Rigid,				//당겨지되 먹혀지지는 않는다.
+	Junk,				//당겨지되 먹혀지고 먹혀진다.
+};
+
+UENUM(BlueprintType)
 enum class EInteractiveType : uint8
 {
 	Rigid,				//당겨지되 먹혀지지는 않는다.
