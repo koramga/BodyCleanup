@@ -14,7 +14,7 @@ void UComponentMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (EActionComponentToType::ParentComponent == ActionComponentToType)
+	if (EActionComponentToType::Parent == ActionComponentToType)
 	{
 		USceneComponent* AttachParentComponent = GetAttachParent();
 
@@ -23,24 +23,27 @@ void UComponentMovementComponent::BeginPlay()
 			ComponentMovementDatas.Add(FComponentMovementData(AttachParentComponent));
 		}
 	}
-	else if (EActionComponentToType::ComponentName == ActionComponentToType)
+	else if (EActionComponentToType::Setup == ActionComponentToType)
 	{
-		USceneComponent* ComponentByName = FindComponentByName(GetOwner()->GetRootComponent(), MovementComponentName);
-
-		if (IsValid(ComponentByName))
+		if (ENameType::Name == NameType)
 		{
-			ComponentMovementDatas.Add(FComponentMovementData(ComponentByName));
+			USceneComponent* ComponentByName = FindComponentByName(GetOwner()->GetRootComponent(), ActionName);
+
+			if (IsValid(ComponentByName))
+			{
+				ComponentMovementDatas.Add(FComponentMovementData(ComponentByName));
+			}
 		}
-	}
-	else if (EActionComponentToType::ComponentTagName == ActionComponentToType)
-	{
-		TArray<TSoftObjectPtr<USceneComponent>> SceneComponents;
-
-		FindComponentByTriggreName(SceneComponents, GetOwner(), MovementComponentTagName);
-
-		for (TSoftObjectPtr<USceneComponent> SceneComponent : SceneComponents)
+		else if (ENameType::Tag == NameType)
 		{
-			ComponentMovementDatas.Add(FComponentMovementData(SceneComponent));
+			TArray<TSoftObjectPtr<USceneComponent>> SceneComponents;
+
+			FindComponentByTriggreName(SceneComponents, GetOwner(), ActionName);
+
+			for (TSoftObjectPtr<USceneComponent> SceneComponent : SceneComponents)
+			{
+				ComponentMovementDatas.Add(FComponentMovementData(SceneComponent));
+			}
 		}
 	}
 
@@ -74,7 +77,7 @@ void UComponentMovementComponent::TickComponent(float DeltaTime, ELevelTick Tick
 					ComponentMovementData.MovementComponent->SetRelativeRotation(FQuat::FastLerp(Source.GetRotation(), Source.GetRotation() + ComponentMovementData.DestinationTransform.GetRotation(), DeltaTime * InterpSpeed));
 				}
 			
-				if (bIsUpdateScale)
+				if (bIsUpdateLocation)
 				{
 					ComponentMovementData.MovementComponent->SetRelativeLocation(FMath::VInterpTo(Source.GetLocation(), ComponentMovementData.DestinationTransform.GetLocation(), DeltaTime, InterpSpeed));
 				}

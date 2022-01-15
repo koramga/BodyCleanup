@@ -109,11 +109,9 @@ UENUM(BlueprintType)
 enum class EActionComponentToType : uint8
 {
 	//부모 Component를 Action 합니다.
-	ParentComponent,
-	//Component TagName으로 부터 Action이 결정됩니다.
-	ComponentTagName,
-	//Component 이름으로부터 Action이 결정됩니다.
-	ComponentName,
+	Parent,
+	//Component Setup으로 부터 결정됩니다.
+	Setup,
 };
 
 UENUM(BlueprintType)
