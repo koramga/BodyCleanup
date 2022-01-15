@@ -59,5 +59,6 @@ public :
 
 public :
 	EAnimationType GetAnimationType() const;
+	EAnimationType GetDesiredAnimationType() const;
 	EAnimationState GetAnimationState(EAnimationType InputAnimationType) const;
 };

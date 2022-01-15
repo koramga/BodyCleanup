@@ -81,6 +81,11 @@ EAnimationType UBaseAnimInstance::GetAnimationType() const
 	return AnimationType;
 }
 
+EAnimationType UBaseAnimInstance::GetDesiredAnimationType() const
+{
+	return DesiredAnimationType;
+}
+
 EAnimationState UBaseAnimInstance::GetAnimationState(EAnimationType InputAnimationType) const
 {
 	return AnimationStates[static_cast<int32>(InputAnimationType)];

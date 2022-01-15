@@ -74,8 +74,11 @@ void AMorse::Tick(float DeltaTime)
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
 		EAnimationType AnimationType = PlayerCharacterAnimInstance->GetAnimationType();
+		EAnimationType DesiredAnimationType = PlayerCharacterAnimInstance->GetDesiredAnimationType();
 
-		if (EAnimationType::Vacuum == AnimationType)
+		if (EAnimationType::Vacuum == AnimationType
+			&& EAnimationType::Vacuum == DesiredAnimationType
+			&& IsPressedLeftMouse())
 		{
 			if (IsValid(VaccumPrimitiveComponent))
 			{
@@ -87,13 +90,11 @@ void AMorse::Tick(float DeltaTime)
 				{
 					InputInteractiveMovementComponent = nullptr;
 
-					if (VaccumActor->IsA(ABaseLevelActor::StaticClass()))
+					if (VaccumActor->IsA(AActor::StaticClass()))
 					{
-						InputInteractiveMovementComponent = Cast<ABaseActor>(VaccumActor.Get())->GetInteractiveMovementComponent();
-					}
-					else if (VaccumActor->IsA(ABaseCharacter::StaticClass()))
-					{
-						InputInteractiveMovementComponent = Cast<ABaseCharacter>(VaccumActor.Get())->GetInteractiveMovementComponent();
+						AActor* Actor = Cast<AActor>(VaccumActor.Get());
+
+						InputInteractiveMovementComponent = Cast<UInteractiveMovementComponent>(Actor->FindComponentByClass(UInteractiveMovementComponent::StaticClass()));
 					}
 
 					if (IsValid(InputInteractiveMovementComponent))
@@ -129,7 +130,7 @@ void AMorse::Tick(float DeltaTime)
 		TArray<AActor*> actorArr;
 		FVector NullVector;
 
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes; // ��Ʈ ������ ������Ʈ ������.
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
 		TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
 		TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
@@ -196,82 +197,58 @@ void AMorse::InputPressedMouseRightClick()
 
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Shot);
+		if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Idle)
+		{
+			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Shot);
+		}
+		else if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Vacuum)
+		{
+			for (TSoftObjectPtr<AActor> VaccumOverlapActor : VaccumOverlapActors)
+			{
+				UInteractiveMovementComponent* VaccumInteractiveMovementComponent = Cast<UInteractiveMovementComponent>(VaccumOverlapActor->GetComponentByClass(UInteractiveMovementComponent::StaticClass()));
+				
+				if (IsValid(VaccumInteractiveMovementComponent))
+				{
+					if (EInteractiveAction::Holding == VaccumInteractiveMovementComponent->GetInteractiveAction())
+					{
+						//여기서 쏴져야한다.
+
+						//VaccumInteractiveMovementComponent->AddForce(GetActorForwardVector() * 1000.f);
+
+						FVector startLoc = GetActorLocation() + GetActorForwardVector() * 300.f;
+						FVector targetLoc = GetActorLocation() + GetActorForwardVector() * 2000.f;
+						float arcValue = 0.1f;
+						FVector outVelocity = FVector::ZeroVector;
+
+						if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
+						{
+							VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(startLoc);
+
+							VaccumInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::Shooting);
+
+							UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(VaccumInteractiveMovementComponent->GetOwner()->FindComponentByClass(UStaticMeshComponent::StaticClass()));
+
+							StaticMeshComponent->SetPhysicsLinearVelocity(outVelocity);
+						}
+
+						//VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(VaccumInteractiveMovementComponent->GetOwner()->GetActorLocation() + GetActorForwardVector() * 300.f);
+						//VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(VaccumInteractiveMovementComponent->GetOwner()->GetActorLocation() + VaccumInteractiveMovementComponent->GetOwner()->GetActorUpVector() * 300.f);
+
+						
+
+						//VaccumInteractiveMovementComponent->Velocity = GetActorForwardVector() * 1000.f;
+						//VaccumInteractiveMovementComponent->SetUpdatedComponent(VaccumInteractiveMovementComponent->GetOwner()->GetRootComponent());
+
+						//VaccumInteractiveMovementComponent->UpdateComponentVelocity();
+
+						//UE_LOG(LogTemp, Display, TEXT("Velocity : <%.2f, %.2f, %.2f>"), VaccumInteractiveMovementComponent->GetComponentVe.X, VaccumInteractiveMovementComponent->Velocity.Y, VaccumInteractiveMovementComponent->Velocity.Z);
+					}
+				}
+			}
+
+			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
+		}
 	}
-
-	//if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Idle)
-	//{
-	//	//ThrowStartPos = GetActorLocation();
-	//	//ThrowStartPos += GetActorForwardVector() * 80;
-	//	//
-	//	//FHitResult Hit;
-	//	//
-	//	//FVector startLoc = ThrowStartPos;
-	//	//FVector targetLoc = Hit.Location;
-	//	//float arcValue = 0.5f;
-	//	//FVector outVelocity = FVector::ZeroVector;
-	//	//
-	//	//if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
-	//	//{
-	//	//	ThrowTargetPos = outVelocity;
-	//	//
-	//	//	UGameplayStatics::PredictProjectilePath(
-	//	//		GetWorld(),
-	//	//		Hit,
-	//	//		arr,
-	//	//		NullVector,
-	//	//		ThrowStartPos,
-	//	//		ThrowTargetPos,
-	//	//		true,
-	//	//		5.f,
-	//	//		ObjectTypes,
-	//	//		false,
-	//	//		actorArr,
-	//	//		EDrawDebugTrace::ForOneFrame,
-	//	//		0);
-	//	//}
-	//
-	//}
-	//else
-	//{
-	//	//PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
-	//
-	//	for (TSoftObjectPtr<AActor> VaccumOverlapActor : VaccumOverlapActors)
-	//	{
-	//		UInteractiveMovementComponent* VaccumInteractiveMovementComponent = nullptr;
-	//
-	//		if (VaccumOverlapActor->IsA(ABaseCharacter::StaticClass()))
-	//		{
-	//			VaccumInteractiveMovementComponent = Cast<ABaseCharacter>(VaccumOverlapActor.Get())->GetInteractiveMovementComponent();
-	//		}
-	//		else if (VaccumOverlapActor->IsA(ABaseActor::StaticClass()))
-	//		{
-	//			VaccumInteractiveMovementComponent = Cast<ABaseActor>(VaccumOverlapActor.Get())->GetInteractiveMovementComponent();
-	//		}
-	//
-	//		if (IsValid(VaccumInteractiveMovementComponent))
-	//		{
-	//			if (EInteractiveAction::Holding == VaccumInteractiveMovementComponent->GetInteractiveAction())
-	//			{
-	//				//여기서 쏴져야한다.
-	//
-	//				//VaccumInteractiveMovementComponent->AddForce(GetActorForwardVector() * 1000.f);
-	//
-	//				VaccumInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::None);
-	//
-	//				//VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(VaccumInteractiveMovementComponent->GetOwner()->GetActorLocation() + GetActorForwardVector() * 1000.f);
-	//
-	//				VaccumInteractiveMovementComponent->Velocity = GetActorForwardVector() * 1000.f;
-	//				VaccumInteractiveMovementComponent->SetUpdatedComponent(VaccumInteractiveMovementComponent->GetOwner()->GetRootComponent());
-	//
-	//				VaccumInteractiveMovementComponent->UpdateComponentVelocity();
-	//
-	//				//UE_LOG(LogTemp, Display, TEXT("Velocity : <%.2f, %.2f, %.2f>"), VaccumInteractiveMovementComponent->GetComponentVe.X, VaccumInteractiveMovementComponent->Velocity.Y, VaccumInteractiveMovementComponent->Velocity.Z);
-	//			}
-	//		}
-	//	}
-	//}
-
 }
 
 void AMorse::InputReleasedMouseRightClick()
@@ -305,31 +282,11 @@ void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 {
 	if (false == VaccumOverlapActors.Contains(OtherActor))
 	{
-		if (OtherActor->IsA(ABaseActor::StaticClass()))
-		{
-			ABaseActor* BaseActor = Cast<ABaseActor>(OtherActor);
+		UActorComponent* ActorComponent = OtherActor->GetComponentByClass(UInteractiveMovementComponent::StaticClass());
 
-			if (IsValid(BaseActor))
-			{
-				if (BaseActor->IsInteractiveActor())
-				{
-					UE_LOG(LogTemp, Display, TEXT("BeginOverlap <%s> : <%s>"), *OverlappedComp->GetName(), *OtherActor->GetName());
-					VaccumOverlapActors.Add(OtherActor);
-				}
-			}
-		}
-		else if (OtherActor->IsA(ABaseCharacter::StaticClass()))
+		if (IsValid(ActorComponent))
 		{
-			ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
-
-			if (IsValid(BaseCharacter))
-			{
-				if (BaseCharacter->IsInteractiveCharacter())
-				{
-					UE_LOG(LogTemp, Display, TEXT("BeginOverlap <%s> : <%s>"), *OverlappedComp->GetName(), *OtherActor->GetName());
-					VaccumOverlapActors.Add(OtherActor);
-				}
-			}
+			VaccumOverlapActors.Add(OtherActor);
 		}
 	}
 }
@@ -342,22 +299,15 @@ void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 
 		//UE_LOG(LogTemp, Display, TEXT("EndOverlap <%s> : <%s>"), *OverlappedComp->GetName(), *OtherActor->GetName());
 
-		UInteractiveMovementComponent* InputInteractiveMovementComponent = nullptr;
+		UActorComponent* ActorComponent = OtherActor->GetComponentByClass(UInteractiveMovementComponent::StaticClass());
 
-		if (OtherActor->IsA(ABaseLevelActor::StaticClass()))
+		if (IsValid(ActorComponent))
 		{
-			InputInteractiveMovementComponent = Cast<ABaseActor>(OtherActor)->GetInteractiveMovementComponent();
-		}
-		else if (OtherActor->IsA(ABaseCharacter::StaticClass()))
-		{
-			InputInteractiveMovementComponent = Cast<ABaseCharacter>(OtherActor)->GetInteractiveMovementComponent();
-		}
+			UInteractiveMovementComponent* OverlapInteractiveMovementComponent = Cast<UInteractiveMovementComponent>(ActorComponent);
 
-		if (IsValid(InputInteractiveMovementComponent))
-		{
-			if (EInteractiveAction::None != InputInteractiveMovementComponent->GetInteractiveAction())
+			if (IsValid(OverlapInteractiveMovementComponent))
 			{
-				InputInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::None);
+				OverlapInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::None);
 			}
 		}
 	}	
