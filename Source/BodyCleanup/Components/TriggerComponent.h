@@ -77,14 +77,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-protected :
-	USceneComponent* FindComponentByName(USceneComponent* SceneComponent, const FName& Name);
-	void FindComponentsByNames(TArray<TSoftObjectPtr<USceneComponent>>& NameComponents, USceneComponent* SceneComponent, const TArray<FName>& Names) const;
-	void FindComponentByTriggreName(TArray<TSoftObjectPtr<USceneComponent>>& TagComponents, AActor* Actor, const FName& TagName);
-	USceneComponent* FindTriggerComponentByName(USceneComponent* SceneComponent, const FName& Name);
-	void FindTriggerComponent(TArray<TSoftObjectPtr<USceneComponent>>& InputTriggerComponents, USceneComponent* SceneComponent);
-	void FindTriggerComponentByTagName(TArray<TSoftObjectPtr<USceneComponent>>& InputTriggerComponents, AActor* Actor, const FName& TagName);
-
 private:
 	UFUNCTION()
 	void __OnTriggerComponentOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

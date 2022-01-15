@@ -4,6 +4,7 @@
 #include "WarpComponent.h"
 #include "../../Actor/BaseActor.h"
 #include "../MarkupComponent.h"
+#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 
 // Sets default values for this component's properties
 UWarpComponent::UWarpComponent()
@@ -95,12 +96,12 @@ TSoftObjectPtr<USceneComponent> UWarpComponent::FindMarkupComponent() const
 			{
 				if (false == MarkupName.IsNone())
 				{
-					return FindMarkupComponentByName(WarpActor->GetRootComponent(), MarkupName);
+					return UFindFunctionLibrary::FindMarkupComponentByName(WarpActor->GetRootComponent(), MarkupName);
 				}
 			}
 			else
 			{
-				return FindMarkupComponentByName(GetOwner()->GetRootComponent(), MarkupName);
+				return UFindFunctionLibrary::FindMarkupComponentByName(GetOwner()->GetRootComponent(), MarkupName);
 			}
 		}
 	}

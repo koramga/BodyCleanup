@@ -3,6 +3,7 @@
 
 #include "SpawnComponent.h"
 #include "../Interfaces/LevelMarkupInterface.h"
+#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 
 void USpawnComponent::BeginPlay()
 {
@@ -77,11 +78,11 @@ void USpawnComponent::GetTransformsFromSpawnMarkupParam(TArray<FTransform>& Tran
 
 		if (ENameType::Name == SpawnMarkupParam.NameType)
 		{
-			FindMarkupComponentsByNames(MarkupComponents, Actor->GetRootComponent(), SpawnMarkupParam.Names);
+			UFindFunctionLibrary::FindMarkupComponentsByNames(MarkupComponents, Actor->GetRootComponent(), SpawnMarkupParam.Names);
 		}
 		else if (ENameType::Tag == SpawnMarkupParam.NameType)
 		{
-			FindMarkupComponentsByTagNames(MarkupComponents, Actor.Get(), SpawnMarkupParam.Names);
+			UFindFunctionLibrary::FindMarkupComponentsByTagNames(MarkupComponents, Actor.Get(), SpawnMarkupParam.Names);
 		}
 
 		for (TSoftObjectPtr<USceneComponent> MarkupComponent : MarkupComponents)

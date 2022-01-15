@@ -2,6 +2,7 @@
 
 
 #include "TriggerComponent.h"
+#include "../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 
 // Sets default values for this component's properties
 UTriggerComponent::UTriggerComponent()
@@ -38,113 +39,6 @@ void UTriggerComponent::BeginPlay()
 			PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
 		}
 	}
-}
-
-
-
-USceneComponent* UTriggerComponent::FindComponentByName(USceneComponent* SceneComponent, const FName& Name)
-{
-	if (SceneComponent->GetName() == Name.ToString())
-	{
-		return SceneComponent;
-	}
-
-	TArray<USceneComponent*> ChildrenComponents;
-
-	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
-
-	for (USceneComponent* ChildComponent : ChildrenComponents)
-	{
-		USceneComponent* FindComponent = FindComponentByName(ChildComponent, Name);
-
-		if(IsValid(FindComponent))
-		{
-			return FindComponent;
-		}
-	}
-
-	return nullptr;
-}
-
-void UTriggerComponent::FindComponentsByNames(TArray<TSoftObjectPtr<USceneComponent>>& NameComponents, USceneComponent* SceneComponent, const TArray<FName>& Names) const
-{
-	if (Names.Find(FName(SceneComponent->GetName())) >= 0)
-	{
-		NameComponents.Add(SceneComponent);
-	}
-
-	TArray<USceneComponent*> ChildrenComponents;
-
-	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
-
-	for (USceneComponent* ChildComponent : ChildrenComponents)
-	{
-		FindComponentsByNames(NameComponents, ChildComponent, Names);
-	}
-}
-
-void UTriggerComponent::FindComponentByTriggreName(TArray<TSoftObjectPtr<USceneComponent>>& TagComponents, AActor* Actor, const FName& TagName)
-{
-	TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(USceneComponent::StaticClass(), TagName);
-
-	for (UActorComponent* TriggerComponent : ActorTriggerComponents)
-	{
-		TagComponents.Add(TriggerComponent);
-	}
-}
-
-void UTriggerComponent::FindTriggerComponent(TArray<TSoftObjectPtr<USceneComponent>>& InputTriggerComponents, USceneComponent* SceneComponent)
-{
-	if (SceneComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
-	{
-		InputTriggerComponents.Add(SceneComponent);
-	}
-
-	TArray<USceneComponent*> ChildrenComponents;
-
-	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
-
-	for (USceneComponent* ChildComponent : ChildrenComponents)
-	{
-		FindTriggerComponent(InputTriggerComponents, ChildComponent);
-	}
-}
-
-void UTriggerComponent::FindTriggerComponentByTagName(TArray<TSoftObjectPtr<USceneComponent>>& InputTriggerComponents, AActor* Actor, const FName& TagName)
-{
-	TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(ULevelTriggerInterface::StaticClass(), TagName);
-
-	for (UActorComponent* TriggerComponent : ActorTriggerComponents)
-	{
-		InputTriggerComponents.Add(TriggerComponent);
-	}
-}
-
-USceneComponent* UTriggerComponent::FindTriggerComponentByName(USceneComponent* SceneComponent, const FName& Name)
-{
-	if (SceneComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
-	{
-		if (SceneComponent->GetName() == Name.ToString())
-		{
-			return SceneComponent;
-		}
-	}
-
-	TArray<USceneComponent*> ChildrenComponents;
-
-	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
-
-	for (USceneComponent* ChildComponent : ChildrenComponents)
-	{
-		USceneComponent* FindTriggerComponent = FindTriggerComponentByName(ChildComponent, Name);
-
-		if (IsValid(FindTriggerComponent))
-		{
-			return FindTriggerComponent;
-		}
-	}
-
-	return nullptr;
 }
 
 void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -219,7 +113,7 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<USceneCompo
 				{
 					if (ENameType::Name == TriggerActorWithName.NameType)
 					{
-						FindComponentsByNames(FindComponents, TriggerActor->GetRootComponent(), TriggerActorWithName.Names);
+						UFindFunctionLibrary::FindComponentsByNames(FindComponents, TriggerActor->GetRootComponent(), TriggerActorWithName.Names);
 					}
 					else
 					{
@@ -241,7 +135,7 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<USceneCompo
 				}
 				else
 				{
-					FindTriggerComponent(FindComponents, TriggerActor->GetRootComponent());
+					UFindFunctionLibrary::FindTriggerComponents(FindComponents, TriggerActor->GetRootComponent());
 				}
 			}
 		}

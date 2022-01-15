@@ -2,6 +2,7 @@
 
 
 #include "DynamicMovementComponent.h"
+#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 
 UDynamicMovementComponent::UDynamicMovementComponent()
 {
@@ -25,7 +26,7 @@ void UDynamicMovementComponent::BeginPlay()
 	{
 		if (ENameType::Name == NameType)
 		{
-			USceneComponent* ComponentByName = FindComponentByName(GetOwner()->GetRootComponent(), ActionName);
+			USceneComponent* ComponentByName = UFindFunctionLibrary::FindComponentByName(GetOwner()->GetRootComponent(), ActionName);
 
 			if (IsValid(ComponentByName))
 			{
@@ -36,7 +37,7 @@ void UDynamicMovementComponent::BeginPlay()
 		{
 			TArray<TSoftObjectPtr<USceneComponent>> SceneComponents;
 
-			FindComponentByTriggreName(SceneComponents, GetOwner(), ActionName);
+			UFindFunctionLibrary::FindComponentsByTagName(SceneComponents, GetOwner(), ActionName);
 
 			for (TSoftObjectPtr<USceneComponent> SceneComponent : SceneComponents)
 			{
