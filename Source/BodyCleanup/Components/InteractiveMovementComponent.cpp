@@ -35,7 +35,7 @@ void UInteractiveMovementComponent::TickComponent(float DeltaTime, ELevelTick Ti
 		AActor* Owner = GetOwner();
 
 		Owner->SetActorLocation(InteractiveTransform.GetLocation());
-		//Owner->SetActorRotation(InteractiveTransform.GetRotation());
+		Owner->SetActorRotation(InteractiveTransform.GetRotation());
 	}
 
 	SetComponentTickEnabled(true);
@@ -67,9 +67,7 @@ void UInteractiveMovementComponent::SetInteractiveAction(EInteractiveAction Inpu
 
 		if (Owner->IsA(ABaseActor::StaticClass()))
 		{
-	//		Cast<ABaseActor>(Owner)->SetEnabledCollisions(true);
 			Cast<ABaseActor>(Owner)->SetEnableSimulations(true);
-			//Cast<ABaseActor>(Owner)->SetCollisionProfileNames(TEXT("BlockAllDynamic"));
 		}
 	}
 	else
@@ -78,9 +76,7 @@ void UInteractiveMovementComponent::SetInteractiveAction(EInteractiveAction Inpu
 
 		if (Owner->IsA(ABaseActor::StaticClass()))
 		{
-	//		Cast<ABaseActor>(Owner)->SetEnabledCollisions(false);
 			Cast<ABaseActor>(Owner)->SetEnableSimulations(false);
-			//Cast<ABaseActor>(Owner)->SetCollisionProfileNames(TEXT("OverlapAll"));
 		}
 
 	}

@@ -203,8 +203,13 @@ void AMorse::InputPressedMouseRightClick()
 		}
 		else if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Vacuum)
 		{
-			for (TSoftObjectPtr<AActor> VaccumOverlapActor : VaccumOverlapActors)
+			TArray<TSoftObjectPtr<AActor>>	ShootingActors;
+
+			for (const TSoftObjectPtr<AActor>& VaccumOverlapActor : VaccumOverlapActors)
+			//for(int i = 0; i < VaccumOverlapActors.Num(); ++i)
+			//for(TSoftObjectPtr<AActor>::iter Begin = VaccumOverlapActors.begin())
 			{
+				//TSoftObjectPtr<AActor> VaccumOverlapActor = VaccumOverlapActors.get;
 				UInteractiveMovementComponent* VaccumInteractiveMovementComponent = Cast<UInteractiveMovementComponent>(VaccumOverlapActor->GetComponentByClass(UInteractiveMovementComponent::StaticClass()));
 				
 				if (IsValid(VaccumInteractiveMovementComponent))
@@ -213,35 +218,22 @@ void AMorse::InputPressedMouseRightClick()
 					{
 						//여기서 쏴져야한다.
 
-						//VaccumInteractiveMovementComponent->AddForce(GetActorForwardVector() * 1000.f);
+						VaccumInteractiveMovementComponent->AddForce(GetActorForwardVector() * 1000.f);
 
-						FVector startLoc = GetActorLocation() + GetActorForwardVector() * 300.f;
-						FVector targetLoc = GetActorLocation() + GetActorForwardVector() * 2000.f;
-						float arcValue = 0.1f;
+						FVector startLoc = VaccumOverlapActor->GetActorLocation() + GetActorForwardVector();
+						FVector targetLoc = VaccumOverlapActor->GetActorLocation() + GetActorForwardVector() * 2000.f;
+						float arcValue = 0.9f;
 						FVector outVelocity = FVector::ZeroVector;
 
 						if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
 						{
-							VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(startLoc);
-
+						
 							VaccumInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::Shooting);
-
+						
 							UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(VaccumInteractiveMovementComponent->GetOwner()->FindComponentByClass(UStaticMeshComponent::StaticClass()));
-
+						
 							StaticMeshComponent->SetPhysicsLinearVelocity(outVelocity);
 						}
-
-						//VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(VaccumInteractiveMovementComponent->GetOwner()->GetActorLocation() + GetActorForwardVector() * 300.f);
-						//VaccumInteractiveMovementComponent->GetOwner()->SetActorLocation(VaccumInteractiveMovementComponent->GetOwner()->GetActorLocation() + VaccumInteractiveMovementComponent->GetOwner()->GetActorUpVector() * 300.f);
-
-						
-
-						//VaccumInteractiveMovementComponent->Velocity = GetActorForwardVector() * 1000.f;
-						//VaccumInteractiveMovementComponent->SetUpdatedComponent(VaccumInteractiveMovementComponent->GetOwner()->GetRootComponent());
-
-						//VaccumInteractiveMovementComponent->UpdateComponentVelocity();
-
-						//UE_LOG(LogTemp, Display, TEXT("Velocity : <%.2f, %.2f, %.2f>"), VaccumInteractiveMovementComponent->GetComponentVe.X, VaccumInteractiveMovementComponent->Velocity.Y, VaccumInteractiveMovementComponent->Velocity.Z);
 					}
 				}
 			}
