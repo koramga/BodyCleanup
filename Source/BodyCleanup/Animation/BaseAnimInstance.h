@@ -26,6 +26,9 @@ private :
 
 protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EAnimationType	DesiredAnimationType;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EAnimationType	AnimationType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintREadonly)
@@ -56,4 +59,5 @@ public :
 
 public :
 	EAnimationType GetAnimationType() const;
+	EAnimationState GetAnimationState(EAnimationType InputAnimationType) const;
 };

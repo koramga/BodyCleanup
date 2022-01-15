@@ -21,6 +21,7 @@ enum class EAnimationType : uint8
 {
 	Idle,
 	Shot,
+	Vacuum,
 	Death,
 };
 

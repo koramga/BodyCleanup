@@ -20,11 +20,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent*		HorseComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AActor>		ShotSpawnActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					CreateShotSpawnActorOffset = 150.f;
+
 	UPROPERTY(VisibleAnywhere)
 	TSet<TSoftObjectPtr<AActor>>			VaccumOverlapActors;
 
 	UPROPERTY(VisibleAnywhere)
 	UPrimitiveComponent*	VaccumPrimitiveComponent;
+
+
+protected :
+	FVector					ThrowTargetPos;
 
 protected:
 	// Called when the game starts or when spawned

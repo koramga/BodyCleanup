@@ -76,6 +76,16 @@ void ABasePlayerCharacter::Tick(float DeltaTime)
 
 }
 
+bool ABasePlayerCharacter::IsPressedLeftMouse() const
+{
+	return bIsPressedLeftMouse;
+}
+
+bool ABasePlayerCharacter::IsPressedRightMouse() const
+{
+	return bIsPressedRightMouse;
+}
+
 void ABasePlayerCharacter::MoveForward(float InputAxis)
 {
 	if (InputAxis == 0)
@@ -160,18 +170,20 @@ void ABasePlayerCharacter::InputStopJumping()
 
 void ABasePlayerCharacter::InputPressedMouseLeftClick()
 {
-
+	bIsPressedLeftMouse = true;
 }
 
 void ABasePlayerCharacter::InputReleasedMouseLeftClick()
 {
-
+	bIsPressedLeftMouse = false;
 }
 
 void ABasePlayerCharacter::InputPressedMouseRightClick()
 {
+	bIsPressedRightMouse = true;
 }
 
 void ABasePlayerCharacter::InputReleasedMouseRightClick()
 {
+	bIsPressedRightMouse = false;
 }

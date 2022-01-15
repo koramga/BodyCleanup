@@ -35,6 +35,9 @@ protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32						MoveOffset;
 
+	bool						bIsPressedLeftMouse = false;
+	bool						bIsPressedRightMouse = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,6 +45,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public :
+	bool	IsPressedLeftMouse() const;
+	bool	IsPressedRightMouse() const;
 
 public :
 	virtual void MoveForward(float InputAxis);

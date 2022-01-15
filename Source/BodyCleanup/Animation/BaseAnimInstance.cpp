@@ -24,6 +24,7 @@ void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UBaseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 {
+	AnimationType = InputAnimationType;
 }
 
 void UBaseAnimInstance::UpdateLeftAnimation(EAnimationType InputAnimationType)
@@ -72,10 +73,15 @@ void UBaseAnimInstance::SetMovementMode(EMovementMode InputMovementMode)
 
 void UBaseAnimInstance::SetAnimationType(EAnimationType InputAnimationType)
 {
-	AnimationType = InputAnimationType;
+	DesiredAnimationType = InputAnimationType;
 }
 
 EAnimationType UBaseAnimInstance::GetAnimationType() const
 {
 	return AnimationType;
+}
+
+EAnimationState UBaseAnimInstance::GetAnimationState(EAnimationType InputAnimationType) const
+{
+	return AnimationStates[static_cast<int32>(InputAnimationType)];
 }
