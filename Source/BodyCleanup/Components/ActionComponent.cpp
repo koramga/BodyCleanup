@@ -74,13 +74,46 @@ USceneComponent* UActionComponent::FindMarkupComponentByName(USceneComponent* Sc
 	return nullptr;
 }
 
-void UActionComponent::FindMarkupComponentByTagName(TArray<TSoftObjectPtr<UActorComponent>>& InputMarkupComponents, AActor* Actor, const FName& TagName) const
+void UActionComponent::FindMarkupComponentsByNames(TArray<TSoftObjectPtr<USceneComponent>>& InputMarkupComponents, USceneComponent* SceneComponent, const TArray<FName>& Names) const
+{
+	if (SceneComponent->GetClass()->ImplementsInterface(ULevelMarkupInterface::StaticClass()))
+	{
+		if (Names.Find(FName(SceneComponent->GetName())) >= 0)
+		{
+			InputMarkupComponents.Add(SceneComponent);
+		}
+	}
+
+	TArray<USceneComponent*> ChildrenComponents;
+
+	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
+
+	for (USceneComponent* ChildComponent : ChildrenComponents)
+	{
+		FindMarkupComponentsByNames(InputMarkupComponents, ChildComponent, Names);
+	}
+}
+
+void UActionComponent::FindMarkupComponentsByTagName(TArray<TSoftObjectPtr<USceneComponent>>& InputMarkupComponents, AActor* Actor, const FName& TagName) const
 {
 	TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(ULevelMarkupInterface::StaticClass(), TagName);
 
 	for (UActorComponent* TriggerComponent : ActorTriggerComponents)
 	{
 		InputMarkupComponents.Add(TriggerComponent);
+	}
+}
+
+void UActionComponent::FindMarkupComponentsByTagNames(TArray<TSoftObjectPtr<USceneComponent>>& InputMarkupComponents, AActor* Actor, const TArray<FName>& TagNames) const
+{
+	for (const FName& TagName : TagNames)
+	{
+		TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(ULevelMarkupInterface::StaticClass(), TagName);
+
+		for (UActorComponent* TriggerComponent : ActorTriggerComponents)
+		{
+			InputMarkupComponents.Add(TriggerComponent);
+		}
 	}
 }
 

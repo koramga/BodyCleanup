@@ -6,6 +6,7 @@
 #include "../../Components/Actions/ParentMovementComponent.h"
 #include "../../Components/Actions/WarpComponent.h"
 #include "../../Components/MarkupComponent.h"
+#include "../../Components/Actions/SpawnComponent.h"
 
 #if WITH_EDITOR
 #include "Engine/Level.h"
@@ -105,6 +106,17 @@ void ABaseLevelActor::GetComponentByLinkConnect(USceneComponent* SceneComponent,
 		FVector WarpLocation = Cast<UWarpComponent>(SceneComponent)->GetWarpLocation();
 
 		BatchLines.Add(FBatchedLine(GetActorLocation(), WarpLocation, FColor::Blue, 0.f, 2.f, 0));
+	}
+	else if (SceneComponent->IsA(USpawnComponent::StaticClass()))
+	{
+		TArray<FVector> AffectLocations;
+
+		Cast<USpawnComponent>(SceneComponent)->GetAffectPoints(AffectLocations);
+
+		for (const FVector& Location : AffectLocations)
+		{
+			BatchLines.Add(FBatchedLine(GetActorLocation(), Location, FColor::Blue, 0.f, 2.f, 0));
+		}
 	}
 
 	if (SceneComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))

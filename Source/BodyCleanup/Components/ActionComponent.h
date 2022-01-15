@@ -41,7 +41,9 @@ protected :
 
 protected:
 	USceneComponent* FindMarkupComponentByName(USceneComponent* SceneComponent, const FName& Name) const;
-	void FindMarkupComponentByTagName(TArray<TSoftObjectPtr<UActorComponent>>& InputMarkupComponents, AActor* Actor, const FName& TagName) const;
+	void FindMarkupComponentsByNames(TArray<TSoftObjectPtr<USceneComponent>>& InputMarkupComponents, USceneComponent* SceneComponent, const TArray<FName>& Names) const;
+	void FindMarkupComponentsByTagName(TArray<TSoftObjectPtr<USceneComponent>>& InputMarkupComponents, AActor* Actor, const FName& TagName) const;
+	void FindMarkupComponentsByTagNames(TArray<TSoftObjectPtr<USceneComponent>>& InputMarkupComponents, AActor* Actor, const TArray<FName>& TagNames) const;
 
 public :
 	bool IsUpdateDestinationTransformed() const;

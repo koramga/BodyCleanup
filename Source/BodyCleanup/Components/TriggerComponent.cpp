@@ -38,26 +38,6 @@ void UTriggerComponent::BeginPlay()
 			PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
 		}
 	}
-
-	//if (ETriggerComponentFromType::ParentComponent == TriggerComponentFromType
-	//	|| ETriggerComponentFromType::ComponentTagName == TriggerComponentFromType
-	//	|| ETriggerComponentFromType::ComponentName == TriggerComponentFromType)
-	//{
-	//	for (TSoftObjectPtr<UActorComponent> TriggerComponent : TriggerComponents)
-	//	{
-	//		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
-	//
-	//		PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
-	//		PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
-	//	}
-	//}
-	//else
-	//{
-	//	for (TSoftObjectPtr<UActorComponent> TriggerComponent : TriggerComponents)
-	//	{
-	//		Cast<ILevelTriggerInterface>(TriggerComponent.Get())->AddTriggerObserver(this);
-	//	}
-	//}
 }
 
 
@@ -261,7 +241,7 @@ void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<USceneCompo
 				}
 				else
 				{
-					FindTriggerComponent(FindComponents, TriggerActorWithName.Actor->GetRootComponent());
+					FindTriggerComponent(FindComponents, TriggerActor->GetRootComponent());
 				}
 			}
 		}

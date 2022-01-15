@@ -21,10 +21,12 @@ void UTimerTriggerComponent::__AdvanceTimer()
 {
 	CallTriggerObservers(true);
 
-	UE_LOG(LogTemp, Display, TEXT("Advance Timer"));
-
 	if (false == bIsLoopCycle)
 	{		
 		GetOwner()->GetWorldTimerManager().ClearTimer(TimerHandle);
+	}
+	else
+	{
+		CallTriggerObservers(false);
 	}
 }

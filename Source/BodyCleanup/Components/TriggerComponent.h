@@ -59,18 +59,6 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Setup", EditConditionHides))
 	TArray<FTriggerActorWithName>				TriggerActorWithNames;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentTagName", EditConditionHides, ToolTip = ""))
-	//FName										ComponentTagName;
-	//
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ComponentName", EditConditionHides, ToolTip = ""))
-	//FName										ComponentName;
-	//
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Actor", EditConditionHides, ToolTip = ""))
-	//TArray<TSoftObjectPtr<AActor>>	TriggerActors;
-	//
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::ActorComponentName || TriggerComponentFromType == ETriggerComponentFromType::ActorComponentTagName", EditConditionHides, ToolTip = ""))
-	//TArray<FTriggerActorWithName>				TriggerActorWithNames;
-
 protected :
 	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
 	TArray<TSoftObjectPtr<USceneComponent>>					TriggerComponents;
