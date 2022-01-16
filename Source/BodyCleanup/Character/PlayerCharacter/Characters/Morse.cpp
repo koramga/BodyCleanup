@@ -237,6 +237,15 @@ void AMorse::InputReleasedMouseRightClick()
 
 				StaticMeshComponent->SetPhysicsLinearVelocity(ThrowTargetPos);
 			}
+
+			UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(SpawnActor->GetComponentByClass(UDestructibleComponent::StaticClass()));
+
+			if (IsValid(DestructibleMeshComponent))
+			{
+				DestructibleMeshComponent->SetSimulatePhysics(true);
+
+				DestructibleMeshComponent->SetPhysicsLinearVelocity(ThrowTargetPos);
+			}
 		}
 
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);

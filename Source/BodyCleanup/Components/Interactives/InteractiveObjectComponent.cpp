@@ -57,8 +57,6 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 				if (AffectInteractiveComponent.IsValid())
 				{
 					const FTransform& Transform = AffectInteractiveComponent->GetComponentTransform();
-					//FVector NextLocation = FMath::VInterpTo(Transform.GetLocation(), ComponentTransform.GetLocation(), DeltaTime, AbsorbingInterpValue);
-					//FVector NextLocation = FMath::Lerp(Transform.GetLocation(), ComponentTransform.GetLocation(), 1.f);
 
 					FVector Direction = ComponentTransform.GetLocation() - Transform.GetLocation();
 					Direction.Normalize();					
@@ -72,11 +70,46 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		{
 			for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
 			{
+				FTransform HoldingTransform = ComponentTransform;
+
+				if (AffectInteractiveComponent->IsA(UStaticMeshComponent::StaticClass()))
+				{
+					UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(AffectInteractiveComponent.Get());
+
+					if (IsValid(StaticMeshComponent))
+					{
+						UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
+
+						if (IsValid(StaticMesh))
+						{
+							FBoxSphereBounds StaticMeshBounds = StaticMesh->GetBounds();
+
+							HoldingTransform.SetLocation(HoldingTransform.GetLocation() + InteractiveComponent->GetForwardVector() * StaticMeshBounds.GetBox().GetExtent().Size() / 2.f);
+						}
+					}
+				}
+				else if (AffectInteractiveComponent->IsA(UDestructibleComponent::StaticClass()))
+				{
+					UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(AffectInteractiveComponent.Get());
+
+					if (IsValid(DestructibleMeshComponent))
+					{
+						UDestructibleMesh* DestructibleMesh = DestructibleMeshComponent->GetDestructibleMesh();
+
+						if (IsValid(DestructibleMesh))
+						{
+							FBoxSphereBounds StaticMeshBounds = DestructibleMesh->GetBounds();
+
+							HoldingTransform.SetLocation(HoldingTransform.GetLocation() + InteractiveComponent->GetForwardVector() * StaticMeshBounds.GetBox().GetExtent().Size() / 2.f);
+						}
+					}
+				}
+
 				if (AffectInteractiveComponent.IsValid())
 				{
 					const FTransform& Transform = AffectInteractiveComponent->GetComponentTransform();
-					AffectInteractiveComponent->SetWorldLocation(ComponentTransform.GetLocation());
-					AffectInteractiveComponent->SetWorldRotation(ComponentTransform.GetRotation());
+					AffectInteractiveComponent->SetWorldLocation(HoldingTransform.GetLocation());
+					AffectInteractiveComponent->SetWorldRotation(HoldingTransform.GetRotation());
 				}
 			}
 		}
