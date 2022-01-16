@@ -12,6 +12,7 @@
 #include "../../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 #include "../../../Components/Interfaces/InteractiveInterface.h"
 #include "../../../Components/Character/VacuumEntranceComponent.h"
+#include "../../../Animation/PlayerCharacter/Morse/MorseAnimInstance.h"
 
 AMorse::AMorse()
 {
@@ -207,6 +208,13 @@ void AMorse::InputPressedMouseRightClick()
 				TSoftObjectPtr<AActor> HoldingActor = VacuumEntranceComponent->GetHoldingActor();
 
 				__SetInteractiveAction(HoldingActor.Get(), EInteractiveAction::Shooting);
+
+				UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
+
+				if (IsValid(MorseAnimInstance))
+				{
+					MorseAnimInstance->SetShot();
+				}
 			}
 
 			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);

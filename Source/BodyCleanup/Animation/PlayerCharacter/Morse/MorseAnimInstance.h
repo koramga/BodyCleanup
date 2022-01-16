@@ -13,4 +13,16 @@ class BODYCLEANUP_API UMorseAnimInstance : public UPlayerCharacterAnimInstance
 {
 	GENERATED_BODY()
 	
+protected :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool	bIsShot = false;
+
+protected:
+	virtual void UpdateEnterAnimation(EAnimationType InputAnimationType);
+	virtual void UpdateLeftAnimation(EAnimationType InputAnimationType);
+	virtual void UpdateCompleteAnimation(EAnimationType InputAnimationType);
+
+public :
+	void SetShot();
+
 };
