@@ -2,7 +2,6 @@
 
 
 #include "BaseActor.h"
-#include "../Components/InteractiveMovementComponent.h"
 
 // Sets default values
 ABaseActor::ABaseActor()

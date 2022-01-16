@@ -6,7 +6,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "../Animation/BaseAnimInstance.h"
-#include "../Components/InteractiveMovementComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()

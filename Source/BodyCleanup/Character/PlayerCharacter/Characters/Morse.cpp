@@ -7,7 +7,7 @@
 #include "../../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
 #include "../../../Actor/Level/BaseLevelActor.h"
 #include "../../../Character/BaseCharacter.h"
-#include "../../../Components/Interactive/InteractiveObjectComponent.h"
+#include "../../../Components/Interactives/InteractiveObjectComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "../../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 #include "../../../Components/Interfaces/InteractiveInterface.h"
@@ -193,31 +193,6 @@ void AMorse::InputPressedMouseRightClick()
 						InteractiveInterface->SetInteractiveAction(EInteractiveAction::Shooting);
 					}
 				}
-
-				//VaccumInteractiveMovementComponent->AddForce(GetActorForwardVector() * 1000.f);
-				//
-				//FVector startLoc = VaccumOverlapActor->GetActorLocation() + GetActorForwardVector();
-				//FVector targetLoc = VaccumOverlapActor->GetActorLocation() + GetActorForwardVector() * 2000.f;
-				//float arcValue = 0.9f;
-				//FVector outVelocity = FVector::ZeroVector;
-				//
-				//if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
-				//{
-				//
-				//	VaccumInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::Shooting);
-				//
-				//	UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(VaccumInteractiveMovementComponent->GetOwner()->FindComponentByClass(UStaticMeshComponent::StaticClass()));
-				//
-				//	StaticMeshComponent->SetPhysicsLinearVelocity(outVelocity);
-				//}
-				//if (IsValid(VaccumInteractiveMovementComponent))
-				//{
-				//	if (EInteractiveAction::Holding == VaccumInteractiveMovementComponent->GetInteractiveAction())
-				//	{
-				//		//여기서 쏴져야한다.
-				//
-				//	}
-				//}
 			}
 
 			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
