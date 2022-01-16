@@ -26,10 +26,10 @@ private :
 
 protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EAnimationType	DesiredAnimationType;
+	EAnimationType	DesiredAnimationType = EAnimationType::Idle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EAnimationType	AnimationType;
+	EAnimationType	AnimationType = EAnimationType::Idle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintREadonly)
 	TArray<EAnimationState>	AnimationStates;

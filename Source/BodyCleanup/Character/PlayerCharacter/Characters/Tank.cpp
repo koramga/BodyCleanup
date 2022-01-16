@@ -31,7 +31,7 @@ void ATank::Tick(float DeltaTime)
 				FVector GoalLocation = FollowCharacter->GetActorLocation();
 				GoalLocation.Z += 150.f;
 
-				FVector NextLocation = UKismetMathLibrary::VLerp(GoalLocation, GoalLocation, 0.05f);
+				FVector NextLocation = UKismetMathLibrary::VLerp(GetActorLocation(), GoalLocation, 0.05f);
 
 				SetActorLocation(NextLocation);
 				SetActorRotation(FollowCharacter->GetActorRotation());

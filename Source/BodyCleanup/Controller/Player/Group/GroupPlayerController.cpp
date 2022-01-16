@@ -83,23 +83,21 @@ void AGroupPlayerController::InputPressedSwapCharacter()
 		if (Morse == PlayerCharacter)
 		{
 			Possess(Tank.Get());
+			Tank->SetAnimationType(EAnimationType::Idle);
 			SubPlayerController->Possess(Morse.Get());
-			//if (false == Tank->IsFlyMode())
-			//{
-			//	Tank->SetFlyMode(Morse);
-			//}
+			Morse->SetAnimationType(EAnimationType::Wait);
 
 			if (Tank->IsFlyMode())
 			{
 				Tank->SetFlyMode(nullptr);
 			}
-
 		}
 		else
 		{
 			Possess(Morse.Get());
+			Morse->SetAnimationType(EAnimationType::Idle);
 			SubPlayerController->Possess(Tank.Get());
-			//Tank->SetFlyMode(Morse);
+			Tank->SetAnimationType(EAnimationType::Wait);
 		}
 	}
 }
@@ -113,6 +111,7 @@ void AGroupPlayerController::InputPressedReturnToCharacter()
 		if (false == Tank->IsFlyMode())
 		{
 			Possess(Morse.Get());
+			Morse->SetAnimationType(EAnimationType::Idle);
 			SubPlayerController->Possess(Tank.Get());
 			Tank->SetAnimationType(EAnimationType::Return);
 			Tank->SetFlyMode(Morse);

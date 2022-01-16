@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					CreateShotSpawnActorOffset = 150.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					ActorRotationInterpValue = 5.f;;
+
 	UPROPERTY(VisibleAnywhere)
 	TSet<TSoftObjectPtr<AActor>>					VacuumOverlapActors;
 

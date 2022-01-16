@@ -28,8 +28,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputJump", IE_Pressed, this, &ABasePlayerController::__InputPressedJump);
 	InputComponent->BindAction("InputJump", IE_Released, this, &ABasePlayerController::__InputReleasedJump);
 	InputComponent->BindAxis("InputMouseWheel", this, &ABasePlayerController::__InputMouseWheel);
-	InputComponent->BindAxis("MoveForward", this, &ABasePlayerController::__InputMoveForward);
-	InputComponent->BindAxis("MoveRight", this, &ABasePlayerController::__InputMoveRight);
+	InputComponent->BindAxis("InputMoveForward", this, &ABasePlayerController::__InputMoveForward);
+	InputComponent->BindAxis("InputMoveRight", this, &ABasePlayerController::__InputMoveRight);
 
 }
 

@@ -88,73 +88,89 @@ bool ABasePlayerCharacter::IsPressedRightMouse() const
 
 void ABasePlayerCharacter::InputMoveForward(float InputAxis)
 {
-	if (InputAxis == 0)
-	{
-		MoveOffset &= ~MOVE_FORWARD;
-		MoveOffset &= ~MOVE_BACK;
-		return;
-	}
-	else if (InputAxis > 0.f)
-	{
-		MoveOffset |= MOVE_FORWARD;
-	}
-	else if (InputAxis < 0.f)
-	{
-		MoveOffset |= MOVE_BACK;
-	}
-
-	if (IsValid(Controller))
-	{
-		//if (Cast<ACPlayerController>(Controller)->bOnClick) return;
-		// find out which way is forward
-		//const FRotator Rotation = Controller->GetControlRotation();
-		//const FRotator YawRotation(0, Rotation.Yaw, 0);
-		const FRotator YawRotation(0, QUARTER_VIEW_ANGLE, 0);
-
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, InputAxis);
-	}
-
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		PlayerCharacterAnimInstance->SetMoveOffset(MoveOffset);
+		EAnimationType AnimationType = PlayerCharacterAnimInstance->GetAnimationType();
+
+		if (EAnimationType::Idle == AnimationType)
+		{
+			if (InputAxis == 0)
+			{
+				MoveOffset &= ~MOVE_FORWARD;
+				MoveOffset &= ~MOVE_BACK;
+				return;
+			}
+			else if (InputAxis > 0.f)
+			{
+				MoveOffset |= MOVE_FORWARD;
+			}
+			else if (InputAxis < 0.f)
+			{
+				MoveOffset |= MOVE_BACK;
+			}
+
+			if (IsValid(Controller))
+			{
+				//if (Cast<ACPlayerController>(Controller)->bOnClick) return;
+				// find out which way is forward
+				//const FRotator Rotation = Controller->GetControlRotation();
+				//const FRotator YawRotation(0, Rotation.Yaw, 0);
+				const FRotator YawRotation(0, QUARTER_VIEW_ANGLE, 0);
+
+				// get forward vector
+				const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+				AddMovementInput(Direction, InputAxis);
+			}
+
+			if (IsValid(PlayerCharacterAnimInstance))
+			{
+				PlayerCharacterAnimInstance->SetMoveOffset(MoveOffset);
+			}
+		}
 	}
 }
 
 void ABasePlayerCharacter::InputMoveRight(float InputAxis)
 {
-	if (InputAxis == 0.f)
-	{
-		MoveOffset &= ~MOVE_RIGHT;
-		MoveOffset &= ~MOVE_LEFT;
-		return;
-	}
-	else if (InputAxis > 0.f)
-	{
-		MoveOffset |= MOVE_RIGHT;
-	}
-	else if (InputAxis < 0.f)
-	{
-		MoveOffset |= MOVE_LEFT;
-	}
-
-	if (IsValid(Controller))
-	{
-		//	if (Cast<ACPlayerController>(Controller)->bOnClick) return;
-			// find out which way is right
-		//const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, QUARTER_VIEW_ANGLE, 0.f);
-
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
-		AddMovementInput(Direction, InputAxis);
-	}
-
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		PlayerCharacterAnimInstance->SetMoveOffset(MoveOffset);
+		EAnimationType AnimationType = PlayerCharacterAnimInstance->GetAnimationType();
+
+		if (EAnimationType::Idle == AnimationType)
+		{
+			if (InputAxis == 0.f)
+			{
+				MoveOffset &= ~MOVE_RIGHT;
+				MoveOffset &= ~MOVE_LEFT;
+				return;
+			}
+			else if (InputAxis > 0.f)
+			{
+				MoveOffset |= MOVE_RIGHT;
+			}
+			else if (InputAxis < 0.f)
+			{
+				MoveOffset |= MOVE_LEFT;
+			}
+
+			if (IsValid(Controller))
+			{
+				//	if (Cast<ACPlayerController>(Controller)->bOnClick) return;
+					// find out which way is right
+				//const FRotator Rotation = Controller->GetControlRotation();
+				const FRotator YawRotation(0, QUARTER_VIEW_ANGLE, 0.f);
+
+				// get right vector 
+				const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+				// add movement in that direction
+				AddMovementInput(Direction, InputAxis);
+			}
+
+			if (IsValid(PlayerCharacterAnimInstance))
+			{
+				PlayerCharacterAnimInstance->SetMoveOffset(MoveOffset);
+			}
+		}
 	}
 }
 

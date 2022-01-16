@@ -48,70 +48,91 @@ void AMorse::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//마우스의 움직임을 감시하여 캐릭터가 회전할 수 있도록 한다.
-	if (IsValid(BaseController))
-	{
-		if (BaseController->IsA(APlayerController::StaticClass()))
-		{
-			FHitResult Hit;
-			UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
 
-			if (Hit.bBlockingHit)
+	if (IsValid(PlayerCharacterAnimInstance))
+	{
+		if (EAnimationType::Wait != PlayerCharacterAnimInstance->GetAnimationType())
+		{
+			if (IsValid(BaseController))
 			{
-				if (Hit.Actor != this)
+				if (BaseController->IsA(APlayerController::StaticClass()))
 				{
-					FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
-					tempRot.Pitch = 0;
-					tempRot.Roll = 0;
-					SetActorRotation(tempRot);
+					FHitResult Hit;
+					UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+
+					if (Hit.bBlockingHit)
+					{
+						if (Hit.Actor != this)
+						{
+							FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
+							tempRot.Pitch = 0;
+							tempRot.Roll = 0;
+
+							if (ActorRotationInterpValue <= 0.f)
+							{
+								SetActorRotation(tempRot);
+							}
+							else
+							{
+								FRotator ActorRotator = GetActorRotation();
+								ActorRotator.Pitch = 0.f;
+								ActorRotator.Roll = 0.f;
+
+								FRotator Rotator = FMath::RInterpTo(ActorRotator, tempRot, DeltaTime, ActorRotationInterpValue);
+
+								SetActorRotation(Rotator);
+							}
+						}
+					}
 				}
 			}
 		}
-	}
 
-	//Shooting은 PredictProjectilePath를 이용해서 그림을 그려야하므로, Tick에 들어가야만 한다.
-	if (__IsShooting())
-	{
-		FVector ThrowStartPos = GetActorLocation();
-		ThrowStartPos += GetActorForwardVector() * CreateShotSpawnActorOffset;
-	
-		FHitResult Hit;
-	
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
-	
-		FVector startLoc = ThrowStartPos;
-		FVector targetLoc = Hit.Location;
-		FVector outVelocity = FVector::ZeroVector;
-		FOccluderVertexArray arr;
-		TArray<AActor*> actorArr;
-		FVector NullVector;
-	
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-		TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
-		TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
-		TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
-		ObjectTypes.Add(WorldStatic);
-		ObjectTypes.Add(WorldDynamic);
-		ObjectTypes.Add(WorldPhysicsBody);
-	
-		if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ThrowArcValue))
+		//Shooting은 PredictProjectilePath를 이용해서 그림을 그려야하므로, Tick에 들어가야만 한다.
+		if (__IsShooting())
 		{
-			ThrowTargetPos = outVelocity;
-	
-			UGameplayStatics::PredictProjectilePath(
-				GetWorld(),
-				Hit,
-				arr,
-				NullVector,
-				ThrowStartPos,
-				ThrowTargetPos,
-				true,
-				5.f,
-				ObjectTypes,
-				false,
-				actorArr,
-				EDrawDebugTrace::ForOneFrame,
-				0);
-		}	
+			FVector ThrowStartPos = GetActorLocation();
+			ThrowStartPos += GetActorForwardVector() * CreateShotSpawnActorOffset;
+
+			FHitResult Hit;
+
+			UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+
+			FVector startLoc = ThrowStartPos;
+			FVector targetLoc = Hit.Location;
+			FVector outVelocity = FVector::ZeroVector;
+			FOccluderVertexArray arr;
+			TArray<AActor*> actorArr;
+			FVector NullVector;
+
+			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+			TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
+			TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
+			TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
+			ObjectTypes.Add(WorldStatic);
+			ObjectTypes.Add(WorldDynamic);
+			ObjectTypes.Add(WorldPhysicsBody);
+
+			if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ThrowArcValue))
+			{
+				ThrowTargetPos = outVelocity;
+
+				UGameplayStatics::PredictProjectilePath(
+					GetWorld(),
+					Hit,
+					arr,
+					NullVector,
+					ThrowStartPos,
+					ThrowTargetPos,
+					true,
+					5.f,
+					ObjectTypes,
+					false,
+					actorArr,
+					EDrawDebugTrace::ForOneFrame,
+					0);
+			}
+		}
 	}
 }
 

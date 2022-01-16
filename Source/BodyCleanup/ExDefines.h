@@ -26,6 +26,7 @@ enum class EAnimationType : uint8
 	Vacuum,
 	Death,
 	Return,
+	Wait,
 };
 
 UENUM(BlueprintType)
