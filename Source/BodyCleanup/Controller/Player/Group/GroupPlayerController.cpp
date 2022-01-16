@@ -114,6 +114,7 @@ void AGroupPlayerController::InputPressedReturnToCharacter()
 		{
 			Possess(Morse.Get());
 			SubPlayerController->Possess(Tank.Get());
+			Tank->SetAnimationType(EAnimationType::Return);
 			Tank->SetFlyMode(Morse);
 		}
 	}

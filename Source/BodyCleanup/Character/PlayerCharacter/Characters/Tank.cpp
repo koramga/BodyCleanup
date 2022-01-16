@@ -22,19 +22,41 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (FollowCharacter.IsValid())
+	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		FVector GoalLocation = FollowCharacter->GetActorLocation();
-		GoalLocation.Z += 150.f;
+		if (EAnimationType::Idle == PlayerCharacterAnimInstance->GetAnimationType())
+		{
+			if (FollowCharacter.IsValid())
+			{
+				FVector GoalLocation = FollowCharacter->GetActorLocation();
+				GoalLocation.Z += 150.f;
 
-		FVector NextLocation = UKismetMathLibrary::VLerp(GetActorLocation(), GoalLocation, 0.05f);
+				FVector NextLocation = UKismetMathLibrary::VLerp(GoalLocation, GoalLocation, 0.05f);
 
-		SetActorLocation(NextLocation);
-		SetActorRotation(FollowCharacter->GetActorRotation());
-	}
-	else
-	{
+				SetActorLocation(NextLocation);
+				SetActorRotation(FollowCharacter->GetActorRotation());
 
+				//float Distance = FVector::Distance(GetActorLocation(), GoalLocation);
+				//
+				//UE_LOG(LogTemp, Display, TEXT("%.2f"), Distance);
+				//
+				//if (Distance <= 80.f)
+				//{
+				//	FVector NextLocation = UKismetMathLibrary::VLerp(GetActorLocation(), GoalLocation, 0.05f);
+				//
+				//	SetActorLocation(NextLocation);
+				//	SetActorRotation(FollowCharacter->GetActorRotation());
+				//}
+				//else
+				//{
+				//	FVector Direction = GoalLocation - GetActorLocation();
+				//	Direction.Normalize();
+				//
+				//	SetActorLocation(GetActorLocation() + Direction * 50.f * DeltaTime);
+				//	SetActorRotation(FollowCharacter->GetActorRotation());
+				//}
+			}
+		}
 	}
 }
 

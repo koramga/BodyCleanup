@@ -130,3 +130,11 @@ void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 		GetCapsuleComponent()->SetCollisionProfileName(BodyCollisionProfileName);
 	}
 }
+
+void ABaseCharacter::SetAnimationType(EAnimationType AnimationType)
+{
+	if (IsValid(BaseAnimInstance))
+	{
+		BaseAnimInstance->SetAnimationType(AnimationType);
+	}
+}

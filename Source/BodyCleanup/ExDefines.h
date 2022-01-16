@@ -18,13 +18,14 @@
 #define MOVE_BACK		0x04
 #define MOVE_LEFT		0x08
 
-UENUM(BlueprintType) 
+UENUM(BlueprintType)
 enum class EAnimationType : uint8
 {
 	Idle,
 	Shot,
 	Vacuum,
 	Death,
+	Return,
 };
 
 UENUM(BlueprintType)

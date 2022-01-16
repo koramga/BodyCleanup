@@ -52,6 +52,12 @@ void UBaseAnimInstance::EnterAnimationType(EAnimationType InputAnimationType)
 
 void UBaseAnimInstance::LeftAnimationType(EAnimationType InputAnimationType)
 {
+	if (DesiredAnimationType == InputAnimationType)
+	{
+		//같은 애니메이션을 소유하고 있다면 Idle로 변경해버린다.
+		DesiredAnimationType = EAnimationType::Idle;
+	}
+
 	AnimationStates[static_cast<int32>(InputAnimationType)] = EAnimationState::Left;
 
 	UpdateLeftAnimation(InputAnimationType);

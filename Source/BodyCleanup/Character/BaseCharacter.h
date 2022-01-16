@@ -40,4 +40,5 @@ public :
 
 public :
 	void SetEnableCapsuleCollision(bool bIsEnable);
+	void SetAnimationType(EAnimationType AnimationType);
 };
