@@ -22,5 +22,8 @@ protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public :
+	virtual bool CanMove() const override;
+
+public :
 	void SetMoveOffset(int32 InputMoveOffset);
 };

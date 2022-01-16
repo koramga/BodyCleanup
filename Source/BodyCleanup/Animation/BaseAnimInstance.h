@@ -58,6 +58,9 @@ public :
 	void SetAnimationType(EAnimationType InputAnimationType);
 
 public :
+	virtual bool CanMove() const;
+
+public :
 	EAnimationType GetAnimationType() const;
 	EAnimationType GetDesiredAnimationType() const;
 	EAnimationState GetAnimationState(EAnimationType InputAnimationType) const;

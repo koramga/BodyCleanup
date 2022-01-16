@@ -90,6 +90,11 @@ void UBaseAnimInstance::SetAnimationType(EAnimationType InputAnimationType)
 	DesiredAnimationType = InputAnimationType;
 }
 
+bool UBaseAnimInstance::CanMove() const
+{
+	return true;
+}
+
 EAnimationType UBaseAnimInstance::GetAnimationType() const
 {
 	return AnimationType;

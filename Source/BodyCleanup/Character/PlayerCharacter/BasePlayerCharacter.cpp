@@ -90,9 +90,7 @@ void ABasePlayerCharacter::InputMoveForward(float InputAxis)
 {
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		EAnimationType AnimationType = PlayerCharacterAnimInstance->GetAnimationType();
-
-		if (EAnimationType::Idle == AnimationType)
+		if (PlayerCharacterAnimInstance->CanMove())
 		{
 			if (InputAxis == 0)
 			{
@@ -134,9 +132,7 @@ void ABasePlayerCharacter::InputMoveRight(float InputAxis)
 {
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		EAnimationType AnimationType = PlayerCharacterAnimInstance->GetAnimationType();
-
-		if (EAnimationType::Idle == AnimationType)
+		if (PlayerCharacterAnimInstance->CanMove())
 		{
 			if (InputAxis == 0.f)
 			{
