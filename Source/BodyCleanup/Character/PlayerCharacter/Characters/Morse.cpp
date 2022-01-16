@@ -11,6 +11,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "../../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 #include "../../../Components/Interfaces/InteractiveInterface.h"
+#include "../../../Components/Character/VacuumEntranceComponent.h"
 
 AMorse::AMorse()
 {
@@ -37,19 +38,15 @@ void AMorse::BeginPlay()
 		}
 	}
 
-	TArray<UActorComponent*> VaccumCollisions = GetComponentsByTag(UPrimitiveComponent::StaticClass(), TEXT("VaccumCollision"));
-
-	if (VaccumCollisions.Num() > 0)
-	{
-		VaccumPrimitiveComponent = Cast<UPrimitiveComponent>(VaccumCollisions[0]);
-		VaccumPrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &AMorse::__OnVaccumOverlapBegin);
-	}
+	VacuumEntranceComponent = Cast<UVacuumEntranceComponent>(GetComponentByClass(UVacuumEntranceComponent::StaticClass()));
+	VacuumEntranceComponent->OnComponentBeginOverlap.AddDynamic(this, &AMorse::__OnVaccumOverlapBegin);
 }
 
 void AMorse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//마우스의 움직임을 감시하여 캐릭터가 회전할 수 있도록 한다.
 	if (IsValid(BaseController))
 	{
 		if (BaseController->IsA(APlayerController::StaticClass()))
@@ -61,9 +58,6 @@ void AMorse::Tick(float DeltaTime)
 			{
 				if (Hit.Actor != this)
 				{
-					//Look Mouse
-					//UE_LOG(LogTemp, Display, TEXT("HitActor : <%s>"), *Hit.Actor->GetName());
-
 					FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
 					tempRot.Pitch = 0;
 					tempRot.Roll = 0;
@@ -73,6 +67,7 @@ void AMorse::Tick(float DeltaTime)
 		}
 	}
 
+	//Shooting은 PredictProjectilePath를 이용해서 그림을 그려야하므로, Tick에 들어가야만 한다.
 	if (__IsShooting())
 	{
 		FVector ThrowStartPos = GetActorLocation();
@@ -135,6 +130,7 @@ void AMorse::InputMouseWheel(float InputAxis)
 
 	if (InputAxis != 0.f)
 	{
+		//ArcValue를 수정하여 사용자가 원하는 방향에 Arc값을 지정할 수 있도록 한다.
 		if (__IsShooting())
 		{
 			ThrowArcValue -= (InputAxis / 50.f);
@@ -162,7 +158,34 @@ void AMorse::InputReleasedMouseLeftClick()
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
+
+		TSoftObjectPtr<AActor> HoldingActor = nullptr;
+
+		//HoldingActor는 Overlap End를 당해도 InteractiveComponent가 소멸되지 않는다.
+		//그러므로 Vacuum의 행위가 종료되면 HoldingActor를 초기화해줘야한다.
+		if (VacuumEntranceComponent->HasHoldingActor())
+		{
+			HoldingActor = VacuumEntranceComponent->GetHoldingActor();
+
+			__SetInteractiveComponent(HoldingActor.Get(), nullptr);
+
+			VacuumEntranceComponent->SetHoldingActor(nullptr);
+		}
+		
 		__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::None);
+
+		//HoldingActor를 초기화했는데 VacuumTrigger안에 들어가있다면 초기화에서 다시 VacuumEnteranceComponent를 추가해준다.
+		if (HoldingActor.IsValid())
+		{
+			TSet<AActor*> OverlappingActors;
+			VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
+
+			if (nullptr != OverlappingActors.Find(HoldingActor.Get()))
+			{
+				__SetInteractiveComponent(HoldingActor.Get(), VacuumEntranceComponent);
+			}
+		}
+
 	}
 }
 
@@ -178,21 +201,12 @@ void AMorse::InputPressedMouseRightClick()
 		}
 		else if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Vacuum)
 		{
-			TArray<TSoftObjectPtr<AActor>>	ShootingActors;
-
-			for (const TSoftObjectPtr<AActor>& VaccumOverlapActor : VacuumOverlapActors)
+			//Holding된 Actor가 존재한다면 쏜다!
+			if (VacuumEntranceComponent->HasHoldingActor())
 			{
-				TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
-				UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, VaccumOverlapActor->GetRootComponent());
+				TSoftObjectPtr<AActor> HoldingActor = VacuumEntranceComponent->GetHoldingActor();
 
-				if (InteractiveComopnents.Num() > 0)
-				{
-					for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
-					{
-						IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
-						InteractiveInterface->SetInteractiveAction(EInteractiveAction::Shooting);
-					}
-				}
+				__SetInteractiveAction(HoldingActor.Get(), EInteractiveAction::Shooting);
 			}
 
 			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
@@ -210,7 +224,10 @@ void AMorse::InputReleasedMouseRightClick()
 		{
 			AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(ShotSpawnActor, FTransform(GetActorForwardVector().Rotation(), GetActorLocation() + GetActorForwardVector() * CreateShotSpawnActorOffset));
 
-			if (!SpawnActor) return;
+			if (!SpawnActor)
+			{
+				return;
+			}
 
 			UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(SpawnActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
 
@@ -229,9 +246,30 @@ void AMorse::InputReleasedMouseRightClick()
 
 void AMorse::UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType)
 {
+	//실제 애니메이션의 시작을 알리는 함수이다.
+
 	if (EAnimationType::Vacuum == AnimationType)
 	{
-		__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::Absorbing);
+		//VacuumEntranceComponent에 이미 Overlapping되어있는 Actor가 있는지 조사한다.
+		//이미 Overlapping된 Actor가 존재한다면 HoldingActor로 변경해주고 나머지들은 None으로 조정한다.
+		TSet<AActor*> OverlappingActors;
+
+		VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
+
+		OverlappingActors.Remove(this);
+
+		if (OverlappingActors.Num() > 0)
+		{
+			AActor* OverlappingActor = OverlappingActors.Array()[0];
+
+			__SetInteractiveAction(OverlappingActor, EInteractiveAction::Holding);
+		}
+		else
+		{
+			//Overlapping된 것이 없다면 진공으로 빨아들이도록 한다.
+
+			__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::Absorbing);
+		}
 	}
 
 	Super::UpdateAnimationType(AnimationType, BeforeAnimationType);
@@ -246,6 +284,17 @@ bool AMorse::__IsVacuuming() const
 		{
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool AMorse::__CanVacuuming() const
+{
+	if (__IsVacuuming()
+		&& false == VacuumEntranceComponent->HasHoldingActor())
+	{
+		return true;
 	}
 
 	return false;
@@ -280,6 +329,47 @@ void AMorse::__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction Intera
 	}
 }
 
+void AMorse::__SetInteractiveComponent(TSoftObjectPtr<AActor> Actor, TSoftObjectPtr<class UVacuumEntranceComponent> SetInteractiveComponent)
+{
+	TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
+	UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, Actor->GetRootComponent());
+
+	if (InteractiveComopnents.Num() > 0)
+	{
+		for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
+		{
+			IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
+			InteractiveInterface->SetInteractiveComponent(SetInteractiveComponent);
+		}
+	}
+}
+
+void AMorse::__SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAction InteractiveAction)
+{
+	TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
+	UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, Actor->GetRootComponent());
+
+	if (InteractiveComopnents.Num() > 0)
+	{
+		for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
+		{
+			IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
+			InteractiveInterface->SetInteractiveAction(InteractiveAction);
+
+			if (EInteractiveAction::Holding == InteractiveInterface->GetInteractiveAction())
+			{
+				//Holding으로 업데이트되었다면 VacuumEntranceComponent에도 Holding된 객체가 있음을 전달한다.
+				VacuumEntranceComponent->SetHoldingActor(Actor);
+			}
+			else if (EInteractiveAction::Shooting == InteractiveInterface->GetInteractiveAction())
+			{
+				//Shooting즉시 Hodling Actor를 제거한다.
+				VacuumEntranceComponent->SetHoldingActor(nullptr);
+			}
+		}
+	}
+}
+
 void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (IsValid(OtherActor)
@@ -293,9 +383,9 @@ void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
 			{
 				IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
-				InteractiveInterface->SetInteractiveComponent(VaccumPrimitiveComponent);
+				InteractiveInterface->SetInteractiveComponent(VacuumEntranceComponent);
 
-				if (__IsVacuuming())
+				if (__CanVacuuming())
 				{
 					InteractiveInterface->SetInteractiveAction(EInteractiveAction::Absorbing);
 				}
@@ -312,16 +402,19 @@ void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 	{
 		VacuumOverlapActors.Remove(OtherActor);
 
-		TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
-		UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, OtherActor->GetRootComponent());
-
-		if (InteractiveComopnents.Num() > 0)
+		if (VacuumEntranceComponent->GetHoldingActor() != OtherActor)
 		{
-			for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
+			TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
+			UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, OtherActor->GetRootComponent());
+
+			if (InteractiveComopnents.Num() > 0)
 			{
-				IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
-				InteractiveInterface->SetInteractiveComponent(nullptr);
-				InteractiveInterface->SetInteractiveAction(EInteractiveAction::None);
+				for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
+				{
+					IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
+					InteractiveInterface->SetInteractiveComponent(nullptr);
+					InteractiveInterface->SetInteractiveAction(EInteractiveAction::None);
+				}
 			}
 		}
 	}	
@@ -336,42 +429,15 @@ void AMorse::__OnVaccumOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 
 		if (InteractiveComopnents.Num() > 0)
 		{
-			if (__IsVacuuming())
+			if (__CanVacuuming())
 			{
-				for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
-				{
-					IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
-					InteractiveInterface->SetInteractiveAction(EInteractiveAction::Holding);
+				__SetInteractiveAction(OtherActor, EInteractiveAction::Holding);
+			}
 
-					if (InteractiveInterface->GetInteractiveAction() == EInteractiveAction::Holding)
-					{
-						break;
-					}
-				}
+			if (VacuumEntranceComponent->HasHoldingActor())
+			{
+				__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::None);
 			}
 		}
-		//ABaseActor* BaseActor = Cast<ABaseActor>(OtherActor);
-		//
-		//if (IsValid(BaseActor))
-		//{
-		//	if (BaseActor->IsInteractiveActor())
-		//	{
-		//		UInteractiveMovementComponent* InputInteractiveMovementComponent = BaseActor->GetInteractiveMovementComponent();
-		//
-		//		if (EInteractiveAction::Absorbing == InputInteractiveMovementComponent->GetInteractiveAction())
-		//		{
-		//			if (EInteractiveType::Junk == InputInteractiveMovementComponent->GetInteractiveType())
-		//			{
-		//				//해당 Actor는 소멸되어야한다.
-		//				VaccumOverlapActors.Remove(BaseActor);
-		//				BaseActor->Destroy();
-		//			}
-		//			else if (EInteractiveType::Rigid == InputInteractiveMovementComponent->GetInteractiveType())
-		//			{
-		//				InputInteractiveMovementComponent->SetInteractiveAction(EInteractiveAction::Holding);
-		//			}
-		//		}
-		//	}
-		//}
 	}
 }

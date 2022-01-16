@@ -27,10 +27,10 @@ protected:
 	float					CreateShotSpawnActorOffset = 150.f;
 
 	UPROPERTY(VisibleAnywhere)
-	TSet<TSoftObjectPtr<AActor>>			VacuumOverlapActors;
+	TSet<TSoftObjectPtr<AActor>>					VacuumOverlapActors;
 
 	UPROPERTY(VisibleAnywhere)
-	UPrimitiveComponent*	VaccumPrimitiveComponent;
+	TSoftObjectPtr<class UVacuumEntranceComponent>	VacuumEntranceComponent;
 
 
 protected :
@@ -57,8 +57,11 @@ public:
 
 private :
 	bool __IsVacuuming() const;
+	bool __CanVacuuming() const;
 	bool __IsShooting() const;
 	void __SetOverlapVacuumActorsInteractiveAction(EInteractiveAction InteractiveAction);
+	void __SetInteractiveComponent(TSoftObjectPtr<AActor> Actor, TSoftObjectPtr<class UVacuumEntranceComponent> SetInteractiveComponent);
+	void __SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAction InteractiveAction);
 
 private :
 	UFUNCTION()

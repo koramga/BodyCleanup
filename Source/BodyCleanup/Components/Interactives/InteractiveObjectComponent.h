@@ -19,7 +19,7 @@ public :
 protected :
 	//Vacuum시, 빨아들여지는 속도를 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Rigid || InteractiveType == EInteractiveType::Junk", EditConditionHides))
-	float					AbsorbingInterpValue = 1.f;
+	float					AbsorbingSpeedPerSecond = 500.f;
 
 	//Action의 범위를 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")

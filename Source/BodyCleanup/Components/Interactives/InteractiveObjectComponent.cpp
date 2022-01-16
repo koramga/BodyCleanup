@@ -57,8 +57,13 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 				if (AffectInteractiveComponent.IsValid())
 				{
 					const FTransform& Transform = AffectInteractiveComponent->GetComponentTransform();
-					FVector NextLocation = FMath::VInterpTo(Transform.GetLocation(), ComponentTransform.GetLocation(), DeltaTime, AbsorbingInterpValue);
-					AffectInteractiveComponent->SetWorldLocation(NextLocation);
+					//FVector NextLocation = FMath::VInterpTo(Transform.GetLocation(), ComponentTransform.GetLocation(), DeltaTime, AbsorbingInterpValue);
+					//FVector NextLocation = FMath::Lerp(Transform.GetLocation(), ComponentTransform.GetLocation(), 1.f);
+
+					FVector Direction = ComponentTransform.GetLocation() - Transform.GetLocation();
+					Direction.Normalize();					
+
+					AffectInteractiveComponent->SetWorldLocation(Transform.GetLocation() + Direction * AbsorbingSpeedPerSecond * DeltaTime);
 				}
 			}
 
@@ -172,6 +177,13 @@ bool UInteractiveObjectComponent::CanUpdateInteractive(EInteractiveAction NextIn
 		if (EInteractiveAction::Shooting == CurrentInteractiveAction)
 		{
 			return false;
+		}
+		if (EInteractiveAction::Holding == CurrentInteractiveAction)
+		{
+			if (InteractiveComponent.IsValid())
+			{
+				return false;
+			}
 		}
 	}
 
