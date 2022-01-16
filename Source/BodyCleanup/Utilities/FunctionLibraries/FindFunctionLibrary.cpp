@@ -71,6 +71,73 @@ void UFindFunctionLibrary::FindComponentsByTagNames(TArray<TSoftObjectPtr<UScene
 	}
 }
 
+UPrimitiveComponent* UFindFunctionLibrary::FindPrimitiveComponentByName(USceneComponent* SceneComponent, const FName& Name)
+{
+	if (SceneComponent->GetName() == Name.ToString())
+	{
+		return Cast<UPrimitiveComponent>(SceneComponent);
+	}
+
+	TArray<USceneComponent*> ChildrenComponents;
+
+	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
+
+	for (USceneComponent* ChildComponent : ChildrenComponents)
+	{
+		UPrimitiveComponent* FindComponent = FindPrimitiveComponentByName(ChildComponent, Name);
+
+		if (IsValid(FindComponent))
+		{
+			return FindComponent;
+		}
+	}
+
+	return nullptr;
+}
+
+void UFindFunctionLibrary::FindPrimitiveComponentsByNames(TArray<TSoftObjectPtr<UPrimitiveComponent>>& NameComponents, USceneComponent* SceneComponent, const TArray<FName>& Names)
+{
+	if (Names.Find(FName(SceneComponent->GetName())) >= 0)
+	{
+		if (SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+		{
+			NameComponents.Add(SceneComponent);
+		}
+	}
+
+	TArray<USceneComponent*> ChildrenComponents;
+
+	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
+
+	for (USceneComponent* ChildComponent : ChildrenComponents)
+	{
+		FindPrimitiveComponentsByNames(NameComponents, ChildComponent, Names);
+	}
+}
+
+void UFindFunctionLibrary::FindPrimitiveComponentsByTagName(TArray<TSoftObjectPtr<UPrimitiveComponent>>& TagComponents, AActor* Actor, const FName& TagName)
+{
+	TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(UPrimitiveComponent::StaticClass(), TagName);
+
+	for (UActorComponent* TriggerComponent : ActorTriggerComponents)
+	{
+		TagComponents.Add(TriggerComponent);
+	}
+}
+
+void UFindFunctionLibrary::FindPrimitiveComponentsByTagNames(TArray<TSoftObjectPtr<UPrimitiveComponent>>& TagComponents, AActor* Actor, const TArray<FName>& TagNames)
+{
+	for (const FName& TagName : TagNames)
+	{
+		TArray<UActorComponent*> ActorTriggerComponents = Actor->GetComponentsByTag(UPrimitiveComponent::StaticClass(), TagName);
+
+		for (UActorComponent* TriggerComponent : ActorTriggerComponents)
+		{
+			TagComponents.Add(TriggerComponent);
+		}
+	}
+}
+
 USceneComponent* UFindFunctionLibrary::FindTriggerComponentByName(USceneComponent* SceneComponent, const FName& Name)
 {
 	if (SceneComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))

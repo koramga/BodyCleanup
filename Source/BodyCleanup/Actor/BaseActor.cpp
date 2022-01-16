@@ -15,8 +15,6 @@ ABaseActor::ABaseActor()
 void ABaseActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	InteractiveMovementComponent = Cast<UInteractiveMovementComponent>(GetComponentByClass(UInteractiveMovementComponent::StaticClass()));
 }
 
 // Called every frame
@@ -45,25 +43,6 @@ void ABaseActor::__SetEnabledCollisions(USceneComponent* SceneComponent, ECollis
 	}
 }
 
-void ABaseActor::__SetEnabledSimulations(USceneComponent* SceneComponent, bool bIsEnableSimulation)
-{
-	UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(SceneComponent);
-
-	if (IsValid(PrimitiveComponent))
-	{
-		PrimitiveComponent->SetSimulatePhysics(bIsEnableSimulation);
-	}
-
-	TArray<USceneComponent*> ChildrenComponents;
-
-	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
-
-	for (USceneComponent* ChildComponent : ChildrenComponents)
-	{
-		__SetEnabledSimulations(ChildComponent, bIsEnableSimulation);
-	}
-}
-
 void ABaseActor::__SetCollisionProfileNames(USceneComponent* SceneComponent, const FName& ProfileName)
 {
 	UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(SceneComponent);
@@ -83,33 +62,6 @@ void ABaseActor::__SetCollisionProfileNames(USceneComponent* SceneComponent, con
 	}
 }
 
-bool ABaseActor::IsInteractiveActor() const
-{
-	if (IsValid(InteractiveMovementComponent))
-	{
-		return true;
-	}
-
-	return false;
-}
-
-void ABaseActor::SetInteractiveActivate(bool bActivate)
-{
-	if (bActivate)
-	{
-		InteractiveMovementComponent->Activate();
-	}
-	else
-	{
-		InteractiveMovementComponent->Deactivate();
-	}
-}
-
-UInteractiveMovementComponent* ABaseActor::GetInteractiveMovementComponent() const
-{
-	return InteractiveMovementComponent;
-}
-
 void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 {
 	ECollisionEnabled::Type CollisionEnabledType;
@@ -124,11 +76,6 @@ void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 	}
 
 	__SetEnabledCollisions(GetRootComponent(), CollisionEnabledType);
-}
-
-void ABaseActor::SetEnableSimulations(bool bIsEnableSimulation)
-{
-	__SetEnabledSimulations(GetRootComponent(), bIsEnableSimulation);
 }
 
 void ABaseActor::SetCollisionProfileNames(const FName& ProfileName)

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "InteractiveComponent.h"
@@ -14,6 +14,8 @@ UInteractiveComponent::UInteractiveComponent()
 	TriggerComponentFromType = ETriggerComponentFromType::Action;
 
 	// ...
+
+	InteractiveType = EInteractiveType::None;
 }
 
 
@@ -39,6 +41,11 @@ void UInteractiveComponent::UpdateInteractiveAction(EInteractiveAction NextInter
 {
 }
 
+bool UInteractiveComponent::CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction)
+{
+	return true;
+}
+
 EInteractiveAction UInteractiveComponent::GetInteractiveAction() const
 {
 	return InteractiveAction;
@@ -48,14 +55,31 @@ void UInteractiveComponent::SetInteractiveAction(EInteractiveAction InputInterac
 {
 	if (InteractiveAction != InputInteractiveAction)
 	{
-		UpdateInteractiveAction(InputInteractiveAction, InteractiveAction);
-
-		InteractiveAction = InputInteractiveAction;
-
-		if (TriggerInteractiveActions.Find(InputInteractiveAction) >= 0)
+		if (CanUpdateInteractive(InputInteractiveAction, InteractiveAction))
 		{
-			CallTriggerObservers(true);
-			CallTriggerObservers(false);
+			UpdateInteractiveAction(InputInteractiveAction, InteractiveAction);
+
+			InteractiveAction = InputInteractiveAction;
+
+			if (TriggerInteractiveActions.Find(InputInteractiveAction) >= 0)
+			{
+				CallTriggerObserversOnce();
+			}
 		}
 	}
+}
+
+void UInteractiveComponent::SetInteractiveComponent(TSoftObjectPtr<USceneComponent> InputInteractiveComponent)
+{
+	InteractiveComponent = InputInteractiveComponent;
+}
+
+EInteractiveType UInteractiveComponent::GetInteractiveType() const
+{
+	return InteractiveType;
+}
+
+void UInteractiveComponent::SetInteractiveType(EInteractiveType InputInteractiveType)
+{
+	InteractiveType = InputInteractiveType;
 }

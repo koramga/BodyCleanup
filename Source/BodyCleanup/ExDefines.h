@@ -45,17 +45,14 @@ enum class EInteractiveAction : uint8
 };
 
 UENUM(BlueprintType)
-enum class EInteractiveObjectType : uint8
-{
-	Rigid,				//당겨지되 먹혀지지는 않는다.
-	Junk,				//당겨지되 먹혀지고 먹혀진다.
-};
-
-UENUM(BlueprintType)
 enum class EInteractiveType : uint8
 {
-	Rigid,				//당겨지되 먹혀지지는 않는다.
-	Junk,				//당겨지되 먹혀지고 먹혀진다.
+	//어떤 동작도 되지 않습니다.
+	None,
+	//당겨지고 홀딩되어집니다.
+	Rigid,
+	//당겨지고 먹혀집니다.
+	Junk,
 };
 
 UENUM(BlueprintType)
@@ -115,6 +112,15 @@ enum class ETriggerComponentFromType : uint8
 
 UENUM(BlueprintType)
 enum class EActionComponentToType : uint8
+{
+	//부모 Component를 Action 합니다.
+	Parent,
+	//Component Setup으로 부터 결정됩니다.
+	Setup,
+};
+
+UENUM(BlueprintType)
+enum class EInteractiveComponentToType : uint8
 {
 	//부모 Component를 Action 합니다.
 	Parent,

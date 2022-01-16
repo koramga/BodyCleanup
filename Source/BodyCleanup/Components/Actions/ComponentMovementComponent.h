@@ -37,7 +37,7 @@ public:
 	}
 };
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API UComponentMovementComponent : public UActionComponent
 {
 	GENERATED_BODY()
@@ -59,11 +59,11 @@ protected :
 	EActionComponentToType	ActionComponentToType = EActionComponentToType::Parent;
 
 	//이름의 Type을 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
 	ENameType				NameType;
 
 	//Move Action을 수행할 Component의 이름일 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::ComponentName", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
 	FName					ActionName;
 
 	//Delta Transform에서 Location의 적용유무를 결정합니다.

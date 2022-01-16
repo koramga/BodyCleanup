@@ -60,26 +60,26 @@ void UInteractiveMovementComponent::SetInteractiveAction(EInteractiveAction Inpu
 {
 	InteractiveAction = InputInteractiveAction;
 
-	if (EInteractiveAction::None == InteractiveAction
-		|| EInteractiveAction::Shooting == InteractiveAction)
-	{
-		AActor* Owner = GetOwner();
-
-		if (Owner->IsA(ABaseActor::StaticClass()))
-		{
-			Cast<ABaseActor>(Owner)->SetEnableSimulations(true);
-		}
-	}
-	else
-	{
-		AActor* Owner = GetOwner();
-
-		if (Owner->IsA(ABaseActor::StaticClass()))
-		{
-			Cast<ABaseActor>(Owner)->SetEnableSimulations(false);
-		}
-
-	}
+	//if (EInteractiveAction::None == InteractiveAction
+	//	|| EInteractiveAction::Shooting == InteractiveAction)
+	//{
+	//	AActor* Owner = GetOwner();
+	//
+	//	if (Owner->IsA(ABaseActor::StaticClass()))
+	//	{
+	//		Cast<ABaseActor>(Owner)->SetEnableSimulations(true);
+	//	}
+	//}
+	//else
+	//{
+	//	AActor* Owner = GetOwner();
+	//
+	//	if (Owner->IsA(ABaseActor::StaticClass()))
+	//	{
+	//		Cast<ABaseActor>(Owner)->SetEnableSimulations(false);
+	//	}
+	//
+	//}
 }
 
 void UInteractiveMovementComponent::SetInteractiveTransform(const FTransform& Transform)

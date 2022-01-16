@@ -2,6 +2,7 @@
 
 
 #include "BaseAnimInstance.h"
+#include "../Character/BaseCharacter.h"
 
 void UBaseAnimInstance::NativeInitializeAnimation()
 {
@@ -24,6 +25,13 @@ void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UBaseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 {
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
+
+	if (IsValid(BaseCharacter))
+	{
+		BaseCharacter->UpdateAnimationType(InputAnimationType, AnimationType);
+	}
+
 	AnimationType = InputAnimationType;
 }
 

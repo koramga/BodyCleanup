@@ -24,4 +24,7 @@ class BODYCLEANUP_API IInteractiveInterface
 public:
 	virtual EInteractiveAction GetInteractiveAction() const;
 	virtual void SetInteractiveAction(EInteractiveAction InputInteractiveAction);
+	virtual void SetInteractiveComponent(TSoftObjectPtr<USceneComponent> InputInteractiveComponent);
+	virtual EInteractiveType GetInteractiveType() const;
+	virtual void SetInteractiveType(EInteractiveType InputInteractiveType);
 };

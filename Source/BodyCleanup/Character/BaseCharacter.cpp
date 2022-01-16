@@ -23,8 +23,6 @@ void ABaseCharacter::BeginPlay()
 	BaseAnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
 	BodyCollisionProfileName = GetCapsuleComponent()->GetCollisionProfileName();
-
-	InteractiveMovementComponent = Cast<UInteractiveMovementComponent>(GetComponentByClass(UInteractiveMovementComponent::StaticClass()));
 }
 
 void ABaseCharacter::PossessedBy(AController* NewController)
@@ -117,6 +115,10 @@ void ABaseCharacter::Tick(float DeltaTime)
 	}
 }
 
+void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType)
+{
+}
+
 void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 {
 	if (false == bIsEnable)
@@ -128,43 +130,4 @@ void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 		GetCapsuleComponent()->SetCollisionProfileName(BodyCollisionProfileName);
 	}
-}
-
-bool ABaseCharacter::IsInteractiveCharacter() const
-{
-	if (IsValid(InteractiveMovementComponent))
-	{
-		return true;
-	}
-
-	return false;
-}
-
-
-void ABaseCharacter::SetInteractiveActivate(bool bActivate)
-{
-	if (IsValid(InteractiveMovementComponent))
-	{
-		if (bActivate)
-		{
-			InteractiveMovementComponent->Activate();
-		}
-		else
-		{
-			InteractiveMovementComponent->Deactivate();
-		}
-	}
-}
-
-void ABaseCharacter::SetInteractiveAction(EInteractiveAction InputInteractiveAction)
-{
-	if (IsValid(InteractiveMovementComponent))
-	{
-		InteractiveMovementComponent->SetInteractiveAction(InputInteractiveAction);
-	}
-}
-
-UInteractiveMovementComponent* ABaseCharacter::GetInteractiveMovementComponent() const
-{
-	return InteractiveMovementComponent;
 }

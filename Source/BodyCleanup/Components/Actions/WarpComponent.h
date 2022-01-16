@@ -6,7 +6,7 @@
 #include "WarpComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Actions), meta=(BlueprintSpawnableComponent) )
 class BODYCLEANUP_API UWarpComponent : public UActionComponent
 {
 	GENERATED_BODY()

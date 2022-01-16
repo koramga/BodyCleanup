@@ -16,9 +16,6 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelType		LevelType = ELevelType::Object;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition = "LevelType == ELevelType::Junk", EditConditionHides,ToolTip="one cube per four junk"))
-	int32			JunkValue = 1;
-
 public:	
 	// Sets default values for this component's properties
 	ULevelComponent();

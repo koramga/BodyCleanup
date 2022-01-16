@@ -8,7 +8,7 @@
 /**
  * 
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API UTimerTriggerComponent : public UTriggerComponent
 {
 	GENERATED_BODY()

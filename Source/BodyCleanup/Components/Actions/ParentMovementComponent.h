@@ -6,7 +6,7 @@
 #include "ParentMovementComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Actions), meta=(BlueprintSpawnableComponent) )
 class BODYCLEANUP_API UParentMovementComponent : public UActionComponent
 {
 	GENERATED_BODY()

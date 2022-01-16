@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "Interfaces/InteractiveInterface.h"
 #include "InteractiveComponent.generated.h"
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS()
 class BODYCLEANUP_API UInteractiveComponent : public UTriggerComponent, public IInteractiveInterface
 {
 	GENERATED_BODY()
@@ -20,9 +20,15 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveComponent")
 	TArray<EInteractiveAction>	TriggerInteractiveActions;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveComponent")
+	EInteractiveType			InteractiveType;
+
 protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|InteractiveComponent")
 	EInteractiveAction	InteractiveAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|InteractiveComponent")
+	TSoftObjectPtr<USceneComponent>	InteractiveComponent;
 
 protected:
 	// Called when the game starts
@@ -34,8 +40,12 @@ public:
 
 protected :
 	virtual void UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction);
+	virtual bool CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction);
 
 public:
 	virtual EInteractiveAction GetInteractiveAction() const override;
 	virtual void SetInteractiveAction(EInteractiveAction InputInteractiveAction) override;
+	virtual void SetInteractiveComponent(TSoftObjectPtr<USceneComponent> InputInteractiveComponent) override;
+	virtual EInteractiveType GetInteractiveType() const override;
+	virtual void SetInteractiveType(EInteractiveType InputInteractiveType) override;
 };

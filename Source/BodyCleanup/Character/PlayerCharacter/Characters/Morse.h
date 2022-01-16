@@ -27,7 +27,7 @@ protected:
 	float					CreateShotSpawnActorOffset = 150.f;
 
 	UPROPERTY(VisibleAnywhere)
-	TSet<TSoftObjectPtr<AActor>>			VaccumOverlapActors;
+	TSet<TSoftObjectPtr<AActor>>			VacuumOverlapActors;
 
 	UPROPERTY(VisibleAnywhere)
 	UPrimitiveComponent*	VaccumPrimitiveComponent;
@@ -51,7 +51,12 @@ public:
 	virtual void InputReleasedMouseLeftClick()		override;
 	virtual void InputPressedMouseRightClick()		override;
 	virtual void InputReleasedMouseRightClick()		override;
-	
+	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType) override;
+
+private :
+	bool __IsVacuuming() const;
+	void __SetOverlapVacuumActorsInteractiveAction(EInteractiveAction InteractiveAction);
+
 private :
 	UFUNCTION()
 	void __OnVaccumRangeOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

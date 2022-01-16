@@ -13,3 +13,17 @@ EInteractiveAction IInteractiveInterface::GetInteractiveAction() const
 void IInteractiveInterface::SetInteractiveAction(EInteractiveAction InputInteractiveAction)
 {
 }
+
+void IInteractiveInterface::SetInteractiveComponent(TSoftObjectPtr<USceneComponent> InputInteractiveComponent)
+{
+
+}
+
+EInteractiveType IInteractiveInterface::GetInteractiveType() const
+{
+	return EInteractiveType::None;
+}
+
+void IInteractiveInterface::SetInteractiveType(EInteractiveType InputInteractiveType)
+{
+}

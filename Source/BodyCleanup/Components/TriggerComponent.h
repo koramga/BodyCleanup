@@ -39,7 +39,7 @@ public:
 		: OverlappedComp(_OverlappedComp) {}
 };
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Triggers), meta=(BlueprintSpawnableComponent) )
 class BODYCLEANUP_API UTriggerComponent: public USceneComponent, public ILevelTriggerInterface
 {
 	GENERATED_BODY()
@@ -91,6 +91,7 @@ private :
 	void __AddTriggerComponents(TArray<TSoftObjectPtr<USceneComponent>>& DestTriggerComponents, const TArray<TSoftObjectPtr<USceneComponent>>& PushComponents);
 
 protected:
+	virtual void CallTriggerObserversOnce();
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
 	virtual void CallTriggerObservers(bool bIsInputOnTrigger) override;
 	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) override;

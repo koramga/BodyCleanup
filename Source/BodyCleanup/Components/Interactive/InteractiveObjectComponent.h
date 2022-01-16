@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,7 +8,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Interactives), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API UInteractiveObjectComponent : public UInteractiveComponent
 {
 	GENERATED_BODY()
@@ -17,30 +17,33 @@ public :
 	UInteractiveObjectComponent();
 	
 protected :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EInteractiveObjectType	InteractiveObjectType;
+	//Vacuum시, 빨아들여지는 속도를 정의합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Rigid || InteractiveType == EInteractiveType::Junk", EditConditionHides))
+	float					AbsorbingInterpValue = 1.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float					AbsorbingInterpValue;
+	//Action의 범위를 지정합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
+	EInteractiveComponentToType		InteractiveComponentToType = EInteractiveComponentToType::Parent;
 
-	//Action�� ������ �����մϴ�.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
-	EActionComponentToType		ActionComponentToType = EActionComponentToType::Parent;
+	//흡수되는 정크의 양을 정의합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Junk", EditConditionHides))
+	int32					JunkValue = 1;
 
-	//�̸��� Type�� �����մϴ�.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
+	//Shooting시 힘을 정의합니다. 높으면 높을수록 강하게 던져집니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Rigid", EditConditionHides))
+	float					ShootingPowerValue = 2000.f;
+
+	//이름의 Type을 지정합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveComponentToType == EInteractiveComponentToType::Setup", EditConditionHides))
 	ENameType				NameType;
 
-	//Move Action�� ������ Component�� �̸��� �����մϴ�.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
-	FName					ActionName;
+	//Move Action을 수행할 Component의 이름일 지정합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveComponentToType == EInteractiveComponentToType::Setup", EditConditionHides))
+	FName					InteractiveName;
 
 protected :
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FTransform							InteractiveTransform;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<TSoftObjectPtr<UPrimitiveComponent>>	InteractivePrimitiveComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|InteractiveObjectComponent")
+	TArray<TSoftObjectPtr<UPrimitiveComponent>>	AffectInteractiveComponents;
 
 protected:
 	// Called when the game starts
@@ -52,7 +55,5 @@ public:
 
 protected:
 	virtual void UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction) override;
-
-public :
-	EInteractiveObjectType	GetInteractiveObjectType()	const;
+	virtual bool CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction) override;
 };

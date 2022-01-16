@@ -44,7 +44,7 @@ public :
 	FTransform										Transform;
 };
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API USpawnComponent : public UActionComponent
 {
 	GENERATED_BODY()

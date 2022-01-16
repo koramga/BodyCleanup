@@ -25,9 +25,6 @@ protected :
 	UPROPERTY(VisibleAnywhere)
 	AController* BaseController;
 
-	UPROPERTY(VisibleAnywhere)
-	class UInteractiveMovementComponent* InteractiveMovementComponent;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,9 +36,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public :
+	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
+
+public :
 	void SetEnableCapsuleCollision(bool bIsEnable);
-	bool IsInteractiveCharacter() const;
-	void SetInteractiveActivate(bool bActivate);
-	void SetInteractiveAction(EInteractiveAction InputInteractiveAction);
-	class UInteractiveMovementComponent* GetInteractiveMovementComponent() const;
 };
