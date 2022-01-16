@@ -39,8 +39,8 @@ public :
 	bool IsFlyMode() const;
 
 public:
-	virtual void MoveForward(float InputAxis) override;
-	virtual void MoveRight(float InputAxis) override;
+	virtual void InputMoveForward(float InputAxis) override;
+	virtual void InputMoveRight(float InputAxis) override;
 	virtual void InputPressedMouseLeftClick()	override;
 	virtual void InputReleasedMouseLeftClick()	override;
 };

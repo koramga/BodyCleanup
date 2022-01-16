@@ -51,8 +51,9 @@ public :
 	bool	IsPressedRightMouse() const;
 
 public :
-	virtual void MoveForward(float InputAxis);
-	virtual void MoveRight(float InputAxis);
+	virtual void InputMoveForward(float InputAxis);
+	virtual void InputMoveRight(float InputAxis);
+	virtual void InputMouseWheel(float InputAxis);
 	virtual void InputJump();
 	virtual void InputStopJumping();
 	virtual void InputPressedMouseLeftClick();

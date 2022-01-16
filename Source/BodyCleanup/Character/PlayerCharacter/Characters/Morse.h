@@ -35,6 +35,7 @@ protected:
 
 protected :
 	FVector					ThrowTargetPos;
+	float					ThrowArcValue = 0.5f;
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,8 +46,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual void MoveForward(float InputAxis)		override;
-	virtual void MoveRight(float InputAxis)			override;
+	virtual void InputMoveForward(float InputAxis)	override;
+	virtual void InputMoveRight(float InputAxis)	override;
+	virtual void InputMouseWheel(float InputAxis)	override;
 	virtual void InputPressedMouseLeftClick()		override;
 	virtual void InputReleasedMouseLeftClick()		override;
 	virtual void InputPressedMouseRightClick()		override;
@@ -55,6 +57,7 @@ public:
 
 private :
 	bool __IsVacuuming() const;
+	bool __IsShooting() const;
 	void __SetOverlapVacuumActorsInteractiveAction(EInteractiveAction InteractiveAction);
 
 private :

@@ -33,6 +33,7 @@ protected :
 private :
 	void __InputMoveForward(float InputAxis);
 	void __InputMoveRight(float InputAxis);
+	void __InputMouseWheel(float InputAxis);
 	void __InputPressedMouseLeftClick();
 	void __InputReleasedMouseLeftClick();
 	void __InputPressedMouseRightClick();

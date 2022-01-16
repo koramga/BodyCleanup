@@ -86,7 +86,7 @@ bool ABasePlayerCharacter::IsPressedRightMouse() const
 	return bIsPressedRightMouse;
 }
 
-void ABasePlayerCharacter::MoveForward(float InputAxis)
+void ABasePlayerCharacter::InputMoveForward(float InputAxis)
 {
 	if (InputAxis == 0)
 	{
@@ -122,7 +122,7 @@ void ABasePlayerCharacter::MoveForward(float InputAxis)
 	}
 }
 
-void ABasePlayerCharacter::MoveRight(float InputAxis)
+void ABasePlayerCharacter::InputMoveRight(float InputAxis)
 {
 	if (InputAxis == 0.f)
 	{
@@ -156,6 +156,11 @@ void ABasePlayerCharacter::MoveRight(float InputAxis)
 	{
 		PlayerCharacterAnimInstance->SetMoveOffset(MoveOffset);
 	}
+}
+
+void ABasePlayerCharacter::InputMouseWheel(float InputAxis)
+{
+
 }
 
 void ABasePlayerCharacter::InputJump()

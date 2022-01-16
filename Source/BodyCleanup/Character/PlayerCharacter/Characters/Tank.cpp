@@ -70,14 +70,14 @@ bool ATank::IsFlyMode() const
 	return false;
 }
 
-void ATank::MoveForward(float InputAxis)
+void ATank::InputMoveForward(float InputAxis)
 {
-	Super::MoveForward(InputAxis);
+	Super::InputMoveForward(InputAxis);
 }
 
-void ATank::MoveRight(float InputAxis)
+void ATank::InputMoveRight(float InputAxis)
 {
-	Super::MoveRight(InputAxis);
+	Super::InputMoveRight(InputAxis);
 }
 
 void ATank::InputPressedMouseLeftClick()

@@ -73,36 +73,7 @@ void AMorse::Tick(float DeltaTime)
 		}
 	}
 
-	//if (IsValid(PlayerCharacterAnimInstance))
-	//{
-	//	EAnimationType AnimationType = PlayerCharacterAnimInstance->GetAnimationType();
-	//	EAnimationType DesiredAnimationType = PlayerCharacterAnimInstance->GetDesiredAnimationType();
-	//
-	//	if (EAnimationType::Vacuum == AnimationType
-	//		&& EAnimationType::Vacuum == DesiredAnimationType
-	//		&& IsPressedLeftMouse())
-	//	{
-	//		if (IsValid(VaccumPrimitiveComponent))
-	//		{
-	//			for (TSoftObjectPtr<AActor> VaccumActor : VaccumOverlapActors)
-	//			{
-	//				TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
-	//				UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, GetRootComponent());
-	//
-	//				for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
-	//				{
-	//					IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
-	//
-	//					InteractiveInterface->SetInteractiveAction(EInteractiveAction::Absorbing);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-
-	if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Shot
-		&& IsPressedRightMouse())
+	if (__IsShooting())
 	{
 		FVector ThrowStartPos = GetActorLocation();
 		ThrowStartPos += GetActorForwardVector() * CreateShotSpawnActorOffset;
@@ -113,7 +84,6 @@ void AMorse::Tick(float DeltaTime)
 	
 		FVector startLoc = ThrowStartPos;
 		FVector targetLoc = Hit.Location;
-		float arcValue = 0.5f;
 		FVector outVelocity = FVector::ZeroVector;
 		FOccluderVertexArray arr;
 		TArray<AActor*> actorArr;
@@ -127,7 +97,7 @@ void AMorse::Tick(float DeltaTime)
 		ObjectTypes.Add(WorldDynamic);
 		ObjectTypes.Add(WorldPhysicsBody);
 	
-		if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
+		if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ThrowArcValue))
 		{
 			ThrowTargetPos = outVelocity;
 	
@@ -145,19 +115,34 @@ void AMorse::Tick(float DeltaTime)
 				actorArr,
 				EDrawDebugTrace::ForOneFrame,
 				0);
-		}
-	
+		}	
 	}
 }
 
-void AMorse::MoveForward(float InputAxis)
+void AMorse::InputMoveForward(float InputAxis)
 {
-	Super::MoveForward(InputAxis);
+	Super::InputMoveForward(InputAxis);
 }
 
-void AMorse::MoveRight(float InputAxis)
+void AMorse::InputMoveRight(float InputAxis)
 {
-	Super::MoveRight(InputAxis);
+	Super::InputMoveRight(InputAxis);
+}
+
+void AMorse::InputMouseWheel(float InputAxis)
+{
+	Super::InputMouseWheel(InputAxis);
+
+	if (InputAxis != 0.f)
+	{
+		if (__IsShooting())
+		{
+			ThrowArcValue -= (InputAxis / 50.f);
+
+			ThrowArcValue = FMath::Clamp(ThrowArcValue, 0.1f, 0.9f);
+		}
+	}
+
 }
 
 void AMorse::InputPressedMouseLeftClick()
@@ -286,6 +271,17 @@ bool AMorse::__IsVacuuming() const
 		{
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool AMorse::__IsShooting() const
+{
+	if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Shot
+		&& IsPressedRightMouse())
+	{
+		return true;
 	}
 
 	return false;
