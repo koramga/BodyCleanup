@@ -63,7 +63,11 @@ void UInteractiveComponent::SetInteractiveAction(EInteractiveAction InputInterac
 
 			if (TriggerInteractiveActions.Find(InputInteractiveAction) >= 0)
 			{
-				CallTriggerObserversOnce();
+				CallTriggerObservers(true);
+			}
+			else
+			{
+				CallTriggerObservers(false);
 			}
 		}
 	}
