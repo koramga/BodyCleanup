@@ -42,7 +42,7 @@ protected :
 	virtual void UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction);
 	virtual bool CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction);
 	virtual void SetInteractiveType(EInteractiveType InputInteractiveType) override;
-	virtual void ForceUpdateInteractiveAction(EInteractiveAction InputInteractiveAction);
+	virtual void SetupInteractiveAction(EInteractiveAction InputInteractiveAction);
 
 public:
 	virtual EInteractiveAction GetInteractiveAction() const override;

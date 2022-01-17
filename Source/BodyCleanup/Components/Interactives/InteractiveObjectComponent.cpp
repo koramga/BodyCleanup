@@ -47,7 +47,21 @@ void UInteractiveObjectComponent::BeginPlay()
 		{
 			UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(AffectInteractiveComponent.Get());
 
+			DestructibleMeshComponent->WakeRigidBody(NAME_None);
+			DestructibleMeshComponent->SetSimulatePhysics(true);
+
+			//FBodyInstance* BodyInstance = DestructibleMeshComponent->GetBodyInstance();
+			//
+			//if (nullptr != BodyInstance)
+			//{
+			//	BodyInstance->SetInstanceSimulatePhysics(true);
+			//}
+
 			DestructibleMeshComponent->OnComponentFracture.AddDynamic(this, &UInteractiveObjectComponent::__OnComponentFracture);
+		}
+		else
+		{
+			AffectInteractiveComponent->SetSimulatePhysics(true);
 		}
 	}
 }
@@ -55,12 +69,6 @@ void UInteractiveObjectComponent::BeginPlay()
 void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	//if (false == CanInteractivePhysicsState())
-	//{
-	//	InteractiveType = EInteractiveType::None;
-	//	SetComponentTickEnabled(false);
-	//}
 
 	if (InteractiveComponent.IsValid())
 	{
@@ -73,11 +81,15 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 				if (AffectInteractiveComponent.IsValid())
 				{
 					const FTransform& Transform = AffectInteractiveComponent->GetComponentTransform();
-
+			
 					FVector Direction = ComponentTransform.GetLocation() - Transform.GetLocation();
 					Direction.Normalize();					
 
-					AffectInteractiveComponent->SetWorldLocation(Transform.GetLocation() + Direction * AbsorbingSpeedPerSecond * DeltaTime);
+					FVector NextLocation = Transform.GetLocation() + Direction * AbsorbingSpeedPerSecond * DeltaTime;
+			
+					AffectInteractiveComponent->SetWorldLocation(NextLocation);
+
+					UE_LOG(LogTemp, Display, TEXT("NextLocation : <%.2f, %.2f, %.2f>"), NextLocation.X, NextLocation.Y, NextLocation.Z);
 				}
 			}
 
@@ -129,18 +141,18 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 				}
 			}
 		}
-		else if (EInteractiveAction::Shooting == InteractiveAction)
+	}
+	else if (EInteractiveAction::Shooting == InteractiveAction)
+	{
+		for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
 		{
-			for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
+			if (AffectInteractiveComponent.IsValid())
 			{
-				if (AffectInteractiveComponent.IsValid())
-				{
-					FVector LinearVelocity = AffectInteractiveComponent->GetPhysicsLinearVelocity();
+				FVector LinearVelocity = AffectInteractiveComponent->GetPhysicsLinearVelocity();
 
-					if (LinearVelocity.Size() <= 10.f)
-					{
-						SetInteractiveAction(EInteractiveAction::None);
-					}
+				if (LinearVelocity.Size() <= 10.f)
+				{
+					SetupInteractiveAction(EInteractiveAction::None);
 				}
 			}
 		}
@@ -150,7 +162,7 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 void UInteractiveObjectComponent::__OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection)
 {
 	SetInteractiveType(EInteractiveType::Fracture);
-	ForceUpdateInteractiveAction(EInteractiveAction::None);
+	SetupInteractiveAction(EInteractiveAction::None);
 	SetComponentTickEnabled(false);
 }
 
@@ -170,26 +182,29 @@ void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction Nex
 	}
 	else if (EInteractiveAction::Shooting == NextInteractiveAction)
 	{
-		if (InteractiveComponent.IsValid())
+		if (EInteractiveAction::Holding == BeforeInteractiveAction)
 		{
-			for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
+			if (InteractiveComponent.IsValid())
 			{
-				if (InteractiveComponent.IsValid())
+				for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
 				{
-					FTransform Transform = InteractiveComponent->GetComponentToWorld();
-
-					FVector startLoc = Transform.GetLocation();
-					FVector targetLoc = Transform.GetLocation() + InteractiveComponent->GetOwner()->GetActorForwardVector() * ShootingPowerValue;
-					float arcValue = 0.9f;
-					FVector outVelocity = FVector::ZeroVector;
-
-					if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
+					if (InteractiveComponent.IsValid())
 					{
-						AffectInteractiveComponent->SetPhysicsLinearVelocity(outVelocity);
-						//AffectInteractiveComponent->SetPhysicsAngularVelocity(FVector(0.f, 2000.f, 2000.f));
-					}
+						FTransform Transform = InteractiveComponent->GetComponentToWorld();
 
-					AffectInteractiveComponent->SetSimulatePhysics(true);
+						FVector startLoc = Transform.GetLocation();
+						FVector targetLoc = Transform.GetLocation() + InteractiveComponent->GetOwner()->GetActorForwardVector() * ShootingPowerValue;
+						float arcValue = 0.9f;
+						FVector outVelocity = FVector::ZeroVector;
+
+						if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
+						{
+							AffectInteractiveComponent->SetPhysicsLinearVelocity(outVelocity);
+							//AffectInteractiveComponent->SetPhysicsAngularVelocity(FVector(0.f, 2000.f, 2000.f));
+						}
+
+						AffectInteractiveComponent->SetSimulatePhysics(true);
+					}
 				}
 			}
 		}
@@ -215,48 +230,18 @@ void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction Nex
 
 bool UInteractiveObjectComponent::CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction)
 {
+	UE_LOG(LogTemp, Display, TEXT("Kormaga CanUpdateInteractive : <%s> <%s>"), *GetEnumerationToString(NextInteractiveAction), *GetEnumerationToString(CurrentInteractiveAction));
+
 	if (EInteractiveType::None == InteractiveType
 		|| EInteractiveType::Fracture == InteractiveType)
 	{
 		return false;
 	}
 
-	if (EInteractiveAction::Shooting == NextInteractiveAction)
+	if (EInteractiveAction::Shooting == CurrentInteractiveAction)
 	{
-		if (EInteractiveAction::Holding == CurrentInteractiveAction)
-		{
-			return true;
-		}
-
 		return false;
-	}
-	else if (EInteractiveAction::None == NextInteractiveAction)
-	{
-		if (EInteractiveAction::Shooting == CurrentInteractiveAction)
-		{
-			return false;
-		}
-		if (EInteractiveAction::Holding == CurrentInteractiveAction)
-		{
-			if (InteractiveComponent.IsValid())
-			{
-				return false;
-			}
-		}
 	}
 
 	return Super::CanUpdateInteractive(NextInteractiveAction, CurrentInteractiveAction);
-}
-
-bool UInteractiveObjectComponent::CanInteractivePhysicsState()
-{
-	for (const TSoftObjectPtr<UPrimitiveComponent>& AffectInteractiveComponent : AffectInteractiveComponents)
-	{
-		if (false == AffectInteractiveComponent->IsSimulatingPhysics())
-		{
-			return false;
-		}
-	}
-
-	return true;
 }

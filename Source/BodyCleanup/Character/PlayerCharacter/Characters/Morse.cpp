@@ -181,32 +181,22 @@ void AMorse::InputReleasedMouseLeftClick()
 	{
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
 
-		TSoftObjectPtr<AActor> HoldingActor = nullptr;
-
-		//HoldingActor는 Overlap End를 당해도 InteractiveComponent가 소멸되지 않는다.
-		//그러므로 Vacuum의 행위가 종료되면 HoldingActor를 초기화해줘야한다.
-		if (VacuumEntranceComponent->HasHoldingActor())
-		{
-			HoldingActor = VacuumEntranceComponent->GetHoldingActor();
-
-			__SetInteractiveComponent(HoldingActor.Get(), nullptr);
-
-			VacuumEntranceComponent->SetHoldingActor(nullptr);
-		}
+		//TSoftObjectPtr<AActor> HoldingActor = nullptr;
+		VacuumEntranceComponent->SetHoldingActor(nullptr);
 		
 		__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::None);
 
-		//HoldingActor를 초기화했는데 VacuumTrigger안에 들어가있다면 초기화에서 다시 VacuumEnteranceComponent를 추가해준다.
-		if (HoldingActor.IsValid())
-		{
-			TSet<AActor*> OverlappingActors;
-			VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
-
-			if (nullptr != OverlappingActors.Find(HoldingActor.Get()))
-			{
-				__SetInteractiveComponent(HoldingActor.Get(), VacuumEntranceComponent);
-			}
-		}
+		////HoldingActor를 초기화했는데 VacuumTrigger안에 들어가있다면 초기화에서 다시 VacuumEnteranceComponent를 추가해준다.
+		//if (HoldingActor.IsValid())
+		//{
+		//	TSet<AActor*> OverlappingActors;
+		//	VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
+		//
+		//	if (nullptr != OverlappingActors.Find(HoldingActor.Get()))
+		//	{
+		//		__SetInteractiveComponent(HoldingActor.Get(), VacuumEntranceComponent);
+		//	}
+		//}
 
 	}
 }
@@ -258,22 +248,44 @@ void AMorse::InputReleasedMouseRightClick()
 				return;
 			}
 
-			UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(SpawnActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
+			TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
 
-			if (IsValid(StaticMeshComponent))
+			UFindFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, SpawnActor->GetRootComponent());
+
+			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 			{
-				StaticMeshComponent->SetSimulatePhysics(true);
+				PrimitiveComponent->SetSimulatePhysics(true);
+				PrimitiveComponent->SetPhysicsLinearVelocity(ThrowTargetPos);
 
-				StaticMeshComponent->SetPhysicsLinearVelocity(ThrowTargetPos);
+				//if (PrimitiveComponent->IsA(UDestructibleComponent::StaticClass()))
+				//{
+				//	UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(PrimitiveComponent.Get());
+				//
+				//	DestructibleMeshComponent->AttachToComponent()
+				//
+				//	FBodyInstance* BodyInstance = DestructibleMeshComponent->GetBodyInstance();
+				//
+				//	if (nullptr != BodyInstance)
+				//	{
+				//		BodyInstance->SetInstanceSimulatePhysics(true);
+				//	}
+				//
+				//
+				//	//Cast<UDestructibleComponent>(PrimitiveComponent.Get())->BodyInstance.SetInstanceSimulatePhysics(true);
+				//}
+				//else
+				//{
+				//	
+				//}
 			}
 
-			UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(SpawnActor->GetComponentByClass(UDestructibleComponent::StaticClass()));
+			TArray<TSoftObjectPtr<USceneComponent>> InteractiveComponents;
 
-			if (IsValid(DestructibleMeshComponent))
+			UFindFunctionLibrary::FindInteractiveComponents(InteractiveComponents, SpawnActor->GetRootComponent());
+
+			for (TSoftObjectPtr<USceneComponent>& InteractiveComponent : InteractiveComponents)
 			{
-				DestructibleMeshComponent->SetSimulatePhysics(true);
-
-				DestructibleMeshComponent->SetPhysicsLinearVelocity(ThrowTargetPos);
+				Cast<IInteractiveInterface>(InteractiveComponent.Get())->SetInteractiveAction(EInteractiveAction::Shooting);
 			}
 		}
 
@@ -440,19 +452,16 @@ void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 	{
 		VacuumOverlapActors.Remove(OtherActor);
 
-		if (VacuumEntranceComponent->GetHoldingActor() != OtherActor)
-		{
-			TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
-			UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, OtherActor->GetRootComponent());
+		TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
+		UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, OtherActor->GetRootComponent());
 
-			if (InteractiveComopnents.Num() > 0)
+		if (InteractiveComopnents.Num() > 0)
+		{
+			for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
 			{
-				for (TSoftObjectPtr<USceneComponent> InteractiveComponent : InteractiveComopnents)
-				{
-					IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
-					InteractiveInterface->SetInteractiveComponent(nullptr);
-					InteractiveInterface->SetInteractiveAction(EInteractiveAction::None);
-				}
+				IInteractiveInterface* InteractiveInterface = Cast<IInteractiveInterface>(InteractiveComponent.Get());
+				InteractiveInterface->SetInteractiveComponent(nullptr);
+				InteractiveInterface->SetInteractiveAction(EInteractiveAction::None);
 			}
 		}
 	}	
@@ -469,12 +478,16 @@ void AMorse::__OnVaccumOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 			if (__CanVacuuming())
 			{
-				__SetInteractiveAction(OtherActor, EInteractiveAction::Holding);
-			}
+				UE_LOG(LogTemp, Display, TEXT("Koramga Vacuum Holding"));
 
-			if (VacuumEntranceComponent->HasHoldingActor())
-			{
-				__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::None);
+				VacuumEntranceComponent->SetHoldingActor(OtherActor);
+
+				if (VacuumEntranceComponent->HasHoldingActor())
+				{
+					__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::None);
+				}
+
+				__SetInteractiveAction(OtherActor, EInteractiveAction::Holding);
 			}
 		}
 	}

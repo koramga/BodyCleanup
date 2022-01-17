@@ -57,7 +57,7 @@ void UInteractiveComponent::SetInteractiveAction(EInteractiveAction InputInterac
 	{
 		if (CanUpdateInteractive(InputInteractiveAction, InteractiveAction))
 		{
-			ForceUpdateInteractiveAction(InputInteractiveAction);
+			SetupInteractiveAction(InputInteractiveAction);
 		}
 	}
 }
@@ -77,7 +77,7 @@ void UInteractiveComponent::SetInteractiveType(EInteractiveType InputInteractive
 	InteractiveType = InputInteractiveType;
 }
 
-void UInteractiveComponent::ForceUpdateInteractiveAction(EInteractiveAction InputInteractiveAction)
+void UInteractiveComponent::SetupInteractiveAction(EInteractiveAction InputInteractiveAction)
 {
 	UpdateInteractiveAction(InputInteractiveAction, InteractiveAction);
 

@@ -60,7 +60,4 @@ private:
 protected:
 	virtual void UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction) override;
 	virtual bool CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction) override;
-
-public :
-	bool CanInteractivePhysicsState();
 };
