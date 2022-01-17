@@ -4,6 +4,7 @@
 #include "SpawnComponent.h"
 #include "../Interfaces/LevelMarkupInterface.h"
 #include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
+#include "../Markups/VelocityMarkupComponent.h"
 
 void USpawnComponent::BeginPlay()
 {
@@ -47,15 +48,38 @@ void USpawnComponent::OnTrigger(bool bInputIsOnTrigger)
 			{
 				if (IsValid(SpawnMarkupParam.ActorClass.Get()))
 				{
-					TArray<FTransform> Transforms;
+					TArray<TSoftObjectPtr<UObject>> Objects;
 
 					SpawnInfo.SpawnCollisionHandlingOverride = SpawnMarkupParam.SpawnMethod;
 
-					GetTransformsFromSpawnMarkupParam(Transforms, SpawnMarkupParam);
+					GetActorsFromSpawnMarkupParam(Objects, SpawnMarkupParam);
 
-					for (const FTransform& Transform : Transforms)
+					for (TSoftObjectPtr<UObject> Object : Objects)
 					{
-						GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+						if (Object->GetClass()->ImplementsInterface(ULevelMarkupInterface::StaticClass()))
+						{
+							ILevelMarkupInterface* LevelMarkupInterface = Cast<ILevelMarkupInterface>(Object.Get());
+
+							const FTransform& Transform = LevelMarkupInterface->GetMarkupTransform();
+
+							AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+
+							LevelMarkupInterface->UpdateFromMarkup(SpawnActor);
+						}
+						else if (Object->IsA(AActor::StaticClass()))
+						{
+							AActor* Actor = Cast<AActor>(Object.Get());
+
+							GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Actor->GetActorLocation(), Actor->GetActorRotation(), SpawnInfo);
+						}
+						else if (Object->IsA(USceneComponent::StaticClass()))
+						{
+							USceneComponent* SceneComponenet = Cast<USceneComponent>(Object.Get());
+
+							const FTransform& Transform = SceneComponenet->GetComponentToWorld();
+
+							GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+						}
 					}
 				}
 			}
@@ -104,6 +128,51 @@ void USpawnComponent::GetTransformsFromSpawnMarkupParam(TArray<FTransform>& Tran
 		else
 		{
 			Transforms.Add(Actor->GetTransform());
+		}
+	}
+}
+
+void USpawnComponent::GetActorsFromSpawnMarkupParam(TArray<TSoftObjectPtr<UObject>>& Objects, const FSpawnMarkupParam& SpawnMarkupParam)
+{
+	TSoftObjectPtr<AActor> Actor = GetOwner();
+
+	if (SpawnMarkupParam.Actor.IsValid())
+	{
+		Actor = SpawnMarkupParam.Actor;
+	}
+
+	if (SpawnMarkupParam.Names.Num() > 0)
+	{
+		TArray<TSoftObjectPtr<USceneComponent>> MarkupComponents;
+
+		if (ENameType::Name == SpawnMarkupParam.NameType)
+		{
+			UFindFunctionLibrary::FindMarkupComponentsByNames(MarkupComponents, Actor->GetRootComponent(), SpawnMarkupParam.Names);
+		}
+		else if (ENameType::Tag == SpawnMarkupParam.NameType)
+		{
+			UFindFunctionLibrary::FindMarkupComponentsByTagNames(MarkupComponents, Actor.Get(), SpawnMarkupParam.Names);
+		}
+
+		for (TSoftObjectPtr<USceneComponent> MarkupComponent : MarkupComponents)
+		{
+			ILevelMarkupInterface* LevelMarkupInterface = Cast<ILevelMarkupInterface>(MarkupComponent.Get());
+
+			if (nullptr != LevelMarkupInterface)
+			{
+				Objects.Add(MarkupComponent);
+			}
+		}
+	}
+	else
+	{
+		if (GetOwner() == Actor)
+		{
+			Objects.Add(this);
+		}
+		else
+		{
+			Objects.Add(Actor);
 		}
 	}
 }

@@ -91,9 +91,10 @@ enum class EWarpType : uint8
 };
 
 UENUM(BlueprintType)
-enum class EMarkupType : uint8
+enum class ELevelMarkupType : uint8
 {
 	Point,
+	Velocity,
 };
 
 UENUM(BlueprintType)

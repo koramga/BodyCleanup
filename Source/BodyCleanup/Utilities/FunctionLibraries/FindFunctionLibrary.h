@@ -15,6 +15,8 @@ class BODYCLEANUP_API UFindFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public :
+	static void FindComponentByClass(TArray<TSoftObjectPtr<UActorComponent>>& Components, USceneComponent* SceneComponent, UClass* Class);
+	static void FindPrimitiveComponets(TArray<TSoftObjectPtr<UPrimitiveComponent>>& Components, USceneComponent* SceneComponent);
 	static USceneComponent* FindComponentByName(USceneComponent* SceneComponent, const FName& Name);
 	static void FindComponentsByNames(TArray<TSoftObjectPtr<USceneComponent>>& NameComponents, USceneComponent* SceneComponent, const TArray<FName>& Names);
 	static void FindComponentsByTagName(TArray<TSoftObjectPtr<USceneComponent>>& TagComponents, AActor* Actor, const FName& TagName);

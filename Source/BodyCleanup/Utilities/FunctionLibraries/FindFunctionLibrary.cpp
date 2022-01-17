@@ -7,6 +7,40 @@
 #include "../../Components/Interfaces/LevelMarkupInterface.h"
 #include "../../Components/Interfaces/LevelTriggerInterface.h"
 
+void UFindFunctionLibrary::FindComponentByClass(TArray<TSoftObjectPtr<UActorComponent>>& Components, USceneComponent* SceneComponent, UClass* Class)
+{
+	if (SceneComponent->IsA(Class))
+	{
+		Components.Add(SceneComponent);
+	}
+
+	TArray<USceneComponent*> ChildrenComponents;
+
+	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
+
+	for (USceneComponent* ChildComponent : ChildrenComponents)
+	{
+		FindComponentByClass(Components, ChildComponent, Class);
+	}
+}
+
+void UFindFunctionLibrary::FindPrimitiveComponets(TArray<TSoftObjectPtr<UPrimitiveComponent>>& Components, USceneComponent* SceneComponent)
+{
+	if (SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+	{
+		Components.Add(Cast<UPrimitiveComponent>(SceneComponent));
+	}
+
+	TArray<USceneComponent*> ChildrenComponents;
+
+	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
+
+	for (USceneComponent* ChildComponent : ChildrenComponents)
+	{
+		FindPrimitiveComponets(Components, ChildComponent);
+	}	
+}
+
 USceneComponent* UFindFunctionLibrary::FindComponentByName(USceneComponent* SceneComponent, const FName& Name)
 {
 	if (SceneComponent->GetName() == Name.ToString())

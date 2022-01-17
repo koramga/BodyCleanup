@@ -10,8 +10,6 @@ UMarkupComponent::UMarkupComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	SetMobility(EComponentMobility::Static);
-
 	// ...
 }
 
@@ -34,9 +32,9 @@ void UMarkupComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-EMarkupType UMarkupComponent::GetMarkupType() const
+ELevelMarkupType UMarkupComponent::GetLevelMarkupType() const
 {
-	return MarkupType;
+	return ELevelMarkupType::Point;
 }
 
 FVector UMarkupComponent::GetMarkupLocation() const
@@ -47,5 +45,9 @@ FVector UMarkupComponent::GetMarkupLocation() const
 FTransform UMarkupComponent::GetMarkupTransform() const
 {
 	return GetComponentToWorld();
+}
+
+void UMarkupComponent::UpdateFromMarkup(UObject* Object) const
+{
 }
 

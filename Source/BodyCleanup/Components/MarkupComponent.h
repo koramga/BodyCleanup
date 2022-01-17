@@ -8,7 +8,7 @@
 #include "MarkupComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Markup), meta=(BlueprintSpawnableComponent) )
 class BODYCLEANUP_API UMarkupComponent : public USceneComponent, public ILevelMarkupInterface
 {
 	GENERATED_BODY()
@@ -16,10 +16,6 @@ class BODYCLEANUP_API UMarkupComponent : public USceneComponent, public ILevelMa
 public:	
 	// Sets default values for this component's properties
 	UMarkupComponent();
-
-protected :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EMarkupType		MarkupType = EMarkupType::Point;
 
 protected:
 	// Called when the game starts
@@ -30,7 +26,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 			
 public :
-	EMarkupType	GetMarkupType() const;
+	virtual ELevelMarkupType	GetLevelMarkupType() const override;
 	virtual FVector GetMarkupLocation() const override;
 	virtual FTransform GetMarkupTransform() const override;
+	virtual void UpdateFromMarkup(UObject* Object) const override;
 };

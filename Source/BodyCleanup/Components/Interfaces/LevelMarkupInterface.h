@@ -24,4 +24,6 @@ class BODYCLEANUP_API ILevelMarkupInterface
 public:
 	virtual FVector GetMarkupLocation() const = 0;
 	virtual FTransform GetMarkupTransform() const = 0;
+	virtual ELevelMarkupType GetLevelMarkupType() const = 0;
+	virtual void UpdateFromMarkup(UObject* Object) const = 0;
 };

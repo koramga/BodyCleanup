@@ -163,6 +163,7 @@ void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction Nex
 					if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
 					{
 						AffectInteractiveComponent->SetPhysicsLinearVelocity(outVelocity);
+						//AffectInteractiveComponent->SetPhysicsAngularVelocity(FVector(0.f, 2000.f, 2000.f));
 					}
 
 					AffectInteractiveComponent->SetSimulatePhysics(true);

@@ -68,6 +68,7 @@ private:
 
 private :
 	void GetTransformsFromSpawnMarkupParam(TArray<FTransform>& Transforms, const FSpawnMarkupParam& SpawnMarkupParam);
+	void GetActorsFromSpawnMarkupParam(TArray<TSoftObjectPtr<UObject>>& Objects, const FSpawnMarkupParam& SpawnMarkupParam);
 	
 public :
 	void GetAffectPoints(TArray<FVector>& Locations);
