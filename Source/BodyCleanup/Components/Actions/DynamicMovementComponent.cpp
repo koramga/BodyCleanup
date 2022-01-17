@@ -6,7 +6,7 @@
 
 UDynamicMovementComponent::UDynamicMovementComponent()
 {
-
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UDynamicMovementComponent::BeginPlay()

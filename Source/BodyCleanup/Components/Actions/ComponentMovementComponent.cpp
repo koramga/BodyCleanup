@@ -6,6 +6,7 @@
 
 UComponentMovementComponent::UComponentMovementComponent()
 {
+	PrimaryComponentTick.bCanEverTick = true;
 	DestinationDeltaTransform.SetLocation(FVector(0.f, 0.f, 0.f));
 	DestinationDeltaTransform.SetRotation(FRotator(0.f, 0.f, 0.f).Quaternion());
 	DestinationDeltaTransform.SetScale3D(FVector(0.f, 0.f, 0.f));
