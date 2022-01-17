@@ -57,18 +57,7 @@ void UInteractiveComponent::SetInteractiveAction(EInteractiveAction InputInterac
 	{
 		if (CanUpdateInteractive(InputInteractiveAction, InteractiveAction))
 		{
-			UpdateInteractiveAction(InputInteractiveAction, InteractiveAction);
-
-			InteractiveAction = InputInteractiveAction;
-
-			if (TriggerInteractiveActions.Find(InputInteractiveAction) >= 0)
-			{
-				CallTriggerObservers(true);
-			}
-			else
-			{
-				CallTriggerObservers(false);
-			}
+			ForceUpdateInteractiveAction(InputInteractiveAction);
 		}
 	}
 }
@@ -86,4 +75,20 @@ EInteractiveType UInteractiveComponent::GetInteractiveType() const
 void UInteractiveComponent::SetInteractiveType(EInteractiveType InputInteractiveType)
 {
 	InteractiveType = InputInteractiveType;
+}
+
+void UInteractiveComponent::ForceUpdateInteractiveAction(EInteractiveAction InputInteractiveAction)
+{
+	UpdateInteractiveAction(InputInteractiveAction, InteractiveAction);
+
+	InteractiveAction = InputInteractiveAction;
+
+	if (TriggerInteractiveActions.Find(InputInteractiveAction) >= 0)
+	{
+		CallTriggerObservers(true);
+	}
+	else
+	{
+		CallTriggerObservers(false);
+	}
 }

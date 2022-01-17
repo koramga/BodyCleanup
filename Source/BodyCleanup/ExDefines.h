@@ -57,6 +57,8 @@ enum class EInteractiveType : uint8
 	Rigid,
 	//당겨지고 먹혀집니다.
 	Junk,
+	//Destructible Mesh가 부숴진 상태를 의미합니다.
+	Fracture UMETA(Hidden),
 };
 
 UENUM(BlueprintType)

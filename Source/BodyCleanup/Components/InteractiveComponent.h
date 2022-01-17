@@ -41,11 +41,12 @@ public:
 protected :
 	virtual void UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction);
 	virtual bool CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction);
+	virtual void SetInteractiveType(EInteractiveType InputInteractiveType) override;
+	virtual void ForceUpdateInteractiveAction(EInteractiveAction InputInteractiveAction);
 
 public:
 	virtual EInteractiveAction GetInteractiveAction() const override;
 	virtual void SetInteractiveAction(EInteractiveAction InputInteractiveAction) override;
 	virtual void SetInteractiveComponent(TSoftObjectPtr<USceneComponent> InputInteractiveComponent) override;
 	virtual EInteractiveType GetInteractiveType() const override;
-	virtual void SetInteractiveType(EInteractiveType InputInteractiveType) override;
 };

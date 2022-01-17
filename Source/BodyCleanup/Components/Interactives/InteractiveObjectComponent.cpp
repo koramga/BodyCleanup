@@ -40,11 +40,27 @@ void UInteractiveObjectComponent::BeginPlay()
 			UFindFunctionLibrary::FindPrimitiveComponentsByTagName(AffectInteractiveComponents, GetOwner(), InteractiveName);
 		}
 	}
+
+	for (const TSoftObjectPtr<UPrimitiveComponent>& AffectInteractiveComponent : AffectInteractiveComponents)
+	{
+		if (AffectInteractiveComponent->IsA(UDestructibleComponent::StaticClass()))
+		{
+			UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(AffectInteractiveComponent.Get());
+
+			DestructibleMeshComponent->OnComponentFracture.AddDynamic(this, &UInteractiveObjectComponent::__OnComponentFracture);
+		}
+	}
 }
 
 void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	//if (false == CanInteractivePhysicsState())
+	//{
+	//	InteractiveType = EInteractiveType::None;
+	//	SetComponentTickEnabled(false);
+	//}
 
 	if (InteractiveComponent.IsValid())
 	{
@@ -131,6 +147,13 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	}
 }
 
+void UInteractiveObjectComponent::__OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection)
+{
+	SetInteractiveType(EInteractiveType::Fracture);
+	ForceUpdateInteractiveAction(EInteractiveAction::None);
+	SetComponentTickEnabled(false);
+}
+
 void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction)
 {
 	Super::UpdateInteractiveAction(NextInteractiveAction, BeforeInteractiveAction);
@@ -192,7 +215,8 @@ void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction Nex
 
 bool UInteractiveObjectComponent::CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction)
 {
-	if (EInteractiveType::None == InteractiveType)
+	if (EInteractiveType::None == InteractiveType
+		|| EInteractiveType::Fracture == InteractiveType)
 	{
 		return false;
 	}
@@ -222,4 +246,17 @@ bool UInteractiveObjectComponent::CanUpdateInteractive(EInteractiveAction NextIn
 	}
 
 	return Super::CanUpdateInteractive(NextInteractiveAction, CurrentInteractiveAction);
+}
+
+bool UInteractiveObjectComponent::CanInteractivePhysicsState()
+{
+	for (const TSoftObjectPtr<UPrimitiveComponent>& AffectInteractiveComponent : AffectInteractiveComponents)
+	{
+		if (false == AffectInteractiveComponent->IsSimulatingPhysics())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

@@ -53,7 +53,14 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+private:
+	UFUNCTION()
+	void __OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection);
+
 protected:
 	virtual void UpdateInteractiveAction(EInteractiveAction NextInteractiveAction, EInteractiveAction BeforeInteractiveAction) override;
 	virtual bool CanUpdateInteractive(EInteractiveAction NextInteractiveAction, EInteractiveAction CurrentInteractiveAction) override;
+
+public :
+	bool CanInteractivePhysicsState();
 };
