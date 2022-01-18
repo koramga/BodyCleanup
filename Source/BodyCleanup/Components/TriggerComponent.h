@@ -5,6 +5,7 @@
 #include "../ExDefines.h"
 #include "Components/SceneComponent.h"
 #include "Interfaces/LevelTriggerInterface.h"
+#include "Implementation/LevelTriggerImplementation.h"
 #include "TriggerComponent.generated.h"
 
 USTRUCT(BlueprintType, Blueprintable)

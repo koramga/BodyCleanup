@@ -221,7 +221,7 @@ void UTriggerComponent::__FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Ac
 
 void UTriggerComponent::__AddTriggerComponents(TArray<TSoftObjectPtr<USceneComponent>>& DestTriggerComponents, const TArray<TSoftObjectPtr<USceneComponent>>& PushComponents)
 {
-	for (TSoftObjectPtr<USceneComponent> SceneComponent : PushComponents)
+	for (const TSoftObjectPtr<USceneComponent>& SceneComponent : PushComponents)
 	{
 		if (SceneComponent.IsValid()
 			&& this != SceneComponent)
