@@ -15,7 +15,6 @@ UTriggerComponent::UTriggerComponent()
 	bIsCanControlTriggerComponentFromType = true;
 }
 
-
 // Called when the game starts
 void UTriggerComponent::BeginPlay()
 {
@@ -94,60 +93,60 @@ void UTriggerComponent::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* Over
 
 void UTriggerComponent::__GetTriggerComponents(TArray<TSoftObjectPtr<USceneComponent>>& InputTriggerComponents)
 {
-	InputTriggerComponents.Empty();
+	//InputTriggerComponents.Empty();
+	//
+	//TArray<TSoftObjectPtr<USceneComponent>> FindComponents;
+	//
+	//if (ETriggerComponentFromType::Parent == TriggerComponentFromType)
+	//{
+	//	FindComponents.Add(GetAttachParent());
+	//}
+	//else if (ETriggerComponentFromType::Setup == TriggerComponentFromType)
+	//{
+	//	for (const FTriggerActorWithName& TriggerActorWithName : TriggerActorWithNames)
+	//	{
+	//		TSoftObjectPtr<AActor> TriggerActor = GetOwner();
+	//
+	//		if (TriggerActorWithName.Actor.IsValid())
+	//		{
+	//			TriggerActor = TriggerActorWithName.Actor;
+	//		}
+	//
+	//		if (TriggerActor.IsValid())
+	//		{
+	//			if (TriggerActorWithName.Names.Num() > 0)
+	//			{
+	//				if (ENameType::Name == TriggerActorWithName.NameType)
+	//				{
+	//					UFindFunctionLibrary::FindComponentsByNames(FindComponents, TriggerActor->GetRootComponent(), TriggerActorWithName.Names);
+	//				}
+	//				else
+	//				{
+	//					for (const FName& Name : TriggerActorWithName.Names)
+	//					{
+	//						TArray<UActorComponent*> ActorComponents = TriggerActor->GetComponentsByTag(USceneComponent::StaticClass(), Name);
+	//
+	//						for (UActorComponent* ActorComponent : ActorComponents)
+	//						{
+	//							USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent);
+	//
+	//							if (IsValid(SceneComponent))
+	//							{
+	//								FindComponents.Add(SceneComponent);
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//			else
+	//			{
+	//				UFindFunctionLibrary::FindTriggerComponents(FindComponents, TriggerActor->GetRootComponent());
+	//			}
+	//		}
+	//	}
+	//}
 
-	TArray<TSoftObjectPtr<USceneComponent>> FindComponents;
-
-	if (ETriggerComponentFromType::Parent == TriggerComponentFromType)
-	{
-		FindComponents.Add(GetAttachParent());
-	}
-	else if (ETriggerComponentFromType::Setup == TriggerComponentFromType)
-	{
-		for (const FTriggerActorWithName& TriggerActorWithName : TriggerActorWithNames)
-		{
-			TSoftObjectPtr<AActor> TriggerActor = GetOwner();
-
-			if (TriggerActorWithName.Actor.IsValid())
-			{
-				TriggerActor = TriggerActorWithName.Actor;
-			}
-
-			if (TriggerActor.IsValid())
-			{
-				if (TriggerActorWithName.Names.Num() > 0)
-				{
-					if (ENameType::Name == TriggerActorWithName.NameType)
-					{
-						UFindFunctionLibrary::FindComponentsByNames(FindComponents, TriggerActor->GetRootComponent(), TriggerActorWithName.Names);
-					}
-					else
-					{
-						for (const FName& Name : TriggerActorWithName.Names)
-						{
-							TArray<UActorComponent*> ActorComponents = TriggerActor->GetComponentsByTag(USceneComponent::StaticClass(), Name);
-
-							for (UActorComponent* ActorComponent : ActorComponents)
-							{
-								USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent);
-
-								if (IsValid(SceneComponent))
-								{
-									FindComponents.Add(SceneComponent);
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					UFindFunctionLibrary::FindTriggerComponents(FindComponents, TriggerActor->GetRootComponent());
-				}
-			}
-		}
-	}
-
-	__AddTriggerComponents(InputTriggerComponents, FindComponents);
+	//__AddTriggerComponents(InputTriggerComponents, FindComponents);
 }
 
 void UTriggerComponent::__ProcessTrigger(bool bInputIsOnTrigger)
@@ -178,45 +177,45 @@ void UTriggerComponent::__ProcessTrigger(bool bInputIsOnTrigger)
 
 void UTriggerComponent::__FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<UTriggerComponent> TriggerComponent)
 {
-	if (ETriggerComponentFromType::Parent == TriggerComponent->TriggerComponentFromType)
-	{
-		for (const auto& TriggerOnComponent : TriggerComponent->TriggerOnComponents)
-		{
-			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : TriggerOnComponent.Value.OtherComps)
-			{
-				if (Actors.Find(PrimitiveComponent->GetOwner()) < 0)
-				{
-					Actors.Add(PrimitiveComponent->GetOwner());
-				}
-			}
-		}
-	}
-	else if (ETriggerComponentFromType::Setup == TriggerComponent->TriggerComponentFromType)
-	{
-		for (auto& TriggerOnComponent : TriggerComponent->TriggerOnComponents)
-		{
-			if (TriggerOnComponent.Key->IsA(UPrimitiveComponent::StaticClass()))
-			{
-				for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : TriggerOnComponent.Value.OtherComps)
-				{
-					if (Actors.Find(PrimitiveComponent->GetOwner()) < 0)
-					{
-						Actors.Add(PrimitiveComponent->GetOwner());
-					}
-				}
-			}			
-		}
-
-		for (TSoftObjectPtr<UActorComponent> TriggerComponentParam : TriggerComponent->TriggerComponents)
-		{
-			TSoftObjectPtr<UTriggerComponent> SetTriggerComponent = Cast<UTriggerComponent>(TriggerComponentParam.Get());
-
-			if (SetTriggerComponent.IsValid())
-			{
-				__FindTriggerOnActors(Actors, SetTriggerComponent);
-			}
-		}
-	}
+	//if (ETriggerComponentFromType::Parent == TriggerComponent->TriggerComponentFromType)
+	//{
+	//	for (const auto& TriggerOnComponent : TriggerComponent->TriggerOnComponents)
+	//	{
+	//		for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : TriggerOnComponent.Value.OtherComps)
+	//		{
+	//			if (Actors.Find(PrimitiveComponent->GetOwner()) < 0)
+	//			{
+	//				Actors.Add(PrimitiveComponent->GetOwner());
+	//			}
+	//		}
+	//	}
+	//}
+	//else if (ETriggerComponentFromType::Setup == TriggerComponent->TriggerComponentFromType)
+	//{
+	//	for (auto& TriggerOnComponent : TriggerComponent->TriggerOnComponents)
+	//	{
+	//		if (TriggerOnComponent.Key->IsA(UPrimitiveComponent::StaticClass()))
+	//		{
+	//			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : TriggerOnComponent.Value.OtherComps)
+	//			{
+	//				if (Actors.Find(PrimitiveComponent->GetOwner()) < 0)
+	//				{
+	//					Actors.Add(PrimitiveComponent->GetOwner());
+	//				}
+	//			}
+	//		}			
+	//	}
+	//
+	//	for (TSoftObjectPtr<UActorComponent> TriggerComponentParam : TriggerComponent->TriggerComponents)
+	//	{
+	//		TSoftObjectPtr<UTriggerComponent> SetTriggerComponent = Cast<UTriggerComponent>(TriggerComponentParam.Get());
+	//
+	//		if (SetTriggerComponent.IsValid())
+	//		{
+	//			__FindTriggerOnActors(Actors, SetTriggerComponent);
+	//		}
+	//	}
+	//}
 }
 
 void UTriggerComponent::__AddTriggerComponents(TArray<TSoftObjectPtr<USceneComponent>>& DestTriggerComponents, const TArray<TSoftObjectPtr<USceneComponent>>& PushComponents)
@@ -292,6 +291,11 @@ void UTriggerComponent::CalledTriggerObservers(TSoftObjectPtr<USceneComponent> C
 	}
 
 	__ProcessTrigger(bIsInputOnTrigger);
+}
+
+const FLevelTriggerInput* UTriggerComponent::GetLevelTriggerInput() const
+{
+	return &LevelTriggerInput;
 }
 
 void UTriggerComponent::UpdateTrigger(bool bInputIsOnTrigger)

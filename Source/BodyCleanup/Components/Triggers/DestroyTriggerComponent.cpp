@@ -6,7 +6,7 @@
 UDestroyTriggerComponent::UDestroyTriggerComponent()
 {
 	bIsCanControlTriggerComponentFromType = false;
-	TriggerComponentFromType = ETriggerComponentFromType::Action;
+	//TriggerComponentFromType = ETriggerComponentFromType::Action;
 }
 
 void UDestroyTriggerComponent::BeginPlay()

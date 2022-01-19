@@ -2,7 +2,7 @@
 
 
 #include "ActionComponent.h"
-#include "Interfaces/LevelMarkupInterface.h"
+#include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
 
 UActionComponent::UActionComponent()
 {

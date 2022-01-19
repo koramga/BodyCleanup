@@ -6,7 +6,7 @@
 UTimerTriggerComponent::UTimerTriggerComponent()
 {
 	bIsCanControlTriggerComponentFromType = false;
-	TriggerComponentFromType = ETriggerComponentFromType::Action;
+	//TriggerComponentFromType = ETriggerComponentFromType::Action;
 }
 
 void UTimerTriggerComponent::BeginPlay()

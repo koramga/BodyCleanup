@@ -11,7 +11,7 @@ UInteractiveComponent::UInteractiveComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	bIsCanControlTriggerComponentFromType = false;
-	TriggerComponentFromType = ETriggerComponentFromType::Action;
+	//TriggerComponentFromType = ETriggerComponentFromType::Action;
 
 	// ...
 

@@ -14,7 +14,8 @@
 #include "Engine/Classes/Engine/Selection.h"
 #endif // WITH_EDITOR
 #include "DrawDebugHelpers.h"
-#include "../../Components/Interfaces/LevelTriggerInterface.h"
+//#include "../../Components/Interfaces/LevelTriggerInterface.h"
+#include "LevelDesignerTools/Trigger/Interfaces/LevelTriggerInterface.h"
 
 ABaseLevelActor::ABaseLevelActor()
 {

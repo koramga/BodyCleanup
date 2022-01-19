@@ -4,25 +4,8 @@
 
 #include "../ExDefines.h"
 #include "Components/SceneComponent.h"
-#include "Interfaces/LevelTriggerInterface.h"
-#include "Implementation/LevelTriggerImplementation.h"
+#include "LevelDesignerTools/Trigger/Interfaces/LevelTriggerInterface.h"
 #include "TriggerComponent.generated.h"
-
-USTRUCT(BlueprintType, Blueprintable)
-struct FTriggerActorWithName
-{
-	GENERATED_BODY()
-
-public :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSoftObjectPtr<AActor>							Actor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ENameType										NameType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FName>									Names;
-};
 
 USTRUCT(BlueprintType, Blueprintable)
 struct FTriggerOnData
@@ -55,10 +38,13 @@ protected :
 
 	//Trigger Action을 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "bIsCanControlTriggerComponentFromType == true"))
-	ETriggerComponentFromType					TriggerComponentFromType = ETriggerComponentFromType::Parent;
+	FLevelTriggerInput							LevelTriggerInput;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Setup", EditConditionHides))
-	TArray<FTriggerActorWithName>				TriggerActorWithNames;
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "bIsCanControlTriggerComponentFromType == true"))
+	//ETriggerComponentFromType					TriggerComponentFromType = ETriggerComponentFromType::Parent;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "TriggerComponentFromType == ETriggerComponentFromType::Setup", EditConditionHides))
+	//TArray<FTriggerActorWithName>				TriggerActorWithNames;
 
 protected :
 	UPROPERTY(VisibleAnywhere, Category = "Debug|TriggerComponent")
@@ -97,6 +83,7 @@ protected:
 	virtual void CallTriggerObservers(bool bIsInputOnTrigger) override;
 	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) override;
 	virtual void CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger) override;
+	virtual const FLevelTriggerInput* GetLevelTriggerInput() const override;
 
 protected :
 	virtual void UpdateTrigger(bool bInputIsOnTrigger);

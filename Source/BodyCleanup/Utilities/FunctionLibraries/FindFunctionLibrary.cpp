@@ -4,8 +4,9 @@
 #include "FindFunctionLibrary.h"
 #include "../../Components/Interfaces/InteractiveInterface.h"
 #include "../../Components/Interfaces/LevelActionInterface.h"
-#include "../../Components/Interfaces/LevelMarkupInterface.h"
-#include "../../Components/Interfaces/LevelTriggerInterface.h"
+#include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
+//#include "../../Components/Interfaces/LevelTriggerInterface.h"
+#include "LevelDesignerTools/Trigger/Interfaces/LevelTriggerInterface.h"
 
 void UFindFunctionLibrary::FindComponentByClass(TArray<TSoftObjectPtr<UActorComponent>>& Components, USceneComponent* SceneComponent, UClass* Class)
 {

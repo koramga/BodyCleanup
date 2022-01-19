@@ -3,7 +3,7 @@
 #pragma once
 
 #include "../ExDefines.h"
-#include "Interfaces/LevelMarkupInterface.h"
+#include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
 #include "Components/SceneComponent.h"
 #include "MarkupComponent.generated.h"
 

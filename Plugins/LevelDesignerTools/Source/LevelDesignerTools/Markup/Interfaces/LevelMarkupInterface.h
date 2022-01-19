@@ -2,9 +2,16 @@
 
 #pragma once
 
-#include "../../ExDefines.h"
+#include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "LevelMarkupInterface.generated.h"
+
+UENUM(BlueprintType)
+enum class ELevelMarkupType : uint8
+{
+	Point,
+	Velocity,
+};
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -16,7 +23,7 @@ class ULevelMarkupInterface : public UInterface
 /**
  * 
  */
-class BODYCLEANUP_API ILevelMarkupInterface
+class LEVELDESIGNERTOOLS_API ILevelMarkupInterface
 {
 	GENERATED_BODY()
 

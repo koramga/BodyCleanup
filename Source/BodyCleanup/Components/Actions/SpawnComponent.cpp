@@ -2,7 +2,7 @@
 
 
 #include "SpawnComponent.h"
-#include "../Interfaces/LevelMarkupInterface.h"
+#include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
 #include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 #include "../Markups/VelocityMarkupComponent.h"
 
