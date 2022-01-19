@@ -10,9 +10,12 @@
  * 
  */
 
-
+USTRUCT()
 struct FLevelTriggerCertificate
 {
+	GENERATED_BODY()
+
+public :
 	TSoftObjectPtr<UObject>				OverlappedComp;
 	TArray<TSoftObjectPtr<UObject>>		OtherComps;
 
@@ -54,8 +57,9 @@ private :
 
 public :
 	void AddTriggerComponents(TSoftObjectPtr<UObject>& InputTriggerComponent);
-public :
 
+public :
+	void UpdateTrigger(bool bInputIsOnTrigger);
 };
 
 

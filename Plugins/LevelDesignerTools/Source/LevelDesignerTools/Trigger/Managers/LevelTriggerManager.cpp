@@ -16,6 +16,10 @@ void ULevelTriggerInterfaceSpace::AddTriggerComponents(TSoftObjectPtr<UObject>& 
 	}
 }
 
+void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
+{
+}
+
 void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	FLevelTriggerCertificate* TriggerCertificate = TriggerCertificateComponents.Find(OverlappedComp);
@@ -57,7 +61,7 @@ void ULevelTriggerInterfaceSpace::__ProcessTrigger(bool bInputIsOnTrigger)
 	{
 		if (bIsOnTrigger)
 		{
-			if (TriggerOnComponents.Num() != TriggerComponents.Num())
+			if (TriggerCertificateComponents.Num() != TriggerComponents.Num())
 			{
 				bIsOnTrigger = bInputIsOnTrigger;
 				UpdateTrigger(bIsOnTrigger);
@@ -72,8 +76,8 @@ void ULevelTriggerManager::AddTriggerInterface(const TSoftObjectPtr<ILevelTrigge
 	
 	if (nullptr == LevelTriggerInterfaceSpace)
 	{
-		TUniquePtr<ULevelTriggerInterfaceSpace> LevelTriggerInterfaceSpace = TUniquePtr<ULevelTriggerInterfaceSpace>(NewObject<ULevelTriggerInterfaceSpace>(this));
+		TUniquePtr<ULevelTriggerInterfaceSpace> NewLevelTriggerInterfaceSpace = TUniquePtr<ULevelTriggerInterfaceSpace>(NewObject<ULevelTriggerInterfaceSpace>(this));
 
-		LevelTriggerInterfaces.Add(TriggerInterface, TUniquePtr<ULevelTriggerInterfaceSpace>());
+		LevelTriggerInterfaces.Add(TriggerInterface, MoveTemp(NewLevelTriggerInterfaceSpace));
 	}
 }
