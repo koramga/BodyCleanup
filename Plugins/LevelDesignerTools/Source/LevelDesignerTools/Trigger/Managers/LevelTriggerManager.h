@@ -53,10 +53,12 @@ private:
 	void __OnTriggerComponentOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private :
+	void __InitTrigger();
 	void __ProcessTrigger(bool bInputIsOnTrigger);
 
 public :
 	void AddTriggerComponents(TSoftObjectPtr<UObject>& InputTriggerComponent);
+	void SetLevelTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& LevelTriggerInterface);
 
 public :
 	void UpdateTrigger(bool bInputIsOnTrigger);

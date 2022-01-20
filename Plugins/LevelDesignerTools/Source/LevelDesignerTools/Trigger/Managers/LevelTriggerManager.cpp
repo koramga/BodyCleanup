@@ -16,6 +16,13 @@ void ULevelTriggerInterfaceSpace::AddTriggerComponents(TSoftObjectPtr<UObject>& 
 	}
 }
 
+void ULevelTriggerInterfaceSpace::SetLevelTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& InputLevelTriggerInterface)
+{
+	LevelTriggerInterface = InputLevelTriggerInterface;
+
+
+}
+
 void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 {
 }
@@ -42,6 +49,62 @@ void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin(UPrimitiveCom
 void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 
+}
+
+void ULevelTriggerInterfaceSpace::__InitTrigger()
+{
+	InputTriggerComponents.Empty();
+	
+	TArray<TSoftObjectPtr<USceneComponent>> FindComponents;
+	
+	if (ETriggerComponentFromType::Parent == TriggerComponentFromType)
+	{
+		FindComponents.Add(GetAttachParent());
+	}
+	else if (ETriggerComponentFromType::Setup == TriggerComponentFromType)
+	{
+		for (const FTriggerActorWithName& TriggerActorWithName : TriggerActorWithNames)
+		{
+			TSoftObjectPtr<AActor> TriggerActor = GetOwner();
+	
+			if (TriggerActorWithName.Actor.IsValid())
+			{
+				TriggerActor = TriggerActorWithName.Actor;
+			}
+	
+			if (TriggerActor.IsValid())
+			{
+				if (TriggerActorWithName.Names.Num() > 0)
+				{
+					if (ENameType::Name == TriggerActorWithName.NameType)
+					{
+						UFindFunctionLibrary::FindComponentsByNames(FindComponents, TriggerActor->GetRootComponent(), TriggerActorWithName.Names);
+					}
+					else
+					{
+						for (const FName& Name : TriggerActorWithName.Names)
+						{
+							TArray<UActorComponent*> ActorComponents = TriggerActor->GetComponentsByTag(USceneComponent::StaticClass(), Name);
+	
+							for (UActorComponent* ActorComponent : ActorComponents)
+							{
+								USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent);
+	
+								if (IsValid(SceneComponent))
+								{
+									FindComponents.Add(SceneComponent);
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					UFindFunctionLibrary::FindTriggerComponents(FindComponents, TriggerActor->GetRootComponent());
+				}
+			}
+		}
+	}
 }
 
 void ULevelTriggerInterfaceSpace::__ProcessTrigger(bool bInputIsOnTrigger)
@@ -77,6 +140,8 @@ void ULevelTriggerManager::AddTriggerInterface(const TSoftObjectPtr<ILevelTrigge
 	if (nullptr == LevelTriggerInterfaceSpace)
 	{
 		TUniquePtr<ULevelTriggerInterfaceSpace> NewLevelTriggerInterfaceSpace = TUniquePtr<ULevelTriggerInterfaceSpace>(NewObject<ULevelTriggerInterfaceSpace>(this));
+
+		NewLevelTriggerInterfaceSpace->SetLevelTriggerInterface(TriggerInterface);
 
 		LevelTriggerInterfaces.Add(TriggerInterface, MoveTemp(NewLevelTriggerInterfaceSpace));
 	}
