@@ -24,20 +24,20 @@ void UTriggerComponent::BeginPlay()
 
 	__GetTriggerComponents(TriggerComponents);
 
-	for (TSoftObjectPtr<USceneComponent> TriggerComponent : TriggerComponents)
-	{
-		if (TriggerComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
-		{
-			Cast<ILevelTriggerInterface>(TriggerComponent.Get())->AddTriggerObserver(this);
-		}
-		else if (TriggerComponent->IsA(UPrimitiveComponent::StaticClass()))
-		{
-			UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
-
-			PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
-			PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
-		}
-	}
+	//for (TSoftObjectPtr<USceneComponent> TriggerComponent : TriggerComponents)
+	//{
+	//	if (TriggerComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
+	//	{
+	//		Cast<ILevelTriggerInterface>(TriggerComponent.Get())->AddTriggerObserver(this);
+	//	}
+	//	else if (TriggerComponent->IsA(UPrimitiveComponent::StaticClass()))
+	//	{
+	//		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
+	//
+	//		PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapEnd);
+	//		PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::__OnTriggerComponentOverlapBegin);
+	//	}
+	//}
 }
 
 void UTriggerComponent::CallTriggerObserversOnce()
@@ -263,10 +263,10 @@ void UTriggerComponent::GetTriggerLocation(TArray<FVector>& TriggerLocations)
 
 void UTriggerComponent::CallTriggerObservers(bool bIsInputOnTrigger)
 {
-	for (TSoftObjectPtr<ILevelTriggerInterface> ObserverLevelTriggerInterface : ObserverTriggerLevelInterfaces)
-	{
-		ObserverLevelTriggerInterface->CalledTriggerObservers(this, bIsInputOnTrigger);
-	}
+	//for (TSoftObjectPtr<ILevelTriggerInterface> ObserverLevelTriggerInterface : ObserverTriggerLevelInterfaces)
+	//{
+	//	ObserverLevelTriggerInterface->CalledTriggerObservers(this, bIsInputOnTrigger);
+	//}
 }
 
 void UTriggerComponent::AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface)

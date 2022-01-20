@@ -80,15 +80,15 @@ private :
 protected:
 	virtual void CallTriggerObserversOnce();
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
-	virtual void CallTriggerObservers(bool bIsInputOnTrigger) override;
-	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) override;
-	virtual void CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger) override;
+	virtual void CallTriggerObservers(bool bIsInputOnTrigger);
+	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface);
+	virtual void CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger);
 	virtual const FLevelTriggerInput* GetLevelTriggerInput() const override;
 
 protected :
-	virtual void UpdateTrigger(bool bInputIsOnTrigger);
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 	void FindTriggerOnActors(TArray<TSoftObjectPtr<AActor>>& Actors);
 
 public:
-	virtual bool IsOnTrigger() const override;
+	virtual bool IsOnTrigger() const;
 };

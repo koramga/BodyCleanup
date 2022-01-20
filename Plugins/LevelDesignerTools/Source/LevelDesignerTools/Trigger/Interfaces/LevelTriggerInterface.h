@@ -59,10 +59,7 @@ class LEVELDESIGNERTOOLS_API ILevelTriggerInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual bool IsOnTrigger() const = 0;
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
-	virtual void CallTriggerObservers(bool bInputIsTick) = 0;
-	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface) = 0;
-	virtual void CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bInputIsTick) = 0;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) = 0;
 	virtual const FLevelTriggerInput* GetLevelTriggerInput() const = 0;
 };

@@ -17,7 +17,10 @@ UCLASS()
 class LEVELDESIGNERTOOLS_API ULevelSupportFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	
+
+public :
+	static void FindTriggerComponentFromLevelTriggerInput(TArray<TSoftObjectPtr<UActorComponent>>& TriggerComponents, const ILevelTriggerInterface* LevelTriggerInterface);
+
 public :
 	static void FindPrimitiveComponets(TArray<TSoftObjectPtr<UPrimitiveComponent>>& Components, AActor* Actor);
 	static UPrimitiveComponent* FindPrimitiveComponentByName(AActor* Actor, const FName& Name);

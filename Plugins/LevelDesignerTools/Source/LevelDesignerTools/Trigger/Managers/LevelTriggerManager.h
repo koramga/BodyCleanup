@@ -16,8 +16,8 @@ struct FLevelTriggerCertificate
 	GENERATED_BODY()
 
 public :
-	TSoftObjectPtr<UObject>				OverlappedComp;
-	TArray<TSoftObjectPtr<UObject>>		OtherComps;
+	TSoftObjectPtr<UObject>							OverlappedComp;
+	TArray<TSoftObjectPtr<UPrimitiveComponent>>		OtherComps;
 
 	FLevelTriggerCertificate()
 		:OverlappedComp(nullptr) {}
@@ -34,13 +34,15 @@ class LEVELDESIGNERTOOLS_API ULevelTriggerInterfaceSpace
 
 private :
 	UPROPERTY()
+	TSoftObjectPtr<ULevelTriggerManager>						LevelTriggerManager;
+	UPROPERTY()
 	TSoftObjectPtr<ILevelTriggerInterface>						LevelTriggerInterface;
 	UPROPERTY()
-	TArray<TSoftObjectPtr<UObject>>								TriggerComponents;
+	TArray<TSoftObjectPtr<UActorComponent>>						TriggerComponents;
 	UPROPERTY()
 	TMap<TSoftObjectPtr<UObject>, FLevelTriggerCertificate>		TriggerCertificateComponents;
 	UPROPERTY()
-	TArray<TSoftObjectPtr<ILevelTriggerInterface>>				ObserverTriggerLevelInterfaces;
+	TArray<TSoftObjectPtr<ULevelTriggerInterfaceSpace>>			ObserverTriggerLevelInterfaceSpaces;
 
 	bool														bIsOnTrigger = false;
 
@@ -53,15 +55,19 @@ private:
 	void __OnTriggerComponentOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private :
-	void __InitTrigger();
 	void __ProcessTrigger(bool bInputIsOnTrigger);
+	void __CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger);
+	void __CallTriggerObservers(bool bIsInputOnTrigger);
+	void __AddTriggerObserver(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace);
 
 public :
-	void AddTriggerComponents(TSoftObjectPtr<UObject>& InputTriggerComponent);
-	void SetLevelTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& LevelTriggerInterface);
-
-public :
+	void Initialize();
 	void UpdateTrigger(bool bInputIsOnTrigger);
+
+public :
+	void SetLevelTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& LevelTriggerInterface);
+	void SetLevelTriggerManager(const TSoftObjectPtr<ULevelTriggerManager>& InputLevelTriggerManager);
+	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace);
 };
 
 
@@ -71,8 +77,11 @@ class LEVELDESIGNERTOOLS_API ULevelTriggerManager : public UObject
 	GENERATED_BODY()
 
 protected :
-	TMap<TSoftObjectPtr<ILevelTriggerInterface>, TUniquePtr<ULevelTriggerInterfaceSpace>>	LevelTriggerInterfaces;
+	UPROPERTY()
+	TMap<TSoftObjectPtr<ILevelTriggerInterface>, ULevelTriggerInterfaceSpace*>	LevelTriggerInterfaces;
 
 public :
-	void AddTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface);
+	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(TSoftObjectPtr<ILevelTriggerInterface> TriggerInterface);
+	void InitializeTriggerInterfaceSpace(const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface);
+	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface);
 };
