@@ -38,7 +38,7 @@ protected :
 
 	//Trigger Action을 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "bIsCanControlTriggerComponentFromType == true"))
-	FLevelTriggerInput							LevelTriggerInput;
+	FLevelTriggerInputFrom							LevelTriggerInput;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerComponent", meta = (EditCondition = "bIsCanControlTriggerComponentFromType == true"))
 	//ETriggerComponentFromType					TriggerComponentFromType = ETriggerComponentFromType::Parent;
@@ -83,7 +83,7 @@ protected:
 	virtual void CallTriggerObservers(bool bIsInputOnTrigger);
 	virtual void AddTriggerObserver(TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterface);
 	virtual void CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger);
-	virtual const FLevelTriggerInput* GetLevelTriggerInput() const override;
+	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 
 protected :
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;

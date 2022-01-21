@@ -44,7 +44,7 @@ void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 {
 	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
 
-	const FLevelTriggerInput* LevelTriggerInput = UpdateLevelTriggerInterface->GetLevelTriggerInput();
+	//const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
 
 	if (false == bIsOnTrigger)
 	{
@@ -143,9 +143,9 @@ void ULevelTriggerInterfaceSpace::__AddTriggerObserver(const TSoftObjectPtr<ULev
 
 void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace)
 {
-	const FLevelTriggerInput* ParamLevelTriggerInput = Cast<ILevelTriggerInterface>(LevelTriggerInterfaceSpace->LevelTriggerInterface.Get())->GetLevelTriggerInput();
+	const FLevelTriggerInputFrom* ParamLevelTriggerInputFrom = Cast<ILevelTriggerInterface>(LevelTriggerInterfaceSpace->LevelTriggerInterface.Get())->GetLevelTriggerInputFrom();
 	
-	if (ELevelTriggerInputNodeType::Parent == ParamLevelTriggerInput->LevelTriggerInputNodeType)
+	if (ELevelTriggerInputNodeFromType::Parent == ParamLevelTriggerInputFrom->LevelTriggerInputNodeFromType)
 	{
 		for (const auto& TriggerCertificateComponent : LevelTriggerInterfaceSpace->TriggerCertificateComponents)
 		{
@@ -158,7 +158,7 @@ void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor
 			}
 		}
 	}
-	else if (ELevelTriggerInputNodeType::Setup == ParamLevelTriggerInput->LevelTriggerInputNodeType)
+	else if (ELevelTriggerInputNodeFromType::Setup == ParamLevelTriggerInputFrom->LevelTriggerInputNodeFromType)
 	{
 		for (const auto& TriggerCertificateComponent : LevelTriggerInterfaceSpace->TriggerCertificateComponents)
 		{

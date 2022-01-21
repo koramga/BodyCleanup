@@ -19,7 +19,7 @@ public:
 
 protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|TriggerInput")
-	FLevelTriggerInput		LevelTriggerInput;
+	FLevelTriggerInputFrom	LevelTriggerInputFrom;
 
 protected:
 	// Called when the game starts
@@ -32,5 +32,5 @@ public:
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
-	virtual const FLevelTriggerInput* GetLevelTriggerInput() const override;		
+	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 };

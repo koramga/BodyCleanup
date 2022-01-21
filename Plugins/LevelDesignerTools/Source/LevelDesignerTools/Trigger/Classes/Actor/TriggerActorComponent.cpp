@@ -53,8 +53,8 @@ void UTriggerActorComponent::UpdateTrigger(bool bInputIsOnTrigger)
 {
 }
 
-const FLevelTriggerInput* UTriggerActorComponent::GetLevelTriggerInput() const
+const FLevelTriggerInputFrom* UTriggerActorComponent::GetLevelTriggerInputFrom() const
 {
-	return &LevelTriggerInput;
+	return &LevelTriggerInputFrom;
 }
 

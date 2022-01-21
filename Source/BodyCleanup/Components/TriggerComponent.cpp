@@ -293,7 +293,7 @@ void UTriggerComponent::CalledTriggerObservers(TSoftObjectPtr<USceneComponent> C
 	__ProcessTrigger(bIsInputOnTrigger);
 }
 
-const FLevelTriggerInput* UTriggerComponent::GetLevelTriggerInput() const
+const FLevelTriggerInputFrom* UTriggerComponent::GetLevelTriggerInputFrom() const
 {
 	return &LevelTriggerInput;
 }

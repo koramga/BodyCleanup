@@ -7,7 +7,7 @@
 
 void ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TArray<TSoftObjectPtr<UActorComponent>>& TriggerComponents, const ILevelTriggerInterface* LevelTriggerInterface)
 {
-	const FLevelTriggerInput* LevelTriggerInput = LevelTriggerInterface->GetLevelTriggerInput();
+	const FLevelTriggerInputFrom* LevelTriggerInputFrom = LevelTriggerInterface->GetLevelTriggerInputFrom();
 
 	const UActorComponent* LevelActorTriggerComponent = Cast<UActorComponent>(LevelTriggerInterface);
 
@@ -16,7 +16,7 @@ void ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TAr
 		const USceneComponent* LevelSceneTriggerComponent = Cast<USceneComponent>(LevelTriggerInterface);
 		AActor* Owner = LevelActorTriggerComponent->GetOwner();
 
-		if (ELevelTriggerInputNodeType::Parent == LevelTriggerInput->LevelTriggerInputNodeType)
+		if (ELevelTriggerInputNodeFromType::Parent == LevelTriggerInputFrom->LevelTriggerInputNodeFromType)
 		{
 			if (IsValid(LevelSceneTriggerComponent))
 			{
@@ -24,9 +24,9 @@ void ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TAr
 			}
 
 		}
-		else if (ELevelTriggerInputNodeType::Setup == LevelTriggerInput->LevelTriggerInputNodeType)
+		else if (ELevelTriggerInputNodeFromType::Setup == LevelTriggerInputFrom->LevelTriggerInputNodeFromType)
 		{
-			for (const FLevelTriggerInputNode& TriggerInputNode : LevelTriggerInput->LevelTriggerInputNodes)
+			for (const FLevelTriggerInputNode& TriggerInputNode : LevelTriggerInputFrom->LevelTriggerInputNodes)
 			{
 				TSoftObjectPtr<AActor> TriggerActor = Owner;
 

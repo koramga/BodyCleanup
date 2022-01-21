@@ -16,7 +16,7 @@ enum class ELevelTriggerReactType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ELevelTriggerInputNodeType : uint8
+enum class ELevelTriggerInputNodeFromType : uint8
 {
 	//부모 Component로부터 Trigger가 설정됩니다.
 	Parent,
@@ -27,7 +27,7 @@ enum class ELevelTriggerInputNodeType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ELevelTriggerActionType : uint8
+enum class ELevelTriggerInputNodeToType : uint8
 {
 	//부모 Component를 Action 합니다.
 	Parent,
@@ -52,19 +52,35 @@ public:
 };
 
 USTRUCT(BlueprintType, Blueprintable)
-struct FLevelTriggerInput
+struct FLevelTriggerInputFrom
 {
 	GENERATED_BODY()
 
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ELevelTriggerInputNodeType		LevelTriggerInputNodeType;
+	ELevelTriggerInputNodeFromType		LevelTriggerInputNodeFromType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ELevelTriggerReactType			LevelTriggerReactType;
+	ELevelTriggerReactType				LevelTriggerReactType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FLevelTriggerInputNode>	LevelTriggerInputNodes;
+	TArray<FLevelTriggerInputNode>		LevelTriggerInputNodes;
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FLevelTriggerInputTo
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ELevelTriggerInputNodeToType		LevelTriggerInputNodeToType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ELevelTriggerReactType				LevelTriggerReactType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FLevelTriggerInputNode>		LevelTriggerInputNodes;
 };
 
 // This class does not need to be modified.
@@ -85,5 +101,5 @@ class LEVELDESIGNERTOOLS_API ILevelTriggerInterface
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) = 0;
-	virtual const FLevelTriggerInput* GetLevelTriggerInput() const = 0;
+	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const = 0;
 };
