@@ -22,10 +22,11 @@ void UTriggerActorComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	SetupTrigger();
 
 	AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
 
-	if (GameModeBase->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
+	if (GameModeBase->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
 	{
 		ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GameModeBase);
 
@@ -34,6 +35,10 @@ void UTriggerActorComponent::BeginPlay()
 			LevelToolsGameModeBase->RegisterTrigger(this);
 		}
 	}	
+}
+
+void UTriggerActorComponent::SetupTrigger()
+{
 }
 
 
@@ -51,10 +56,16 @@ void UTriggerActorComponent::GetTriggerLocation(TArray<FVector>& TriggerLocation
 
 void UTriggerActorComponent::UpdateTrigger(bool bInputIsOnTrigger)
 {
+	bIsOnTrigger = bInputIsOnTrigger;
 }
 
 const FLevelTriggerInputFrom* UTriggerActorComponent::GetLevelTriggerInputFrom() const
 {
 	return &LevelTriggerInputFrom;
+}
+
+bool UTriggerActorComponent::IsOnTrigger() const
+{
+	return bIsOnTrigger;
 }
 

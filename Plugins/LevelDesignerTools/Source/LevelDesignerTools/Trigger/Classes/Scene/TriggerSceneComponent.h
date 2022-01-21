@@ -8,7 +8,8 @@
 #include "TriggerSceneComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+//UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS()
 class LEVELDESIGNERTOOLS_API UTriggerSceneComponent : public USceneComponent, public ILevelTriggerInterface
 {
 	GENERATED_BODY()
@@ -21,9 +22,13 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|TriggerInput")
 	FLevelTriggerInputFrom	LevelTriggerInputFrom;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool	bIsOnTrigger = false;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void SetupTrigger() override;
 
 public:	
 	// Called every frame
@@ -33,4 +38,5 @@ public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
+	virtual bool IsOnTrigger() const override;
 };

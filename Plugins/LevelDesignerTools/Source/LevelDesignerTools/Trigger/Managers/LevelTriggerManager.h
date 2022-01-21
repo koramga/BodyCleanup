@@ -36,7 +36,7 @@ private :
 	UPROPERTY()
 	TSoftObjectPtr<ULevelTriggerManager>						LevelTriggerManager;
 	UPROPERTY()
-	TSoftObjectPtr<ULevelTriggerInterface>						LevelTriggerInterface;
+	TSoftObjectPtr<UObject>										LevelTriggerInterface;
 	UPROPERTY()
 	TArray<TSoftObjectPtr<UActorComponent>>						TriggerComponents;
 	UPROPERTY()
@@ -55,14 +55,15 @@ private:
 	void __OnTriggerComponentOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private :
-	void __ProcessTrigger(bool bInputIsOnTrigger);
-	void __CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger);
+	void __CalledTriggerObservers(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& CallerLevelTriggerInterfaceSpace, bool bIsInputOnTrigger);
 	void __CallTriggerObservers(bool bIsInputOnTrigger);
 	void __AddTriggerObserver(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace);
 
 public :
-	void Initialize();
+	void SetupRelationship();
 	void UpdateTrigger(bool bInputIsOnTrigger);
+	bool HasTriggerComponents() const;
+	void ProcessTrigger(bool bInputIsOnTrigger);
 
 public :
 	void SetLevelTriggerInterface(ILevelTriggerInterface* InputLevelTriggerInterface);
@@ -79,12 +80,11 @@ class LEVELDESIGNERTOOLS_API ULevelTriggerManager : public UObject
 
 protected :
 	UPROPERTY()
-	TMap<TSoftObjectPtr<ULevelTriggerInterface>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaces;
+	TMap<TSoftObjectPtr<UObject>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaces;
 
 public :
 	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface);
-	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ULevelTriggerInterface* TriggerInterface);
-	void InitializeTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface);
+	void RegisterTrigger(ILevelTriggerInterface* TriggerInterface);
 	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface);
 	void BeginPlay();
 };

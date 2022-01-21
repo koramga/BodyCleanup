@@ -150,6 +150,7 @@ void ULevelSupportFunctionLibrary::FindPrimitiveComponets(TArray<TSoftObjectPtr<
 	}
 }
 
+
 UPrimitiveComponent* ULevelSupportFunctionLibrary::FindPrimitiveComponentByName(AActor* Actor, const FName& Name)
 {
 	TArray<UActorComponent*> TriggerComponents = Actor->GetComponentsByClass(UPrimitiveComponent::StaticClass());
@@ -163,6 +164,47 @@ UPrimitiveComponent* ULevelSupportFunctionLibrary::FindPrimitiveComponentByName(
 	}
 
 	return nullptr;
+}
+
+UActorComponent* ULevelSupportFunctionLibrary::FindComponentByName(AActor* Actor, const FName& Name)
+{
+	return Cast<UActorComponent>(Actor->GetDefaultSubobjectByName(Name));
+}
+
+void ULevelSupportFunctionLibrary::FindComponentsByNames(TArray<TSoftObjectPtr<UActorComponent>>& ActorComponents, AActor* Actor, const TArray<FName>& Names)
+{
+	for (const FName& Name : Names)
+	{
+		UActorComponent* ActorComponent = Cast<UActorComponent>(Actor->GetDefaultSubobjectByName(Name));
+
+		if (IsValid(ActorComponent))
+		{
+			ActorComponents.Add(ActorComponent);
+		}
+	}
+}
+
+void ULevelSupportFunctionLibrary::FindComponentsByTag(TArray<TSoftObjectPtr<UActorComponent>>& ActorComponents, AActor* Actor, const FName& Tag)
+{
+	TArray<UActorComponent*> FindActorComponents = Actor->GetComponentsByTag(UActorComponent::StaticClass(), Tag);
+
+	for (UActorComponent* FindActorComponent : FindActorComponents)
+	{
+		ActorComponents.Add(FindActorComponent);
+	}
+}
+
+void ULevelSupportFunctionLibrary::FindComponentsByTags(TArray<TSoftObjectPtr<UActorComponent>>& ActorComponents, AActor* Actor, const TArray<FName>& Tags)
+{
+	for (const FName& Tag : Tags)
+	{
+		TArray<UActorComponent*> FindActorComponents = Actor->GetComponentsByTag(UActorComponent::StaticClass(), Tag);
+
+		for (UActorComponent* FindActorComponent : FindActorComponents)
+		{
+			ActorComponents.Add(FindActorComponent);
+		}
+	}
 }
 
 void ULevelSupportFunctionLibrary::FindPrimitiveComponentsByNames(TArray<TSoftObjectPtr<UPrimitiveComponent>>& PrimitiveComponents, AActor* Actor, const TArray<FName>& Names)

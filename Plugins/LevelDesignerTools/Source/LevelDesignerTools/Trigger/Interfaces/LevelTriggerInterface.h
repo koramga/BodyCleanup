@@ -77,9 +77,6 @@ public:
 	ELevelTriggerInputNodeToType		LevelTriggerInputNodeToType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ELevelTriggerReactType				LevelTriggerReactType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FLevelTriggerInputNode>		LevelTriggerInputNodes;
 };
 
@@ -102,4 +99,6 @@ public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) = 0;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const = 0;
+	virtual void SetupTrigger() = 0;
+	virtual bool IsOnTrigger() const = 0;
 };

@@ -23,6 +23,10 @@ public :
 
 public :
 	static void FindPrimitiveComponets(TArray<TSoftObjectPtr<UPrimitiveComponent>>& Components, AActor* Actor);
+	static UActorComponent* FindComponentByName(AActor* Actor, const FName& Name);
+	static void FindComponentsByNames(TArray<TSoftObjectPtr<UActorComponent>>& ActorComponents, AActor* Actor, const TArray<FName>& Names);
+	static void FindComponentsByTag(TArray<TSoftObjectPtr<UActorComponent>>& ActorComponents, AActor* Actor, const FName& Tag);
+	static void FindComponentsByTags(TArray<TSoftObjectPtr<UActorComponent>>& ActorComponents, AActor* Actor, const TArray<FName>& Tags);
 	static UPrimitiveComponent* FindPrimitiveComponentByName(AActor* Actor, const FName& Name);
 	static void FindPrimitiveComponentsByNames(TArray<TSoftObjectPtr<UPrimitiveComponent>>& PrimitiveComponents, AActor* Actor, const TArray<FName>& Names);
 	static void FindPrimitiveComponentsByTag(TArray<TSoftObjectPtr<UPrimitiveComponent>>& PrimitiveComponents, AActor* Actor, const FName& Tag);

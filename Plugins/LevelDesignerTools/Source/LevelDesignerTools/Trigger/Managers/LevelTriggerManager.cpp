@@ -5,14 +5,12 @@
 #include "../../Utility/LevelSupportFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
-void ULevelTriggerInterfaceSpace::Initialize()
+void ULevelTriggerInterfaceSpace::SetupRelationship()
 {
-	ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TriggerComponents, Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get()));
-	
 	for (TSoftObjectPtr<UActorComponent>& TriggerComponent : TriggerComponents)
 	{
 		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
-	
+
 		if (IsValid(PrimitiveComponent))
 		{
 			PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin);
@@ -22,8 +20,8 @@ void ULevelTriggerInterfaceSpace::Initialize()
 		{
 			if (LevelTriggerManager.IsValid())
 			{
-				ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(LevelTriggerInterface.Get());
-	
+				ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(Cast<ILevelTriggerInterface>(TriggerComponent.Get()));
+
 				LevelTriggerInterfaceSpace->__AddTriggerObserver(this);
 			}
 		}
@@ -32,7 +30,9 @@ void ULevelTriggerInterfaceSpace::Initialize()
 
 void ULevelTriggerInterfaceSpace::SetLevelTriggerInterface(ILevelTriggerInterface* InputLevelTriggerInterface)
 {
-	LevelTriggerInterface = Cast<ULevelTriggerInterface>(InputLevelTriggerInterface);
+	LevelTriggerInterface = Cast<UObject>(InputLevelTriggerInterface);
+
+	ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TriggerComponents, InputLevelTriggerInterface);
 }
 
 void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<ULevelTriggerManager>& InputLevelTriggerManager)
@@ -42,89 +42,119 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 
 void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 {
+	__CallTriggerObservers(bInputIsOnTrigger);
 	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
+	bIsOnTrigger = bInputIsOnTrigger;
+	UpdateLevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
+}
 
-	//const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
-
-	if (false == bIsOnTrigger)
-	{
-		if (true == bInputIsOnTrigger)
-		{
-			bIsOnTrigger = true;
-			UpdateLevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
-		}
-	}
-	else
-	{
-		UpdateLevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
-	}
+bool ULevelTriggerInterfaceSpace::HasTriggerComponents() const
+{
+	return 0 < TriggerComponents.Num();
 }
 
 void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FLevelTriggerCertificate* TriggerCertificate = TriggerCertificateComponents.Find(OverlappedComp);
-	
-	if (nullptr != TriggerCertificate)
+	if (TriggerComponents.Find(OverlappedComp) >= 0)
 	{
-		//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Remove : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
-	
-		TriggerCertificate->OtherComps.Remove(OtherComp);
-	
-		if (TriggerCertificate->OtherComps.Num() <= 0)
+		FLevelTriggerCertificate* LevelTriggerCertificate = TriggerCertificateComponents.Find(OverlappedComp);
+
+		if (LevelTriggerCertificate == nullptr)
 		{
-			//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Delete : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
-			TriggerCertificateComponents.Remove(OverlappedComp);
-			__ProcessTrigger(false);
+			//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Create : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+
+			FLevelTriggerCertificate& Data = TriggerCertificateComponents.Add(OverlappedComp, FLevelTriggerCertificate(OverlappedComp));
+			Data.OtherComps.Add(OtherComp);
+			ProcessTrigger(true);
+		}
+		else
+		{
+			if (LevelTriggerCertificate->OtherComps.Find(OtherComp) < 0)
+			{
+				//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger On Add : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+
+				LevelTriggerCertificate->OtherComps.Add(OtherComp);
+			}
 		}
 	}
 }
 
 void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	FLevelTriggerCertificate* TriggerCertificate = TriggerCertificateComponents.Find(OverlappedComp);
 
+	if (nullptr != TriggerCertificate)
+	{
+		//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Remove : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+
+		TriggerCertificate->OtherComps.Remove(OtherComp);
+
+		if (TriggerCertificate->OtherComps.Num() <= 0)
+		{
+			//UE_LOG(LogTemp, Display, TEXT("Koramga Trigger Off Delete : <%s>(%s) : %s"), *OtherActor->GetName(), *OtherComp->GetName(), *OverlappedComp->GetName());
+			TriggerCertificateComponents.Remove(OverlappedComp);
+			ProcessTrigger(false);
+		}
+	}
 }
 
-void ULevelTriggerInterfaceSpace::__ProcessTrigger(bool bInputIsOnTrigger)
+void ULevelTriggerInterfaceSpace::ProcessTrigger(bool bInputIsOnTrigger)
 {
-	if (bInputIsOnTrigger)
+	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
+	const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
+
+	if (ELevelTriggerReactType::Once == LevelTriggerInputFrom->LevelTriggerReactType)
 	{
-		if (false == bIsOnTrigger)
+		if (bInputIsOnTrigger)
 		{
-			if (TriggerCertificateComponents.Num() == TriggerComponents.Num())
+			if (false == bIsOnTrigger)
 			{
-				bIsOnTrigger = bInputIsOnTrigger;
-				UpdateTrigger(bIsOnTrigger);
+				if (TriggerCertificateComponents.Num() == TriggerComponents.Num())
+				{
+					UpdateTrigger(true);
+				}
 			}
 		}
 	}
 	else
 	{
-		if (bIsOnTrigger)
+		if (TriggerCertificateComponents.Num() != TriggerComponents.Num())
 		{
-			if (TriggerCertificateComponents.Num() != TriggerComponents.Num())
+			if (bIsOnTrigger != false)
 			{
-				bIsOnTrigger = bInputIsOnTrigger;
-				UpdateTrigger(bIsOnTrigger);
+				UpdateTrigger(false);
+			}
+		}
+		else
+		{
+			if (bIsOnTrigger != true)
+			{
+				UpdateTrigger(true);
 			}
 		}
 	}
 }
 
-void ULevelTriggerInterfaceSpace::__CalledTriggerObservers(TSoftObjectPtr<USceneComponent> CallerActorComponent, bool bIsInputOnTrigger)
+void ULevelTriggerInterfaceSpace::__CalledTriggerObservers(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& CallerLevelTriggerInterfaceSpace, bool bIsInputOnTrigger)
 {
-	if (bIsInputOnTrigger)
+	if (CallerLevelTriggerInterfaceSpace.IsValid())
 	{
-		if (TriggerComponents.Find(CallerActorComponent) >= 0)
+		UActorComponent* ActorComponent = Cast<UActorComponent>(CallerLevelTriggerInterfaceSpace->LevelTriggerInterface.Get());
+
+		if (bIsInputOnTrigger)
 		{
-			TriggerCertificateComponents.Add(CallerActorComponent, FLevelTriggerCertificate(CallerActorComponent));
+			if (TriggerComponents.Contains(ActorComponent))
+			{
+				TriggerCertificateComponents.Add(ActorComponent, FLevelTriggerCertificate(ActorComponent));
+			}
 		}
+		else
+		{
+			TriggerCertificateComponents.Remove(ActorComponent);
+		}
+
+		ProcessTrigger(bIsInputOnTrigger);
 	}
-	else
-	{
-		TriggerCertificateComponents.Remove(CallerActorComponent);
-	}
-	
-	__ProcessTrigger(bIsInputOnTrigger);
 }
 
 void ULevelTriggerInterfaceSpace::__CallTriggerObservers(bool bIsInputOnTrigger)
@@ -200,7 +230,14 @@ ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace
 		return nullptr;
 	}
 
-	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<ULevelTriggerInterface>(TriggerInterface));
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
+
+	return LevelTriggerInterface;
+}
+
+void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterface)
+{
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
 
 	if (nullptr == LevelTriggerInterface)
 	{
@@ -209,25 +246,9 @@ ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace
 		LevelTriggerInterface->SetLevelTriggerManager(this);
 		LevelTriggerInterface->SetLevelTriggerInterface(TriggerInterface);
 
-		LevelTriggerInterfaces.Add(Cast<ULevelTriggerInterface>(TriggerInterface), LevelTriggerInterface);
+		LevelTriggerInterfaces.Add(Cast<UObject>(TriggerInterface), LevelTriggerInterface);
 	}
 
-	return LevelTriggerInterface;
-}
-
-ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ULevelTriggerInterface* TriggerInterface)
-{
-	return GetLevelTriggerInterfaceSpace(Cast<ILevelTriggerInterface>(TriggerInterface));
-}
-
-void ULevelTriggerManager::InitializeTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface)
-{
-	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(TriggerInterface);
-	
-	if (IsValid(LevelTriggerInterfaceSpace))
-	{
-		LevelTriggerInterfaceSpace->Initialize();
-	}
 }
 
 void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface)
@@ -242,5 +263,15 @@ void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Act
 
 void ULevelTriggerManager::BeginPlay()
 {
-
+	for (auto& LevelTriggerInterface : LevelTriggerInterfaces)
+	{
+		if (LevelTriggerInterface.Value->HasTriggerComponents())
+		{
+			LevelTriggerInterface.Value->SetupRelationship();
+		}
+		else
+		{
+			LevelTriggerInterface.Value->ProcessTrigger(true);
+		}
+	}
 }

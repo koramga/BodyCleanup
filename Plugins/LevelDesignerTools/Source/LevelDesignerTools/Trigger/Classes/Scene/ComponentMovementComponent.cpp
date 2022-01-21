@@ -2,7 +2,8 @@
 
 
 #include "ComponentMovementComponent.h"
-#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
+//#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
+#include "../../../Utility/LevelSupportFunctionLibrary.h"
 
 UComponentMovementComponent::UComponentMovementComponent()
 {
@@ -15,8 +16,11 @@ UComponentMovementComponent::UComponentMovementComponent()
 void UComponentMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	if (EActionComponentToType::Parent == ActionComponentToType)
+void UComponentMovementComponent::SetupTrigger()
+{
+	if (ELevelTriggerInputNodeToType::Parent == LevelTriggerInputTo.LevelTriggerInputNodeToType)
 	{
 		USceneComponent* AttachParentComponent = GetAttachParent();
 
@@ -25,26 +29,29 @@ void UComponentMovementComponent::BeginPlay()
 			ComponentMovementDatas.Add(FComponentMovementData(AttachParentComponent));
 		}
 	}
-	else if (EActionComponentToType::Setup == ActionComponentToType)
+	else if (ELevelTriggerInputNodeToType::Setup == LevelTriggerInputTo.LevelTriggerInputNodeToType)
 	{
-		if (ENameType::Name == NameType)
+		for (const FLevelTriggerInputNode& LevelTriggerInputNode : LevelTriggerInputTo.LevelTriggerInputNodes)
 		{
-			USceneComponent* ComponentByName = UFindFunctionLibrary::FindComponentByName(GetOwner()->GetRootComponent(), ActionName);
+			TArray<TSoftObjectPtr<UActorComponent>> ActorComponents;
 
-			if (IsValid(ComponentByName))
+			if (false == LevelTriggerInputNode.bIsTag)
 			{
-				ComponentMovementDatas.Add(FComponentMovementData(ComponentByName));
+				ULevelSupportFunctionLibrary::FindComponentsByNames(ActorComponents, GetOwner(), LevelTriggerInputNode.Names);
 			}
-		}
-		else if (ENameType::Tag == NameType)
-		{
-			TArray<TSoftObjectPtr<USceneComponent>> SceneComponents;
-
-			UFindFunctionLibrary::FindComponentsByTagName(SceneComponents, GetOwner(), ActionName);
-
-			for (TSoftObjectPtr<USceneComponent> SceneComponent : SceneComponents)
+			else
 			{
-				ComponentMovementDatas.Add(FComponentMovementData(SceneComponent));
+				ULevelSupportFunctionLibrary::FindComponentsByTags(ActorComponents, GetOwner(), LevelTriggerInputNode.Names);
+			}
+
+			for (TSoftObjectPtr<UActorComponent> ActorComponent : ActorComponents)
+			{
+				USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent.Get());
+
+				if (IsValid(SceneComponent))
+				{
+					ComponentMovementDatas.Add(FComponentMovementData(SceneComponent));
+				}
 			}
 		}
 	}
@@ -53,7 +60,7 @@ void UComponentMovementComponent::BeginPlay()
 	{
 		ComponentMovementData.MovementComponent->Mobility = EComponentMobility::Type::Movable;
 		ComponentMovementData.DestinationTransform = ComponentMovementData.MovementComponent->GetRelativeTransform() + DestinationDeltaTransform;
-		ComponentMovementData.DestinationTransform.SetRotation((ComponentMovementData.MovementComponent->GetRelativeRotation() + DestinationDeltaTransform.Rotator()).Quaternion());		
+		ComponentMovementData.DestinationTransform.SetRotation((ComponentMovementData.MovementComponent->GetRelativeRotation() + DestinationDeltaTransform.Rotator()).Quaternion());
 	}
 }
 
@@ -65,7 +72,7 @@ void UComponentMovementComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	{
 		if (ComponentMovementData.MovementComponent.IsValid())
 		{
-			if (IsUpdateDestinationTransformed())
+			if (bIsOnTrigger)
 			{
 				FTransform Source = ComponentMovementData.MovementComponent->GetRelativeTransform();
 			

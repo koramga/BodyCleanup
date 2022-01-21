@@ -46,6 +46,10 @@ void UTriggerComponent::CallTriggerObserversOnce()
 	CallTriggerObservers(false);
 }
 
+void UTriggerComponent::SetupTrigger()
+{
+}
+
 void UTriggerComponent::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (TriggerComponents.Find(OverlappedComp) >= 0)

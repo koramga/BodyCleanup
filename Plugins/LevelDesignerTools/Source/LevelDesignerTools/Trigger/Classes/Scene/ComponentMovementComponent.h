@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../ActionComponent.h"
+#include "TriggerSceneComponent.h"
 #include "ComponentMovementComponent.generated.h"
 
 /**
@@ -38,7 +38,7 @@ public:
 };
 
 UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
-class BODYCLEANUP_API UComponentMovementComponent : public UActionComponent
+class LEVELDESIGNERTOOLS_API UComponentMovementComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
 	
@@ -56,15 +56,7 @@ protected :
 
 	//Action의 범위를 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
-	EActionComponentToType	ActionComponentToType = EActionComponentToType::Parent;
-
-	//이름의 Type을 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
-	ENameType				NameType;
-
-	//Move Action을 수행할 Component의 이름일 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
-	FName					ActionName;
+	FLevelTriggerInputTo	LevelTriggerInputTo;
 
 	//Delta Transform에서 Location의 적용유무를 결정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
@@ -85,6 +77,7 @@ protected :
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void SetupTrigger() override;
 
 public:
 	// Called every frame

@@ -30,5 +30,5 @@ void ABaseGameModeBase::InitTrigger()
 
 void ABaseGameModeBase::RegisterTrigger(ILevelTriggerInterface* LevelTriggerInterface)
 {
-	LevelTriggerManager->InitializeTriggerInterfaceSpace(LevelTriggerInterface);
+	LevelTriggerManager->RegisterTrigger(LevelTriggerInterface);
 }

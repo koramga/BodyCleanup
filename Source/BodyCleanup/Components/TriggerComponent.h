@@ -91,4 +91,5 @@ protected :
 
 public:
 	virtual bool IsOnTrigger() const;
+	virtual void SetupTrigger();
 };
