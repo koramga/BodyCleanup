@@ -2,6 +2,9 @@
 
 
 #include "TriggerActorComponent.h"
+#include "../../GameMode/LevelToolsGameModeBase.h"
+#include "../Interfaces/LevelTriggerInterface.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values for this component's properties
 UTriggerActorComponent::UTriggerActorComponent()
@@ -20,7 +23,18 @@ void UTriggerActorComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
+	AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
+
+	if (GameModeBase->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
+	{
+		ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GameModeBase);
+
+		if (nullptr != LevelToolsGameModeBase)
+		{
+			LevelToolsGameModeBase->RegisterTrigger(this);
+		}
+	}	
 }
 
 

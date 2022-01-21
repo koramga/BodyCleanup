@@ -7,6 +7,15 @@
 #include "LevelTriggerInterface.generated.h"
 
 UENUM(BlueprintType)
+enum class ELevelTriggerReactType : uint8
+{
+	//한 번의 Trigger에만 반응합니다.
+	Once,
+	//여러 번의 Trigger에 반응합니다.
+	Again,
+};
+
+UENUM(BlueprintType)
 enum class ELevelTriggerInputNodeType : uint8
 {
 	//부모 Component로부터 Trigger가 설정됩니다.
@@ -39,7 +48,11 @@ struct FLevelTriggerInput
 	GENERATED_BODY()
 
 public :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelTriggerInputNodeType		LevelTriggerInputNodeType;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ELevelTriggerReactType			LevelTriggerReactType;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FLevelTriggerInputNode>	LevelTriggerInputNodes;
 };
 

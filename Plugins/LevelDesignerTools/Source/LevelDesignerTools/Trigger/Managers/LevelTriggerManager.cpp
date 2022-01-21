@@ -42,7 +42,22 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 
 void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 {
-	Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get())->UpdateTrigger(bInputIsOnTrigger);
+	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
+
+	const FLevelTriggerInput* LevelTriggerInput = UpdateLevelTriggerInterface->GetLevelTriggerInput();
+
+	if (false == bIsOnTrigger)
+	{
+		if (true == bInputIsOnTrigger)
+		{
+			bIsOnTrigger = true;
+			UpdateLevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
+		}
+	}
+	else
+	{
+		UpdateLevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
+	}
 }
 
 void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
