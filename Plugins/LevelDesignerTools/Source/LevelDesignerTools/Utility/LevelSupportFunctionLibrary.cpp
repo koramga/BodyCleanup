@@ -70,9 +70,9 @@ void ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TAr
 
 						FindTriggerInterfaces(LevelTriggerInterfaces, TriggerActor.Get());
 
-						for (const TSoftObjectPtr<ILevelTriggerInterface>& LevelTriggerInterface : LevelTriggerInterfaces)
+						for (const TSoftObjectPtr<ILevelTriggerInterface>& ParamLevelTriggerInterface : LevelTriggerInterfaces)
 						{
-							UActorComponent* ActorComponent = Cast<UActorComponent>(LevelTriggerInterface.Get());
+							UActorComponent* ActorComponent = Cast<UActorComponent>(ParamLevelTriggerInterface.Get());
 
 							if (IsValid(ActorComponent))
 							{

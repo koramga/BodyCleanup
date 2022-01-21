@@ -36,7 +36,7 @@ private :
 	UPROPERTY()
 	TSoftObjectPtr<ULevelTriggerManager>						LevelTriggerManager;
 	UPROPERTY()
-	TSoftObjectPtr<ILevelTriggerInterface>						LevelTriggerInterface;
+	TSoftObjectPtr<ULevelTriggerInterface>						LevelTriggerInterface;
 	UPROPERTY()
 	TArray<TSoftObjectPtr<UActorComponent>>						TriggerComponents;
 	UPROPERTY()
@@ -65,9 +65,10 @@ public :
 	void UpdateTrigger(bool bInputIsOnTrigger);
 
 public :
-	void SetLevelTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& LevelTriggerInterface);
+	void SetLevelTriggerInterface(ILevelTriggerInterface* InputLevelTriggerInterface);
 	void SetLevelTriggerManager(const TSoftObjectPtr<ULevelTriggerManager>& InputLevelTriggerManager);
 	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace);
+	const ILevelTriggerInterface* GetLevelTriggerInterface() const;
 };
 
 
@@ -78,10 +79,12 @@ class LEVELDESIGNERTOOLS_API ULevelTriggerManager : public UObject
 
 protected :
 	UPROPERTY()
-	TMap<TSoftObjectPtr<ILevelTriggerInterface>, ULevelTriggerInterfaceSpace*>	LevelTriggerInterfaces;
+	TMap<TSoftObjectPtr<ULevelTriggerInterface>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaces;
 
 public :
-	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(TSoftObjectPtr<ILevelTriggerInterface> TriggerInterface);
-	void InitializeTriggerInterfaceSpace(const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface);
-	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface);
+	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface);
+	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ULevelTriggerInterface* TriggerInterface);
+	void InitializeTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface);
+	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface);
+	void BeginPlay();
 };

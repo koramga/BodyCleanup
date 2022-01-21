@@ -3,3 +3,32 @@
 
 #include "BaseGameModeBase.h"
 
+ABaseGameModeBase::ABaseGameModeBase()
+{
+	//
+}
+
+void ABaseGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	LevelTriggerManager = NewObject<ULevelTriggerManager>(this);
+}
+
+void ABaseGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//UE_LOG(LogTemp, Display, TEXT("Koramga BeginPlay"));
+	InitTrigger();
+}
+
+void ABaseGameModeBase::InitTrigger()
+{
+	LevelTriggerManager->BeginPlay();
+}
+
+void ABaseGameModeBase::RegisterTrigger(ILevelTriggerInterface* LevelTriggerInterface)
+{
+	LevelTriggerManager->InitializeTriggerInterfaceSpace(LevelTriggerInterface);
+}

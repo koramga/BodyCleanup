@@ -7,7 +7,7 @@
 
 void ULevelTriggerInterfaceSpace::Initialize()
 {
-	ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TriggerComponents, LevelTriggerInterface.Get());
+	ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TriggerComponents, Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get()));
 	
 	for (TSoftObjectPtr<UActorComponent>& TriggerComponent : TriggerComponents)
 	{
@@ -30,9 +30,9 @@ void ULevelTriggerInterfaceSpace::Initialize()
 	}
 }
 
-void ULevelTriggerInterfaceSpace::SetLevelTriggerInterface(const TSoftObjectPtr<ILevelTriggerInterface>& InputLevelTriggerInterface)
+void ULevelTriggerInterfaceSpace::SetLevelTriggerInterface(ILevelTriggerInterface* InputLevelTriggerInterface)
 {
-	LevelTriggerInterface = InputLevelTriggerInterface;
+	LevelTriggerInterface = Cast<ULevelTriggerInterface>(InputLevelTriggerInterface);
 }
 
 void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<ULevelTriggerManager>& InputLevelTriggerManager)
@@ -42,7 +42,7 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 
 void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 {
-	LevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
+	Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get())->UpdateTrigger(bInputIsOnTrigger);
 }
 
 void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -108,7 +108,7 @@ void ULevelTriggerInterfaceSpace::__CalledTriggerObservers(TSoftObjectPtr<UScene
 	{
 		TriggerCertificateComponents.Remove(CallerActorComponent);
 	}
-
+	
 	__ProcessTrigger(bIsInputOnTrigger);
 }
 
@@ -128,7 +128,7 @@ void ULevelTriggerInterfaceSpace::__AddTriggerObserver(const TSoftObjectPtr<ULev
 
 void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace)
 {
-	const FLevelTriggerInput* ParamLevelTriggerInput = LevelTriggerInterfaceSpace->LevelTriggerInterface->GetLevelTriggerInput();
+	const FLevelTriggerInput* ParamLevelTriggerInput = Cast<ILevelTriggerInterface>(LevelTriggerInterfaceSpace->LevelTriggerInterface.Get())->GetLevelTriggerInput();
 	
 	if (ELevelTriggerInputNodeType::Parent == ParamLevelTriggerInput->LevelTriggerInputNodeType)
 	{
@@ -162,7 +162,6 @@ void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor
 		for (TSoftObjectPtr<UActorComponent> TriggerComponentParam : LevelTriggerInterfaceSpace->TriggerComponents)
 		{
 			ILevelTriggerInterface* ParamLevelTriggerInterface = Cast<ILevelTriggerInterface>(TriggerComponentParam.Get());
-			//TSoftObjectPtr<ILevelTriggerInterface> LevelTriggerInterfaceSoftObjectPtr = TSoftObjectPtr<ILevelTriggerInterface>(ParamLevelTriggerInterface);
 	
 			ULevelTriggerInterfaceSpace* ParamLevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(ParamLevelTriggerInterface);
 			
@@ -174,29 +173,39 @@ void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor
 	}
 }
 
-ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(TSoftObjectPtr<ILevelTriggerInterface> TriggerInterface)
+const ILevelTriggerInterface* ULevelTriggerInterfaceSpace::GetLevelTriggerInterface() const
+{
+	return Cast< const ILevelTriggerInterface>(LevelTriggerInterface.Get());
+}
+
+ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface)
 {
 	if (nullptr == TriggerInterface)
 	{
 		return nullptr;
 	}
 
-	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = LevelTriggerInterfaces.FindRef(TriggerInterface);
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<ULevelTriggerInterface>(TriggerInterface));
 
-	if (nullptr == LevelTriggerInterfaceSpace)
+	if (nullptr == LevelTriggerInterface)
 	{
-		ULevelTriggerInterfaceSpace* NewLevelTriggerInterfaceSpace = Cast<ULevelTriggerInterfaceSpace>(NewObject<ULevelTriggerInterfaceSpace>(this));
-	
-		NewLevelTriggerInterfaceSpace->SetLevelTriggerManager(this);
-		NewLevelTriggerInterfaceSpace->SetLevelTriggerInterface(TriggerInterface);
-	
-		LevelTriggerInterfaceSpace = LevelTriggerInterfaces.Add(TriggerInterface, NewLevelTriggerInterfaceSpace);
+		LevelTriggerInterface = Cast<ULevelTriggerInterfaceSpace>(NewObject<ULevelTriggerInterfaceSpace>(this));
+
+		LevelTriggerInterface->SetLevelTriggerManager(this);
+		LevelTriggerInterface->SetLevelTriggerInterface(TriggerInterface);
+
+		LevelTriggerInterfaces.Add(Cast<ULevelTriggerInterface>(TriggerInterface), LevelTriggerInterface);
 	}
 
-	return LevelTriggerInterfaceSpace;
+	return LevelTriggerInterface;
 }
 
-void ULevelTriggerManager::InitializeTriggerInterfaceSpace(const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface)
+ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ULevelTriggerInterface* TriggerInterface)
+{
+	return GetLevelTriggerInterfaceSpace(Cast<ILevelTriggerInterface>(TriggerInterface));
+}
+
+void ULevelTriggerManager::InitializeTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface)
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(TriggerInterface);
 	
@@ -206,7 +215,7 @@ void ULevelTriggerManager::InitializeTriggerInterfaceSpace(const TSoftObjectPtr<
 	}
 }
 
-void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ILevelTriggerInterface>& TriggerInterface)
+void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface)
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(TriggerInterface);
 	
@@ -214,4 +223,9 @@ void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Act
 	{
 		LevelTriggerInterfaceSpace->FindOverlapActors(Actors, LevelTriggerInterfaceSpace);
 	}
+}
+
+void ULevelTriggerManager::BeginPlay()
+{
+
 }
