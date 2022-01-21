@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "../MarkupComponent.h"
+#include "MarkupComponent.h"
 #include "VelocityMarkupComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Markup), meta = (BlueprintSpawnableComponent))
-class BODYCLEANUP_API UVelocityMarkupComponent : public UMarkupComponent
+class LEVELDESIGNERTOOLS_API UVelocityMarkupComponent : public UMarkupComponent
 {
 	GENERATED_BODY()
 

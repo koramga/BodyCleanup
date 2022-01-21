@@ -3,7 +3,8 @@
 
 #include "WarpComponent.h"
 #include "../../Actor/BaseActor.h"
-#include "../MarkupComponent.h"
+//#include "../MarkupComponent.h"
+#include "LevelDesignerTools/Markup/Classes/MarkupComponent.h"
 #include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 
 // Sets default values for this component's properties

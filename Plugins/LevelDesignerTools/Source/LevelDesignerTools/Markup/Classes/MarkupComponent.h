@@ -2,14 +2,13 @@
 
 #pragma once
 
-#include "../ExDefines.h"
-#include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
+#include "../Interfaces/LevelMarkupInterface.h"
 #include "Components/SceneComponent.h"
 #include "MarkupComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Markup), meta=(BlueprintSpawnableComponent) )
-class BODYCLEANUP_API UMarkupComponent : public USceneComponent, public ILevelMarkupInterface
+class LEVELDESIGNERTOOLS_API UMarkupComponent : public USceneComponent, public ILevelMarkupInterface
 {
 	GENERATED_BODY()
 

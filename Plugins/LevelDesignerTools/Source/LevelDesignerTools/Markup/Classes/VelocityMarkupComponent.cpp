@@ -2,7 +2,8 @@
 
 
 #include "VelocityMarkupComponent.h"
-#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
+//#include "../../Utilities/LevelSupportFunctionLibrary.h"
+#include "../../Utility/LevelSupportFunctionLibrary.h"
 
 FVector UVelocityMarkupComponent::GetLinearVelocity() const
 {
@@ -25,11 +26,11 @@ void UVelocityMarkupComponent::UpdateFromMarkup(UObject* Object) const
 
 	if (Object->IsA(AActor::StaticClass()))
 	{
-		UFindFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<AActor>(Object)->GetRootComponent());
-	}
+		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<AActor>(Object));
+	} 
 	else if (Object->IsA(USceneComponent::StaticClass()))
 	{
-		UFindFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<USceneComponent>(Object));
+		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<USceneComponent>(Object)->GetOwner());
 	}
 
 	for (TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)

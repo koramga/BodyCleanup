@@ -4,7 +4,8 @@
 #include "SpawnComponent.h"
 #include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
 #include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
-#include "../Markups/VelocityMarkupComponent.h"
+//#include "../Markups/VelocityMarkupComponent.h"
+#include "LevelDesignerTools/Markup/Classes/VelocityMarkupComponent.h"
 
 void USpawnComponent::BeginPlay()
 {

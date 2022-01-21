@@ -4,7 +4,7 @@
 #include "BaseLevelActor.h"
 #include "../../Components/LevelComponent.h"
 #include "../../Components/Actions/WarpComponent.h"
-#include "../../Components/MarkupComponent.h"
+#include "LevelDesignerTools/Markup/Classes/MarkupComponent.h"
 #include "../../Components/Actions/SpawnComponent.h"
 
 #if WITH_EDITOR
