@@ -26,6 +26,15 @@ enum class ELevelTriggerInputNodeType : uint8
 	Action UMETA(Hidden),
 };
 
+UENUM(BlueprintType)
+enum class ELevelTriggerActionType : uint8
+{
+	//부모 Component를 Action 합니다.
+	Parent,
+	//Component Setup으로 부터 결정됩니다.
+	Setup,
+};
+
 USTRUCT(BlueprintType, Blueprintable)
 struct FLevelTriggerInputNode
 {
@@ -50,8 +59,10 @@ struct FLevelTriggerInput
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelTriggerInputNodeType		LevelTriggerInputNodeType;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelTriggerReactType			LevelTriggerReactType;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FLevelTriggerInputNode>	LevelTriggerInputNodes;
 };

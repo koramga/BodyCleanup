@@ -2,8 +2,7 @@
 
 
 #include "TriggerSceneComponent.h"
-#include "../../GameMode/LevelToolsGameModeBase.h"
-#include "../Interfaces/LevelTriggerInterface.h"
+#include "../../../GameMode/LevelToolsGameModeBase.h"
 #include "GameFramework/GameModeBase.h"
 
 // Sets default values for this component's properties

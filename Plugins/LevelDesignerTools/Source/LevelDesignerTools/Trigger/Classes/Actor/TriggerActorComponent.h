@@ -3,22 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Interfaces/LevelTriggerInterface.h"
-#include "Components/SceneComponent.h"
-#include "TriggerSceneComponent.generated.h"
+#include "../../Interfaces/LevelTriggerInterface.h"
+#include "Components/ActorComponent.h"
+#include "TriggerActorComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class LEVELDESIGNERTOOLS_API UTriggerSceneComponent : public USceneComponent, public ILevelTriggerInterface
+class LEVELDESIGNERTOOLS_API UTriggerActorComponent : public UActorComponent, public ILevelTriggerInterface
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UTriggerSceneComponent();
+	UTriggerActorComponent();
 
-protected :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|TriggerInput")
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerInput")
 	FLevelTriggerInput		LevelTriggerInput;
 
 protected:
