@@ -8,7 +8,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class LEVELDESIGNERTOOLS_API UTimerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()

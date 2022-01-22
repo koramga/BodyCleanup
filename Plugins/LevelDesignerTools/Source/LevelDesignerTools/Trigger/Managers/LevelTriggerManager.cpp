@@ -42,10 +42,24 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 
 void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 {
-	__CallTriggerObservers(bInputIsOnTrigger);
-	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
-	bIsOnTrigger = bInputIsOnTrigger;
-	UpdateLevelTriggerInterface->UpdateTrigger(bInputIsOnTrigger);
+	if (bIsOnTrigger != bInputIsOnTrigger)
+	{
+		ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
+		const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
+
+		if (ELevelTriggerReactType::Once == LevelTriggerInputFrom->LevelTriggerReactType)
+		{
+			//일전에 한 번 호출되었다는 의미가 된다.
+			if (bIsOnTrigger)
+			{
+				return;
+			}
+		}
+
+		bIsOnTrigger = bInputIsOnTrigger;
+		__CallTriggerObservers(bIsOnTrigger);
+		UpdateLevelTriggerInterface->UpdateTrigger(bIsOnTrigger);
+	}
 }
 
 bool ULevelTriggerInterfaceSpace::HasTriggerComponents() const
@@ -100,36 +114,20 @@ void ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapEnd(UPrimitiveCompo
 
 void ULevelTriggerInterfaceSpace::ProcessTrigger(bool bInputIsOnTrigger)
 {
-	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
-	const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
-
-	if (ELevelTriggerReactType::Once == LevelTriggerInputFrom->LevelTriggerReactType)
+	if (bIsOnTrigger != bInputIsOnTrigger)
 	{
 		if (bInputIsOnTrigger)
 		{
-			if (false == bIsOnTrigger)
+			if (TriggerCertificateComponents.Num() == TriggerComponents.Num())
 			{
-				if (TriggerCertificateComponents.Num() == TriggerComponents.Num())
-				{
-					UpdateTrigger(true);
-				}
-			}
-		}
-	}
-	else
-	{
-		if (TriggerCertificateComponents.Num() != TriggerComponents.Num())
-		{
-			if (bIsOnTrigger != false)
-			{
-				UpdateTrigger(false);
+				UpdateTrigger(true);
 			}
 		}
 		else
 		{
-			if (bIsOnTrigger != true)
+			if (TriggerCertificateComponents.Num() != TriggerComponents.Num())
 			{
-				UpdateTrigger(true);
+				UpdateTrigger(false);
 			}
 		}
 	}
@@ -210,9 +208,9 @@ void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor
 	
 			ULevelTriggerInterfaceSpace* ParamLevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(ParamLevelTriggerInterface);
 			
-			if (nullptr != LevelTriggerInterfaceSpace)
+			if (nullptr != ParamLevelTriggerInterfaceSpace)
 			{
-				FindOverlapActors(Actors, LevelTriggerInterfaceSpace);
+				FindOverlapActors(Actors, ParamLevelTriggerInterfaceSpace);
 			}
 		}
 	}

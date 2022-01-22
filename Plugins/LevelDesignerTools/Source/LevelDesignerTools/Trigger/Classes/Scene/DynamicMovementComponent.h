@@ -55,10 +55,6 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	FLevelTriggerInputTo	LevelTriggerInputTo;
 
-	//Move Action을 수행할 Component의 이름일 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
-	FName					ActionName;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
 	TArray<FTransform>		DestinationDeltaTransforms;
 

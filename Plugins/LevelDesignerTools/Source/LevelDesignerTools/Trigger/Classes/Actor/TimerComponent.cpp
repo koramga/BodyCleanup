@@ -23,17 +23,10 @@ void UTimerComponent::UpdateTrigger(bool bInputIsOnTrigger)
 	{
 		GetOwner()->GetWorldTimerManager().SetTimer(TimerHandle, this, &UTimerComponent::__AdvanceTimer, CycleTime, true);
 	}
-	else
-	{
-		GetOwner()->GetWorldTimerManager().ClearTimer(TimerHandle);
-	}
 }
 
 void UTimerComponent::__AdvanceTimer()
 {
-	//시간은 어떻게 할지에 대한 고민이 필요하겠네
-
-
 	if (GetWorld()->GetAuthGameMode()->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
 	{
 		ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());

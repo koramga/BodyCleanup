@@ -51,7 +51,7 @@ public :
 	FTransform										Transform;
 };
 
-UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class LEVELDESIGNERTOOLS_API USpawnComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
