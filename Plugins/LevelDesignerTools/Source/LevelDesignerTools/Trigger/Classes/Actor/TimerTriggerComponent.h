@@ -22,7 +22,7 @@ protected:
 	FTimerHandle	TimerHandle;
 
 	//주기를 설정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TimerComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TimerTriggerComponent")
 	float			CycleTime = 1.f;
 
 protected:

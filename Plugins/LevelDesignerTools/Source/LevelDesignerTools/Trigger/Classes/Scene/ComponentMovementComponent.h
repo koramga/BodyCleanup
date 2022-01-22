@@ -37,7 +37,7 @@ public:
 	}
 };
 
-UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class LEVELDESIGNERTOOLS_API UComponentMovementComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
@@ -55,7 +55,7 @@ protected :
 	FTransform	DestinationDeltaTransform;
 
 	//Action의 범위를 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|LevelTriggerInputTo")
 	FLevelTriggerInputTo	LevelTriggerInputTo;
 
 	//Delta Transform에서 Location의 적용유무를 결정합니다.

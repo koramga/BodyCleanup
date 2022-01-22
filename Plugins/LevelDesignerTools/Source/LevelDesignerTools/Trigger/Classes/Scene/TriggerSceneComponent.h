@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -19,7 +19,7 @@ public:
 	UTriggerSceneComponent();
 
 protected :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|TriggerInput")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LevelTriggerInputFrom")
 	FLevelTriggerInputFrom	LevelTriggerInputFrom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

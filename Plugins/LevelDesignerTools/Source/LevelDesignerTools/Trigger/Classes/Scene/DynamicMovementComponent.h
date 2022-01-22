@@ -38,7 +38,7 @@ enum class EDynamicMovementCycleType : uint8
 	Reverse,
 };
 
-UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class LEVELDESIGNERTOOLS_API UDynamicMovementComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
@@ -52,7 +52,7 @@ protected :
 	float	InterpSpeed = 1.f;
 
 	//Action의 범위를 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|LevelTriggerInputTo")
 	FLevelTriggerInputTo	LevelTriggerInputTo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")

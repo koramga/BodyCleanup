@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,29 +9,29 @@
 UENUM(BlueprintType)
 enum class ELevelTriggerReactType : uint8
 {
-	//ÇÑ ¹øÀÇ Trigger¿¡¸¸ ¹İÀÀÇÕ´Ï´Ù.
+	//í•œ ë²ˆì˜ Triggerì—ë§Œ ë°˜ì‘í•©ë‹ˆë‹¤.
 	Once,
-	//¿©·¯ ¹øÀÇ Trigger¿¡ ¹İÀÀÇÕ´Ï´Ù.
+	//ì—¬ëŸ¬ ë²ˆì˜ Triggerì— ë°˜ì‘í•©ë‹ˆë‹¤.
 	Again,
 };
 
 UENUM(BlueprintType)
 enum class ELevelTriggerInputNodeFromType : uint8
 {
-	//ºÎ¸ğ Component·ÎºÎÅÍ Trigger°¡ ¼³Á¤µË´Ï´Ù.
+	//ë¶€ëª¨ Componentë¡œë¶€í„° Triggerê°€ ì„¤ì •ë©ë‹ˆë‹¤.
 	Parent,
-	//»ç¿ëÀÚ°¡ ¼³Á¤ÇÑ Setup¿¡ ¸Â°Ô Trigger°¡ ¼³Á¤µË´Ï´Ù.
+	//ì‚¬ìš©ìê°€ ì„¤ì •í•œ Setupì— ë§ê²Œ Triggerê°€ ì„¤ì •ë©ë‹ˆë‹¤.
 	Setup,
-	//»ç¿ëÀÚ°¡ ¼³Á¤ÇÒ ¼ö ¾ø½À´Ï´Ù. ¸¸¾à »ç¿ëÀÚ°¡ °­Á¦·Î ¼³Á¤ÇÑ´Ù¸é Trigger°¡ µ¿ÀÛµÇÁö ¾Ê½À´Ï´Ù.
+	//ì‚¬ìš©ìê°€ ì„¤ì •í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ë§Œì•½ ì‚¬ìš©ìê°€ ê°•ì œë¡œ ì„¤ì •í•œë‹¤ë©´ Triggerê°€ ë™ì‘ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
 	Action UMETA(Hidden),
 };
 
 UENUM(BlueprintType)
 enum class ELevelTriggerInputNodeToType : uint8
 {
-	//ºÎ¸ğ Component¸¦ Action ÇÕ´Ï´Ù.
+	//ë¶€ëª¨ Componentë¥¼ Action í•©ë‹ˆë‹¤.
 	Parent,
-	//Component SetupÀ¸·Î ºÎÅÍ °áÁ¤µË´Ï´Ù.
+	//Component Setupìœ¼ë¡œ ë¶€í„° ê²°ì •ë©ë‹ˆë‹¤.
 	Setup,
 };
 

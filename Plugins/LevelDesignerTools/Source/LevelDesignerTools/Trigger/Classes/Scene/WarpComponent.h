@@ -15,7 +15,7 @@ enum class EWarpType : uint8
 	Location,
 };
 
-UCLASS( ClassGroup=(Actions), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Triggers), meta=(BlueprintSpawnableComponent) )
 class LEVELDESIGNERTOOLS_API UWarpComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()

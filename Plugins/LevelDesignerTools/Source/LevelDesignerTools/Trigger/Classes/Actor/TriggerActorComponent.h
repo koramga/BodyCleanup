@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,7 +8,7 @@
 #include "TriggerActorComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS()
 class LEVELDESIGNERTOOLS_API UTriggerActorComponent : public UActorComponent, public ILevelTriggerInterface
 {
 	GENERATED_BODY()
@@ -18,7 +18,7 @@ public:
 	UTriggerActorComponent();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerInput")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|LevelTriggerInputFrom")
 	FLevelTriggerInputFrom	LevelTriggerInputFrom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
