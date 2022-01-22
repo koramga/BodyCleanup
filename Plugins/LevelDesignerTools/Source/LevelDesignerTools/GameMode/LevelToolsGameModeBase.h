@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "../Trigger/Managers/LevelTriggerManager.h"
 #include "LevelToolsGameModeBase.generated.h"
 
 // This class does not need to be modified.
@@ -26,4 +27,6 @@ protected:
 
 public:
 	virtual void RegisterTrigger(class ILevelTriggerInterface* LevelTriggerInterface) = 0;
+	virtual const ULevelTriggerManager* GetLevelTriggerManager() const = 0;
+	virtual void UpdateTrigger(class ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger) = 0;
 };

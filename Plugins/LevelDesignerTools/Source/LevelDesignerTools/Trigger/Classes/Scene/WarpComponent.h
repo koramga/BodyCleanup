@@ -2,12 +2,21 @@
 
 #pragma once
 
-#include "../ActionComponent.h"
+#include "TriggerSceneComponent.h"
 #include "WarpComponent.generated.h"
 
 
+UENUM(BlueprintType)
+enum class EWarpType : uint8
+{
+	//Warp를 이용하여 Level을 이동합니다.
+	Level,
+	//Warp를 이용하여 위치를 이동합니다.
+	Location,
+};
+
 UCLASS( ClassGroup=(Actions), meta=(BlueprintSpawnableComponent) )
-class BODYCLEANUP_API UWarpComponent : public UActionComponent
+class LEVELDESIGNERTOOLS_API UWarpComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
 
@@ -32,19 +41,17 @@ protected :
 	FName								LevelName;
 
 	UPROPERTY(VisibleAnywhere)
-	TSoftObjectPtr<USceneComponent>	MarkupComponent;
+	TSoftObjectPtr<UObject>	MarkupComponent;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-private:
-	virtual void OnTrigger(bool bInputIsOnTrigger) override;
+	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 public :
 	EWarpType GetWarpType() const;		
-	TSoftObjectPtr<USceneComponent> GetMarkupComponent() const;
 	TSoftObjectPtr<AActor> GetWarpActor() const;
-	TSoftObjectPtr<USceneComponent> FindMarkupComponent() const; 
+	class ILevelMarkupInterface* FindMarkupComponent() const; 
 	FVector GetWarpLocation() const;
 };

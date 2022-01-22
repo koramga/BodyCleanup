@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../ActionComponent.h"
+#include "TriggerSceneComponent.h"
 #include "DynamicMovementComponent.generated.h"
 
 /**
@@ -39,7 +39,7 @@ enum class EDynamicMovementCycleType : uint8
 };
 
 UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
-class BODYCLEANUP_API UDynamicMovementComponent : public UActionComponent
+class LEVELDESIGNERTOOLS_API UDynamicMovementComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
 
@@ -52,15 +52,8 @@ protected :
 	float	InterpSpeed = 1.f;
 
 	//Action의 범위를 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
-	EActionComponentToType		ActionComponentToType = EActionComponentToType::Parent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
-	EDynamicMovementCycleType	DynamicMovementCycleType = EDynamicMovementCycleType::Cycle;
-
-	//이름의 Type을 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
-	ENameType				NameType;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
+	FLevelTriggerInputTo	LevelTriggerInputTo;
 
 	//Move Action을 수행할 Component의 이름일 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent", meta = (EditCondition = "ActionComponentToType == EActionComponentToType::Setup", EditConditionHides))
@@ -68,6 +61,9 @@ protected :
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
 	TArray<FTransform>		DestinationDeltaTransforms;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
+	EDynamicMovementCycleType DynamicMovementCycleType;
 
 	//Delta Transform에서 Location의 적용유무를 결정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
@@ -94,11 +90,10 @@ protected :
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-private:
-	virtual void OnTrigger(bool bInputIsOnTrigger) override;
 };

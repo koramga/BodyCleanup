@@ -171,7 +171,7 @@ void ULevelTriggerInterfaceSpace::__AddTriggerObserver(const TSoftObjectPtr<ULev
 }
 
 
-void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace)
+void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace) const
 {
 	const FLevelTriggerInputFrom* ParamLevelTriggerInputFrom = Cast<ILevelTriggerInterface>(LevelTriggerInterfaceSpace->LevelTriggerInterface.Get())->GetLevelTriggerInputFrom();
 	
@@ -235,6 +235,13 @@ ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace
 	return LevelTriggerInterface;
 }
 
+ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const
+{
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
+
+	return LevelTriggerInterface;
+}
+
 void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterface)
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
@@ -251,7 +258,7 @@ void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterf
 
 }
 
-void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface)
+void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(TriggerInterface);
 	
@@ -273,5 +280,15 @@ void ULevelTriggerManager::BeginPlay()
 		{
 			LevelTriggerInterface.Value->ProcessTrigger(true);
 		}
+	}
+}
+
+void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
+{
+	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
+
+	if (IsValid(LevelTriggerInterfaceSpace))
+	{
+		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger);
 	}
 }

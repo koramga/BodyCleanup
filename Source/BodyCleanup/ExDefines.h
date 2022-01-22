@@ -84,15 +84,6 @@ enum class EParentMovementAction : uint8
 };
 
 UENUM(BlueprintType)
-enum class EWarpType : uint8
-{
-	//Warp를 이용하여 Level을 이동합니다.
-	Level,
-	//Warp를 이용하여 위치를 이동합니다.
-	Location,
-};
-
-UENUM(BlueprintType)
 enum class ENameType : uint8
 {
 	Name,
@@ -115,13 +106,6 @@ enum class EInteractiveComponentToType : uint8
 	Parent,
 	//Component Setup으로 부터 결정됩니다.
 	Setup,
-};
-
-UENUM(BlueprintType)
-enum class ESpawnComponentType : uint8
-{
-	Hidden,
-	Spawn,
 };
 
 UENUM(BlueprintType)

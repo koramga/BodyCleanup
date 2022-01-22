@@ -28,6 +28,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 public:	
 	// Called every frame
@@ -35,7 +36,6 @@ public:
 
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
-	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 	virtual bool IsOnTrigger() const;
 };

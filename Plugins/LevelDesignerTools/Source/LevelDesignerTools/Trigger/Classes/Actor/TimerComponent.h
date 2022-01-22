@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "../ActionComponent.h"
+#include "TriggerActorComponent.h"
 #include "TimerComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UTimerComponent : public UActionComponent
+class LEVELDESIGNERTOOLS_API UTimerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
 
@@ -24,9 +24,8 @@ protected:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-private:
-	virtual void OnTrigger(bool bInputIsOnTrigger) override;
+	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 private:
 	void __AdvanceTimer();

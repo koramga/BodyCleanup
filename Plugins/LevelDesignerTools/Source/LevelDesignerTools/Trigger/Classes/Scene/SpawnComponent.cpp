@@ -2,15 +2,17 @@
 
 
 #include "SpawnComponent.h"
-#include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
-#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
-//#include "../Markups/VelocityMarkupComponent.h"
-#include "LevelDesignerTools/Markup/Classes/VelocityMarkupComponent.h"
+#include "../../../Markup/Classes/MarkupComponent.h"
+#include "../../../Markup/Classes/VelocityMarkupComponent.h"
+#include "../../../Utility/LevelSupportFunctionLibrary.h"
 
 void USpawnComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void USpawnComponent::SetupTrigger()
+{
 	if (ESpawnComponentType::Hidden == SpawnComponentType)
 	{
 		for (FHiddenParam& HiddenParam : HiddenParams)
@@ -26,7 +28,7 @@ void USpawnComponent::BeginPlay()
 	}
 }
 
-void USpawnComponent::OnTrigger(bool bInputIsOnTrigger)
+void USpawnComponent::UpdateTrigger(bool bInputIsOnTrigger)
 {
 	if (bInputIsOnTrigger)
 	{
@@ -99,21 +101,19 @@ void USpawnComponent::GetTransformsFromSpawnMarkupParam(TArray<FTransform>& Tran
 
 	if (SpawnMarkupParam.Names.Num() > 0)
 	{
-		TArray<TSoftObjectPtr<USceneComponent>> MarkupComponents;
+		TArray<TSoftObjectPtr<ILevelMarkupInterface>> LevelMarkupInterfaces;
 
-		if (ENameType::Name == SpawnMarkupParam.NameType)
+		if (false == SpawnMarkupParam.bIsTag)
 		{
-			UFindFunctionLibrary::FindMarkupComponentsByNames(MarkupComponents, Actor->GetRootComponent(), SpawnMarkupParam.Names);
+			ULevelSupportFunctionLibrary::FindMarkupInterfacesByNames(LevelMarkupInterfaces, GetOwner(), SpawnMarkupParam.Names);
 		}
-		else if (ENameType::Tag == SpawnMarkupParam.NameType)
+		else
 		{
-			UFindFunctionLibrary::FindMarkupComponentsByTagNames(MarkupComponents, Actor.Get(), SpawnMarkupParam.Names);
+			ULevelSupportFunctionLibrary::FindMarkupInterfacesByTags(LevelMarkupInterfaces, GetOwner(), SpawnMarkupParam.Names);
 		}
 
-		for (TSoftObjectPtr<USceneComponent> MarkupComponent : MarkupComponents)
+		for (const TSoftObjectPtr<ILevelMarkupInterface>& LevelMarkupInterface : LevelMarkupInterfaces)
 		{
-			ILevelMarkupInterface* LevelMarkupInterface = Cast<ILevelMarkupInterface>(MarkupComponent.Get());
-
 			if (nullptr != LevelMarkupInterface)
 			{
 				Transforms.Add(LevelMarkupInterface->GetMarkupTransform());
@@ -144,24 +144,22 @@ void USpawnComponent::GetActorsFromSpawnMarkupParam(TArray<TSoftObjectPtr<UObjec
 
 	if (SpawnMarkupParam.Names.Num() > 0)
 	{
-		TArray<TSoftObjectPtr<USceneComponent>> MarkupComponents;
+		TArray<TSoftObjectPtr<ILevelMarkupInterface>> LevelMarkupInterfaces;
 
-		if (ENameType::Name == SpawnMarkupParam.NameType)
+		if (false == SpawnMarkupParam.bIsTag)
 		{
-			UFindFunctionLibrary::FindMarkupComponentsByNames(MarkupComponents, Actor->GetRootComponent(), SpawnMarkupParam.Names);
+			ULevelSupportFunctionLibrary::FindMarkupInterfacesByNames(LevelMarkupInterfaces, GetOwner(), SpawnMarkupParam.Names);
 		}
-		else if (ENameType::Tag == SpawnMarkupParam.NameType)
+		else 
 		{
-			UFindFunctionLibrary::FindMarkupComponentsByTagNames(MarkupComponents, Actor.Get(), SpawnMarkupParam.Names);
+			ULevelSupportFunctionLibrary::FindMarkupInterfacesByTags(LevelMarkupInterfaces, GetOwner(), SpawnMarkupParam.Names);
 		}
 
-		for (TSoftObjectPtr<USceneComponent> MarkupComponent : MarkupComponents)
+		for (const TSoftObjectPtr<ILevelMarkupInterface>& LevelMarkupInterface : LevelMarkupInterfaces)
 		{
-			ILevelMarkupInterface* LevelMarkupInterface = Cast<ILevelMarkupInterface>(MarkupComponent.Get());
-
 			if (nullptr != LevelMarkupInterface)
 			{
-				Objects.Add(MarkupComponent);
+				Objects.Add(Cast<UObject>(LevelMarkupInterface.Get()));
 			}
 		}
 	}

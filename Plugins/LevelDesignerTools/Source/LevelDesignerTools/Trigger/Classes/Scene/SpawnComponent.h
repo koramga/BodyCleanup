@@ -2,12 +2,19 @@
 
 #pragma once
 
-#include "../ActionComponent.h"
+#include "TriggerSceneComponent.h"
 #include "SpawnComponent.generated.h"
 
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class ESpawnComponentType : uint8
+{
+	Hidden,
+	Spawn,
+};
 
 USTRUCT(BlueprintType, Blueprintable)
 struct FSpawnMarkupParam
@@ -25,7 +32,7 @@ public:
 	TSoftObjectPtr<AActor>							Actor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ENameType										NameType;
+	bool											bIsTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName>									Names;
@@ -45,7 +52,7 @@ public :
 };
 
 UCLASS(ClassGroup = (Actions), meta = (BlueprintSpawnableComponent))
-class BODYCLEANUP_API USpawnComponent : public UActionComponent
+class LEVELDESIGNERTOOLS_API USpawnComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
 
@@ -62,9 +69,8 @@ protected :
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-private:
-	virtual void OnTrigger(bool bInputIsOnTrigger) override;
+	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 private :
 	void GetTransformsFromSpawnMarkupParam(TArray<FTransform>& Transforms, const FSpawnMarkupParam& SpawnMarkupParam);

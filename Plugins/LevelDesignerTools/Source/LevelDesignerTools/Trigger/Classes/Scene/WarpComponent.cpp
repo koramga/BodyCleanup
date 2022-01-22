@@ -2,10 +2,12 @@
 
 
 #include "WarpComponent.h"
-#include "../../Actor/BaseActor.h"
 //#include "../MarkupComponent.h"
-#include "LevelDesignerTools/Markup/Classes/MarkupComponent.h"
-#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
+#include "../../../Markup/Interfaces/LevelMarkupInterface.h"
+#include "../../../Utility/LevelSupportFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameModeBase.h"
+#include "../../../GameMode/LevelToolsGameModeBase.h"
 
 // Sets default values for this component's properties
 UWarpComponent::UWarpComponent()
@@ -25,39 +27,54 @@ void UWarpComponent::BeginPlay()
 
 	// ...
 
+}
+
+void UWarpComponent::SetupTrigger()
+{
 	if (EWarpType::Location == WarpType)
 	{
-		MarkupComponent = FindMarkupComponent();
+		MarkupComponent = Cast<UObject>(FindMarkupComponent());
 	}
 }
 
-void UWarpComponent::OnTrigger(bool bInputIsOnTrigger)
+void UWarpComponent::UpdateTrigger(bool bInputIsOnTrigger)
 {
-	Super::OnTrigger(bInputIsOnTrigger);
-
 	if (EWarpType::Location == WarpType)
 	{
 		if (bInputIsOnTrigger)
 		{
 			//반응하면 됩니다.
 			TArray<TSoftObjectPtr<AActor>> Actors;
-
-			FindTriggerOnActors(Actors);
-
+	
+			if (GetWorld()->GetAuthGameMode()->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
+			{
+				ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());
+	
+				if (nullptr != LevelToolsGameModeBase)
+				{
+					const ULevelTriggerManager* LevelTriggerManager = LevelToolsGameModeBase->GetLevelTriggerManager();
+	
+					if (IsValid(LevelTriggerManager))
+					{
+						LevelTriggerManager->FindOverlapActors(Actors, this);
+					}
+				}
+			}
+	
 			if (Actors.Num() > 0)
 			{
 				FVector Location = GetOwner()->GetActorLocation();
-
+	
 				if (WarpActor.IsValid())
 				{
 					Location = WarpActor->GetActorLocation();
 				}
-
+	
 				if (MarkupComponent.IsValid())
 				{
-					Location = MarkupComponent->GetComponentToWorld().GetLocation();
+					Location = Cast<ILevelMarkupInterface>(MarkupComponent.Get())->GetMarkupLocation();
 				}
-
+	
 				for (TSoftObjectPtr<AActor> Actor : Actors)
 				{
 					Actor->SetActorLocation(Location);
@@ -69,7 +86,6 @@ void UWarpComponent::OnTrigger(bool bInputIsOnTrigger)
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), LevelName);
 	}
-
 }
 
 EWarpType UWarpComponent::GetWarpType() const
@@ -77,17 +93,12 @@ EWarpType UWarpComponent::GetWarpType() const
 	return WarpType;
 }
 
-TSoftObjectPtr<USceneComponent> UWarpComponent::GetMarkupComponent() const
-{
-	return MarkupComponent;
-}
-
 TSoftObjectPtr<AActor> UWarpComponent::GetWarpActor() const
 {
 	return WarpActor;
 }
 
-TSoftObjectPtr<USceneComponent> UWarpComponent::FindMarkupComponent() const
+ILevelMarkupInterface* UWarpComponent::FindMarkupComponent() const
 {
 	if (false == MarkupName.IsNone())
 	{
@@ -97,12 +108,12 @@ TSoftObjectPtr<USceneComponent> UWarpComponent::FindMarkupComponent() const
 			{
 				if (false == MarkupName.IsNone())
 				{
-					return UFindFunctionLibrary::FindMarkupComponentByName(WarpActor->GetRootComponent(), MarkupName);
+					return ULevelSupportFunctionLibrary::FindMarkupInterfaceByName(WarpActor.Get(), MarkupName);
 				}
 			}
 			else
 			{
-				return UFindFunctionLibrary::FindMarkupComponentByName(GetOwner()->GetRootComponent(), MarkupName);
+				return ULevelSupportFunctionLibrary::FindMarkupInterfaceByName(GetOwner(), MarkupName);
 			}
 		}
 	}
@@ -118,14 +129,14 @@ FVector UWarpComponent::GetWarpLocation() const
 	{
 		StdActor = WarpActor.Get();
 	}
-
+	
 	if (false == MarkupName.IsNone())
 	{
-		TSoftObjectPtr<USceneComponent> FindComponent = FindMarkupComponent();
-
-		if (FindComponent.IsValid())
+		ILevelMarkupInterface* LevelMarkupInterface = FindMarkupComponent();
+	
+		if (nullptr != LevelMarkupInterface)
 		{
-			return FindComponent->GetComponentTransform().GetLocation();
+			return LevelMarkupInterface->GetMarkupLocation();
 		}		
 	}
 

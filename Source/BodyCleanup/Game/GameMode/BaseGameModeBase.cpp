@@ -32,3 +32,13 @@ void ABaseGameModeBase::RegisterTrigger(ILevelTriggerInterface* LevelTriggerInte
 {
 	LevelTriggerManager->RegisterTrigger(LevelTriggerInterface);
 }
+
+const ULevelTriggerManager* ABaseGameModeBase::GetLevelTriggerManager() const
+{
+	return LevelTriggerManager;
+}
+
+void ABaseGameModeBase::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
+{
+	LevelTriggerManager->UpdateTrigger(LevelTriggerInterface, bInputIsOnTrigger);
+}
