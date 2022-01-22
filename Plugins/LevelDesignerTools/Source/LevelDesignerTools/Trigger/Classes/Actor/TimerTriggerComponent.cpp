@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TimerComponent.h"
+#include "TimerTriggerComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "../../../GameMode/LevelToolsGameModeBase.h"
 
-UTimerComponent::UTimerComponent()
+UTimerTriggerComponent::UTimerTriggerComponent()
 {
 	LevelTriggerInputFrom.LevelTriggerInputNodeFromType = ELevelTriggerInputNodeFromType::Action;
 }
 
-void UTimerComponent::BeginPlay()
+void UTimerTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -39,12 +39,12 @@ void UTimerComponent::BeginPlay()
 
 }
 
-void UTimerComponent::SetupTrigger()
+void UTimerTriggerComponent::SetupTrigger()
 {
 	Super::SetupTrigger();
 }
 
-void UTimerComponent::UpdateTrigger(bool bInputIsOnTrigger)
+void UTimerTriggerComponent::UpdateTrigger(bool bInputIsOnTrigger)
 {
 	Super::UpdateTrigger(bInputIsOnTrigger);
 
@@ -58,16 +58,16 @@ void UTimerComponent::UpdateTrigger(bool bInputIsOnTrigger)
 	}
 }
 
-void UTimerComponent::__CreateTimer()
+void UTimerTriggerComponent::__CreateTimer()
 {
 	if (false == bIsCreateTimer)
 	{
 		bIsCreateTimer = true;
-		GetOwner()->GetWorldTimerManager().SetTimer(TimerHandle, this, &UTimerComponent::__AdvanceTimer, CycleTime, true);
+		GetOwner()->GetWorldTimerManager().SetTimer(TimerHandle, this, &UTimerTriggerComponent::__AdvanceTimer, CycleTime, true);
 	}
 }
 
-void UTimerComponent::__DestroyTimer()
+void UTimerTriggerComponent::__DestroyTimer()
 {
 	if (bIsCreateTimer)
 	{
@@ -76,7 +76,7 @@ void UTimerComponent::__DestroyTimer()
 	}
 }
 
-void UTimerComponent::__AdvanceTimer()
+void UTimerTriggerComponent::__AdvanceTimer()
 {
 	if (GetWorld()->GetAuthGameMode()->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
 	{

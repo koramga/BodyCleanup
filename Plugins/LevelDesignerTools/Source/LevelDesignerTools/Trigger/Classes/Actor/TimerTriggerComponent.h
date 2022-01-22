@@ -3,18 +3,18 @@
 #pragma once
 
 #include "TriggerActorComponent.h"
-#include "TimerComponent.generated.h"
+#include "TimerTriggerComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
-class LEVELDESIGNERTOOLS_API UTimerComponent : public UTriggerActorComponent
+class LEVELDESIGNERTOOLS_API UTimerTriggerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
 
 public :
-	UTimerComponent();
+	UTimerTriggerComponent();
 
 protected:
 	bool			bIsTriggerDestroy = false;
