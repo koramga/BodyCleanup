@@ -61,7 +61,7 @@ private :
 
 public :
 	void SetupRelationship();
-	void UpdateTrigger(bool bInputIsOnTrigger);
+	void UpdateTrigger(bool bInputIsOnTrigger, bool bIsCallSelf = true);
 	bool HasTriggerComponents() const;
 	void ProcessTrigger(bool bInputIsOnTrigger);
 
@@ -80,13 +80,13 @@ class LEVELDESIGNERTOOLS_API ULevelTriggerManager : public UObject
 
 protected :
 	UPROPERTY()
-	TMap<TSoftObjectPtr<UObject>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaces;
+	TMap<TSoftObjectPtr<UObject>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaceSpaces;
 
 public :
-	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface);
 	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const;
 	void RegisterTrigger(ILevelTriggerInterface* TriggerInterface);
 	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const;
 	void BeginPlay();
-	void UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger);
+	void UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger, bool bIsCallSelf);
+	void UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface, bool bIsCallSelf);
 };

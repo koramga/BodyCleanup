@@ -13,8 +13,12 @@ class LEVELDESIGNERTOOLS_API UTimerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
 
+public :
+	UTimerComponent();
+
 protected:
 	bool			bIsTriggerDestroy = false;
+	bool			bIsCreateTimer = false;
 	FTimerHandle	TimerHandle;
 
 	//주기를 설정합니다.
@@ -28,5 +32,7 @@ protected:
 	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 private:
+	void __CreateTimer();
+	void __DestroyTimer();
 	void __AdvanceTimer();
 };

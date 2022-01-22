@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "../TriggerComponent.h"
+#include "TriggerActorComponent.h"
 #include "DestroyTriggerComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
-class BODYCLEANUP_API UDestroyTriggerComponent : public UTriggerComponent
+class LEVELDESIGNERTOOLS_API UDestroyTriggerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
 
@@ -22,6 +22,8 @@ protected :
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 private :
 	UFUNCTION()

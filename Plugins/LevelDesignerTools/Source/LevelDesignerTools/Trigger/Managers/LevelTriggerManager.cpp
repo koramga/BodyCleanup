@@ -40,7 +40,7 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 	LevelTriggerManager = InputLevelTriggerManager;
 }
 
-void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
+void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger, bool bIsCallSelf)
 {
 	if (bIsOnTrigger != bInputIsOnTrigger)
 	{
@@ -58,7 +58,11 @@ void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger)
 
 		bIsOnTrigger = bInputIsOnTrigger;
 		__CallTriggerObservers(bIsOnTrigger);
-		UpdateLevelTriggerInterface->UpdateTrigger(bIsOnTrigger);
+
+		if (bIsCallSelf)
+		{
+			UpdateLevelTriggerInterface->UpdateTrigger(bIsOnTrigger);
+		}
 	}
 }
 
@@ -221,28 +225,21 @@ const ILevelTriggerInterface* ULevelTriggerInterfaceSpace::GetLevelTriggerInterf
 	return Cast< const ILevelTriggerInterface>(LevelTriggerInterface.Get());
 }
 
-ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface)
+ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const
 {
 	if (nullptr == TriggerInterface)
 	{
 		return nullptr;
 	}
 
-	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
-
-	return LevelTriggerInterface;
-}
-
-ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const
-{
-	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaceSpaces.FindRef(Cast<UObject>(TriggerInterface));
 
 	return LevelTriggerInterface;
 }
 
 void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterface)
 {
-	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaces.FindRef(Cast<UObject>(TriggerInterface));
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaceSpaces.FindRef(Cast<UObject>(TriggerInterface));
 
 	if (nullptr == LevelTriggerInterface)
 	{
@@ -251,7 +248,7 @@ void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterf
 		LevelTriggerInterface->SetLevelTriggerManager(this);
 		LevelTriggerInterface->SetLevelTriggerInterface(TriggerInterface);
 
-		LevelTriggerInterfaces.Add(Cast<UObject>(TriggerInterface), LevelTriggerInterface);
+		LevelTriggerInterfaceSpaces.Add(Cast<UObject>(TriggerInterface), LevelTriggerInterface);
 	}
 
 }
@@ -268,25 +265,50 @@ void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Act
 
 void ULevelTriggerManager::BeginPlay()
 {
-	for (auto& LevelTriggerInterface : LevelTriggerInterfaces)
+	for (auto& LevelTriggerInterfaceSpace : LevelTriggerInterfaceSpaces)
 	{
-		if (LevelTriggerInterface.Value->HasTriggerComponents())
+		if (LevelTriggerInterfaceSpace.Value->HasTriggerComponents())
 		{
-			LevelTriggerInterface.Value->SetupRelationship();
+			LevelTriggerInterfaceSpace.Value->SetupRelationship();
 		}
-		else
+	}
+
+	for (const auto& LevelTriggerInterfaceSpace : LevelTriggerInterfaceSpaces)
+	{
+		const ILevelTriggerInterface* LevelTriggerInterface = LevelTriggerInterfaceSpace.Value->GetLevelTriggerInterface();
+
+		if (nullptr != LevelTriggerInterface)
 		{
-			LevelTriggerInterface.Value->ProcessTrigger(true);
+			const FLevelTriggerInputFrom* LevelTriggerInputFrom = LevelTriggerInterface->GetLevelTriggerInputFrom();
+
+			if (nullptr != LevelTriggerInputFrom)
+			{
+				if (ELevelTriggerInputNodeFromType::Action != LevelTriggerInputFrom->LevelTriggerInputNodeFromType)
+				{
+					LevelTriggerInterfaceSpace.Value->ProcessTrigger(true);
+				}
+			}
 		}
 	}
 }
 
-void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
+void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger, bool bIsCallSelf)
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
 
 	if (IsValid(LevelTriggerInterfaceSpace))
 	{
-		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger);
+		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger, bIsCallSelf);
+	}
+}
+
+void ULevelTriggerManager::UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface, bool bIsCallSelf)
+{
+	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
+
+	if (IsValid(LevelTriggerInterfaceSpace))
+	{
+		LevelTriggerInterfaceSpace->UpdateTrigger(true, bIsCallSelf);
+		LevelTriggerInterfaceSpace->UpdateTrigger(false, bIsCallSelf);
 	}
 }
