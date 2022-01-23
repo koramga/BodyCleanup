@@ -4,6 +4,7 @@
 
 #include "../ExDefines.h"
 //#include "TriggerComponent.h"
+#include "LevelDesignerTools/Trigger/Classes/Actor/TriggerActorComponent.h"
 #include "Interfaces/InteractiveInterface.h"
 #include "InteractiveComponent.generated.h"
 

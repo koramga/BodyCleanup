@@ -78,8 +78,6 @@ void UTimerTriggerComponent::__DestroyTimer()
 
 void UTimerTriggerComponent::__AdvanceTimer()
 {
-	UE_LOG(LogTemp, Display, TEXT("__AdvanceTimer"));
-
 	if (GetWorld()->GetAuthGameMode()->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
 	{
 		ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());

@@ -44,7 +44,7 @@ void UDestroyTriggerComponent::OnActorDestroyed(AActor* DestroyedActor)
 
 		if (nullptr != LevelToolsGameModeBase)
 		{
-			LevelToolsGameModeBase->UpdateTriggerOnce(this);
+			LevelToolsGameModeBase->UpdateTrigger(this, true);
 		}
 	}
 }
