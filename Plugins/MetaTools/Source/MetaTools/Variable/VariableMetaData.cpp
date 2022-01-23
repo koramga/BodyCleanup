@@ -3,3 +3,12 @@
 
 #include "VariableMetaData.h"
 
+UVariableMetaData::UVariableMetaData()
+{
+
+}
+
+EVariableMetaDataType UVariableMetaData::GetVariableMetaData() const
+{
+	return VariableMetaDataType;
+}

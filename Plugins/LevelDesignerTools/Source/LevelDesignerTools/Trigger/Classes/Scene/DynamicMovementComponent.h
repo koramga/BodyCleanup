@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -47,11 +47,11 @@ public :
 	UDynamicMovementComponent();
 
 protected :
-	//1ÃÊ µÚ¿¡ °á°ú°¡ µµÂøÇÒ ¿¹Á¤ÀÌ¹Ç·Î ¹è¼ÓÀ» °áÁ¤ÇÕ´Ï´Ù. (°ªÀÌ 0.5ÀÌ¸é µµÂø±îÁö °É¸®´Â ½Ã°£ÀÌ 2ÃÊ°¡ µÈ´Ù´Â ÀÇ¹ÌÀÔ´Ï´Ù.)
+	//1ì´ˆ ë’¤ì— ê²°ê³¼ê°€ ë„ì°©í•  ì˜ˆì •ì´ë¯€ë¡œ ë°°ì†ì„ ê²°ì •í•©ë‹ˆë‹¤. (ê°’ì´ 0.5ì´ë©´ ë„ì°©ê¹Œì§€ ê±¸ë¦¬ëŠ” ì‹œê°„ì´ 2ì´ˆê°€ ëœë‹¤ëŠ” ì˜ë¯¸ì…ë‹ˆë‹¤.)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
 	float	InterpSpeed = 1.f;
 
-	//ActionÀÇ ¹üÀ§¸¦ ÁöÁ¤ÇÕ´Ï´Ù.
+	//Actionì˜ ë²”ìœ„ë¥¼ ì§€ì •í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DynamicMovementComponent")
 	FLevelTriggerInputTo	LevelTriggerInputTo;
 
