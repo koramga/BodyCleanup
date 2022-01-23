@@ -15,6 +15,5 @@ class LEVELDESIGNERTOOLS_API UGameSetComponent : public UTriggerActorComponent
 	
 protected :
 	virtual void SetupTrigger() override;
-	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
 
 };

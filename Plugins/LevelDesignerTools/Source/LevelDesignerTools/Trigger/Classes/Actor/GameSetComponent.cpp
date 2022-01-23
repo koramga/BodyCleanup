@@ -7,8 +7,3 @@ void UGameSetComponent::SetupTrigger()
 {
 	Super::SetupTrigger();
 }
-
-void UGameSetComponent::UpdateTrigger(bool bInputIsOnTrigger)
-{
-	Super::UpdateTrigger(bInputIsOnTrigger);
-}

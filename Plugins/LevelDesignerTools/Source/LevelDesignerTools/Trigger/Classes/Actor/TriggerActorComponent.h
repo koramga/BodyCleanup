@@ -18,17 +18,20 @@ public:
 	UTriggerActorComponent();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|LevelTriggerInputFrom")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TriggerFrom")
 	FLevelTriggerInputFrom	LevelTriggerInputFrom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		bool	bIsOnTrigger = false;
+	FLevelTriggerUpdateParam	LevelTriggerUpdateParam;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FLevelTriggerSettings		LevelTriggerSettings;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void SetupTrigger() override;
-	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
+	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam) override;
 
 public:	
 	// Called every frame
@@ -38,4 +41,5 @@ public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 	virtual bool IsOnTrigger() const;
+	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const override;
 };

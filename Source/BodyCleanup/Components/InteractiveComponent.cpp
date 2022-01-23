@@ -10,7 +10,7 @@ UInteractiveComponent::UInteractiveComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	bIsCanControlTriggerComponentFromType = false;
+	//bIsCanControlTriggerComponentFromType = false;
 	//TriggerComponentFromType = ETriggerComponentFromType::Action;
 
 	// ...
@@ -85,10 +85,10 @@ void UInteractiveComponent::SetupInteractiveAction(EInteractiveAction InputInter
 
 	if (TriggerInteractiveActions.Find(InputInteractiveAction) >= 0)
 	{
-		CallTriggerObservers(true);
+		//CallTriggerObservers(true);
 	}
 	else
 	{
-		CallTriggerObservers(false);
+		//CallTriggerObservers(false);
 	}
 }

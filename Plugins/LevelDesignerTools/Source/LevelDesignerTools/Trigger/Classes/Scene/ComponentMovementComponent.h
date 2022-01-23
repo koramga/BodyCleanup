@@ -46,7 +46,7 @@ public :
 	UComponentMovementComponent();
 
 protected :
-	//변화에 대한 Delta 값입니다.
+	//1초 뒤에 결과가 도착할 예정이므로 배속을 결정합니다. (값이 0.5이면 도착까지 걸리는 시간이 2초가 된다는 의미입니다.)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	float	InterpSpeed = 1.f;
 
@@ -55,29 +55,21 @@ protected :
 	FTransform	DestinationDeltaTransform;
 
 	//Action의 범위를 지정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|LevelTriggerInputTo")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	FLevelTriggerInputTo	LevelTriggerInputTo;
-
-	//Delta Transform에서 Location의 적용유무를 결정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
-	bool	bIsUpdateLocation = true;
-
-	//Delta Transform에서 Rotator의 적용유무를 결정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
-	bool	bIsUpdateRotator = false;
-
-	//Delta Transform에서 Scale의 적용유무를 결정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
-	bool	bIsUpdateScale = true;
 
 protected :
 	UPROPERTY(VisibleAnywhere, Category = "Debug|ComponentMovementComponent")
 	TArray<FComponentMovementData>	ComponentMovementDatas;
 
+	UPROPERTY(VisibleAnywhere, Category = "Debug|DynamicMovementComponent")
+	float							TriggerDeltaTime;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam) override;
 
 public:
 	// Called every frame

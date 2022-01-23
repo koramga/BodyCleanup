@@ -29,9 +29,9 @@ void UDestroyTriggerComponent::SetupTrigger()
 	Super::SetupTrigger();
 }
 
-void UDestroyTriggerComponent::UpdateTrigger(bool bInputIsOnTrigger)
+void UDestroyTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
 {
-	Super::UpdateTrigger(bInputIsOnTrigger);
+	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 }
 
 void UDestroyTriggerComponent::OnActorDestroyed(AActor* DestroyedActor)
@@ -44,7 +44,7 @@ void UDestroyTriggerComponent::OnActorDestroyed(AActor* DestroyedActor)
 
 		if (nullptr != LevelToolsGameModeBase)
 		{
-			LevelToolsGameModeBase->UpdateTriggerOnce(this, false);
+			LevelToolsGameModeBase->UpdateTriggerOnce(this);
 		}
 	}
 }

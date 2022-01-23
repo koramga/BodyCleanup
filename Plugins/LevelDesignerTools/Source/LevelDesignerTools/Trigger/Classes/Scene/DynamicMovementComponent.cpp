@@ -12,6 +12,7 @@ UDynamicMovementComponent::UDynamicMovementComponent()
 void UDynamicMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	SetComponentTickEnabled(false);
 }
 
 void UDynamicMovementComponent::SetupTrigger()
@@ -58,24 +59,27 @@ void UDynamicMovementComponent::SetupTrigger()
 	{
 		DynamicMovementParam.MovementComponent->Mobility = EComponentMobility::Type::Movable;
 
-		FTransform InputTransform = DynamicMovementParam.MovementComponent->GetRelativeTransform();
-
 		for (const FTransform& DestinationDeltaTransform : DestinationDeltaTransforms)
 		{
+			FTransform InputTransform = DynamicMovementParam.Transforms[DynamicMovementParam.Transforms.Num() - 1];
+
 			InputTransform.SetRotation((InputTransform.GetRotation() + DestinationDeltaTransform.GetRotation()));
 			InputTransform.SetLocation(InputTransform.GetLocation() + DestinationDeltaTransform.GetLocation());
 			InputTransform.SetScale3D(InputTransform.GetScale3D() + DestinationDeltaTransform.GetScale3D());
 
-			DynamicMovementParam.Transforms.Add(InputTransform);
+			DynamicMovementParam.Transforms.Add(InputTransform); 
 		}
+
+		SourceTransforms.Add(FTransform());
+		DestTransforms.Add(FTransform());
 	}
 }
 
-void UDynamicMovementComponent::UpdateTrigger(bool bInputIsOnTrigger)
+void UDynamicMovementComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
 {
-	Super::UpdateTrigger(bInputIsOnTrigger);
+	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 
-	if (bInputIsOnTrigger)
+	if (InputLevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX])
 	{
 		if (EDynamicMovementCycleType::Cycle == DynamicMovementCycleType)
 		{
@@ -100,6 +104,19 @@ void UDynamicMovementComponent::UpdateTrigger(bool bInputIsOnTrigger)
 
 			ComponentMovementIndex += ReverseSign;
 		}
+
+		
+		for (int DynamicMovementParamIndex = 0; DynamicMovementParamIndex < DynamicMovementParams.Num(); ++DynamicMovementParamIndex)
+		{
+			const FDynamicMovementParam& DynamicMovementParam = DynamicMovementParams[DynamicMovementParamIndex];
+
+			SourceTransforms[DynamicMovementParamIndex] = DynamicMovementParam.MovementComponent->GetRelativeTransform();
+			DestTransforms[DynamicMovementParamIndex] = DynamicMovementParam.Transforms[ComponentMovementIndex];
+		}
+
+		TriggerDeltaTime = 0.f;
+
+		SetComponentTickEnabled(true);
 	}
 }
 
@@ -107,27 +124,26 @@ void UDynamicMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	for (FDynamicMovementParam& DynamicMovementParam : DynamicMovementParams)
+	TriggerDeltaTime += DeltaTime * InterpSpeed;
+
+	if (TriggerDeltaTime >= 1.f)
 	{
+		TriggerDeltaTime = 1.f;
+		SetComponentTickEnabled(false);
+	}
+
+	for (int DynamicMovementParamIndex = 0; DynamicMovementParamIndex < DynamicMovementParams.Num(); ++DynamicMovementParamIndex)
+	{
+		const FDynamicMovementParam& DynamicMovementParam = DynamicMovementParams[DynamicMovementParamIndex];
+
 		if (DynamicMovementParam.MovementComponent.IsValid())
 		{
 			FTransform Source = DynamicMovementParam.MovementComponent->GetRelativeTransform();
 			const FTransform& DestinationTransform = DynamicMovementParam.Transforms[ComponentMovementIndex];
 
-			if (bIsUpdateScale)
-			{
-				DynamicMovementParam.MovementComponent->SetRelativeScale3D(FMath::VInterpTo(Source.GetScale3D(), DestinationTransform.GetScale3D(), DeltaTime, InterpSpeed));
-			}
-
-			if (bIsUpdateRotator)
-			{
-				DynamicMovementParam.MovementComponent->SetRelativeRotation(FQuat::FastLerp(Source.GetRotation(), Source.GetRotation() + DestinationTransform.GetRotation(), DeltaTime * InterpSpeed));
-			}
-
-			if (bIsUpdateLocation)
-			{
-				DynamicMovementParam.MovementComponent->SetRelativeLocation(FMath::VInterpTo(Source.GetLocation(), DestinationTransform.GetLocation(), DeltaTime, InterpSpeed));
-			}
+			DynamicMovementParam.MovementComponent->SetRelativeScale3D(FMath::Lerp(SourceTransforms[DynamicMovementParamIndex].GetScale3D(), DestTransforms[DynamicMovementParamIndex].GetScale3D(), TriggerDeltaTime));
+			DynamicMovementParam.MovementComponent->SetRelativeRotation(FMath::Lerp(SourceTransforms[DynamicMovementParamIndex].GetRotation().Rotator(), DestTransforms[DynamicMovementParamIndex].GetRotation().Rotator(), TriggerDeltaTime));
+			DynamicMovementParam.MovementComponent->SetRelativeLocation(FMath::Lerp(SourceTransforms[DynamicMovementParamIndex].GetLocation(), DestTransforms[DynamicMovementParamIndex].GetLocation(), TriggerDeltaTime));
 		}
 	}
 }

@@ -3,12 +3,12 @@
 #pragma once
 
 #include "../ExDefines.h"
-#include "TriggerComponent.h"
+//#include "TriggerComponent.h"
 #include "Interfaces/InteractiveInterface.h"
 #include "InteractiveComponent.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API UInteractiveComponent : public UTriggerComponent, public IInteractiveInterface
+class BODYCLEANUP_API UInteractiveComponent : public USceneComponent, public IInteractiveInterface//public UTriggerComponent, public IInteractiveInterface
 {
 	GENERATED_BODY()
 

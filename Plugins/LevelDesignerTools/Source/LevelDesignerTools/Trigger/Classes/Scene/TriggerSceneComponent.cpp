@@ -68,9 +68,9 @@ void UTriggerSceneComponent::GetTriggerLocation(TArray<FVector>& TriggerLocation
 	}
 }
 
-void UTriggerSceneComponent::UpdateTrigger(bool bInputIsOnTrigger)
+void UTriggerSceneComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
 {
-	bIsOnTrigger = bInputIsOnTrigger;
+	LevelTriggerUpdateParam = InputLevelTriggerUpdateParam;
 }
 
 const FLevelTriggerInputFrom* UTriggerSceneComponent::GetLevelTriggerInputFrom() const
@@ -80,6 +80,10 @@ const FLevelTriggerInputFrom* UTriggerSceneComponent::GetLevelTriggerInputFrom()
 
 bool UTriggerSceneComponent::IsOnTrigger() const
 {
-	return bIsOnTrigger;
+	return LevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX];
 }
 
+const FLevelTriggerSettings& UTriggerSceneComponent::GetLevelTriggerSettings() const
+{
+	return LevelTriggerSettings;
+}

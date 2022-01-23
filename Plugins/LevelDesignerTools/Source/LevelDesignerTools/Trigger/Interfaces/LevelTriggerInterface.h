@@ -6,6 +6,9 @@
 #include "UObject/Interface.h"
 #include "LevelTriggerInterface.generated.h"
 
+#define DEFAULT_TRIGGER_INDEX	0
+#define MAX_TRIGGER_NUM			32
+
 UENUM(BlueprintType)
 enum class ELevelTriggerReactType : uint8
 {
@@ -13,6 +16,15 @@ enum class ELevelTriggerReactType : uint8
 	Once,
 	//여러 번의 Trigger에 반응합니다.
 	Again,
+};
+
+UENUM(BlueprintType)
+enum class ELevelTriggerCallType : uint8
+{
+	//내부에서 반응이 들어오면 Observer에게 Call을 호출한다.
+	Internal,
+	//외부에서 반응이 들어오면 Observer에게 Call을 호출한다.
+	External,
 };
 
 UENUM(BlueprintType)
@@ -63,7 +75,7 @@ public :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelTriggerReactType				LevelTriggerReactType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "LevelTriggerInputNodeFromType == ELevelTriggerInputNodeFromType::Setup", EditConditionHides))
 	TArray<FLevelTriggerInputNode>		LevelTriggerInputNodes;
 };
 
@@ -76,8 +88,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelTriggerInputNodeToType		LevelTriggerInputNodeToType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "LevelTriggerInputNodeToType == ELevelTriggerInputNodeToType::Setup", EditConditionHides))
 	TArray<FLevelTriggerInputNode>		LevelTriggerInputNodes;
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FLevelTriggerUpdateParam
+{
+	GENERATED_BODY()
+
+public:
+	bool					bIsOnTriggers[MAX_TRIGGER_NUM];
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FLevelTriggerSettings
+{
+	GENERATED_BODY()
+
+public:
 };
 
 // This class does not need to be modified.
@@ -97,8 +126,9 @@ class LEVELDESIGNERTOOLS_API ILevelTriggerInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
-	virtual void UpdateTrigger(bool bInputIsOnTrigger) = 0;
+	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& LevelTriggerUpdateParam) = 0;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const = 0;
 	virtual void SetupTrigger() = 0;
 	virtual bool IsOnTrigger() const = 0;
+	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const = 0;
 };

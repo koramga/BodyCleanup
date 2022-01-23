@@ -28,9 +28,11 @@ void USpawnComponent::SetupTrigger()
 	}
 }
 
-void USpawnComponent::UpdateTrigger(bool bInputIsOnTrigger)
+void USpawnComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
 {
-	if (bInputIsOnTrigger)
+	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
+
+	if (InputLevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX])
 	{
 		if (ESpawnComponentType::Hidden == SpawnComponentType)
 		{

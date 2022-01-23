@@ -29,7 +29,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void SetupTrigger() override;
-	virtual void UpdateTrigger(bool bInputIsOnTrigger) override;
+	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam) override;
 
 private:
 	void __CreateTimer();

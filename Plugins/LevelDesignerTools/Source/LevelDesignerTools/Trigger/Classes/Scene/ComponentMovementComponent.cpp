@@ -16,6 +16,8 @@ UComponentMovementComponent::UComponentMovementComponent()
 void UComponentMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	SetComponentTickEnabled(false);
+	TriggerDeltaTime = 0.f;
 }
 
 void UComponentMovementComponent::SetupTrigger()
@@ -59,8 +61,21 @@ void UComponentMovementComponent::SetupTrigger()
 	for (FComponentMovementData& ComponentMovementData : ComponentMovementDatas)
 	{
 		ComponentMovementData.MovementComponent->Mobility = EComponentMobility::Type::Movable;
+
 		ComponentMovementData.DestinationTransform = ComponentMovementData.MovementComponent->GetRelativeTransform() + DestinationDeltaTransform;
 		ComponentMovementData.DestinationTransform.SetRotation((ComponentMovementData.MovementComponent->GetRelativeRotation() + DestinationDeltaTransform.Rotator()).Quaternion());
+	}
+}
+
+void UComponentMovementComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
+{
+	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
+
+	SetComponentTickEnabled(true);
+
+	if (TriggerDeltaTime > 0.f)
+	{
+		TriggerDeltaTime = 1.f - TriggerDeltaTime;
 	}
 }
 
@@ -68,49 +83,32 @@ void UComponentMovementComponent::TickComponent(float DeltaTime, ELevelTick Tick
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	TriggerDeltaTime += DeltaTime * InterpSpeed;
+
+	TriggerDeltaTime = FMath::Clamp(TriggerDeltaTime, 0.f, 1.f);
+
 	for (FComponentMovementData& ComponentMovementData : ComponentMovementDatas)
 	{
 		if (ComponentMovementData.MovementComponent.IsValid())
 		{
-			if (bIsOnTrigger)
+			if (IsOnTrigger())
 			{
-				FTransform Source = ComponentMovementData.MovementComponent->GetRelativeTransform();
-			
-				if (bIsUpdateScale)
-				{
-					ComponentMovementData.MovementComponent->SetRelativeScale3D(FMath::VInterpTo(Source.GetScale3D(), ComponentMovementData.DestinationTransform.GetScale3D(), DeltaTime, InterpSpeed));
-				}
-			
-				if (bIsUpdateRotator)
-				{
-					ComponentMovementData.MovementComponent->SetRelativeRotation(FQuat::FastLerp(Source.GetRotation(), Source.GetRotation() + ComponentMovementData.DestinationTransform.GetRotation(), DeltaTime * InterpSpeed));
-				}
-			
-				if (bIsUpdateLocation)
-				{
-					ComponentMovementData.MovementComponent->SetRelativeLocation(FMath::VInterpTo(Source.GetLocation(), ComponentMovementData.DestinationTransform.GetLocation(), DeltaTime, InterpSpeed));
-				}
+				ComponentMovementData.MovementComponent->SetRelativeScale3D(FMath::Lerp(ComponentMovementData.SourceTransform.GetScale3D(), ComponentMovementData.DestinationTransform.GetScale3D(), TriggerDeltaTime));
+				ComponentMovementData.MovementComponent->SetRelativeRotation(FMath::Lerp(ComponentMovementData.SourceTransform.GetRotation().Rotator(), ComponentMovementData.DestinationTransform.GetRotation().Rotator(), TriggerDeltaTime));
+				ComponentMovementData.MovementComponent->SetRelativeLocation(FMath::Lerp(ComponentMovementData.SourceTransform.GetLocation(), ComponentMovementData.DestinationTransform.GetLocation(), TriggerDeltaTime));
 			}
 			else
 			{
-				FTransform Source = ComponentMovementData.MovementComponent->GetRelativeTransform();
-			
-				if (bIsUpdateScale)
-				{
-					ComponentMovementData.MovementComponent->SetRelativeScale3D(FMath::VInterpTo(Source.GetScale3D(), ComponentMovementData.SourceTransform.GetScale3D(), DeltaTime, InterpSpeed));
-				}
-			
-				if (bIsUpdateRotator)
-				{
-					ComponentMovementData.MovementComponent->SetRelativeRotation(FQuat::FastLerp(Source.GetRotation(), ComponentMovementData.SourceTransform.GetRotation(), DeltaTime * InterpSpeed));
-				}
-			
-				if (bIsUpdateScale)
-				{
-					ComponentMovementData.MovementComponent->SetRelativeLocation(FMath::VInterpTo(Source.GetLocation(), ComponentMovementData.SourceTransform.GetLocation(), DeltaTime, InterpSpeed));
-				}
+				ComponentMovementData.MovementComponent->SetRelativeScale3D(FMath::Lerp(ComponentMovementData.DestinationTransform.GetScale3D(), ComponentMovementData.SourceTransform.GetScale3D(), TriggerDeltaTime));
+				ComponentMovementData.MovementComponent->SetRelativeRotation(FMath::Lerp(ComponentMovementData.DestinationTransform.GetRotation().Rotator(), ComponentMovementData.SourceTransform.GetRotation().Rotator(), TriggerDeltaTime));
+				ComponentMovementData.MovementComponent->SetRelativeLocation(FMath::Lerp(ComponentMovementData.DestinationTransform.GetLocation(), ComponentMovementData.SourceTransform.GetLocation(), TriggerDeltaTime));
 			}
 		}
 	}
 
+	if (TriggerDeltaTime >= 1.f)
+	{
+		TriggerDeltaTime = 0.f;
+		SetComponentTickEnabled(false);
+	}
 }

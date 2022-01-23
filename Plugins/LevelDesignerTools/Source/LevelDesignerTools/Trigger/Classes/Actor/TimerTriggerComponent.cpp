@@ -44,11 +44,11 @@ void UTimerTriggerComponent::SetupTrigger()
 	Super::SetupTrigger();
 }
 
-void UTimerTriggerComponent::UpdateTrigger(bool bInputIsOnTrigger)
+void UTimerTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
 {
-	Super::UpdateTrigger(bInputIsOnTrigger);
+	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 
-	if (true == bInputIsOnTrigger)
+	if (true == InputLevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX])
 	{
 		__CreateTimer();
 	}
@@ -78,13 +78,15 @@ void UTimerTriggerComponent::__DestroyTimer()
 
 void UTimerTriggerComponent::__AdvanceTimer()
 {
+	UE_LOG(LogTemp, Display, TEXT("__AdvanceTimer"));
+
 	if (GetWorld()->GetAuthGameMode()->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
 	{
 		ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());
 
 		if (nullptr != LevelToolsGameModeBase)
 		{
-			LevelToolsGameModeBase->UpdateTriggerOnce(this, false);
+			LevelToolsGameModeBase->UpdateTriggerOnce(this);
 		}
 	}
 }

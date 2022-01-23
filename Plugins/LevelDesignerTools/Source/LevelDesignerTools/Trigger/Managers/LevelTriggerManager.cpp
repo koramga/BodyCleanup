@@ -40,28 +40,54 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 	LevelTriggerManager = InputLevelTriggerManager;
 }
 
-void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger, bool bIsCallSelf)
+void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger, bool bIsExternalCall)
 {
-	if (bIsOnTrigger != bInputIsOnTrigger)
+	if (bIsExternalCall)
 	{
-		ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
-		const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
-
-		if (ELevelTriggerReactType::Once == LevelTriggerInputFrom->LevelTriggerReactType)
+		if (bIsOnExternalTrigger == bInputIsOnTrigger)
 		{
-			//일전에 한 번 호출되었다는 의미가 된다.
-			if (bIsOnTrigger)
-			{
-				return;
-			}
+			return;
 		}
 
-		bIsOnTrigger = bInputIsOnTrigger;
-		__CallTriggerObservers(bIsOnTrigger);
-
-		if (bIsCallSelf)
+		bIsOnExternalTrigger = bInputIsOnTrigger;
+	}
+	else
+	{
+		if (bIsOnInternalTrigger == bInputIsOnTrigger)
 		{
-			UpdateLevelTriggerInterface->UpdateTrigger(bIsOnTrigger);
+			return;
+		}
+
+		bIsOnInternalTrigger = bInputIsOnTrigger;
+	}
+
+	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
+
+	bool bIsCallObserver = false;
+
+	if (ELevelTriggerObserverCallType::External == LevelTriggerObserverCallType
+		&& bIsExternalCall)
+	{
+		bIsCallObserver = true;
+	}
+	else if (ELevelTriggerObserverCallType::Internal == LevelTriggerObserverCallType
+		&& false == bIsExternalCall)
+	{
+		bIsCallObserver = true;
+	}
+
+	if (true == bIsCallObserver)
+	{
+		__CallTriggerObservers(bInputIsOnTrigger);
+	}
+
+	if (false == bIsExternalCall)
+	{
+		UpdateLevelTriggerInterface->UpdateTrigger(bIsExternalCall, bIsOnTrigger);
+
+		if (ELevelTriggerObserverCallType::External == LevelTriggerObserverCallType)
+		{
+			bIsOnTrigger = false;
 		}
 	}
 }
@@ -120,6 +146,18 @@ void ULevelTriggerInterfaceSpace::ProcessTrigger(bool bInputIsOnTrigger)
 {
 	if (bIsOnTrigger != bInputIsOnTrigger)
 	{
+		ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
+		const FLevelTriggerInputFrom* LevelTriggerInputFrom = UpdateLevelTriggerInterface->GetLevelTriggerInputFrom();
+
+		if (ELevelTriggerReactType::Once == LevelTriggerInputFrom->LevelTriggerReactType)
+		{
+			//일전에 한 번 호출되었다는 의미가 된다.
+			if (bIsOnTrigger)
+			{
+				return;
+			}
+		}
+
 		if (bInputIsOnTrigger)
 		{
 			if (TriggerCertificateComponents.Num() == TriggerComponents.Num())
@@ -292,23 +330,23 @@ void ULevelTriggerManager::BeginPlay()
 	}
 }
 
-void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger, bool bIsCallSelf)
+void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
 
 	if (IsValid(LevelTriggerInterfaceSpace))
 	{
-		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger, bIsCallSelf);
+		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger, true);
 	}
 }
 
-void ULevelTriggerManager::UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface, bool bIsCallSelf)
+void ULevelTriggerManager::UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface)
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
 
 	if (IsValid(LevelTriggerInterfaceSpace))
 	{
-		LevelTriggerInterfaceSpace->UpdateTrigger(true, bIsCallSelf);
-		LevelTriggerInterfaceSpace->UpdateTrigger(false, bIsCallSelf);
+		LevelTriggerInterfaceSpace->UpdateTrigger(true, true);
+		LevelTriggerInterfaceSpace->UpdateTrigger(false, true);
 	}
 }

@@ -38,12 +38,12 @@ const ULevelTriggerManager* ABaseGameModeBase::GetLevelTriggerManager() const
 	return LevelTriggerManager;
 }
 
-void ABaseGameModeBase::UpdateTrigger(class ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger, bool bIsCallSelf)
+void ABaseGameModeBase::UpdateTrigger(class ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
 {
-	LevelTriggerManager->UpdateTrigger(LevelTriggerInterface, bInputIsOnTrigger, bIsCallSelf);
+	LevelTriggerManager->UpdateTrigger(LevelTriggerInterface, bInputIsOnTrigger);
 }
 
-void ABaseGameModeBase::UpdateTriggerOnce(class ILevelTriggerInterface* LevelTriggerInterface, bool bIsCallSelf)
+void ABaseGameModeBase::UpdateTriggerOnce(class ILevelTriggerInterface* LevelTriggerInterface)
 {
-	LevelTriggerManager->UpdateTriggerOnce(LevelTriggerInterface, bIsCallSelf);
+	LevelTriggerManager->UpdateTriggerOnce(LevelTriggerInterface);
 }

@@ -44,7 +44,8 @@ private :
 	UPROPERTY()
 	TArray<TSoftObjectPtr<ULevelTriggerInterfaceSpace>>			ObserverTriggerLevelInterfaceSpaces;
 
-	bool														bIsOnTrigger = false;
+	bool														bIsOnInternalTrigger = false;
+	bool														bIsOnExternalTrigger = false;
 
 
 private:
@@ -61,7 +62,7 @@ private :
 
 public :
 	void SetupRelationship();
-	void UpdateTrigger(bool bInputIsOnTrigger, bool bIsCallSelf = true);
+	void UpdateTrigger(bool bInputIsOnTrigger, bool bIsExternalCall = false);
 	bool HasTriggerComponents() const;
 	void ProcessTrigger(bool bInputIsOnTrigger);
 
@@ -87,6 +88,6 @@ public :
 	void RegisterTrigger(ILevelTriggerInterface* TriggerInterface);
 	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const;
 	void BeginPlay();
-	void UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger, bool bIsCallSelf);
-	void UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface, bool bIsCallSelf);
+	void UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger);
+	void UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface);
 };
