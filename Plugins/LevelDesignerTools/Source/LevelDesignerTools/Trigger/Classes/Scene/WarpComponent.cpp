@@ -41,7 +41,7 @@ void UWarpComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTri
 {
 	if (EWarpType::Location == WarpType)
 	{
-		if (InputLevelTriggerUpdateParam.bIsOnInternalTrigger)
+		if (InputLevelTriggerUpdateParam.bIsOnTrigger)
 		{
 			//반응하면 됩니다.
 			TArray<TSoftObjectPtr<AActor>> Actors;

@@ -19,12 +19,12 @@ enum class ELevelTriggerReactType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ELevelTriggerCallType : uint8
+enum class ELevelTriggerWayType : uint8
 {
-	//내부에서 반응이 들어오면 Observer에게 Call을 호출한다.
-	Internal,
-	//외부에서 반응이 들어오면 Observer에게 Call을 호출한다.
-	External,
+	//내부에서 반응이 들어오면 Observer에게 Call을 호출한다. (Normal Trigger)
+	OneWay,
+	//외부에서 반응이 들어오면 Observer에게 Call을 호출한다. (ex) Time, Destroy etc)
+	TwoWay,
 };
 
 UENUM(BlueprintType)
@@ -98,7 +98,7 @@ struct FLevelTriggerUpdateParam
 	GENERATED_BODY()
 
 public:
-	bool					bIsOnTriggers[MAX_TRIGGER_NUM];
+	bool					bIsOnTrigger;
 };
 
 USTRUCT(BlueprintType, Blueprintable)
@@ -107,6 +107,7 @@ struct FLevelTriggerSettings
 	GENERATED_BODY()
 
 public:
+	ELevelTriggerWayType	LevelTriggerWayType;
 };
 
 // This class does not need to be modified.

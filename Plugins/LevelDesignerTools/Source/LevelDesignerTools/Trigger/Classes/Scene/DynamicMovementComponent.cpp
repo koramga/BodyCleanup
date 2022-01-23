@@ -79,7 +79,7 @@ void UDynamicMovementComponent::UpdateTrigger(const FLevelTriggerUpdateParam& In
 {
 	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 
-	if (InputLevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX])
+	if (InputLevelTriggerUpdateParam.bIsOnTrigger)
 	{
 		if (EDynamicMovementCycleType::Cycle == DynamicMovementCycleType)
 		{

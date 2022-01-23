@@ -32,7 +32,7 @@ void USpawnComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTr
 {
 	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 
-	if (InputLevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX])
+	if (InputLevelTriggerUpdateParam.bIsOnTrigger)
 	{
 		if (ESpawnComponentType::Hidden == SpawnComponentType)
 		{

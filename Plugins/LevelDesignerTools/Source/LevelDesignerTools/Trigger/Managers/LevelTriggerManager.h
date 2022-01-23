@@ -43,9 +43,9 @@ private :
 	TMap<TSoftObjectPtr<UObject>, FLevelTriggerCertificate>		TriggerCertificateComponents;
 	UPROPERTY()
 	TArray<TSoftObjectPtr<ULevelTriggerInterfaceSpace>>			ObserverTriggerLevelInterfaceSpaces;
-
-	bool														bIsOnInternalTrigger = false;
-	bool														bIsOnExternalTrigger = false;
+	
+	bool														bIsOnTrigger = false;
+	bool														bIsOnTwoWayTrigger = false;
 
 
 private:

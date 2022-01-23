@@ -42,52 +42,50 @@ void ULevelTriggerInterfaceSpace::SetLevelTriggerManager(const TSoftObjectPtr<UL
 
 void ULevelTriggerInterfaceSpace::UpdateTrigger(bool bInputIsOnTrigger, bool bIsExternalCall)
 {
-	if (bIsExternalCall)
-	{
-		if (bIsOnExternalTrigger == bInputIsOnTrigger)
-		{
-			return;
-		}
-
-		bIsOnExternalTrigger = bInputIsOnTrigger;
-	}
-	else
-	{
-		if (bIsOnInternalTrigger == bInputIsOnTrigger)
-		{
-			return;
-		}
-
-		bIsOnInternalTrigger = bInputIsOnTrigger;
-	}
-
 	ILevelTriggerInterface* UpdateLevelTriggerInterface = Cast<ILevelTriggerInterface>(LevelTriggerInterface.Get());
 
-	bool bIsCallObserver = false;
+	const FLevelTriggerSettings& LevelTriggerSettings = UpdateLevelTriggerInterface->GetLevelTriggerSettings();
 
-	if (ELevelTriggerObserverCallType::External == LevelTriggerObserverCallType
-		&& bIsExternalCall)
+	if (ELevelTriggerWayType::OneWay == LevelTriggerSettings.LevelTriggerWayType)
 	{
-		bIsCallObserver = true;
-	}
-	else if (ELevelTriggerObserverCallType::Internal == LevelTriggerObserverCallType
-		&& false == bIsExternalCall)
-	{
-		bIsCallObserver = true;
-	}
-
-	if (true == bIsCallObserver)
-	{
-		__CallTriggerObservers(bInputIsOnTrigger);
-	}
-
-	if (false == bIsExternalCall)
-	{
-		UpdateLevelTriggerInterface->UpdateTrigger(bIsExternalCall, bIsOnTrigger);
-
-		if (ELevelTriggerObserverCallType::External == LevelTriggerObserverCallType)
+		if (bIsOnTrigger == bInputIsOnTrigger)
 		{
-			bIsOnTrigger = false;
+			return;
+		}
+
+		bIsOnTrigger = bInputIsOnTrigger;
+
+		__CallTriggerObservers(bIsOnTrigger);
+
+		FLevelTriggerUpdateParam LevelTriggerUpdateParam;
+		LevelTriggerUpdateParam.bIsOnTrigger = bIsOnTrigger;
+		UpdateLevelTriggerInterface->UpdateTrigger(LevelTriggerUpdateParam);
+	}
+	else if (ELevelTriggerWayType::TwoWay == LevelTriggerSettings.LevelTriggerWayType)
+	{
+		if (bIsExternalCall)
+		{
+			if (bIsOnTwoWayTrigger == bInputIsOnTrigger)
+			{
+				return;
+			}
+
+			bIsOnTwoWayTrigger = bInputIsOnTrigger;
+
+			__CallTriggerObservers(bIsOnTwoWayTrigger);
+		}
+		else
+		{
+			if (bIsOnTrigger == bInputIsOnTrigger)
+			{
+				return;
+			}
+
+			bIsOnTrigger = bInputIsOnTrigger;
+
+			FLevelTriggerUpdateParam LevelTriggerUpdateParam;
+			LevelTriggerUpdateParam.bIsOnTrigger = bIsOnTrigger;
+			UpdateLevelTriggerInterface->UpdateTrigger(LevelTriggerUpdateParam);
 		}
 	}
 }

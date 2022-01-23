@@ -12,7 +12,7 @@ UTriggerSceneComponent::UTriggerSceneComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
+	LevelTriggerSettings.LevelTriggerWayType = ELevelTriggerWayType::OneWay;
 	// ...
 }
 
@@ -80,7 +80,7 @@ const FLevelTriggerInputFrom* UTriggerSceneComponent::GetLevelTriggerInputFrom()
 
 bool UTriggerSceneComponent::IsOnTrigger() const
 {
-	return LevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX];
+	return LevelTriggerUpdateParam.bIsOnTrigger;
 }
 
 const FLevelTriggerSettings& UTriggerSceneComponent::GetLevelTriggerSettings() const

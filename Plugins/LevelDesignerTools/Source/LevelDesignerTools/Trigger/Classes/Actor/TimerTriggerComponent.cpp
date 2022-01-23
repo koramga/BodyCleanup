@@ -48,7 +48,7 @@ void UTimerTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Input
 {
 	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 
-	if (true == InputLevelTriggerUpdateParam.bIsOnTriggers[DEFAULT_TRIGGER_INDEX])
+	if (true == InputLevelTriggerUpdateParam.bIsOnTrigger)
 	{
 		__CreateTimer();
 	}
