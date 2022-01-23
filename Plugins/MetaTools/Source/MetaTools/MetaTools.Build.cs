@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class LevelDesignerTools : ModuleRules
+public class MetaTools : ModuleRules
 {
-	public LevelDesignerTools(ReadOnlyTargetRules Target) : base(Target)
+	public MetaTools(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -27,7 +27,6 @@ public class LevelDesignerTools : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
-				"MetaTools",
 			}
 			);
 			
