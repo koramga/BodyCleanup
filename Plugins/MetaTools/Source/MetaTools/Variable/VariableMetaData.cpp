@@ -8,7 +8,7 @@ UVariableMetaData::UVariableMetaData()
 
 }
 
-EVariableMetaDataType UVariableMetaData::GetVariableMetaData() const
+EVariableMetaDataType UVariableMetaData::GetVariableMetaDataType() const
 {
 	return VariableMetaDataType;
 }
