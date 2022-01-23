@@ -3,6 +3,7 @@
 
 #include "TriggerActorComponent.h"
 #include "../../../GameMode/LevelToolsGameModeBase.h"
+#include "../../../Utility/LevelSupportFunctionLibrary.h"
 #include "GameFramework/GameModeBase.h"
 
 // Sets default values for this component's properties
@@ -52,6 +53,23 @@ void UTriggerActorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UTriggerActorComponent::GetTriggerLocation(TArray<FVector>& TriggerLocations)
 {
+	TArray<TSoftObjectPtr<UActorComponent>> TriggerComponents;
+
+	ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TriggerComponents, this);
+
+	for (TSoftObjectPtr<UActorComponent>& ActorComponent : TriggerComponents)
+	{
+		USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent.Get());
+
+		if (IsValid(SceneComponent))
+		{
+			TriggerLocations.Add(SceneComponent->GetComponentTransform().GetLocation());
+		}
+		else
+		{
+			TriggerLocations.Add(GetOwner()->GetActorLocation());
+		}
+	}
 }
 
 void UTriggerActorComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)

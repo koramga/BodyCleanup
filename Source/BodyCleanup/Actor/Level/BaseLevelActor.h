@@ -48,7 +48,7 @@ protected :
 #endif
 
 protected :
-	void GetComponentByLinkConnect(USceneComponent* SceneComponent, TArray<FBatchedLine>& BatchLines);
+	void GetComponentByLinkConnect(TArray<FBatchedLine>& BatchLines);
 
 protected:
 	// Called when the game starts or when spawned

@@ -65,6 +65,10 @@ void UTriggerSceneComponent::GetTriggerLocation(TArray<FVector>& TriggerLocation
 		{
 			TriggerLocations.Add(SceneComponent->GetComponentTransform().GetLocation());
 		}
+		else
+		{
+			TriggerLocations.Add(GetOwner()->GetActorLocation());
+		}
 	}
 }
 

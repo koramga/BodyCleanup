@@ -91,7 +91,9 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 
 			TArray<FBatchedLine> BatchLines;
 
-			GetComponentByLinkConnect(GetRootComponent(), BatchLines);
+			
+
+			GetComponentByLinkConnect(BatchLines);
 
 			LineBatchComponent->DrawLines(BatchLines);
 		}
@@ -100,46 +102,58 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 
 #endif
 
-void ABaseLevelActor::GetComponentByLinkConnect(USceneComponent* SceneComponent, TArray<FBatchedLine>& BatchLines)
+void ABaseLevelActor::GetComponentByLinkConnect(TArray<FBatchedLine>& BatchLines)
 {
-	if (SceneComponent->IsA(UWarpComponent::StaticClass()))
+	const TSet<UActorComponent*>& ActorComponents = GetComponents();
+
+	for (UActorComponent* ActorComponent : ActorComponents)
 	{
-		FVector WarpLocation = Cast<UWarpComponent>(SceneComponent)->GetWarpLocation();
-
-		BatchLines.Add(FBatchedLine(GetActorLocation(), WarpLocation, FColor::Blue, 0.f, 2.f, 0));
-	}
-	else if (SceneComponent->IsA(USpawnComponent::StaticClass()))
-	{
-		TArray<FVector> AffectLocations;
-
-		Cast<USpawnComponent>(SceneComponent)->GetAffectPoints(AffectLocations);
-
-		for (const FVector& Location : AffectLocations)
+		if(ActorComponent->IsA(USceneComponent::StaticClass()))
 		{
-			BatchLines.Add(FBatchedLine(GetActorLocation(), Location, FColor::Blue, 0.f, 2.f, 0));
+			USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent); 
+
+			if (SceneComponent->IsA(UWarpComponent::StaticClass()))
+			{
+				FVector WarpLocation = Cast<UWarpComponent>(SceneComponent)->GetWarpLocation();
+
+				BatchLines.Add(FBatchedLine(GetActorLocation(), WarpLocation, FColor::Blue, 0.f, 2.f, 0));
+			}
+			else if (SceneComponent->IsA(USpawnComponent::StaticClass()))
+			{
+				TArray<FVector> AffectLocations;
+
+				Cast<USpawnComponent>(SceneComponent)->GetAffectPoints(AffectLocations);
+
+				for (const FVector& Location : AffectLocations)
+				{
+					BatchLines.Add(FBatchedLine(GetActorLocation(), Location, FColor::Blue, 0.f, 2.f, 0));
+				}
+			}
 		}
-	}
 
-	if (SceneComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
-	{
-		TArray<FVector> TriggerLocations;
 
-		Cast<ILevelTriggerInterface>(SceneComponent)->GetTriggerLocation(TriggerLocations);
-
-		for (const FVector& Location : TriggerLocations)
+		if (ActorComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass()))
 		{
-			BatchLines.Add(FBatchedLine(GetActorLocation(), Location, FColor::Red, 0.f, 2.f, 0));
+			TArray<FVector> TriggerLocations;
+
+			Cast<ILevelTriggerInterface>(ActorComponent)->GetTriggerLocation(TriggerLocations);
+
+			for (const FVector& Location : TriggerLocations)
+			{
+				BatchLines.Add(FBatchedLine(GetActorLocation(), Location, FColor::Red, 0.f, 2.f, 0));
+			}
 		}
+
+		//TArray<USceneComponent*> ChildrenComponents;
+		//
+		//SceneComponent->GetChildrenComponents(false, ChildrenComponents);
+		//
+		//for (USceneComponent* ChildComponent : ChildrenComponents)
+		//{
+		//	GetComponentByLinkConnect(ChildComponent, BatchLines);
+		//}
 	}
 
-	TArray<USceneComponent*> ChildrenComponents;
-
-	SceneComponent->GetChildrenComponents(false, ChildrenComponents);
-
-	for (USceneComponent* ChildComponent : ChildrenComponents)
-	{
-		GetComponentByLinkConnect(ChildComponent, BatchLines);
-	}
 }
 
 void ABaseLevelActor::BeginPlay()
