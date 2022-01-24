@@ -13,5 +13,4 @@ UCLASS()
 class METATOOLS_API UVectorVariableMetaData : public UBaseVariableMetaData
 {
 	GENERATED_BODY()
-	
 };

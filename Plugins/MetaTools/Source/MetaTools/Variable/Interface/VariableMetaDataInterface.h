@@ -7,22 +7,25 @@
 #include "VariableMetaDataInterface.generated.h"
 
 UENUM(BlueprintType)
-enum class EVariableType : uint8
+enum class EMetaVariableType : uint8
 {
+	Bool,
+	Int,
+	Float,
+	Double,
 	Vector,
 	Vector4,
 	Color,
-	Float,
-	Int,
-	Bool,
 };
 
 UENUM(BlueprintType)
-enum class EVariableMetaDataType : uint8
+enum class EMetaVariableScope : uint8
 {
 	Normal,
 	Range,
 };
+
+typedef TVariant<bool, int32, float, double, FVector, FVector4, FColor> TMetaVariable;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -40,4 +43,7 @@ class METATOOLS_API IVariableMetaDataInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	virtual EMetaVariableType GetMetaVariableType() const = 0;
+	virtual EMetaVariableScope GetMetaVariableScope() const = 0;
+	virtual TMetaVariable GetMetaVariable() const = 0;
 };
