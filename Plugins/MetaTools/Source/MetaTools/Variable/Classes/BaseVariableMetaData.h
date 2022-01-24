@@ -10,17 +10,22 @@
 /**
  * 
  */
-UCLASS()
-class METATOOLS_API UBaseVariableMetaData : public UObject, public IVariableMetaDataInterface
+USTRUCT(BlueprintType)
+struct METATOOLS_API FBaseVariableMetaData
 {
 	GENERATED_BODY()
 
+public :
+	FBaseVariableMetaData();
+
 protected:
 	EMetaVariableType	MetaVariableType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMetaVariableScope	MetaVariableScope;
 
 public:
-	virtual EMetaVariableType GetMetaVariableType() const override;
-	virtual EMetaVariableScope GetMetaVariableScope() const override;
-	virtual TMetaVariable GetMetaVariable() const override;
+	virtual EMetaVariableType GetMetaVariableType() const;
+	virtual EMetaVariableScope GetMetaVariableScope() const;
+	virtual TMetaVariable GetMetaVariable() const;
 };

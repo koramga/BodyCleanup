@@ -9,8 +9,43 @@
 /**
  * 
  */
-UCLASS()
-class METATOOLS_API UVectorVariableMetaData : public UBaseVariableMetaData
+
+
+USTRUCT(BlueprintType, Blueprintable)
+struct METATOOLS_API FNormalVectorMetaData
 {
 	GENERATED_BODY()
+
+public :
+	FVector Vector;
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct METATOOLS_API FRangeVectorMetaData
+{
+	GENERATED_BODY()
+
+public :
+	FVector	Min;
+	FVector Max;
+};
+
+
+USTRUCT(BlueprintType)
+struct METATOOLS_API FVectorVariableMetaData : public FBaseVariableMetaData
+{
+	GENERATED_BODY()
+
+public :
+	FVectorVariableMetaData();
+
+protected :
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Normal", EditConditionHides))
+	FNormalVectorMetaData	NormalVectorMetaData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Range", EditConditionHides))
+	FRangeVectorMetaData	RangeVectorMetaData;
+
+public :
+	virtual TMetaVariable GetMetaVariable() const override;
 };

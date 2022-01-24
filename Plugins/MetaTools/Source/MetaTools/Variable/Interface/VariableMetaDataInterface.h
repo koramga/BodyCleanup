@@ -15,7 +15,7 @@ enum class EMetaVariableType : uint8
 	Double,
 	Vector,
 	Vector4,
-	Color,
+	LinearColor,
 };
 
 UENUM(BlueprintType)
@@ -25,7 +25,7 @@ enum class EMetaVariableScope : uint8
 	Range,
 };
 
-typedef TVariant<bool, int32, float, double, FVector, FVector4, FColor> TMetaVariable;
+typedef TVariant<bool, int32, float, double, FVector, FVector4, FLinearColor> TMetaVariable;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)

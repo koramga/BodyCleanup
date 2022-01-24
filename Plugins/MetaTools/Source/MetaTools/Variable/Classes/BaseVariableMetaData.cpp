@@ -3,21 +3,23 @@
 
 #include "BaseVariableMetaData.h"
 
-EMetaVariableType UBaseVariableMetaData::GetMetaVariableType() const
+FBaseVariableMetaData::FBaseVariableMetaData()
+{
+	MetaVariableType = EMetaVariableType::Bool;
+	MetaVariableScope = EMetaVariableScope::Normal;
+}
+
+EMetaVariableType FBaseVariableMetaData::GetMetaVariableType() const
 {
 	return MetaVariableType;
 }
 
-EMetaVariableScope UBaseVariableMetaData::GetMetaVariableScope() const
+EMetaVariableScope FBaseVariableMetaData::GetMetaVariableScope() const
 {
 	return MetaVariableScope;
 }
 
-TMetaVariable UBaseVariableMetaData::GetMetaVariable() const
+TMetaVariable FBaseVariableMetaData::GetMetaVariable() const
 {
-	TMetaVariable MetaVariable;
-
-	MetaVariable.Set<int>(0);
-
-	return MetaVariable;
+	return TMetaVariable();
 }

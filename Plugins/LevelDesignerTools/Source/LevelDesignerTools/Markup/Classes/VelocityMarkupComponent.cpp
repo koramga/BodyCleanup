@@ -5,14 +5,19 @@
 //#include "../../Utilities/LevelSupportFunctionLibrary.h"
 #include "../../Utility/LevelSupportFunctionLibrary.h"
 
+UVelocityMarkupComponent::UVelocityMarkupComponent()
+{
+
+}
+
 FVector UVelocityMarkupComponent::GetLinearVelocity() const
 {
-	return LinearVelocity;
+	return LinearVelocity.GetMetaVariable().Get<FVector>();
 }
 
 FVector UVelocityMarkupComponent::GetAngularVelocity() const
 {
-	return AngularVelocity;
+	return AngularVelocity.GetMetaVariable().Get<FVector>();
 }
 
 ELevelMarkupType UVelocityMarkupComponent::GetLevelMarkupType() const
@@ -36,7 +41,7 @@ void UVelocityMarkupComponent::UpdateFromMarkup(UObject* Object) const
 	for (TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
 	{
 		PrimitiveComponent->SetSimulatePhysics(true);
-		PrimitiveComponent->SetPhysicsLinearVelocity(LinearVelocity);
-		PrimitiveComponent->SetPhysicsAngularVelocity(AngularVelocity);
+		PrimitiveComponent->SetPhysicsLinearVelocity(GetLinearVelocity());
+		PrimitiveComponent->SetPhysicsAngularVelocity(GetAngularVelocity());
 	}
 }

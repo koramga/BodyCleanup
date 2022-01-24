@@ -3,6 +3,7 @@
 #pragma once
 
 #include "MarkupComponent.h"
+#include "MetaTools/Variable/Classes/VectorVariableMetaData.h"
 #include "VelocityMarkupComponent.generated.h"
 
 /**
@@ -13,12 +14,15 @@ class LEVELDESIGNERTOOLS_API UVelocityMarkupComponent : public UMarkupComponent
 {
 	GENERATED_BODY()
 
+public :
+	UVelocityMarkupComponent();
+
 protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|VelocityMarkupComponent")
-	FVector		LinearVelocity;
+	FVectorVariableMetaData		LinearVelocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|VelocityMarkupComponent")
-	FVector		AngularVelocity;
+	FVectorVariableMetaData		AngularVelocity;
 
 public :
 	FVector GetLinearVelocity() const;
