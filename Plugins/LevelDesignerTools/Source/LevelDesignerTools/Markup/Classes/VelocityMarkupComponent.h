@@ -3,7 +3,7 @@
 #pragma once
 
 #include "MarkupComponent.h"
-#include "MetaTools/Variable/Classes/VectorVariableMetaData.h"
+#include "MetaTools/Variable/VectorVariableMetaData.h"
 #include "VelocityMarkupComponent.generated.h"
 
 /**

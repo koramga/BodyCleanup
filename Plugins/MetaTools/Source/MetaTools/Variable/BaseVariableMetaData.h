@@ -3,13 +3,34 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Interface/VariableMetaDataInterface.h"
 #include "UObject/NoExportTypes.h"
 #include "BaseVariableMetaData.generated.h"
 
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EMetaVariableType : uint8
+{
+	Bool,
+	Int,
+	Float,
+	Double,
+	Vector,
+	Vector4,
+	LinearColor,
+};
+
+UENUM(BlueprintType)
+enum class EMetaVariableScope : uint8
+{
+	Normal,
+	Range,
+};
+
+typedef TVariant<bool, int32, float, double, FVector, FVector4, FLinearColor> TMetaVariable;
+
 USTRUCT(BlueprintType)
 struct METATOOLS_API FBaseVariableMetaData
 {

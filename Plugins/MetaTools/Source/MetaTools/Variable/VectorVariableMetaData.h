@@ -17,6 +17,7 @@ struct METATOOLS_API FNormalVectorMetaData
 	GENERATED_BODY()
 
 public :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector Vector;
 };
 
@@ -26,7 +27,9 @@ struct METATOOLS_API FRangeVectorMetaData
 	GENERATED_BODY()
 
 public :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector	Min;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector Max;
 };
 
@@ -40,10 +43,10 @@ public :
 	FVectorVariableMetaData();
 
 protected :
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Normal", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Normal", EditConditionHides))
 	FNormalVectorMetaData	NormalVectorMetaData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Range", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Range", EditConditionHides))
 	FRangeVectorMetaData	RangeVectorMetaData;
 
 public :

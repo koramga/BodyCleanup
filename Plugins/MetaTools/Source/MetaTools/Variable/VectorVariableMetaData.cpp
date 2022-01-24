@@ -2,7 +2,7 @@
 
 
 #include "VectorVariableMetaData.h"
-#include "../../Utility/MetaToolsFunctionLibrary.h"
+#include "../Utility/MetaToolsFunctionLibrary.h"
 
 FVectorVariableMetaData::FVectorVariableMetaData()
 {

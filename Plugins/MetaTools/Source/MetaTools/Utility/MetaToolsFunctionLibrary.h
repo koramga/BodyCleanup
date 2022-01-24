@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "../Variable/Interface/VariableMetaDataInterface.h"
+#include "../Variable/BaseVariableMetaData.h"
 #include "MetaToolsFunctionLibrary.generated.h"
 
 /**
