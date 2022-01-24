@@ -43,9 +43,10 @@ UENUM(BlueprintType)
 enum class EInteractiveAction : uint8
 {
 	None,
-	Absorbing,
+	Sucking,
 	Holding,
-	Shooting,
+	ArcShooting,
+	HoldShooting,
 };
 
 UENUM(BlueprintType)

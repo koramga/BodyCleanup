@@ -3,6 +3,7 @@
 
 #include "InteractiveObjectComponent.h"
 #include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
+#include "../../Character/BaseCharacter.h"
 
 UInteractiveObjectComponent::UInteractiveObjectComponent()
 {
@@ -74,7 +75,7 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	{
 		const FTransform& ComponentTransform = InteractiveComponent->GetComponentTransform();
 
-		if (EInteractiveAction::Absorbing == InteractiveAction)
+		if (EInteractiveAction::Sucking == InteractiveAction)
 		{
 			for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
 			{
@@ -85,11 +86,11 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 					FVector Direction = ComponentTransform.GetLocation() - Transform.GetLocation();
 					Direction.Normalize();					
 
-					FVector NextLocation = Transform.GetLocation() + Direction * AbsorbingSpeedPerSecond * DeltaTime;
+					FVector NextLocation = Transform.GetLocation() + Direction * SuckingSpeedPerSecond * DeltaTime;
 			
 					AffectInteractiveComponent->SetWorldLocation(NextLocation);
 
-					UE_LOG(LogTemp, Display, TEXT("NextLocation : <%.2f, %.2f, %.2f>"), NextLocation.X, NextLocation.Y, NextLocation.Z);
+					//UE_LOG(LogTemp, Display, TEXT("NextLocation : <%.2f, %.2f, %.2f>"), NextLocation.X, NextLocation.Y, NextLocation.Z);
 				}
 			}
 
@@ -142,7 +143,10 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 			}
 		}
 	}
-	else if (EInteractiveAction::Shooting == InteractiveAction)
+
+
+	if (EInteractiveAction::ArcShooting == InteractiveAction
+		|| EInteractiveAction::HoldShooting == InteractiveAction)
 	{
 		for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
 		{
@@ -152,7 +156,24 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 				if (LinearVelocity.Size() <= 10.f)
 				{
-					SetupInteractiveAction(EInteractiveAction::None);
+					EInteractiveAction NextInteractiveAction = EInteractiveAction::None;
+
+					if (InteractiveComponent.IsValid())
+					{
+						ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(InteractiveComponent->GetOwner());
+
+						if (IsValid(BaseCharacter))
+						{
+							EAnimationType AnimationType = BaseCharacter->GetAnimationType();
+
+							if (EAnimationType::Vacuum == AnimationType)
+							{
+								NextInteractiveAction = EInteractiveAction::Sucking;
+							}							
+						}	
+					}
+					
+					SetupInteractiveAction(NextInteractiveAction);					
 				}
 			}
 		}
@@ -180,32 +201,38 @@ void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction Nex
 			}
 		}
 	}
-	else if (EInteractiveAction::Shooting == NextInteractiveAction)
+	else if (EInteractiveAction::HoldShooting == NextInteractiveAction)
 	{
-		if (EInteractiveAction::Holding == BeforeInteractiveAction)
+		if (InteractiveComponent.IsValid())
 		{
-			if (InteractiveComponent.IsValid())
+			for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
 			{
-				for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
+				if (InteractiveComponent.IsValid())
 				{
-					if (InteractiveComponent.IsValid())
+					FTransform Transform = InteractiveComponent->GetComponentToWorld();
+
+					FVector startLoc = Transform.GetLocation();
+					FVector targetLoc = Transform.GetLocation() + InteractiveComponent->GetOwner()->GetActorForwardVector() * HoldShootingPower;
+					float arcValue = 0.9f;
+					FVector outVelocity = FVector::ZeroVector;
+
+					if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
 					{
-						FTransform Transform = InteractiveComponent->GetComponentToWorld();
-
-						FVector startLoc = Transform.GetLocation();
-						FVector targetLoc = Transform.GetLocation() + InteractiveComponent->GetOwner()->GetActorForwardVector() * ShootingPowerValue;
-						float arcValue = 0.9f;
-						FVector outVelocity = FVector::ZeroVector;
-
-						if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), arcValue))
-						{
-							AffectInteractiveComponent->SetPhysicsLinearVelocity(outVelocity);
-							//AffectInteractiveComponent->SetPhysicsAngularVelocity(FVector(0.f, 2000.f, 2000.f));
-						}
-
-						AffectInteractiveComponent->SetSimulatePhysics(true);
+						AffectInteractiveComponent->SetPhysicsLinearVelocity(outVelocity);
 					}
+
+					AffectInteractiveComponent->SetSimulatePhysics(true);
 				}
+			}
+		}
+	}
+	else if (EInteractiveAction::ArcShooting == NextInteractiveAction)
+	{
+		for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
+		{
+			if (AffectInteractiveComponent.IsValid())
+			{
+				AffectInteractiveComponent->SetSimulatePhysics(true);
 			}
 		}
 	}
@@ -238,7 +265,8 @@ bool UInteractiveObjectComponent::CanUpdateInteractive(EInteractiveAction NextIn
 		return false;
 	}
 
-	if (EInteractiveAction::Shooting == CurrentInteractiveAction)
+	if (EInteractiveAction::ArcShooting == CurrentInteractiveAction
+		|| EInteractiveAction::HoldShooting == CurrentInteractiveAction)
 	{
 		return false;
 	}

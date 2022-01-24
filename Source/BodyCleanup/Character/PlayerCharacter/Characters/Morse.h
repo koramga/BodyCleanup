@@ -21,13 +21,19 @@ protected:
 	USceneComponent*		HorseComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AActor>		ShotSpawnActor;
+	TSubclassOf<AActor>		ArcShootingSpawnActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float					CreateShotSpawnActorOffset = 150.f;
+	float					CreateArcShootingSpawnActorOffset = 150.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float					ActorRotationInterpValue = 5.f;;
+	float					ActorRotationInterpValue = 5.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					MinArcShootingRange = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					MaxArcShootingRange = 500.f;
 
 	UPROPERTY(VisibleAnywhere)
 	TSet<TSoftObjectPtr<AActor>>					VacuumOverlapActors;
@@ -37,8 +43,9 @@ protected:
 
 
 protected :
-	FVector					ThrowTargetPos;
-	float					ThrowArcValue = 0.5f;
+	FVector					ArcShootingVelocity;
+	float					ArcShootingArcValue = 0.5f;
+	bool					bIsCanArcShooting = false;
 
 protected:
 	// Called when the game starts or when spawned

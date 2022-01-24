@@ -23,7 +23,7 @@ void AMorse::BeginPlay()
 	Super::BeginPlay();
 
 	TArray<UActorComponent*> Ranges = GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("VaccumRange"));
-	
+
 	for (UActorComponent* ActorComponent : Ranges)
 	{
 		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(ActorComponent);
@@ -91,15 +91,33 @@ void AMorse::Tick(float DeltaTime)
 		//Shooting은 PredictProjectilePath를 이용해서 그림을 그려야하므로, Tick에 들어가야만 한다.
 		if (__IsShooting())
 		{
-			FVector ThrowStartPos = GetActorLocation();
-			ThrowStartPos += GetActorForwardVector() * CreateShotSpawnActorOffset;
+			FVector ArcShootingStartLocation = GetActorLocation();
+			ArcShootingStartLocation += GetActorForwardVector() * CreateArcShootingSpawnActorOffset;
 
 			FHitResult Hit;
 
 			UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+			FVector ArcShootingEndLocation = Hit.Location;
 
-			FVector startLoc = ThrowStartPos;
-			FVector targetLoc = Hit.Location;
+			float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
+
+			if (Distance < MinArcShootingRange)
+			{
+				bIsCanArcShooting = false;
+				return;
+			}
+			else if (Distance > MaxArcShootingRange)
+			{
+				bIsCanArcShooting = false;
+				return;
+				//ArcShootingEndLocation = ArcShootingStartLocation + GetActorForwardVector() * MaxArcShootingRange;
+			}
+
+			bIsCanArcShooting = true;
+			Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
+
+			FVector startLoc = ArcShootingStartLocation;
+			FVector targetLoc = ArcShootingEndLocation;
 			FVector outVelocity = FVector::ZeroVector;
 			FOccluderVertexArray arr;
 			TArray<AActor*> actorArr;
@@ -113,17 +131,17 @@ void AMorse::Tick(float DeltaTime)
 			ObjectTypes.Add(WorldDynamic);
 			ObjectTypes.Add(WorldPhysicsBody);
 
-			if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ThrowArcValue))
+			if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ArcShootingArcValue))
 			{
-				ThrowTargetPos = outVelocity;
+				ArcShootingVelocity = outVelocity;
 
 				UGameplayStatics::PredictProjectilePath(
 					GetWorld(),
 					Hit,
 					arr,
 					NullVector,
-					ThrowStartPos,
-					ThrowTargetPos,
+					ArcShootingStartLocation,
+					ArcShootingVelocity,
 					true,
 					5.f,
 					ObjectTypes,
@@ -155,9 +173,9 @@ void AMorse::InputMouseWheel(float InputAxis)
 		//ArcValue를 수정하여 사용자가 원하는 방향에 Arc값을 지정할 수 있도록 한다.
 		if (__IsShooting())
 		{
-			ThrowArcValue -= (InputAxis / 50.f);
+			ArcShootingArcValue -= (InputAxis / 50.f);
 
-			ThrowArcValue = FMath::Clamp(ThrowArcValue, 0.1f, 0.9f);
+			ArcShootingArcValue = FMath::Clamp(ArcShootingArcValue, 0.1f, 0.9f);
 		}
 	}
 
@@ -218,7 +236,7 @@ void AMorse::InputPressedMouseRightClick()
 			{
 				TSoftObjectPtr<AActor> HoldingActor = VacuumEntranceComponent->GetHoldingActor();
 
-				__SetInteractiveAction(HoldingActor.Get(), EInteractiveAction::Shooting);
+				__SetInteractiveAction(HoldingActor.Get(), EInteractiveAction::HoldShooting);
 
 				UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
 
@@ -239,13 +257,21 @@ void AMorse::InputReleasedMouseRightClick()
 
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
-		if (EAnimationType::Shot == PlayerCharacterAnimInstance->GetAnimationType())
+		if (bIsCanArcShooting
+			&& EAnimationType::Shot == PlayerCharacterAnimInstance->GetAnimationType())
 		{
-			AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(ShotSpawnActor, FTransform(GetActorForwardVector().Rotation(), GetActorLocation() + GetActorForwardVector() * CreateShotSpawnActorOffset));
+			AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(ArcShootingSpawnActor, FTransform(GetActorForwardVector().Rotation(), GetActorLocation() + GetActorForwardVector() * CreateArcShootingSpawnActorOffset));
 
 			if (!SpawnActor)
 			{
 				return;
+			}
+
+			UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
+
+			if (IsValid(MorseAnimInstance))
+			{
+				MorseAnimInstance->SetShot();
 			}
 
 			TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
@@ -255,7 +281,7 @@ void AMorse::InputReleasedMouseRightClick()
 			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 			{
 				PrimitiveComponent->SetSimulatePhysics(true);
-				PrimitiveComponent->SetPhysicsLinearVelocity(ThrowTargetPos);
+				PrimitiveComponent->SetPhysicsLinearVelocity(ArcShootingVelocity);
 
 				//if (PrimitiveComponent->IsA(UDestructibleComponent::StaticClass()))
 				//{
@@ -285,7 +311,7 @@ void AMorse::InputReleasedMouseRightClick()
 
 			for (TSoftObjectPtr<USceneComponent>& InteractiveComponent : InteractiveComponents)
 			{
-				Cast<IInteractiveInterface>(InteractiveComponent.Get())->SetInteractiveAction(EInteractiveAction::Shooting);
+				Cast<IInteractiveInterface>(InteractiveComponent.Get())->SetInteractiveAction(EInteractiveAction::ArcShooting);
 			}
 		}
 
@@ -318,7 +344,7 @@ void AMorse::UpdateAnimationType(EAnimationType AnimationType, EAnimationType Be
 		{
 			//Overlapping된 것이 없다면 진공으로 빨아들이도록 한다.
 
-			__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::Absorbing);
+			__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::Sucking);
 		}
 	}
 
@@ -411,7 +437,7 @@ void AMorse::__SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAc
 				//Holding으로 업데이트되었다면 VacuumEntranceComponent에도 Holding된 객체가 있음을 전달한다.
 				VacuumEntranceComponent->SetHoldingActor(Actor);
 			}
-			else if (EInteractiveAction::Shooting == InteractiveInterface->GetInteractiveAction())
+			else if (EInteractiveAction::HoldShooting == InteractiveInterface->GetInteractiveAction())
 			{
 				//Shooting즉시 Hodling Actor를 제거한다.
 				VacuumEntranceComponent->SetHoldingActor(nullptr);
@@ -437,7 +463,7 @@ void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 
 				if (__CanVacuuming())
 				{
-					InteractiveInterface->SetInteractiveAction(EInteractiveAction::Absorbing);
+					InteractiveInterface->SetInteractiveAction(EInteractiveAction::Sucking);
 				}
 			}
 

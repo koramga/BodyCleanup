@@ -138,3 +138,13 @@ void ABaseCharacter::SetAnimationType(EAnimationType AnimationType)
 		BaseAnimInstance->SetAnimationType(AnimationType);
 	}
 }
+
+EAnimationType ABaseCharacter::GetAnimationType() const
+{
+	if (IsValid(BaseAnimInstance))
+	{
+		return BaseAnimInstance->GetAnimationType();
+	}
+
+	return EAnimationType::Idle;
+}

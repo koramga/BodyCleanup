@@ -19,7 +19,7 @@ public :
 protected :
 	//Vacuum시, 빨아들여지는 속도를 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Rigid || InteractiveType == EInteractiveType::Junk", EditConditionHides))
-	float					AbsorbingSpeedPerSecond = 500.f;
+	float					SuckingSpeedPerSecond = 500.f;
 
 	//Action의 범위를 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
@@ -31,7 +31,7 @@ protected :
 
 	//Shooting시 힘을 정의합니다. 높으면 높을수록 강하게 던져집니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Rigid", EditConditionHides))
-	float					ShootingPowerValue = 2000.f;
+	float					HoldShootingPower = 2000.f;
 
 	//이름의 Type을 지정합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveComponentToType == EInteractiveComponentToType::Setup", EditConditionHides))
