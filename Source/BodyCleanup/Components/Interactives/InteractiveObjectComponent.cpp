@@ -82,13 +82,18 @@ void UInteractiveObjectComponent::TickComponent(float DeltaTime, ELevelTick Tick
 				if (AffectInteractiveComponent.IsValid())
 				{
 					const FTransform& Transform = AffectInteractiveComponent->GetComponentTransform();
-			
 					FVector Direction = ComponentTransform.GetLocation() - Transform.GetLocation();
-					Direction.Normalize();					
+					Direction.Normalize();
+					AffectInteractiveComponent->SetPhysicsLinearVelocity(Direction * SuckingSpeedPerSecond);
 
-					FVector NextLocation = Transform.GetLocation() + Direction * SuckingSpeedPerSecond * DeltaTime;
-			
-					AffectInteractiveComponent->SetWorldLocation(NextLocation);
+					//const FTransform& Transform = AffectInteractiveComponent->GetComponentTransform();
+					//
+					//FVector Direction = ComponentTransform.GetLocation() - Transform.GetLocation();
+					//Direction.Normalize();					
+					//
+					//FVector NextLocation = Transform.GetLocation() + Direction * SuckingSpeedPerSecond * DeltaTime;
+					//
+					//AffectInteractiveComponent->SetWorldLocation(NextLocation);
 
 					//UE_LOG(LogTemp, Display, TEXT("NextLocation : <%.2f, %.2f, %.2f>"), NextLocation.X, NextLocation.Y, NextLocation.Z);
 				}
@@ -245,13 +250,13 @@ void UInteractiveObjectComponent::UpdateInteractiveAction(EInteractiveAction Nex
 	}
 	else
 	{
-		for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
-		{
-			if (AffectInteractiveComponent.IsValid())
-			{
-				AffectInteractiveComponent->SetSimulatePhysics(false);
-			}
-		}
+		//for (TSoftObjectPtr<UPrimitiveComponent> AffectInteractiveComponent : AffectInteractiveComponents)
+		//{
+		//	if (AffectInteractiveComponent.IsValid())
+		//	{
+		//		AffectInteractiveComponent->SetSimulatePhysics(false);
+		//	}
+		//}
 	}
 }
 
