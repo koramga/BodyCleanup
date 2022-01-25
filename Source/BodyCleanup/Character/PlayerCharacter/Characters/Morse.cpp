@@ -13,9 +13,11 @@
 #include "../../../Components/Interfaces/InteractiveInterface.h"
 #include "../../../Components/Character/VacuumEntranceComponent.h"
 #include "../../../Animation/PlayerCharacter/Morse/MorseAnimInstance.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
 
 AMorse::AMorse()
 {
+
 }
 
 void AMorse::BeginPlay()
@@ -39,8 +41,16 @@ void AMorse::BeginPlay()
 		}
 	}
 
+	HeldObjectSlotComponent = Cast<UStaticMeshComponent>(GetDefaultSubobjectByName(TEXT("HeldObjectSlot")));
+	GrabConstraintComponent = Cast<UPhysicsConstraintComponent>(GetDefaultSubobjectByName(TEXT("GrabConstraint")));
 	VacuumEntranceComponent = Cast<UVacuumEntranceComponent>(GetComponentByClass(UVacuumEntranceComponent::StaticClass()));
-	VacuumEntranceComponent->OnComponentBeginOverlap.AddDynamic(this, &AMorse::__OnVaccumOverlapBegin);
+
+	if (VacuumEntranceComponent.IsValid())
+	{
+		VacuumEntranceComponent->SetHeldObjectSlot(HeldObjectSlotComponent);
+		VacuumEntranceComponent->SetGrabConstraintComponent(GrabConstraintComponent);
+		VacuumEntranceComponent->OnComponentBeginOverlap.AddDynamic(this, &AMorse::__OnVaccumOverlapBegin);
+	}
 }
 
 void AMorse::Tick(float DeltaTime)
@@ -175,7 +185,7 @@ void AMorse::InputMouseWheel(float InputAxis)
 		{
 			ArcShootingArcValue -= (InputAxis / 50.f);
 
-			ArcShootingArcValue = FMath::Clamp(ArcShootingArcValue, 0.1f, 0.9f);
+			ArcShootingArcValue = FMath::Clamp(ArcShootingArcValue, MinArcShootingArcRange, MaxArcShootingArcRange);
 		}
 	}
 
