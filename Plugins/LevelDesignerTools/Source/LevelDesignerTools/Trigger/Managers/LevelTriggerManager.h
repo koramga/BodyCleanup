@@ -59,12 +59,15 @@ private :
 	void __CalledTriggerObservers(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& CallerLevelTriggerInterfaceSpace, bool bIsInputOnTrigger);
 	void __CallTriggerObservers(bool bIsInputOnTrigger);
 	void __AddTriggerObserver(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace);
+	void __RemoveTriggerObserver(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace);
+	void __RemoveTriggerComponent(UActorComponent* RemoveActorComponent);
 
 public :
 	void SetupRelationship();
 	void UpdateTrigger(bool bInputIsOnTrigger, bool bIsExternalCall = false);
 	bool HasTriggerComponents() const;
 	void ProcessTrigger(bool bInputIsOnTrigger);
+	void Release();
 
 public :
 	void SetLevelTriggerInterface(ILevelTriggerInterface* InputLevelTriggerInterface);
@@ -86,8 +89,11 @@ protected :
 public :
 	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const;
 	void RegisterTrigger(ILevelTriggerInterface* TriggerInterface);
+	void UnRegisterTrigger(ILevelTriggerInterface* TriggerInterface);
 	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const;
-	void BeginPlay();
 	void UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger);
 	void UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface);
+
+public :
+	void BeginPlay();
 };

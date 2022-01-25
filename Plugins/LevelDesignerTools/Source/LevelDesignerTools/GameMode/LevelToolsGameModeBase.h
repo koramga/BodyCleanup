@@ -27,6 +27,7 @@ protected:
 
 public:
 	virtual void RegisterTrigger(class ILevelTriggerInterface* LevelTriggerInterface) = 0;
+	virtual void UnRegisterTrigger(class ILevelTriggerInterface* LevelTriggerInterface) = 0;
 	virtual const ULevelTriggerManager* GetLevelTriggerManager() const = 0;
 	virtual void UpdateTrigger(class ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger) = 0;
 	virtual void UpdateTriggerOnce(class ILevelTriggerInterface* LevelTriggerInterface) = 0;

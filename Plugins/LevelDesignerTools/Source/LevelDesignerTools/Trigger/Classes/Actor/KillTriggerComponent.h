@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class LEVELDESIGNERTOOLS_API UKillTriggerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()

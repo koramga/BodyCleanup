@@ -173,6 +173,35 @@ void ULevelTriggerInterfaceSpace::ProcessTrigger(bool bInputIsOnTrigger)
 	}
 }
 
+void ULevelTriggerInterfaceSpace::Release()
+{
+	//지우기 완료
+	for (TSoftObjectPtr<UActorComponent>& TriggerComponent : TriggerComponents)
+	{
+		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
+	
+		if (IsValid(PrimitiveComponent))
+		{
+			PrimitiveComponent->OnComponentBeginOverlap.Remove(this, TEXT("__OnTriggerComponentOverlapBegin"));
+			PrimitiveComponent->OnComponentEndOverlap.Remove(this, TEXT("__OnTriggerComponentOverlapEnd"));
+		}
+		else
+		{
+			if (LevelTriggerManager.IsValid())
+			{
+				ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(Cast<ILevelTriggerInterface>(TriggerComponent.Get()));
+	
+				LevelTriggerInterfaceSpace->__RemoveTriggerObserver(this);
+			}
+		}
+	}
+	
+	for (TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace : ObserverTriggerLevelInterfaceSpaces)
+	{
+		LevelTriggerInterfaceSpace->__RemoveTriggerComponent(Cast<UActorComponent>(LevelTriggerInterface.Get()));
+	}
+}
+
 void ULevelTriggerInterfaceSpace::__CalledTriggerObservers(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& CallerLevelTriggerInterfaceSpace, bool bIsInputOnTrigger)
 {
 	if (CallerLevelTriggerInterfaceSpace.IsValid())
@@ -197,9 +226,19 @@ void ULevelTriggerInterfaceSpace::__CalledTriggerObservers(const TSoftObjectPtr<
 
 void ULevelTriggerInterfaceSpace::__CallTriggerObservers(bool bIsInputOnTrigger)
 {
+	TArray<TSoftObjectPtr<ULevelTriggerInterfaceSpace>> KillSafeArray;
+
 	for (TSoftObjectPtr<ULevelTriggerInterfaceSpace> ObserverLevelTriggerInterfaceSpace : ObserverTriggerLevelInterfaceSpaces)
 	{
-		ObserverLevelTriggerInterfaceSpace->__CalledTriggerObservers(this, bIsInputOnTrigger);
+		KillSafeArray.Add(ObserverLevelTriggerInterfaceSpace);
+	}
+
+	for (TSoftObjectPtr<ULevelTriggerInterfaceSpace> ObserverLevelTriggerInterfaceSpace : KillSafeArray)
+	{
+		if (ObserverLevelTriggerInterfaceSpace.IsValid())
+		{
+			ObserverLevelTriggerInterfaceSpace->__CalledTriggerObservers(this, bIsInputOnTrigger);
+		}
 	}
 }
 
@@ -208,6 +247,37 @@ void ULevelTriggerInterfaceSpace::__AddTriggerObserver(const TSoftObjectPtr<ULev
 	ObserverTriggerLevelInterfaceSpaces.Add(LevelTriggerInterfaceSpace);
 }
 
+void ULevelTriggerInterfaceSpace::__RemoveTriggerObserver(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace)
+{
+	ObserverTriggerLevelInterfaceSpaces.Remove(LevelTriggerInterfaceSpace);
+}
+
+void ULevelTriggerInterfaceSpace::__RemoveTriggerComponent(UActorComponent* RemoveActorComponent)
+{
+	if (IsValid(RemoveActorComponent))
+	{
+		bool bContainedTriggerComponents = false;
+		bool bContainedCertificateComponents = false;
+
+
+		if (TriggerComponents.Contains(RemoveActorComponent))
+		{
+			TriggerComponents.Remove(RemoveActorComponent);
+			bContainedTriggerComponents = true;
+		}
+
+		if (TriggerCertificateComponents.Contains(RemoveActorComponent))
+		{
+			TriggerCertificateComponents.Remove(RemoveActorComponent);
+			bContainedCertificateComponents = true;
+		}
+
+		if (bContainedTriggerComponents != bContainedCertificateComponents)
+		{
+			ProcessTrigger(false);
+		}		
+	}
+}
 
 void ULevelTriggerInterfaceSpace::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace) const
 {
@@ -289,6 +359,19 @@ void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterf
 
 }
 
+void ULevelTriggerManager::UnRegisterTrigger(ILevelTriggerInterface* TriggerInterface)
+{
+	UObject* UnRegisterTrigger = Cast<UObject>(TriggerInterface);
+
+	ULevelTriggerInterfaceSpace* LevelTriggerInterface = LevelTriggerInterfaceSpaces.FindRef(UnRegisterTrigger);
+
+	if (nullptr != LevelTriggerInterface)
+	{
+		LevelTriggerInterface->Release();
+		LevelTriggerInterfaceSpaces.Remove(UnRegisterTrigger);
+	}
+}
+
 void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(TriggerInterface);
@@ -296,6 +379,27 @@ void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Act
 	if (IsValid(LevelTriggerInterfaceSpace))
 	{
 		LevelTriggerInterfaceSpace->FindOverlapActors(Actors, LevelTriggerInterfaceSpace);
+	}
+}
+
+void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
+{
+	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
+
+	if (IsValid(LevelTriggerInterfaceSpace))
+	{
+		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger, true);
+	}
+}
+
+void ULevelTriggerManager::UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface)
+{
+	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
+
+	if (IsValid(LevelTriggerInterfaceSpace))
+	{
+		LevelTriggerInterfaceSpace->UpdateTrigger(true, true);
+		LevelTriggerInterfaceSpace->UpdateTrigger(false, true);
 	}
 }
 
@@ -325,26 +429,5 @@ void ULevelTriggerManager::BeginPlay()
 				}
 			}
 		}
-	}
-}
-
-void ULevelTriggerManager::UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger)
-{
-	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
-
-	if (IsValid(LevelTriggerInterfaceSpace))
-	{
-		LevelTriggerInterfaceSpace->UpdateTrigger(bInputIsOnTrigger, true);
-	}
-}
-
-void ULevelTriggerManager::UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface)
-{
-	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(LevelTriggerInterface);
-
-	if (IsValid(LevelTriggerInterfaceSpace))
-	{
-		LevelTriggerInterfaceSpace->UpdateTrigger(true, true);
-		LevelTriggerInterfaceSpace->UpdateTrigger(false, true);
 	}
 }

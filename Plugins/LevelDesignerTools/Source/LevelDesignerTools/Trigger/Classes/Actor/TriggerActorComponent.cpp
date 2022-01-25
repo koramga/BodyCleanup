@@ -38,6 +38,31 @@ void UTriggerActorComponent::BeginPlay()
 	}	
 }
 
+void UTriggerActorComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		if (EEndPlayReason::Type::Destroyed == EndPlayReason)
+		{
+			AGameModeBase* GameModeBase = World->GetAuthGameMode();
+
+			if (GameModeBase->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
+			{
+				ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GameModeBase);
+
+				if (nullptr != LevelToolsGameModeBase)
+				{
+					LevelToolsGameModeBase->UnRegisterTrigger(this);
+				}
+			}
+		}
+	}
+}
+
 void UTriggerActorComponent::SetupTrigger()
 {
 }

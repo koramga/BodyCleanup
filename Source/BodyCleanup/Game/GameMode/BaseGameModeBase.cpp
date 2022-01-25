@@ -33,6 +33,11 @@ void ABaseGameModeBase::RegisterTrigger(ILevelTriggerInterface* LevelTriggerInte
 	LevelTriggerManager->RegisterTrigger(LevelTriggerInterface);
 }
 
+void ABaseGameModeBase::UnRegisterTrigger(ILevelTriggerInterface* LevelTriggerInterface)
+{
+	LevelTriggerManager->UnRegisterTrigger(LevelTriggerInterface);
+}
+
 const ULevelTriggerManager* ABaseGameModeBase::GetLevelTriggerManager() const
 {
 	return LevelTriggerManager;
