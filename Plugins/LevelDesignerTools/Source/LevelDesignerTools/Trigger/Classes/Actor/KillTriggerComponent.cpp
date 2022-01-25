@@ -7,7 +7,7 @@
 
 UKillTriggerComponent::UKillTriggerComponent()
 {
-	LevelTriggerInputFrom.LevelTriggerInputNodeFromType = ELevelTriggerInputNodeFromType::Action;
+	LevelTriggerInputFrom.LevelTriggerInputNodeFromType = ELevelTriggerInputNodeFromType::Setup;
 }
 
 void UKillTriggerComponent::BeginPlay()

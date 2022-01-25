@@ -35,6 +35,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					MaxArcShootingRange = 500.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent*				HeldObjectSlotComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UPhysicsConstraintComponent*	GrabConstraintComponent;
+
 	UPROPERTY(VisibleAnywhere)
 	TSet<TSoftObjectPtr<AActor>>					VacuumOverlapActors;
 
