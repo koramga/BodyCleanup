@@ -84,60 +84,6 @@ void ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TAr
 			}
 		}
 	}
-
-
-	//InputTriggerComponents.Empty();
-	//
-	//TArray<TSoftObjectPtr<USceneComponent>> FindComponents;
-	//
-	//if (ETriggerComponentFromType::Parent == TriggerComponentFromType)
-	//{
-	//	FindComponents.Add(GetAttachParent());
-	//}
-	//else if (ETriggerComponentFromType::Setup == TriggerComponentFromType)
-	//{
-	//	for (const FTriggerActorWithName& TriggerActorWithName : TriggerActorWithNames)
-	//	{
-	//		TSoftObjectPtr<AActor> TriggerActor = GetOwner();
-	//
-	//		if (TriggerActorWithName.Actor.IsValid())
-	//		{
-	//			TriggerActor = TriggerActorWithName.Actor;
-	//		}
-	//
-	//		if (TriggerActor.IsValid())
-	//		{
-	//			if (TriggerActorWithName.Names.Num() > 0)
-	//			{
-	//				if (ENameType::Name == TriggerActorWithName.NameType)
-	//				{
-	//					UFindFunctionLibrary::FindComponentsByNames(FindComponents, TriggerActor->GetRootComponent(), TriggerActorWithName.Names);
-	//				}
-	//				else
-	//				{
-	//					for (const FName& Name : TriggerActorWithName.Names)
-	//					{
-	//						TArray<UActorComponent*> ActorComponents = TriggerActor->GetComponentsByTag(USceneComponent::StaticClass(), Name);
-	//
-	//						for (UActorComponent* ActorComponent : ActorComponents)
-	//						{
-	//							USceneComponent* SceneComponent = Cast<USceneComponent>(ActorComponent);
-	//
-	//							if (IsValid(SceneComponent))
-	//							{
-	//								FindComponents.Add(SceneComponent);
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//			else
-	//			{
-	//				UFindFunctionLibrary::FindTriggerComponents(FindComponents, TriggerActor->GetRootComponent());
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 void ULevelSupportFunctionLibrary::FindPrimitiveComponets(TArray<TSoftObjectPtr<UPrimitiveComponent>>& Components, AActor* Actor)

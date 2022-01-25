@@ -18,7 +18,7 @@ struct METATOOLS_API FNormalVectorMetaData
 
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FVector Vector;
+	FVector Value;
 };
 
 USTRUCT(BlueprintType, Blueprintable)
@@ -44,10 +44,10 @@ public :
 
 protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Normal", EditConditionHides))
-	FNormalVectorMetaData	NormalVectorMetaData;
+	FNormalVectorMetaData	NormalVariableMetaData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MetaVariableScope == EMetaVariableScope::Range", EditConditionHides))
-	FRangeVectorMetaData	RangeVectorMetaData;
+	FRangeVectorMetaData	RangeVariableMetaData;
 
 public :
 	virtual TMetaVariable GetMetaVariable() const override;

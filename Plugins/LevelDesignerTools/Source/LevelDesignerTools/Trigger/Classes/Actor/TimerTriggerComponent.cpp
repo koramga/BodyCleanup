@@ -7,7 +7,7 @@
 
 UTimerTriggerComponent::UTimerTriggerComponent()
 {
-	LevelTriggerInputFrom.LevelTriggerInputNodeFromType = ELevelTriggerInputNodeFromType::Action;
+	LevelTriggerInputFrom.LevelTriggerInputNodeFromType = ELevelTriggerInputNodeFromType::None;
 }
 
 void UTimerTriggerComponent::BeginPlay()

@@ -15,15 +15,15 @@ TMetaVariable FVectorVariableMetaData::GetMetaVariable() const
 
 	if (EMetaVariableScope::Normal == MetaVariableScope)
 	{
-		MetaVariable.Set<FVector>(NormalVectorMetaData.Vector);
+		MetaVariable.Set<FVector>(NormalVariableMetaData.Value);
 	}
 	else if(EMetaVariableScope::Range == MetaVariableScope)
 	{
 		TMetaVariable MinMetaVariable;
 		TMetaVariable MaxMetaVariable;
 		
-		MinMetaVariable.Set<FVector>(RangeVectorMetaData.Min);
-		MaxMetaVariable.Set<FVector>(RangeVectorMetaData.Max);
+		MinMetaVariable.Set<FVector>(RangeVariableMetaData.Min);
+		MaxMetaVariable.Set<FVector>(RangeVariableMetaData.Max);
 
 		MetaVariable = UMetaToolsFunctionLibrary::MakeRangeScopeVariable(MinMetaVariable, MaxMetaVariable);
 	}

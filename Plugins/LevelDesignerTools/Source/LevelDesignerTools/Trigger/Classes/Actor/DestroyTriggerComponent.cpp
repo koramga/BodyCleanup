@@ -15,10 +15,7 @@ UDestroyTriggerComponent::UDestroyTriggerComponent()
 void UDestroyTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());
-
+	
 	GetOwner()->OnDestroyed.AddDynamic(this, &UDestroyTriggerComponent::OnActorDestroyed);
 
 	bIsTriggerDestroy = false;

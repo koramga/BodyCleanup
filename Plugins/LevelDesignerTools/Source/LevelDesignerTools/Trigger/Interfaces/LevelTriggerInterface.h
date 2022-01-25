@@ -36,6 +36,8 @@ enum class ELevelTriggerInputNodeFromType : uint8
 	Setup,
 	//사용자가 설정할 수 없습니다. 만약 사용자가 강제로 설정한다면 Trigger가 동작되지 않습니다.
 	Action UMETA(Hidden),
+	//아무런 Trigger도 설정되지 않습니다. Spawn시, Trigger가 바로 동작합니다.
+	None,
 };
 
 UENUM(BlueprintType)
@@ -69,10 +71,10 @@ struct FLevelTriggerInputFrom
 	GENERATED_BODY()
 
 public :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "LevelTriggerInputNodeFromType != ELevelTriggerInputNodeFromType::Action", EditConditionHides))
 	ELevelTriggerInputNodeFromType		LevelTriggerInputNodeFromType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "LevelTriggerInputNodeFromType == ELevelTriggerInputNodeFromType::Parent || LevelTriggerInputNodeFromType == ELevelTriggerInputNodeFromType::Setup", EditConditionHides))
 	ELevelTriggerReactType				LevelTriggerReactType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "LevelTriggerInputNodeFromType == ELevelTriggerInputNodeFromType::Setup", EditConditionHides))
