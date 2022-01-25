@@ -6,7 +6,6 @@
 
 UVacuumEntranceComponent::UVacuumEntranceComponent()
 {
-
 }
 
 void UVacuumEntranceComponent::__GrabActor()
@@ -19,7 +18,24 @@ void UVacuumEntranceComponent::__GrabActor()
 			&& GrabConstraintComponent.IsValid()
 			&& HeldObjectSlotComponent.IsValid())
 		{
-			//HeldObjectSlotComponent->SetWorldLocation(HoldingActor.Get()->GetActorLocation(), false, nullptr, ETeleportType::ResetPhysics);
+			if (HoldingPrimitiveComponent->IsA(UStaticMeshComponent::StaticClass()))
+			{
+				UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(HoldingPrimitiveComponent);
+
+				if (IsValid(StaticMeshComponent))
+				{
+					UStaticMesh* StaticMesh = StaticMeshComponent->GetStaticMesh();
+
+					if (IsValid(StaticMesh))
+					{
+						FBoxSphereBounds StaticMeshBounds = StaticMesh->GetBounds();
+
+						HoldingPrimitiveComponent->SetWorldLocation(GetComponentToWorld().GetLocation() + GetOwner()->GetActorForwardVector() * StaticMeshBounds.GetBox().GetExtent().Size() / 2.f, false, nullptr, ETeleportType::ResetPhysics);
+					}
+				}
+			}
+
+			//HeldObjectSlotComponent->SetWorldLocation(GetComponentToWorld().GetLocation() , false, nullptr, ETeleportType::ResetPhysics);
 			GrabConstraintComponent->SetConstrainedComponents(HeldObjectSlotComponent.Get(), NAME_None, HoldingPrimitiveComponent, NAME_None);
 		}
 	}
@@ -69,4 +85,14 @@ void UVacuumEntranceComponent::SetHeldObjectSlot(UStaticMeshComponent* InputHeld
 void UVacuumEntranceComponent::SetGrabConstraintComponent(UPhysicsConstraintComponent* InputGrabConstraintComponent)
 {
 	GrabConstraintComponent = InputGrabConstraintComponent;
+}
+
+void UVacuumEntranceComponent::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void UVacuumEntranceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
