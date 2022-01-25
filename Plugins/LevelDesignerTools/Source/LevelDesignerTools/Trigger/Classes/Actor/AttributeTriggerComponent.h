@@ -9,13 +9,41 @@
 /**
  * 
  */
-UCLASS()
+
+
+UENUM(BlueprintType)
+enum class ELevelAttributeTriggerActionType : uint8
+{
+	Visible,
+	InVisible,
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FLevelAttributeTriggerAction
+{
+	GENERATED_BODY()
+
+public:
+	ELevelAttributeTriggerActionType	ActionType;
+	int32								TriggerIndex;
+	bool								bIsTag;
+	TArray<FName>						Names;
+};
+
+UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
 class LEVELDESIGNERTOOLS_API UAttributeTriggerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	UAttributeTriggerComponent();
+
+protected :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AttributeTriggerComponent")
+	TArray<FLevelAttributeTriggerAction>	LevelAttributeTriggerActions;
+
+
+	
 
 protected:
 	// Called when the game starts

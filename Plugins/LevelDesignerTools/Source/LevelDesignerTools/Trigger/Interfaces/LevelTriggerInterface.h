@@ -104,6 +104,15 @@ public:
 };
 
 USTRUCT(BlueprintType, Blueprintable)
+struct FLevelTriggerUpdateActionParam
+{
+	GENERATED_BODY()
+
+public:
+	bool					bIsOnTrigger;
+};
+
+USTRUCT(BlueprintType, Blueprintable)
 struct FLevelTriggerSettings
 {
 	GENERATED_BODY()
@@ -130,6 +139,7 @@ class LEVELDESIGNERTOOLS_API ILevelTriggerInterface
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
 	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& LevelTriggerUpdateParam) = 0;
+	virtual void UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam) = 0;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const = 0;
 	virtual void SetupTrigger() = 0;
 	virtual bool IsOnTrigger() const = 0;

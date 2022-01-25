@@ -43,4 +43,5 @@ public:
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 	virtual bool IsOnTrigger() const;
 	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const override;
+	virtual void UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam) override;
 };

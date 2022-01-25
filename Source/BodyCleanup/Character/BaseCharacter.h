@@ -4,10 +4,11 @@
 
 #include "../ExDefines.h"
 #include "GameFramework/Character.h"
+#include "LevelDesignerTools/Actor/LevelToolsActor.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActor
 {
 	GENERATED_BODY()
 
@@ -24,6 +25,9 @@ protected :
 
 	UPROPERTY(VisibleAnywhere)
 	AController* BaseController;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ULevelTriggerActorAssist* LevelTriggerActorAssist;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,4 +46,7 @@ public :
 	void SetEnableCapsuleCollision(bool bIsEnable);
 	void SetAnimationType(EAnimationType AnimationType);
 	EAnimationType GetAnimationType() const;
+
+public:
+	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
 };

@@ -102,6 +102,10 @@ void UTriggerSceneComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Input
 	LevelTriggerUpdateParam = InputLevelTriggerUpdateParam;
 }
 
+void UTriggerSceneComponent::UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam)
+{
+}
+
 const FLevelTriggerInputFrom* UTriggerSceneComponent::GetLevelTriggerInputFrom() const
 {
 	return &LevelTriggerInputFrom;

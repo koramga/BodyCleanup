@@ -41,6 +41,7 @@ public:
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) override;
 	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam) override;
+	virtual void UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam) override;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 	virtual bool IsOnTrigger() const override;
 	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const override;

@@ -67,6 +67,10 @@ void UTriggerActorComponent::SetupTrigger()
 {
 }
 
+void UTriggerActorComponent::UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam)
+{
+}
+
 
 // Called every frame
 void UTriggerActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
