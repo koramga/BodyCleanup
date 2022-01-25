@@ -185,7 +185,7 @@ void AMorse::InputMouseWheel(float InputAxis)
 		{
 			ArcShootingArcValue -= (InputAxis / 50.f);
 
-			ArcShootingArcValue = FMath::Clamp(ArcShootingArcValue, 0.1f, 0.9f);
+			ArcShootingArcValue = FMath::Clamp(ArcShootingArcValue, MinArcShootingArcRange, MaxArcShootingArcRange);
 		}
 	}
 

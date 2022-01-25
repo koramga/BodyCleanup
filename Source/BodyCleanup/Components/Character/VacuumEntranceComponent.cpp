@@ -11,8 +11,6 @@ UVacuumEntranceComponent::UVacuumEntranceComponent()
 
 void UVacuumEntranceComponent::__GrabActor()
 {
-	UE_LOG(LogTemp, Display, TEXT("koramga GrabActor"));
-
 	if (HoldingActor.IsValid())
 	{
 		UPrimitiveComponent* HoldingPrimitiveComponent = Cast<UPrimitiveComponent>(HoldingActor->GetComponentByClass(UPrimitiveComponent::StaticClass()));
@@ -21,9 +19,6 @@ void UVacuumEntranceComponent::__GrabActor()
 			&& GrabConstraintComponent.IsValid()
 			&& HeldObjectSlotComponent.IsValid())
 		{
-			UE_LOG(LogTemp, Display, TEXT("koramga Update GrabActor"));
-
-			//HeldObjectSlotComponent->SetWorldLocation(HoldingActor.Get()->GetActorLocation(), false, nullptr, ETeleportType::ResetPhysics);
 			//HeldObjectSlotComponent->SetWorldLocation(HoldingActor.Get()->GetActorLocation(), false, nullptr, ETeleportType::ResetPhysics);
 			GrabConstraintComponent->SetConstrainedComponents(HeldObjectSlotComponent.Get(), NAME_None, HoldingPrimitiveComponent, NAME_None);
 		}
@@ -32,14 +27,10 @@ void UVacuumEntranceComponent::__GrabActor()
 
 void UVacuumEntranceComponent::__DropActor()
 {
-	UE_LOG(LogTemp, Display, TEXT("koramga DropActor"));
-
 	if (HoldingActor.IsValid())
 	{
 		if (GrabConstraintComponent.IsValid())
 		{
-			UE_LOG(LogTemp, Display, TEXT("koramga Update DropActor"));
-
 			GrabConstraintComponent->BreakConstraint();
 		}
 	}

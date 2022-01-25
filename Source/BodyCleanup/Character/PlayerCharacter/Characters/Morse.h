@@ -35,6 +35,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					MaxArcShootingRange = 500.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.1", ClampMax = "0.9", UIMin = "0.1", UIMax = "0.9"))
+	float					MinArcShootingArcRange = 0.1f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.1", ClampMax = "0.9", UIMin = "0.1", UIMax = "0.9"))
+	float					MaxArcShootingArcRange = 0.9f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent*				HeldObjectSlotComponent;
 
