@@ -34,6 +34,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void UnPossessed() override;
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame

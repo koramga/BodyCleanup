@@ -32,7 +32,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	virtual void SetupTrigger() override;
+	virtual void SetupTrigger() override; 
 
 public:	
 	// Called every frame
@@ -45,4 +45,5 @@ public:
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const override;
 	virtual bool IsOnTrigger() const override;
 	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const override;
+	virtual bool IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult) override;
 };

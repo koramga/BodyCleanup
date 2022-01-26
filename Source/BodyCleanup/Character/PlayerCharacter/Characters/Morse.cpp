@@ -14,6 +14,7 @@
 #include "../../../Components/Character/VacuumEntranceComponent.h"
 #include "../../../Animation/PlayerCharacter/Morse/MorseAnimInstance.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "../../../Game/GameMode/BaseGameModeBase.h"
 
 AMorse::AMorse()
 {
@@ -275,6 +276,13 @@ void AMorse::InputReleasedMouseRightClick()
 			if (!SpawnActor)
 			{
 				return;
+			}
+
+			ABaseGameModeBase* GameModeBase = Cast<ABaseGameModeBase>(GetWorld()->GetAuthGameMode());
+
+			if (IsValid(GameModeBase))
+			{
+				GameModeBase->SetupTriggerAfterSpawn(SpawnActor);
 			}
 
 			UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);

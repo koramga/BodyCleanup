@@ -49,11 +49,17 @@ private :
 
 
 private:
+	void __AddTriggerComponentFromPrimitiveEvent(UPrimitiveComponent* TriggerComponent, UPrimitiveComponent* OtherComp);
+	void __RemoveTriggerComponentFromPrimitiveEvent(UPrimitiveComponent* TriggerComponent, UPrimitiveComponent* OtherComp);
+
 	UFUNCTION()
 	void __OnTriggerComponentOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void __OnTriggerComponentOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void __OnTriggerComponentHit(class UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 private :
 	void __CalledTriggerObservers(const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& CallerLevelTriggerInterfaceSpace, bool bIsInputOnTrigger);
@@ -96,4 +102,5 @@ public :
 
 public :
 	void BeginPlay();
+	void SetupTriggerAfterSpawn(AActor* Acotr);
 };

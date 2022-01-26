@@ -49,6 +49,13 @@ enum class ELevelTriggerInputNodeToType : uint8
 	Setup,
 };
 
+UENUM(BlueprintType)
+enum class ETriggerPrimitiveComponentEventType : uint8
+{
+	Overlap,
+	Hit,
+};
+
 USTRUCT(BlueprintType, Blueprintable)
 struct FLevelTriggerInputNode
 {
@@ -118,7 +125,8 @@ struct FLevelTriggerSettings
 	GENERATED_BODY()
 
 public:
-	ELevelTriggerWayType	LevelTriggerWayType;
+	ELevelTriggerWayType				LevelTriggerWayType;
+	ETriggerPrimitiveComponentEventType TriggerPrimitiveComponentEventType;
 };
 
 // This class does not need to be modified.
@@ -144,4 +152,5 @@ public:
 	virtual void SetupTrigger() = 0;
 	virtual bool IsOnTrigger() const = 0;
 	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const = 0;
+	virtual bool IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult) = 0;
 };

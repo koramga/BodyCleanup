@@ -27,6 +27,6 @@ protected:
 
 private :
 	UFUNCTION()
-	void OnActorDestroyed(AActor* DestroyedActor);
+	void OnActorDestroyed(AActor* Actor, EEndPlayReason::Type EndPlayReason);
 
 };

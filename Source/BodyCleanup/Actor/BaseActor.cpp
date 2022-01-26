@@ -19,6 +19,11 @@ void ABaseActor::BeginPlay()
 	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
 }
 
+void ABaseActor::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
 // Called every frame
 void ABaseActor::Tick(float DeltaTime)
 {

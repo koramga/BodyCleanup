@@ -41,6 +41,11 @@ void ABaseCharacter::UnPossessed()
 	BaseController = nullptr;
 }
 
+void ABaseCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {

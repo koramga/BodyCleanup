@@ -44,4 +44,5 @@ public:
 	virtual bool IsOnTrigger() const;
 	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const override;
 	virtual void UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam) override;
+	virtual bool IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult) override;
 };
