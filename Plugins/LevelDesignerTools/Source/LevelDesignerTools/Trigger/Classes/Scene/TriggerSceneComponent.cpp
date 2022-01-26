@@ -13,6 +13,7 @@ UTriggerSceneComponent::UTriggerSceneComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 	LevelTriggerSettings.LevelTriggerWayType = ELevelTriggerWayType::OneWay;
+	LevelTriggerSettings.TriggerPrimitiveComponentEventType = ETriggerPrimitiveComponentEventType::Overlap;
 	// ...
 }
 
@@ -23,6 +24,7 @@ void UTriggerSceneComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+
 	SetupTrigger();
 
 	AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
@@ -67,7 +69,6 @@ void UTriggerSceneComponent::SetupTrigger()
 {
 }
 
-
 // Called every frame
 void UTriggerSceneComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -102,6 +103,10 @@ void UTriggerSceneComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Input
 	LevelTriggerUpdateParam = InputLevelTriggerUpdateParam;
 }
 
+void UTriggerSceneComponent::UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam)
+{
+}
+
 const FLevelTriggerInputFrom* UTriggerSceneComponent::GetLevelTriggerInputFrom() const
 {
 	return &LevelTriggerInputFrom;
@@ -115,4 +120,9 @@ bool UTriggerSceneComponent::IsOnTrigger() const
 const FLevelTriggerSettings& UTriggerSceneComponent::GetLevelTriggerSettings() const
 {
 	return LevelTriggerSettings;
+}
+
+bool UTriggerSceneComponent::IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult)
+{
+	return true;
 }

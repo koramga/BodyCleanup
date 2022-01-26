@@ -16,7 +16,7 @@ void UDestroyTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetOwner()->OnDestroyed.AddDynamic(this, &UDestroyTriggerComponent::OnActorDestroyed);
+	GetOwner()->OnEndPlay.AddDynamic(this, &UDestroyTriggerComponent::OnActorDestroyed);
 
 	bIsTriggerDestroy = false;
 }
@@ -31,7 +31,7 @@ void UDestroyTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inp
 	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 }
 
-void UDestroyTriggerComponent::OnActorDestroyed(AActor* DestroyedActor)
+void UDestroyTriggerComponent::OnActorDestroyed(AActor* Actor, EEndPlayReason::Type EndPlayReason)
 {
 	if (false == bIsTriggerDestroy)
 	{

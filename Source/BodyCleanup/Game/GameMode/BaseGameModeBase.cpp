@@ -52,3 +52,8 @@ void ABaseGameModeBase::UpdateTriggerOnce(class ILevelTriggerInterface* LevelTri
 {
 	LevelTriggerManager->UpdateTriggerOnce(LevelTriggerInterface);
 }
+
+void ABaseGameModeBase::SetupTriggerAfterSpawn(AActor* Actor)
+{
+	LevelTriggerManager->SetupTriggerAfterSpawn(Actor);
+}

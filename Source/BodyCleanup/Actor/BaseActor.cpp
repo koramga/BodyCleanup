@@ -14,6 +14,14 @@ ABaseActor::ABaseActor()
 void ABaseActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//Component보다 Actor가 BeginPlay를 더 먼저 호출한다. 그래서 이렇게 해도 된다.
+	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
+}
+
+void ABaseActor::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 }
 
 // Called every frame
@@ -80,4 +88,9 @@ void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 void ABaseActor::SetCollisionProfileNames(const FName& ProfileName)
 {
 	__SetCollisionProfileNames(GetRootComponent(), ProfileName);
+}
+
+ULevelTriggerActorAssist* ABaseActor::GetLevelTriggerActorAssist() const
+{
+	return LevelTriggerActorAssist;
 }

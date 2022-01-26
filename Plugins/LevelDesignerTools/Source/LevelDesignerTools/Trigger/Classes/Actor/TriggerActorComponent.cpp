@@ -13,6 +13,7 @@ UTriggerActorComponent::UTriggerActorComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 	LevelTriggerSettings.LevelTriggerWayType = ELevelTriggerWayType::TwoWay;
+	LevelTriggerSettings.TriggerPrimitiveComponentEventType = ETriggerPrimitiveComponentEventType::Overlap;
 	// ...
 }
 
@@ -65,6 +66,15 @@ void UTriggerActorComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UTriggerActorComponent::SetupTrigger()
 {
+}
+
+void UTriggerActorComponent::UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam)
+{
+}
+
+bool UTriggerActorComponent::IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult)
+{
+	return true;
 }
 
 

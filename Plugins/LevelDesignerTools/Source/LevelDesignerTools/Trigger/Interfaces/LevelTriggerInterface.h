@@ -49,6 +49,13 @@ enum class ELevelTriggerInputNodeToType : uint8
 	Setup,
 };
 
+UENUM(BlueprintType)
+enum class ETriggerPrimitiveComponentEventType : uint8
+{
+	Overlap,
+	Hit,
+};
+
 USTRUCT(BlueprintType, Blueprintable)
 struct FLevelTriggerInputNode
 {
@@ -104,12 +111,22 @@ public:
 };
 
 USTRUCT(BlueprintType, Blueprintable)
+struct FLevelTriggerUpdateActionParam
+{
+	GENERATED_BODY()
+
+public:
+	bool					bIsOnTrigger;
+};
+
+USTRUCT(BlueprintType, Blueprintable)
 struct FLevelTriggerSettings
 {
 	GENERATED_BODY()
 
 public:
-	ELevelTriggerWayType	LevelTriggerWayType;
+	ELevelTriggerWayType				LevelTriggerWayType;
+	ETriggerPrimitiveComponentEventType TriggerPrimitiveComponentEventType;
 };
 
 // This class does not need to be modified.
@@ -130,8 +147,10 @@ class LEVELDESIGNERTOOLS_API ILevelTriggerInterface
 public:
 	virtual void GetTriggerLocation(TArray<FVector>& TriggerLocations) = 0;
 	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& LevelTriggerUpdateParam) = 0;
+	virtual void UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam) = 0;
 	virtual const FLevelTriggerInputFrom* GetLevelTriggerInputFrom() const = 0;
 	virtual void SetupTrigger() = 0;
 	virtual bool IsOnTrigger() const = 0;
 	virtual const FLevelTriggerSettings& GetLevelTriggerSettings() const = 0;
+	virtual bool IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult) = 0;
 };
