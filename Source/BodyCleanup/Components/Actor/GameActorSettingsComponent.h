@@ -20,6 +20,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup")
 	EWeightType WeightType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<TSubclassOf<class UBaseAttributeSet>>	BaseAttributeSetClasses;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

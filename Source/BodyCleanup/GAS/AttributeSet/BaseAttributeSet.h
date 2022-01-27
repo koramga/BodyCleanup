@@ -20,15 +20,5 @@ UCLASS()
 class BODYCLEANUP_API UBaseAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-
-protected :
-    //Attributes for Health
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BaseAttribute")
-    FGameplayAttributeData  Health;
-    ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Health);
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BaseAttribute")
-    FGameplayAttributeData  MaxHealth;
-    ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxHealth);
 	
 };
