@@ -2,6 +2,8 @@
 
 
 #include "BaseActor.h"
+#include "AbilitySystemComponent.h"
+#include "Abilities/GameplayAbility.h"
 
 // Sets default values
 ABaseActor::ABaseActor()
@@ -10,6 +12,7 @@ ABaseActor::ABaseActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GameActorSettingsComponent = CreateDefaultSubobject<UGameActorSettingsComponent>(TEXT("GameActorSettingsComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
 }
 
 // Called when the game starts or when spawned
@@ -90,6 +93,11 @@ void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 void ABaseActor::SetCollisionProfileNames(const FName& ProfileName)
 {
 	__SetCollisionProfileNames(GetRootComponent(), ProfileName);
+}
+
+UAbilitySystemComponent* ABaseActor::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 ULevelTriggerActorAssist* ABaseActor::GetLevelTriggerActorAssist() const

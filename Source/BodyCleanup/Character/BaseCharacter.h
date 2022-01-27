@@ -6,10 +6,11 @@
 #include "GameFramework/Character.h"
 #include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActor.h"
+#include "AbilitySystemInterface.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActor
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActor, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -28,7 +29,10 @@ protected :
 	AController* BaseController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ULevelTriggerActorAssist* LevelTriggerActorAssist;
+	ULevelTriggerActorAssist*		LevelTriggerActorAssist;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UAbilitySystemComponent*	AbilitySystemComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UGameActorSettingsComponent*	GameActorSettingsComponent;
@@ -53,5 +57,6 @@ public :
 	EAnimationType GetAnimationType() const;
 
 public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
 };

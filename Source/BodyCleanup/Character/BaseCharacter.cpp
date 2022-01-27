@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "../Animation/BaseAnimInstance.h"
+#include "AbilitySystemComponent.h"
+#include "Abilities/GameplayAbility.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -14,6 +16,7 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GameActorSettingsComponent = CreateDefaultSubobject<UGameActorSettingsComponent>(TEXT("GameActorSettingsComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
 }
 
 // Called when the game starts or when spawned
@@ -157,6 +160,11 @@ EAnimationType ABaseCharacter::GetAnimationType() const
 	}
 
 	return EAnimationType::Idle;
+}
+
+UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 ULevelTriggerActorAssist* ABaseCharacter::GetLevelTriggerActorAssist() const

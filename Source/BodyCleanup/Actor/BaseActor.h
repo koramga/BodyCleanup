@@ -6,10 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActor.h"
+#include "AbilitySystemInterface.h"
 #include "BaseActor.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseActor : public AActor, public ILevelToolsActor
+class BODYCLEANUP_API ABaseActor : public AActor, public ILevelToolsActor, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -23,6 +24,9 @@ protected :
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UGameActorSettingsComponent*	GameActorSettingsComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UAbilitySystemComponent*	AbilitySystemComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,5 +46,6 @@ public :
 	void SetCollisionProfileNames(const FName& ProfileName);
 
 public :
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
 };
