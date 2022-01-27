@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBaseGameplayEffect : public UObject //: public UGameplayEffect
+class BODYCLEANUP_API UBaseGameplayEffect : public UGameplayEffect
 {
 	GENERATED_BODY()
 	

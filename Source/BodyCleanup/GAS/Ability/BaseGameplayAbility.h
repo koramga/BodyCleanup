@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBaseGameplayAbility : public UObject// public UGameplayAbility
+class BODYCLEANUP_API UBaseGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
