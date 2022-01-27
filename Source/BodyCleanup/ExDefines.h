@@ -40,6 +40,17 @@ enum class ELevelType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EWeightType : uint8
+{
+	None,
+	Dust,
+	Light,
+	Middle,
+	Heavy,
+	Structure,
+};
+
+UENUM(BlueprintType)
 enum class EInteractiveAction : uint8
 {
 	None,

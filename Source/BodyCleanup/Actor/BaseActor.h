@@ -4,6 +4,7 @@
 
 #include "../ExDefines.h"
 #include "GameFramework/Actor.h"
+#include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActor.h"
 #include "BaseActor.generated.h"
 
@@ -18,7 +19,10 @@ public:
 
 protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ULevelTriggerActorAssist* LevelTriggerActorAssist;
+	ULevelTriggerActorAssist*		LevelTriggerActorAssist;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UGameActorSettingsComponent*	GameActorSettingsComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,7 +36,6 @@ public:
 private :
 	void __SetEnabledCollisions(USceneComponent* SceneComponent, ECollisionEnabled::Type CollisionEnabledType);
 	void __SetCollisionProfileNames(USceneComponent* SceneComponent, const FName& ProfileName);
-
 
 public :
 	void SetEnabledCollisions(bool bIsEnableCollision);

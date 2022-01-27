@@ -4,6 +4,7 @@
 
 #include "../ExDefines.h"
 #include "GameFramework/Character.h"
+#include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActor.h"
 #include "BaseCharacter.generated.h"
 
@@ -28,6 +29,9 @@ protected :
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ULevelTriggerActorAssist* LevelTriggerActorAssist;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UGameActorSettingsComponent*	GameActorSettingsComponent;
 
 protected:
 	// Called when the game starts or when spawned
