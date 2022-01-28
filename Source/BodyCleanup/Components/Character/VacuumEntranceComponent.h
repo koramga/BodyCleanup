@@ -27,11 +27,16 @@ protected :
 	UPROPERTY(VisibleAnywhere, Category = "Debug|VacuumEntranceComponent")
 	TSoftObjectPtr<UStaticMeshComponent> HeldObjectSlotComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	bool	bIsSucking = false;
+
 private :
 	void __GrabActor();
 	void __DropActor();
 
 public :
+	bool IsSucking() const;
+	void SetSucking(bool bInputIsSucking);
 	void SetHoldingActor(TSoftObjectPtr<AActor> InputHoldingActor);
 	TSoftObjectPtr<AActor> GetHoldingActor() const;
 	bool HasHoldingActor() const;

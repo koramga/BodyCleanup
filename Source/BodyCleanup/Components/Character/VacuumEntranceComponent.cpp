@@ -2,6 +2,9 @@
 
 
 #include "VacuumEntranceComponent.h"
+
+#include <ThirdParty/PhysX3/PxShared/src/foundation/include/PsHash.h>
+
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 
 UVacuumEntranceComponent::UVacuumEntranceComponent()
@@ -52,6 +55,16 @@ void UVacuumEntranceComponent::__DropActor()
 	}
 }
 
+bool UVacuumEntranceComponent::IsSucking() const
+{
+	return bIsSucking;
+}
+
+void UVacuumEntranceComponent::SetSucking(bool bInputIsSucking)
+{
+	bIsSucking = bInputIsSucking;
+}
+
 void UVacuumEntranceComponent::SetHoldingActor(TSoftObjectPtr<AActor> InputHoldingActor)
 {
 	if (HoldingActor.IsValid())
@@ -64,6 +77,11 @@ void UVacuumEntranceComponent::SetHoldingActor(TSoftObjectPtr<AActor> InputHoldi
 	if (HoldingActor.IsValid())
 	{
 		__GrabActor();
+
+		if(IsSucking())
+		{
+			SetSucking(false);
+		}
 	}
 }
 

@@ -5,6 +5,8 @@
 #include "../BasePlayerCharacter.h"
 #include "Morse.generated.h"
 
+//#define NEW_SUCKING_CODE
+
 /**
  * 
  */
@@ -42,14 +44,20 @@ protected:
 	float					MaxArcShootingArcRange = 0.9f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32					JunkValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent*				HeldObjectSlotComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UPhysicsConstraintComponent*	GrabConstraintComponent;
 
 	UPROPERTY(VisibleAnywhere)
+	TSet<class UInteractiveSuckingComponent*>		OverlapInteractiveSuckingComponents;
+	
+	UPROPERTY(VisibleAnywhere)
 	TSet<TSoftObjectPtr<AActor>>					VacuumOverlapActors;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	TSoftObjectPtr<class UVacuumEntranceComponent>	VacuumEntranceComponent;
 
@@ -80,11 +88,28 @@ public:
 private :
 	bool __IsVacuuming() const;
 	bool __CanVacuuming() const;
-	bool __IsShooting() const;
+	bool __IsArcShooting() const;
+	void __UpdateOverlapInteractigeSuckingComponent(float DeltaTime);
+#ifdef NEW_SUCKING_CODE
+
+	//void __SetOverlapVacuumActorsInteractiveAction(EInteractiveSuckingType InteractiveSuckingType);
+	
+#else
+	
 	void __SetOverlapVacuumActorsInteractiveAction(EInteractiveAction InteractiveAction);
+
+#endif
+
+#ifdef NEW_SUCKING_CODE
+	bool __SetHoldShooting(UInteractiveSuckingComponent* InteractiveSuckingComponent);
+	bool __SetHolding(UInteractiveSuckingComponent* InteractiveSuckingComponent);
+	void __SetSucking(UInteractiveSuckingComponent* InteractiveSuckingComponent);
+#else
+	
 	void __SetInteractiveComponent(TSoftObjectPtr<AActor> Actor, TSoftObjectPtr<class UVacuumEntranceComponent> SetInteractiveComponent);
 	void __SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAction InteractiveAction);
-
+	
+#endif 
 private :
 	UFUNCTION()
 	void __OnVaccumRangeOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -4,6 +4,11 @@
 #include "InteractiveSuckingComponent.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 
+UInteractiveSuckingComponent::UInteractiveSuckingComponent()
+{
+
+}
+
 void UInteractiveSuckingComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -97,7 +102,12 @@ void UInteractiveSuckingComponent::UpdateInteractiveType(uint8 CurrentInteractiv
 	EInteractiveSuckingType BeforeInteractiveSuckingType = static_cast<EInteractiveSuckingType>(BeforeInteractiveType);
 }
 
-bool UInteractiveSuckingComponent::Sucking(USceneComponent* SceneComponent)
+EInteractiveSuckingType UInteractiveSuckingComponent::GetInteractiveSuckingType() const
+{
+	return static_cast<EInteractiveSuckingType>(InteractiveType);
+}
+
+bool UInteractiveSuckingComponent::SetSucking(USceneComponent* SceneComponent)
 {
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
@@ -128,7 +138,7 @@ bool UInteractiveSuckingComponent::Sucking(USceneComponent* SceneComponent)
 	return false;
 }
 
-bool UInteractiveSuckingComponent::Shooting(USceneComponent* SceneComponent)
+bool UInteractiveSuckingComponent::SetHoldShooting(USceneComponent* SceneComponent)
 {
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
@@ -153,7 +163,7 @@ bool UInteractiveSuckingComponent::Shooting(USceneComponent* SceneComponent)
 	return false;
 }
 
-bool UInteractiveSuckingComponent::Holding(USceneComponent* SceneComponent)
+bool UInteractiveSuckingComponent::SetHolding(USceneComponent* SceneComponent)
 {
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
@@ -173,6 +183,26 @@ bool UInteractiveSuckingComponent::Holding(USceneComponent* SceneComponent)
 	return false;
 }
 
+bool UInteractiveSuckingComponent::SetNone(USceneComponent* SceneComponent)
+{
+	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
+
+	if(EInteractiveSuckingType::None != InteractiveSuckingType)
+	{
+		if(Super::UpdateInteractiveType(static_cast<uint8>(EInteractiveSuckingType::None)))
+		{
+			InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
+		}
+	}
+	
+	if(EInteractiveSuckingType::None == InteractiveSuckingType)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool UInteractiveSuckingComponent::IsJunk() const
 {
 	if(JunkValue <= 0)
@@ -181,4 +211,9 @@ bool UInteractiveSuckingComponent::IsJunk() const
 	}
 
 	return true;
+}
+
+int32 UInteractiveSuckingComponent::GetJunkValue() const
+{
+	return JunkValue;
 }

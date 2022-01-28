@@ -16,6 +16,7 @@
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "../../../Game/GameMode/BaseGameModeBase.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
+#include "../../../Components/Interactive/Classes/InteractiveSuckingComponent.h"
 
 AMorse::AMorse()
 {
@@ -100,69 +101,7 @@ void AMorse::Tick(float DeltaTime)
 			}
 		}
 
-		//Shooting은 PredictProjectilePath를 이용해서 그림을 그려야하므로, Tick에 들어가야만 한다.
-		if (__IsShooting())
-		{
-			FVector ArcShootingStartLocation = GetActorLocation();
-			ArcShootingStartLocation += GetActorForwardVector() * CreateArcShootingSpawnActorOffset;
-
-			FHitResult Hit;
-
-			UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
-			FVector ArcShootingEndLocation = Hit.Location;
-
-			float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
-
-			if (Distance < MinArcShootingRange)
-			{
-				bIsCanArcShooting = false;
-				return;
-			}
-			else if (Distance > MaxArcShootingRange)
-			{
-				bIsCanArcShooting = false;
-				return;
-				//ArcShootingEndLocation = ArcShootingStartLocation + GetActorForwardVector() * MaxArcShootingRange;
-			}
-
-			bIsCanArcShooting = true;
-			Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
-
-			FVector startLoc = ArcShootingStartLocation;
-			FVector targetLoc = ArcShootingEndLocation;
-			FVector outVelocity = FVector::ZeroVector;
-			FOccluderVertexArray arr;
-			TArray<AActor*> actorArr;
-			FVector NullVector;
-
-			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-			TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
-			TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
-			TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
-			ObjectTypes.Add(WorldStatic);
-			ObjectTypes.Add(WorldDynamic);
-			ObjectTypes.Add(WorldPhysicsBody);
-
-			if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ArcShootingArcValue))
-			{
-				ArcShootingVelocity = outVelocity;
-
-				UGameplayStatics::PredictProjectilePath(
-					GetWorld(),
-					Hit,
-					arr,
-					NullVector,
-					ArcShootingStartLocation,
-					ArcShootingVelocity,
-					true,
-					5.f,
-					ObjectTypes,
-					false,
-					actorArr,
-					EDrawDebugTrace::ForOneFrame,
-					0);
-			}
-		}
+		__UpdateOverlapInteractigeSuckingComponent(DeltaTime);
 	}
 }
 
@@ -183,7 +122,7 @@ void AMorse::InputMouseWheel(float InputAxis)
 	if (InputAxis != 0.f)
 	{
 		//ArcValue를 수정하여 사용자가 원하는 방향에 Arc값을 지정할 수 있도록 한다.
-		if (__IsShooting())
+		if (__IsArcShooting())
 		{
 			ArcShootingArcValue -= (InputAxis / 50.f);
 
@@ -210,24 +149,8 @@ void AMorse::InputReleasedMouseLeftClick()
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
-
-		//TSoftObjectPtr<AActor> HoldingActor = nullptr;
 		VacuumEntranceComponent->SetHoldingActor(nullptr);
-		
-		__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::None);
-
-		////HoldingActor를 초기화했는데 VacuumTrigger안에 들어가있다면 초기화에서 다시 VacuumEnteranceComponent를 추가해준다.
-		//if (HoldingActor.IsValid())
-		//{
-		//	TSet<AActor*> OverlappingActors;
-		//	VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
-		//
-		//	if (nullptr != OverlappingActors.Find(HoldingActor.Get()))
-		//	{
-		//		__SetInteractiveComponent(HoldingActor.Get(), VacuumEntranceComponent);
-		//	}
-		//}
-
+		VacuumEntranceComponent->SetSucking(false);
 	}
 }
 
@@ -246,16 +169,42 @@ void AMorse::InputPressedMouseRightClick()
 			//Holding된 Actor가 존재한다면 쏜다!
 			if (VacuumEntranceComponent->HasHoldingActor())
 			{
+#ifdef NEW_SUCKING_CODE
+
+				TSoftObjectPtr<AActor> HoldingActor = VacuumEntranceComponent->GetHoldingActor();
+
+				if(HoldingActor.IsValid())
+				{
+					TSoftObjectPtr<UInteractiveSuckingComponent> InteractiveSuckingComponent = UFindFunctionLibrary::FindInteractiveSuckingComponent(HoldingActor.Get());
+
+					if(InteractiveSuckingComponent.IsValid())
+					{
+						if(__SetHoldShooting(InteractiveSuckingComponent.Get()))
+						{
+							VacuumEntranceComponent->SetHoldingActor(nullptr);
+							VacuumEntranceComponent->SetSucking(false);
+							
+							UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
+
+							if (IsValid(MorseAnimInstance))
+							{
+								MorseAnimInstance->SetShot();
+							}							
+						}
+					}					
+				}
+				
+#else
 				TSoftObjectPtr<AActor> HoldingActor = VacuumEntranceComponent->GetHoldingActor();
 
 				__SetInteractiveAction(HoldingActor.Get(), EInteractiveAction::HoldShooting);
-
 				UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
 
 				if (IsValid(MorseAnimInstance))
 				{
 					MorseAnimInstance->SetShot();
 				}
+#endif
 			}
 
 			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
@@ -323,7 +272,10 @@ void AMorse::InputReleasedMouseRightClick()
 				//	
 				//}
 			}
+#ifdef NEW_SUCKING_CODE
 
+#else
+			
 			TArray<TSoftObjectPtr<USceneComponent>> InteractiveComponents;
 
 			UFindFunctionLibrary::FindInteractiveComponents(InteractiveComponents, SpawnActor->GetRootComponent());
@@ -332,6 +284,8 @@ void AMorse::InputReleasedMouseRightClick()
 			{
 				Cast<IInteractiveInterface>(InteractiveComponent.Get())->SetInteractiveAction(EInteractiveAction::ArcShooting);
 			}
+
+#endif
 		}
 
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Idle);
@@ -347,6 +301,42 @@ void AMorse::UpdateAnimationType(EAnimationType AnimationType, EAnimationType Be
 	{
 		//VacuumEntranceComponent에 이미 Overlapping되어있는 Actor가 있는지 조사한다.
 		//이미 Overlapping된 Actor가 존재한다면 HoldingActor로 변경해주고 나머지들은 None으로 조정한다.
+
+#ifdef NEW_SUCKING_CODE
+
+		VacuumEntranceComponent->SetSucking(true);
+		
+		TSet<AActor*> OverlappingActors;
+
+		VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
+
+		OverlappingActors.Remove(this);
+
+		if (OverlappingActors.Num() > 0)
+		{
+			for(AActor* OverlapActor : OverlappingActors)
+			{
+				TSoftObjectPtr<UInteractiveSuckingComponent> InteractiveSuckingComponent = UFindFunctionLibrary::FindInteractiveSuckingComponent(OverlapActor);
+
+				if(InteractiveSuckingComponent.IsValid())
+				{
+					if (InteractiveSuckingComponent->IsJunk())
+					{
+						JunkValue += InteractiveSuckingComponent->GetJunkValue();
+						OverlapActor->Destroy();
+					}
+					else
+					{
+						if (__SetHolding(InteractiveSuckingComponent.Get()))
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+#else 
 		TSet<AActor*> OverlappingActors;
 
 		VacuumEntranceComponent->GetOverlappingActors(OverlappingActors);
@@ -362,8 +352,19 @@ void AMorse::UpdateAnimationType(EAnimationType AnimationType, EAnimationType Be
 		else
 		{
 			//Overlapping된 것이 없다면 진공으로 빨아들이도록 한다.
-
 			__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction::Sucking);
+		}
+#endif
+		
+	}
+	else
+	{
+		if (VacuumEntranceComponent.IsValid())
+		{
+			if (VacuumEntranceComponent->IsSucking())
+			{
+				VacuumEntranceComponent->SetSucking(false);
+			}
 		}
 	}
 
@@ -395,7 +396,7 @@ bool AMorse::__CanVacuuming() const
 	return false;
 }
 
-bool AMorse::__IsShooting() const
+bool AMorse::__IsArcShooting() const
 {
 	if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Shot
 		&& IsPressedRightMouse())
@@ -406,6 +407,109 @@ bool AMorse::__IsShooting() const
 	return false;
 }
 
+void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
+{
+	//Shooting은 PredictProjectilePath를 이용해서 그림을 그려야하므로, Tick에 들어가야만 한다.
+	if (__IsArcShooting())
+	{
+		FVector ArcShootingStartLocation = GetActorLocation();
+		ArcShootingStartLocation += GetActorForwardVector() * CreateArcShootingSpawnActorOffset;
+
+		FHitResult Hit;
+
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+		FVector ArcShootingEndLocation = Hit.Location;
+
+		float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
+
+		if (Distance < MinArcShootingRange)
+		{
+			bIsCanArcShooting = false;
+			return;
+		}
+		else if (Distance > MaxArcShootingRange)
+		{
+			bIsCanArcShooting = false;
+			return;
+			//ArcShootingEndLocation = ArcShootingStartLocation + GetActorForwardVector() * MaxArcShootingRange;
+		}
+
+		bIsCanArcShooting = true;
+		Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
+
+		FVector startLoc = ArcShootingStartLocation;
+		FVector targetLoc = ArcShootingEndLocation;
+		FVector outVelocity = FVector::ZeroVector;
+		FOccluderVertexArray arr;
+		TArray<AActor*> actorArr;
+		FVector NullVector;
+
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+		TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
+		TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
+		TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
+		ObjectTypes.Add(WorldStatic);
+		ObjectTypes.Add(WorldDynamic);
+		ObjectTypes.Add(WorldPhysicsBody);
+
+		if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ArcShootingArcValue))
+		{
+			ArcShootingVelocity = outVelocity;
+
+			UGameplayStatics::PredictProjectilePath(
+				GetWorld(),
+				Hit,
+				arr,
+				NullVector,
+				ArcShootingStartLocation,
+				ArcShootingVelocity,
+				true,
+				5.f,
+				ObjectTypes,
+				false,
+				actorArr,
+				EDrawDebugTrace::ForOneFrame,
+				0);
+		}
+	}
+	else
+	{
+#ifdef NEW_SUCKING_CODE
+
+		if (VacuumEntranceComponent->IsSucking())
+		{
+			//모두 Sucking상태여야 합니다.
+
+			for (UInteractiveSuckingComponent* InteractiveSuckingComponent : OverlapInteractiveSuckingComponents)
+			{
+				InteractiveSuckingComponent->SetSucking(VacuumEntranceComponent.Get());
+			}
+		}
+		else
+		{
+			for (UInteractiveSuckingComponent* InteractiveSuckingComponent : OverlapInteractiveSuckingComponents)
+			{
+				EInteractiveSuckingType InteractiveSuckingType = InteractiveSuckingComponent->GetInteractiveSuckingType();
+
+				if (EInteractiveSuckingType::Holding == InteractiveSuckingType)
+				{
+
+				}
+				else if (EInteractiveSuckingType::None != InteractiveSuckingType)
+				{
+					InteractiveSuckingComponent->SetNone(VacuumEntranceComponent.Get());
+				}
+			}
+		}
+#endif
+
+	}
+}
+
+#ifdef NEW_SUCKING_CODE
+
+
+#else
 void AMorse::__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction InteractiveAction)
 {
 	for (TSoftObjectPtr<AActor> VacuumActor : VacuumOverlapActors)
@@ -423,6 +527,43 @@ void AMorse::__SetOverlapVacuumActorsInteractiveAction(EInteractiveAction Intera
 		}
 	}
 }
+
+#endif
+
+#ifdef NEW_SUCKING_CODE
+bool AMorse::__SetHolding(UInteractiveSuckingComponent* InteractiveSuckingComponent)
+{
+	if(false == VacuumEntranceComponent->HasHoldingActor())
+	{
+		if(InteractiveSuckingComponent->SetHolding(VacuumEntranceComponent.Get()))
+		{
+			VacuumEntranceComponent->SetHoldingActor(InteractiveSuckingComponent->GetOwner());
+
+			return true;
+		}		
+	}
+
+	return false;
+}
+
+void AMorse::__SetSucking(UInteractiveSuckingComponent* InteractiveSuckingComponent)
+{
+	if(false == VacuumEntranceComponent->HasHoldingActor())
+	{
+		InteractiveSuckingComponent->SetSucking(VacuumEntranceComponent.Get());
+	}
+}
+
+bool AMorse::__SetHoldShooting(UInteractiveSuckingComponent* InteractiveSuckingComponent)
+{
+	if(InteractiveSuckingComponent->SetHoldShooting(VacuumEntranceComponent.Get()))
+	{
+		return true;
+	}
+
+	return false;
+}
+#else
 
 void AMorse::__SetInteractiveComponent(TSoftObjectPtr<AActor> Actor, TSoftObjectPtr<class UVacuumEntranceComponent> SetInteractiveComponent)
 {
@@ -465,8 +606,27 @@ void AMorse::__SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAc
 	}
 }
 
+#endif
+
 void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+#ifdef NEW_SUCKING_CODE
+	
+	if (IsValid(OtherActor))
+	{
+		TSoftObjectPtr<UInteractiveSuckingComponent> SuckingComponent = UFindFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
+
+		if(SuckingComponent.IsValid())
+		{
+			if(false == OverlapInteractiveSuckingComponents.Contains(SuckingComponent.Get()))
+			{
+				OverlapInteractiveSuckingComponents.Add(SuckingComponent.Get());
+			}
+		}
+	}
+
+#else
+	
 	if (IsValid(OtherActor)
 		&& false == VacuumOverlapActors.Contains(OtherActor))
 	{
@@ -489,10 +649,29 @@ void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			VacuumOverlapActors.Add(OtherActor);
 		}
 	}
+
+#endif
 }
 
 void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+#ifdef NEW_SUCKING_CODE
+
+	if (IsValid(OtherActor))
+	{
+		TSoftObjectPtr<UInteractiveSuckingComponent> SuckingComponent = UFindFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
+
+		if(SuckingComponent.IsValid())
+		{
+			if(OverlapInteractiveSuckingComponents.Remove(SuckingComponent.Get()) > 0)
+			{
+				SuckingComponent->SetNone(VacuumEntranceComponent.Get());
+			}
+		}
+	}
+	
+#else
+	
 	if (VacuumOverlapActors.Contains(OtherActor))
 	{
 		VacuumOverlapActors.Remove(OtherActor);
@@ -509,13 +688,39 @@ void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 				InteractiveInterface->SetInteractiveAction(EInteractiveAction::None);
 			}
 		}
-	}	
+	}
+	
+#endif
 }
 
 void AMorse::__OnVaccumOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(ABaseActor::StaticClass()))
 	{
+#ifdef NEW_SUCKING_CODE
+
+		TSoftObjectPtr<UInteractiveSuckingComponent> InteractiveSuckingComponent = UFindFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
+
+		if(InteractiveSuckingComponent.IsValid())
+		{
+			if(__CanVacuuming())
+			{
+				if (InteractiveSuckingComponent->IsJunk())
+				{
+					JunkValue += InteractiveSuckingComponent->GetJunkValue();
+					OtherActor->Destroy();
+				}
+				else
+				{
+					if (false == VacuumEntranceComponent->HasHoldingActor())
+					{
+						__SetHolding(InteractiveSuckingComponent.Get());
+					}
+				}
+			}
+		}
+
+#else
 		TArray<TSoftObjectPtr<USceneComponent>> InteractiveComopnents;
 		UFindFunctionLibrary::FindInteractiveComponents(InteractiveComopnents, OtherActor->GetRootComponent());
 
@@ -535,5 +740,7 @@ void AMorse::__OnVaccumOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 				__SetInteractiveAction(OtherActor, EInteractiveAction::Holding);
 			}
 		}
+
+#endif
 	}
 }

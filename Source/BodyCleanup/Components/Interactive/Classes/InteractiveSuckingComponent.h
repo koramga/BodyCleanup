@@ -8,14 +8,17 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Interactive), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API UInteractiveSuckingComponent : public UInteractiveTriggerComponent
 {
 	GENERATED_BODY()
 
+public :
+	UInteractiveSuckingComponent();
+
 protected :
 	//Sucking의 속도를 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "InteractiveType == EInteractiveType::Rigid || InteractiveType == EInteractiveType::Junk", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
 	float					SuckingPower = 500.f;
 
 	//흡수되는 정크의 양을 정의합니다.
@@ -54,10 +57,13 @@ protected :
 	virtual void UpdateInteractiveType(uint8 CurrentInteractiveType, uint8 BeforeInteractiveType) override;
 
 public :
-	bool Sucking(USceneComponent* SceneComponent);
-	bool Shooting(USceneComponent* SceneComponent);
-	bool Holding(USceneComponent* SceneComponent);
+	EInteractiveSuckingType GetInteractiveSuckingType() const;
+	bool SetSucking(USceneComponent* SceneComponent);
+	bool SetHoldShooting(USceneComponent* SceneComponent);
+	bool SetHolding(USceneComponent* SceneComponent);
+	bool SetNone(USceneComponent* SceneComponent);
 	
 public :
 	bool IsJunk() const;
+	int32 GetJunkValue() const;
 };
