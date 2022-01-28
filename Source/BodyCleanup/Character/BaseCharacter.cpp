@@ -8,6 +8,8 @@
 #include "../Animation/BaseAnimInstance.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
+#include "../GAS/Ability/BaseGameplayAbility.h"
+#include "../GAS/AttributeSet/BaseAttributeSet.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -24,7 +26,7 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Componentº¸´Ù Actor°¡ BeginPlay¸¦ ´õ ¸ÕÀú È£ÃâÇÑ´Ù. ±×·¡¼­ ÀÌ·¸°Ô ÇØµµ µÈ´Ù.
+	//Componentë³´ë‹¤ Actorê°€ BeginPlayë¥¼ ë” ë¨¼ì € í˜¸ì¶œí•œë‹¤. ê·¸ë˜ì„œ ì´ë ‡ê²Œ í•´ë„ ëœë‹¤.
 	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
 	
 	BaseAnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
@@ -160,6 +162,24 @@ EAnimationType ABaseCharacter::GetAnimationType() const
 	}
 
 	return EAnimationType::Idle;
+}
+
+void ABaseCharacter::AddAbility(const TSubclassOf<UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel)
+{
+	if (IsValid(AbilitySystemComponent))
+	{
+		if (HasAuthority() && AbilityToGet)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityToGet, AbilityLevel, 0));
+		}
+
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+}
+
+void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
+{	
+	AbilitySystemComponent->AddAttributeSetSubobject(NewObject<UBaseAttributeSet>(this, AttributeSet));
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const

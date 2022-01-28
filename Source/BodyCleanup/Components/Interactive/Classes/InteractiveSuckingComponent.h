@@ -33,6 +33,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
 	TArray<EInteractiveSuckingType>	TriggerInteractiveSuckingTypes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class UBaseGameplayAbility>		BaseGameplayAbilityClass;
+
 	//Tag 유무를 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
 	bool							bIsTag;

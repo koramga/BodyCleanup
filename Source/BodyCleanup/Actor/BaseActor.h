@@ -7,10 +7,12 @@
 #include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActor.h"
 #include "AbilitySystemInterface.h"
+#include "BodyCleanup/GAS/Ability/BaseGameplayAbility.h"
+#include "../GAS/Interface/Actor/GASActor.h"
 #include "BaseActor.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseActor : public AActor, public ILevelToolsActor, public IAbilitySystemInterface
+class BODYCLEANUP_API ABaseActor : public AActor, public ILevelToolsActor, public IAbilitySystemInterface, public IGASActor
 {
 	GENERATED_BODY()
 	
@@ -44,7 +46,9 @@ private :
 public :
 	void SetEnabledCollisions(bool bIsEnableCollision);
 	void SetCollisionProfileNames(const FName& ProfileName);
-
+	virtual void AddAbility(const TSubclassOf<class UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel) override;
+	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
+	
 public :
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;

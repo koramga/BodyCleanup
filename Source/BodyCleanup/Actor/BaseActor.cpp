@@ -3,7 +3,8 @@
 
 #include "BaseActor.h"
 #include "AbilitySystemComponent.h"
-#include "Abilities/GameplayAbility.h"
+#include "../GAS/Effect/BaseGameplayEffect.h"
+#include "../GAS/AttributeSet/BaseAttributeSet.h"
 
 // Sets default values
 ABaseActor::ABaseActor()
@@ -20,7 +21,7 @@ void ABaseActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Componentº¸´Ù Actor°¡ BeginPlay¸¦ ´õ ¸ÕÀú È£ÃâÇÑ´Ù. ±×·¡¼­ ÀÌ·¸°Ô ÇØµµ µÈ´Ù.
+	//Componentë³´ë‹¤ Actorê°€ BeginPlayë¥¼ ë” ë¨¼ì € í˜¸ì¶œí•œë‹¤. ê·¸ë˜ì„œ ì´ë ‡ê²Œ í•´ë„ ëœë‹¤.
 	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
 }
 
@@ -93,6 +94,24 @@ void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 void ABaseActor::SetCollisionProfileNames(const FName& ProfileName)
 {
 	__SetCollisionProfileNames(GetRootComponent(), ProfileName);
+}
+
+void ABaseActor::AddAbility(const TSubclassOf<UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel)
+{
+	if (IsValid(AbilitySystemComponent))
+	{
+		if (HasAuthority() && AbilityToGet)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityToGet, AbilityLevel, 0));
+		}
+
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+}
+
+void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
+{
+	AbilitySystemComponent->AddAttributeSetSubobject(NewObject<UBaseAttributeSet>(this, AttributeSet));
 }
 
 UAbilitySystemComponent* ABaseActor::GetAbilitySystemComponent() const

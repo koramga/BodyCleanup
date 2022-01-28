@@ -3,6 +3,10 @@
 
 #include "InteractiveSuckingComponent.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
+#include "../../../Character/BaseCharacter.h"
+#include "../../../Actor/BaseActor.h"
+#include "../../../GAS/Ability/BaseGameplayAbility.h"
+#include "../../../GAS/Interface/Actor/GASActor.h"
 
 UInteractiveSuckingComponent::UInteractiveSuckingComponent()
 {
@@ -12,6 +16,16 @@ UInteractiveSuckingComponent::UInteractiveSuckingComponent()
 void UInteractiveSuckingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(IsValid(BaseGameplayAbilityClass))
+	{
+		AActor* Actor = GetOwner();
+
+		if(Actor->GetClass()->ImplementsInterface(UGASActor::StaticClass()))
+		{
+			Cast<IGASActor>(Actor)->AddAbility(BaseGameplayAbilityClass, 0);	
+		}
+	}
 
 	for(EInteractiveSuckingType TriggerInteractiveSuckingType : TriggerInteractiveSuckingTypes)
 	{
