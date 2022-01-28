@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../InteractiveComponent.h"
+#include "InteractiveTriggerComponent.h"
 #include "InteractiveScriptComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UInteractiveScriptComponent : public UInteractiveComponent
+class BODYCLEANUP_API UInteractiveScriptComponent : public UInteractiveTriggerComponent
 {
 	GENERATED_BODY()
 	
