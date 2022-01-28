@@ -4,6 +4,7 @@
 #include "InteractiveObjectComponent.h"
 #include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 #include "../../Character/BaseCharacter.h"
+#include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 
 UInteractiveObjectComponent::UInteractiveObjectComponent()
 {
@@ -29,7 +30,7 @@ void UInteractiveObjectComponent::BeginPlay()
 	{
 		if (ENameType::Name == NameType)
 		{
-			UPrimitiveComponent* PrimitiveComopnent = UFindFunctionLibrary::FindPrimitiveComponentByName(GetOwner()->GetRootComponent(), InteractiveName);
+			UPrimitiveComponent* PrimitiveComopnent = ULevelSupportFunctionLibrary::FindPrimitiveComponentByName(GetOwner(), InteractiveName);
 	
 			if (IsValid(PrimitiveComopnent))
 			{
@@ -38,7 +39,7 @@ void UInteractiveObjectComponent::BeginPlay()
 		}
 		else if (ENameType::Tag == NameType)
 		{
-			UFindFunctionLibrary::FindPrimitiveComponentsByTagName(AffectInteractiveComponents, GetOwner(), InteractiveName);
+			ULevelSupportFunctionLibrary::FindPrimitiveComponentsByTag(AffectInteractiveComponents, GetOwner(), InteractiveName);
 		}
 	}
 	

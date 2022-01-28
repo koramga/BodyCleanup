@@ -15,6 +15,7 @@
 #include "../../../Animation/PlayerCharacter/Morse/MorseAnimInstance.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "../../../Game/GameMode/BaseGameModeBase.h"
+#include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 
 AMorse::AMorse()
 {
@@ -294,7 +295,7 @@ void AMorse::InputReleasedMouseRightClick()
 
 			TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
 
-			UFindFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, SpawnActor->GetRootComponent());
+			ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, SpawnActor);
 
 			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 			{

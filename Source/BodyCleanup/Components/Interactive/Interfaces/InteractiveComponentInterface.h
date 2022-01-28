@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../../../ExDefines.h"
 #include "UObject/Interface.h"
 #include "InteractiveComponentInterface.generated.h"
 
@@ -16,10 +16,15 @@ class UInteractiveComponentInterface : public UInterface
 /**
  * 
  */
+
 class BODYCLEANUP_API IInteractiveComponentInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	virtual bool UpdateInteractiveType(uint8 InputInteractiveType) = 0;
+	virtual uint8 GetInteractiveType() const = 0;
+	virtual bool CanUpdateInteractiveType(uint8 InputInteractiveType) = 0;
+	
 };
