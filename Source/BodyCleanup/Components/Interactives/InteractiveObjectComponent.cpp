@@ -19,7 +19,7 @@ void UInteractiveObjectComponent::BeginPlay()
 	if (EInteractiveComponentToType::Parent == InteractiveComponentToType)
 	{
 		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(GetAttachParent());
-
+	
 		if (IsValid(PrimitiveComponent))
 		{
 			AffectInteractiveComponents.Add(PrimitiveComponent);
@@ -30,7 +30,7 @@ void UInteractiveObjectComponent::BeginPlay()
 		if (ENameType::Name == NameType)
 		{
 			UPrimitiveComponent* PrimitiveComopnent = UFindFunctionLibrary::FindPrimitiveComponentByName(GetOwner()->GetRootComponent(), InteractiveName);
-
+	
 			if (IsValid(PrimitiveComopnent))
 			{
 				AffectInteractiveComponents.Add(PrimitiveComopnent);
@@ -41,23 +41,23 @@ void UInteractiveObjectComponent::BeginPlay()
 			UFindFunctionLibrary::FindPrimitiveComponentsByTagName(AffectInteractiveComponents, GetOwner(), InteractiveName);
 		}
 	}
-
+	
 	for (const TSoftObjectPtr<UPrimitiveComponent>& AffectInteractiveComponent : AffectInteractiveComponents)
 	{
 		if (AffectInteractiveComponent->IsA(UDestructibleComponent::StaticClass()))
 		{
 			UDestructibleComponent* DestructibleMeshComponent = Cast<UDestructibleComponent>(AffectInteractiveComponent.Get());
-
+	
 			DestructibleMeshComponent->WakeRigidBody(NAME_None);
 			DestructibleMeshComponent->SetSimulatePhysics(true);
-
+	
 			//FBodyInstance* BodyInstance = DestructibleMeshComponent->GetBodyInstance();
 			//
 			//if (nullptr != BodyInstance)
 			//{
 			//	BodyInstance->SetInstanceSimulatePhysics(true);
 			//}
-
+	
 			DestructibleMeshComponent->OnComponentFracture.AddDynamic(this, &UInteractiveObjectComponent::__OnComponentFracture);
 		}
 		else

@@ -80,6 +80,7 @@ void UInteractiveComponent::SetInteractiveType(EInteractiveType InputInteractive
 void UInteractiveComponent::SetupInteractiveAction(EInteractiveAction InputInteractiveAction)
 {
 	UpdateInteractiveAction(InputInteractiveAction, InteractiveAction);
+	//UpdateTriggerState(static_cast<uint8>(InputInteractiveAction));
 
 	InteractiveAction = InputInteractiveAction;
 
