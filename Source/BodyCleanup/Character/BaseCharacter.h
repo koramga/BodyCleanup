@@ -7,11 +7,11 @@
 #include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActor.h"
 #include "AbilitySystemInterface.h"
-#include "../GAS/Interface/Actor/GASActor.h"
+#include "../GAS/Interface/Actor/GASActorInterface.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActor, public IAbilitySystemInterface, public IGASActor
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActor, public IAbilitySystemInterface, public IGASActorInterface
 {
 	GENERATED_BODY()
 

@@ -69,4 +69,5 @@ public :
 public :
 	bool IsJunk() const;
 	int32 GetJunkValue() const;
+	const TSubclassOf<class UBaseGameplayAbility>& GetHoldShootingAbility() const;
 };

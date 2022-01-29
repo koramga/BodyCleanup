@@ -6,7 +6,7 @@
 #include "../../../Character/BaseCharacter.h"
 #include "../../../Actor/BaseActor.h"
 #include "../../../GAS/Ability/BaseGameplayAbility.h"
-#include "../../../GAS/Interface/Actor/GASActor.h"
+#include "../../../GAS/Interface/Actor/GASActorInterface.h"
 
 UInteractiveSuckingComponent::UInteractiveSuckingComponent()
 {
@@ -21,9 +21,9 @@ void UInteractiveSuckingComponent::BeginPlay()
 	{
 		AActor* Actor = GetOwner();
 
-		if(Actor->GetClass()->ImplementsInterface(UGASActor::StaticClass()))
+		if(Actor->GetClass()->ImplementsInterface(UGASActorInterface::StaticClass()))
 		{
-			Cast<IGASActor>(Actor)->AddAbility(BaseGameplayAbilityClass, 0);	
+			Cast<IGASActorInterface>(Actor)->AddAbility(BaseGameplayAbilityClass, 0);	
 		}
 	}
 
@@ -230,4 +230,9 @@ bool UInteractiveSuckingComponent::IsJunk() const
 int32 UInteractiveSuckingComponent::GetJunkValue() const
 {
 	return JunkValue;
+}
+
+const TSubclassOf<UBaseGameplayAbility>& UInteractiveSuckingComponent::GetHoldShootingAbility() const
+{
+	return BaseGameplayAbilityClass;
 }

@@ -17,19 +17,21 @@ class BODYCLEANUP_API UBaseStatsAttributeSet : public UBaseAttributeSet
 protected :
         //Attributes for Health
     UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "Health")
-    float   SetupHealth;
+    float   __Health__;
     
     UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "MaxHealth")
-    float   SetupMaxHealth;
+    float   __MaxHealth__;
 
     UPROPERTY(BlueprintReadOnly)
     FGameplayAttributeData  Health;
-    ATTRIBUTE_ACCESSORS(UBaseStatsAttributeSet, Health);
 
     UPROPERTY(BlueprintReadOnly)
     FGameplayAttributeData  MaxHealth;
-    ATTRIBUTE_ACCESSORS(UBaseStatsAttributeSet, MaxHealth);
 
 protected :
     virtual void PostInitProperties() override;
+
+public :
+    ATTRIBUTE_ACCESSORS(UBaseStatsAttributeSet, Health);
+    ATTRIBUTE_ACCESSORS(UBaseStatsAttributeSet, MaxHealth)
 };

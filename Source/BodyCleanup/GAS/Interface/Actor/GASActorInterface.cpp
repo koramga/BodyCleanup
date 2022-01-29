@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GASActor.h"
+#include "GASActorInterface.h"
 
 // Add default functionality here for any IGASActor functions that are not pure virtual.

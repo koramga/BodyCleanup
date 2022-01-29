@@ -8,9 +8,9 @@ void UBaseStatsAttributeSet::PostInitProperties()
 	Super::PostInitProperties();
 
 	//UE_LOG(LogTemp, Display, TEXT("koramga PostInitProperties"));
-	Health.SetBaseValue(SetupHealth);
-	Health.SetCurrentValue(SetupHealth);
+	Health.SetBaseValue(__Health__);
+	Health.SetCurrentValue(__Health__);
 
-	MaxHealth.SetBaseValue(SetupMaxHealth);
-	MaxHealth.SetCurrentValue(SetupMaxHealth);
+	MaxHealth.SetBaseValue(__MaxHealth__);
+	MaxHealth.SetCurrentValue(__MaxHealth__);
 }

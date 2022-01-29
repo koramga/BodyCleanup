@@ -178,8 +178,10 @@ void ABaseCharacter::AddAbility(const TSubclassOf<UBaseGameplayAbility>& Ability
 }
 
 void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
-{	
-	AbilitySystemComponent->AddAttributeSetSubobject(NewObject<UBaseAttributeSet>(this, AttributeSet));
+{
+	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
+	
+	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const

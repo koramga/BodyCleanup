@@ -9,9 +9,20 @@
 /**
  * 
  */
-UCLASS()
+UCLASS( ClassGroup=(Triggers), meta=(BlueprintSpawnableComponent) )
 class BODYCLEANUP_API UDamageTriggerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	UDamageTriggerComponent();
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+	virtual void SetupTrigger() override;
+	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam) override;
+
+public :
+	virtual void UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam) override;	
 };

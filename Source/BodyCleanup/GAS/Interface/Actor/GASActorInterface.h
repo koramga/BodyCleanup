@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "GASActor.generated.h"
+#include "GASActorInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UGASActor : public UInterface
+class UGASActorInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,7 +16,7 @@ class UGASActor : public UInterface
 /**
  * 
  */
-class BODYCLEANUP_API IGASActor
+class BODYCLEANUP_API IGASActorInterface
 {
 	GENERATED_BODY()
 

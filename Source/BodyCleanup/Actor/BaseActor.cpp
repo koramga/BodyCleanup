@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "../GAS/Effect/BaseGameplayEffect.h"
 #include "../GAS/AttributeSet/BaseAttributeSet.h"
+#include  "../GAS/AttributeSet/BaseStatsAttributeSet.h"
 
 // Sets default values
 ABaseActor::ABaseActor()
@@ -75,6 +76,11 @@ void ABaseActor::__SetCollisionProfileNames(USceneComponent* SceneComponent, con
 	}
 }
 
+void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
+}
+
 void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 {
 	ECollisionEnabled::Type CollisionEnabledType;
@@ -111,7 +117,19 @@ void ABaseActor::AddAbility(const TSubclassOf<UBaseGameplayAbility>& AbilityToGe
 
 void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
 {
-	AbilitySystemComponent->AddAttributeSetSubobject(NewObject<UBaseAttributeSet>(this, AttributeSet));
+	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
+	
+	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
+
+	if(AbilitySystemComponent->IsA(UBaseStatsAttributeSet::StaticClass()))
+	{
+		UBaseStatsAttributeSet* BaseStatsAttributeSet = Cast<UBaseStatsAttributeSet>(AbilitySystemComponent);
+
+		if(IsValid(BaseStatsAttributeSet))
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseStatsAttributeSet->GetHealthAttribute()).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
+		}
+	}
 }
 
 UAbilitySystemComponent* ABaseActor::GetAbilitySystemComponent() const
