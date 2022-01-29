@@ -5,7 +5,7 @@
 #include "../BasePlayerCharacter.h"
 #include "Morse.generated.h"
 
-//#define NEW_SUCKING_CODE
+#define NEW_SUCKING_CODE
 
 /**
  * 

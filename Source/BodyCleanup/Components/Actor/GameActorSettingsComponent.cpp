@@ -26,7 +26,7 @@ void UGameActorSettingsComponent::BeginPlay()
 
 	if(IsValid(Owner))
 	{
-		if(Owner->IsA(UGASActor::StaticClass()))
+		if(Owner->GetClass()->ImplementsInterface(UGASActor::StaticClass()))
 		{
 			IGASActor* GASActor = Cast<IGASActor>(Owner);
 

@@ -20,7 +20,7 @@
 
 AMorse::AMorse()
 {
-
+	JunkValue = 0;
 }
 
 void AMorse::BeginPlay()
