@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					MaxArcShootingRange = 500.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					MaxArcShootingZ = 100.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.1", ClampMax = "0.9", UIMin = "0.1", UIMax = "0.9"))
 	float					MinArcShootingArcRange = 0.1f;
 
@@ -90,6 +93,7 @@ private :
 	bool __CanVacuuming() const;
 	bool __IsArcShooting() const;
 	void __UpdateOverlapInteractigeSuckingComponent(float DeltaTime);
+	FVector __ProcessMaxDistnace(const FVector& StartArcShootingLocation, const FVector& EndArcShootingLocation);
 #ifdef NEW_SUCKING_CODE
 
 	//void __SetOverlapVacuumActorsInteractiveAction(EInteractiveSuckingType InteractiveSuckingType);

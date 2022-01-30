@@ -417,7 +417,9 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 
 		FHitResult Hit;
 
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+		PlayerController->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
 		FVector ArcShootingEndLocation = Hit.Location;
 
 		float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
@@ -429,9 +431,47 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 		}
 		else if (Distance > MaxArcShootingRange)
 		{
-			bIsCanArcShooting = false;
-			return;
-			//ArcShootingEndLocation = ArcShootingStartLocation + GetActorForwardVector() * MaxArcShootingRange;
+			
+			//최적의 거리를 계산해야한다.
+			//bIsCanArcShooting = false;
+			//return;
+
+			ArcShootingEndLocation = __ProcessMaxDistnace(ArcShootingStartLocation, ArcShootingEndLocation);
+			
+			/*
+			ArcShootingEndLocation = ArcShootingStartLocation + GetActorForwardVector() * MaxArcShootingRange;
+
+			FHitResult HitResult;
+			
+			GetWorld()->LineTraceSingleByChannel(HitResult, ArcShootingEndLocation + FVector(0.f, 0.f, 10000.f), ArcShootingEndLocation - FVector(0.f, 0.f, 20000.f)
+				, ECC_WorldStatic);
+
+			if(IsValid(Hit.GetActor()))
+			{
+				Distance = FVector::Distance(ArcShootingStartLocation, Hit.ImpactPoint);
+
+				if(Distance < MaxArcShootingRange)
+				{
+					
+				}
+				else if(Distance > MaxArcShootingRange)
+				{
+					
+				}
+			}
+			*/
+		}
+
+		if(FMath::Abs(ArcShootingEndLocation.Z - ArcShootingStartLocation.Z) >= MaxArcShootingZ)
+		{
+			if(ArcShootingEndLocation.Z > ArcShootingStartLocation.Z)
+			{
+				ArcShootingEndLocation.Z = ArcShootingStartLocation.Z + MaxArcShootingZ;
+			}
+			else
+			{
+				ArcShootingEndLocation.Z = ArcShootingStartLocation.Z - MaxArcShootingZ;
+			}
 		}
 
 		bIsCanArcShooting = true;
@@ -504,6 +544,71 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 #endif
 
 	}
+}
+
+FVector AMorse::__ProcessMaxDistnace(const FVector& StartArcShootingLocation, const FVector& EndArcShootingLocation)
+{
+	float Distance = FVector::Distance(StartArcShootingLocation, EndArcShootingLocation);
+
+	if(Distance < 1.f)
+	{
+		return EndArcShootingLocation;
+	}
+	
+	//Radix를 구한다.
+	int Radix = 1;
+
+	while(Radix < Distance) Radix *= 10;
+	
+	Radix /= 10;
+
+	//원하는 Radix의 값이 나왔다.
+
+	//처음은 무조건 음수이다. (값이 크기 때문에)
+	int32 Sign = -1;
+	float DistanceOffset = Distance;
+	FVector NewEndArcShootingLocation = EndArcShootingLocation;
+
+	for(; Radix > 1; Radix /= 10)
+	{
+		int RadixOffset = 0;
+		
+		for(; RadixOffset < 10; ++RadixOffset)
+		{
+			FVector LineTraceStandardLocation = StartArcShootingLocation + GetActorForwardVector() * (DistanceOffset + RadixOffset * Radix * Sign);
+			
+			FHitResult HitResult;
+			
+			GetWorld()->LineTraceSingleByChannel(HitResult,  LineTraceStandardLocation + FVector(0.f, 0.f, 10000.f), LineTraceStandardLocation - FVector(0.f, 0.f, 20000.f)
+				, ECC_WorldStatic);
+
+			if(IsValid(HitResult.GetActor()))
+			{
+				NewEndArcShootingLocation = HitResult.ImpactPoint;
+				float NewDistance = FVector::Distance(StartArcShootingLocation, NewEndArcShootingLocation);
+
+				if(Sign < 0)
+				{
+					if(NewDistance <= MaxArcShootingRange)
+					{
+						break;
+					}
+				}
+				else
+				{
+					if(NewDistance >= MaxArcShootingRange)
+					{
+						break;
+					}
+				}				
+			}			
+		}
+		
+		DistanceOffset = DistanceOffset + RadixOffset * Radix * Sign;
+		Sign *= -1;
+	}
+
+	return NewEndArcShootingLocation;
 }
 
 #ifdef NEW_SUCKING_CODE

@@ -27,21 +27,24 @@ ELevelMarkupType UVelocityMarkupComponent::GetLevelMarkupType() const
 
 void UVelocityMarkupComponent::UpdateFromMarkup(UObject* Object) const
 {
-	TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
+	if(IsValid(Object))
+	{
+		TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
 
-	if (Object->IsA(AActor::StaticClass()))
-	{
-		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<AActor>(Object));
-	} 
-	else if (Object->IsA(USceneComponent::StaticClass()))
-	{
-		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<USceneComponent>(Object)->GetOwner());
-	}
+		if (Object->IsA(AActor::StaticClass()))
+		{
+			ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<AActor>(Object));
+		} 
+		else if (Object->IsA(USceneComponent::StaticClass()))
+		{
+			ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, Cast<USceneComponent>(Object)->GetOwner());
+		}
 
-	for (TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
-	{
-		PrimitiveComponent->SetSimulatePhysics(true);
-		PrimitiveComponent->SetPhysicsLinearVelocity(GetLinearVelocity());
-		PrimitiveComponent->SetPhysicsAngularVelocity(GetAngularVelocity());
+		for (TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
+		{
+			PrimitiveComponent->SetSimulatePhysics(true);
+			PrimitiveComponent->SetPhysicsLinearVelocity(GetLinearVelocity());
+			PrimitiveComponent->SetPhysicsAngularVelocity(GetAngularVelocity());
+		}		
 	}
 }
