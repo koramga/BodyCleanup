@@ -45,6 +45,8 @@ void UDestructibleTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam
 	if(InputLevelTriggerUpdateParam.bIsOnTrigger)
 	{
 		FVector Location = GetOwner()->GetActorLocation();
+
+		UE_LOG(LogTemp, Display, TEXT("koramga Destructible Mesh!"));
 		
 		for(const TSoftObjectPtr<UDestructibleComponent>& DestructibleComponent : DestructibleComponents)
 		{

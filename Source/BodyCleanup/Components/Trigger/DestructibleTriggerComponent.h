@@ -24,7 +24,10 @@ struct FLevelDestructibleTriggerTo
 	GENERATED_BODY()
 
 public :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool			bIsTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName>	Names;
 };
 
@@ -51,11 +54,11 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DestructibleTriggerComponent")
 	ELevelTriggerDestructibleType		LevelTriggerDestructibleType;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float	Damage = 10000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DestructibleTriggerComponent")
+	float	Damage = 1000000000.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DestructibleTriggerComponent")
-	float	Strength = 500000.f;
+	float	Strength = 5000.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|DestructibleTriggerComponent", meta = (EditCondition = "LevelTriggerDestructibleType == ELevelTriggerDestructibleType::Radial", EditConditionHides))
 	float	Radius = 500.f;
