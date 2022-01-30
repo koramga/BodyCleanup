@@ -24,4 +24,5 @@ class BODYCLEANUP_API IGASActorInterface
 public:
 	virtual void AddAbility(const struct FGameplayAbilitySpec& GameplayAbilitySpec) = 0;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) = 0;
+	virtual bool IsDeath() const = 0;
 };

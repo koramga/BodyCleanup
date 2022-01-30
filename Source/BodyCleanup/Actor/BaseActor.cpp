@@ -91,6 +91,7 @@ void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
 				if(Data.NewValue <= 0.f)
 				{
 					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+					bIsDeath = true;
 				}
 				 
 				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
@@ -146,6 +147,11 @@ void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& Attribute
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
 	}
+}
+
+bool ABaseActor::IsDeath() const
+{
+	return bIsDeath;
 }
 
 UAbilitySystemComponent* ABaseActor::GetAbilitySystemComponent() const

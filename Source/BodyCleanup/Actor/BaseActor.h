@@ -30,6 +30,9 @@ protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UAbilitySystemComponent*	AbilitySystemComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsDeath = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,6 +52,7 @@ public :
 	void SetCollisionProfileNames(const FName& ProfileName);
 	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
+	virtual bool IsDeath() const override; 
 	
 public :
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;

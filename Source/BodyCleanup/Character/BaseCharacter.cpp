@@ -135,8 +135,27 @@ void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimatio
 }
 
 void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
-{
+{	
+	TArray<FGameplayAttribute> Attributes;
 	
+	AbilitySystemComponent->GetAllAttributes(Attributes);
+
+	for(FGameplayAttribute& Attribute : Attributes)
+	{
+		if(Data.Attribute == Attribute)
+		{
+			if(TEXT("Health") == Attribute.AttributeName)
+			{
+				if(Data.NewValue <= 0.f)
+				{
+					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+					bIsDeath = true;
+				}
+				 
+				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
+			}
+		}
+	}
 }
 
 void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
@@ -196,6 +215,11 @@ void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& Attri
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseCharacter::__OnGASAttributeChanged);
 	}
+}
+
+bool ABaseCharacter::IsDeath() const
+{
+	return bIsDeath;
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const

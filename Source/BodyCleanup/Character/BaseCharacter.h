@@ -39,6 +39,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UGameActorSettingsComponent*	GameActorSettingsComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	bool bIsDeath = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -62,7 +65,8 @@ public :
 	EAnimationType GetAnimationType() const;
 	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
-
+	virtual bool IsDeath() const override;
+	
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
