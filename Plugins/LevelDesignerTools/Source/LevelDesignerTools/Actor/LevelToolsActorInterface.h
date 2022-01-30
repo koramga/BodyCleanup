@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Assist/LevelTriggerActorAssist.h"
-#include "LevelToolsActor.generated.h"
+#include "LevelToolsActorInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class ULevelToolsActor : public UInterface
+class ULevelToolsActorInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,7 +17,7 @@ class ULevelToolsActor : public UInterface
 /**
  * 
  */
-class LEVELDESIGNERTOOLS_API ILevelToolsActor
+class LEVELDESIGNERTOOLS_API ILevelToolsActorInterface
 {
 	GENERATED_BODY()
 

@@ -7,6 +7,7 @@
 #include "../../../Actor/BaseActor.h"
 #include "../../../GAS/Ability/BaseGameplayAbility.h"
 #include "../../../GAS/Interface/Actor/GASActorInterface.h"
+#include "../../../GAS/Effect/BaseGameplayEffect.h"
 
 UInteractiveSuckingComponent::UInteractiveSuckingComponent()
 {
@@ -23,8 +24,14 @@ void UInteractiveSuckingComponent::BeginPlay()
 
 		if(Actor->GetClass()->ImplementsInterface(UGASActorInterface::StaticClass()))
 		{
-			Cast<IGASActorInterface>(Actor)->AddAbility(BaseGameplayAbilityClass, 0);	
+			HoldShootingAbilitySpec = FGameplayAbilitySpec(BaseGameplayAbilityClass, 0, 0); 
+			Cast<IGASActorInterface>(Actor)->AddAbility(HoldShootingAbilitySpec);	
 		}
+	}
+
+	if(IsValid(BaseGameplayEffectClass))
+	{
+		BaseGameplayEffect = NewObject<UBaseGameplayEffect>(this, BaseGameplayEffectClass); 
 	}
 
 	for(EInteractiveSuckingType TriggerInteractiveSuckingType : TriggerInteractiveSuckingTypes)
@@ -232,7 +239,12 @@ int32 UInteractiveSuckingComponent::GetJunkValue() const
 	return JunkValue;
 }
 
-const TSubclassOf<UBaseGameplayAbility>& UInteractiveSuckingComponent::GetHoldShootingAbility() const
+const FGameplayAbilitySpec& UInteractiveSuckingComponent::GetHoldShootingAbilitySpec() const
 {
-	return BaseGameplayAbilityClass;
+	return HoldShootingAbilitySpec;
+}
+
+UBaseGameplayEffect* UInteractiveSuckingComponent::GetHoldShootingGameplayEffect()
+{
+	return BaseGameplayEffect;
 }

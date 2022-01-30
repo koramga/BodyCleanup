@@ -190,7 +190,7 @@ void ULevelTriggerInterfaceSpace::ProcessTrigger(bool bInputIsOnTrigger)
 
 			if (ELevelTriggerReactType::Once == LevelTriggerInputFrom->LevelTriggerReactType)
 			{
-				//ÀÏÀü¿¡ ÇÑ ¹ø È£ÃâµÇ¾ú´Ù´Â ÀÇ¹Ì°¡ µÈ´Ù.
+				//ì¼ì „ì— í•œ ë²ˆ í˜¸ì¶œë˜ì—ˆë‹¤ëŠ” ì˜ë¯¸ê°€ ëœë‹¤.
 				if (bIsOnTrigger)
 				{
 					return;
@@ -217,7 +217,7 @@ void ULevelTriggerInterfaceSpace::ProcessTrigger(bool bInputIsOnTrigger)
 
 void ULevelTriggerInterfaceSpace::Release()
 {
-	//Áö¿ì±â ¿Ï·á
+	//ì§€ìš°ê¸° ì™„ë£Œ
 	for (TSoftObjectPtr<UActorComponent>& TriggerComponent : TriggerComponents)
 	{
 		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
@@ -373,7 +373,34 @@ const ILevelTriggerInterface* ULevelTriggerInterfaceSpace::GetLevelTriggerInterf
 	return Cast< const ILevelTriggerInterface>(LevelTriggerInterface.Get());
 }
 
-ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const
+const TArray<TSoftObjectPtr<UActorComponent>>& ULevelTriggerInterfaceSpace::GetTriggerComponents() const
+{
+	return TriggerComponents;
+}
+
+void ULevelTriggerInterfaceSpace::GetTriggerPrimitiveComponents(
+	TArray<TSoftObjectPtr<UPrimitiveComponent>>& TriggerPrimitiveComponents) const
+{
+	for (const TSoftObjectPtr<UActorComponent>& TriggerComponent : TriggerComponents)
+	{
+		if(TriggerComponent.IsValid())
+		{
+			UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(TriggerComponent.Get());
+
+			if (IsValid(PrimitiveComponent))
+			{
+				TriggerPrimitiveComponents.Add(PrimitiveComponent);
+			}			
+		}
+	}
+}
+
+const FLevelTriggerCertificate* ULevelTriggerInterfaceSpace::GetLevelTriggerCertificate(UObject* Key) const
+{
+	return TriggerCertificateComponents.Find(Key);
+}
+
+ULevelTriggerInterfaceSpace* ULevelTriggerManager::GetLevelTriggerInterfaceSpace(const ILevelTriggerInterface* TriggerInterface) const
 {
 	if (nullptr == TriggerInterface)
 	{
@@ -414,7 +441,7 @@ void ULevelTriggerManager::UnRegisterTrigger(ILevelTriggerInterface* TriggerInte
 	}
 }
 
-void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const
+void ULevelTriggerManager::FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const ILevelTriggerInterface* TriggerInterface) const
 {
 	ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = GetLevelTriggerInterfaceSpace(TriggerInterface);
 	

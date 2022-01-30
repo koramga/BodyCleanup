@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GameplayAbilitySpec.h"
+#include "GameplayEffect.h"
 #include "InteractiveTriggerComponent.h"
 #include "InteractiveSuckingComponent.generated.h"
 
@@ -36,6 +38,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
 	TSubclassOf<class UBaseGameplayAbility>		BaseGameplayAbilityClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
+	TSubclassOf<class UBaseGameplayEffect>		BaseGameplayEffectClass;
+
 	//Tag 유무를 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
 	bool							bIsTag;
@@ -46,6 +51,12 @@ protected :
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<TSoftObjectPtr<UPrimitiveComponent>>	PrimitiveComponents;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FGameplayAbilitySpec						HoldShootingAbilitySpec;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBaseGameplayEffect*					BaseGameplayEffect;
 	
 protected:
 	// Called when the game starts
@@ -69,5 +80,6 @@ public :
 public :
 	bool IsJunk() const;
 	int32 GetJunkValue() const;
-	const TSubclassOf<class UBaseGameplayAbility>& GetHoldShootingAbility() const;
+	const FGameplayAbilitySpec& GetHoldShootingAbilitySpec() const;
+	UBaseGameplayEffect* GetHoldShootingGameplayEffect();		
 };

@@ -164,13 +164,13 @@ EAnimationType ABaseCharacter::GetAnimationType() const
 	return EAnimationType::Idle;
 }
 
-void ABaseCharacter::AddAbility(const TSubclassOf<UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel)
+void ABaseCharacter::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
 {
 	if (IsValid(AbilitySystemComponent))
 	{
-		if (HasAuthority() && AbilityToGet)
+		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityToGet, AbilityLevel, 0));
+			FGameplayAbilitySpecHandle GameplayAbilitySpecHandle = AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
 		}
 
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);

@@ -102,13 +102,13 @@ void ABaseActor::SetCollisionProfileNames(const FName& ProfileName)
 	__SetCollisionProfileNames(GetRootComponent(), ProfileName);
 }
 
-void ABaseActor::AddAbility(const TSubclassOf<UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel)
+void ABaseActor::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
 {
 	if (IsValid(AbilitySystemComponent))
 	{
-		if (HasAuthority() && AbilityToGet)
+		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(AbilityToGet, AbilityLevel, 0));
+			AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
 		}
 
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
@@ -121,12 +121,13 @@ void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& Attribute
 	
 	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
 
-	if(AbilitySystemComponent->IsA(UBaseStatsAttributeSet::StaticClass()))
+	if(BaseAttribute->IsA(UBaseStatsAttributeSet::StaticClass()))
 	{
-		UBaseStatsAttributeSet* BaseStatsAttributeSet = Cast<UBaseStatsAttributeSet>(AbilitySystemComponent);
-
+		UBaseStatsAttributeSet* BaseStatsAttributeSet = Cast<UBaseStatsAttributeSet>(BaseAttribute);
+ 
 		if(IsValid(BaseStatsAttributeSet))
 		{
+			UE_LOG(LogTemp, Display, TEXT("koramga AttributeCallbackEnabled"));
 			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseStatsAttributeSet->GetHealthAttribute()).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
 		}
 	}

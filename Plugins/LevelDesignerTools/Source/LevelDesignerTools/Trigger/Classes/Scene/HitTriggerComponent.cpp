@@ -26,7 +26,10 @@ void UHitTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLe
 
 bool UHitTriggerComponent::IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult)
 {
-	Super::IsApplyTriggerFromPrimitiveComopnent(OtherPrimitiveComponent, OtherActor, SweepResult);
+	if(false == Super::IsApplyTriggerFromPrimitiveComopnent(OtherPrimitiveComponent, OtherActor, SweepResult))
+	{
+		return false;
+	}
 
 	return true;
 	//return OtherPrimitiveComponent->GetClass()->ImplementsInterface(ULevelTriggerInterface::StaticClass());

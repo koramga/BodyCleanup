@@ -80,6 +80,9 @@ public :
 	void SetLevelTriggerManager(const TSoftObjectPtr<ULevelTriggerManager>& InputLevelTriggerManager);
 	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const TSoftObjectPtr<ULevelTriggerInterfaceSpace>& LevelTriggerInterfaceSpace) const;
 	const ILevelTriggerInterface* GetLevelTriggerInterface() const;
+	const TArray<TSoftObjectPtr<UActorComponent>>& GetTriggerComponents() const;
+	void GetTriggerPrimitiveComponents(TArray<TSoftObjectPtr<UPrimitiveComponent>>& TriggerPrimitiveComponents) const;
+	const FLevelTriggerCertificate* GetLevelTriggerCertificate(UObject* Key) const;
 };
 
 
@@ -93,10 +96,10 @@ protected :
 	TMap<TSoftObjectPtr<UObject>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaceSpaces;
 
 public :
-	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(ILevelTriggerInterface* TriggerInterface) const;
+	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(const ILevelTriggerInterface* TriggerInterface) const;
 	void RegisterTrigger(ILevelTriggerInterface* TriggerInterface);
 	void UnRegisterTrigger(ILevelTriggerInterface* TriggerInterface);
-	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, ILevelTriggerInterface* TriggerInterface) const;
+	void FindOverlapActors(TArray<TSoftObjectPtr<AActor>>& Actors, const ILevelTriggerInterface* TriggerInterface) const;
 	void UpdateTrigger(ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger);
 	void UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface);
 

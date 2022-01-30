@@ -22,6 +22,6 @@ class BODYCLEANUP_API IGASActorInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void AddAbility(const TSubclassOf<class UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel) = 0;
+	virtual void AddAbility(const struct FGameplayAbilitySpec& GameplayAbilitySpec) = 0;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) = 0;
 };

@@ -4,7 +4,7 @@
 #include "DeathTriggerComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "../../../GameMode/LevelToolsGameModeBase.h"
-#include "../../../Actor/LevelToolsActor.h"
+#include "../../../Actor/LevelToolsActorInterface.h"
 
 UDeathTriggerComponent::UDeathTriggerComponent()
 {
@@ -19,7 +19,7 @@ void UDeathTriggerComponent::BeginPlay()
 
 	if (Owner->GetClass()->ImplementsInterface(ULevelTriggerActorAssist::StaticClass()))
 	{
-		ILevelToolsActor* LevelToolsActor = Cast<ILevelToolsActor>(Owner);
+		ILevelToolsActorInterface* LevelToolsActor = Cast<ILevelToolsActorInterface>(Owner);
 
 		if (nullptr != LevelToolsActor)
 		{

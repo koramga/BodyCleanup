@@ -5,13 +5,13 @@
 #include "../ExDefines.h"
 #include "GameFramework/Character.h"
 #include "../Components/Actor/GameActorSettingsComponent.h"
-#include "LevelDesignerTools/Actor/LevelToolsActor.h"
+#include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
 #include "AbilitySystemInterface.h"
 #include "../GAS/Interface/Actor/GASActorInterface.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActor, public IAbilitySystemInterface, public IGASActorInterface
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public IAbilitySystemInterface, public IGASActorInterface
 {
 	GENERATED_BODY()
 
@@ -56,7 +56,7 @@ public :
 	void SetEnableCapsuleCollision(bool bIsEnable);
 	void SetAnimationType(EAnimationType AnimationType);
 	EAnimationType GetAnimationType() const;
-	virtual void AddAbility(const TSubclassOf<class UBaseGameplayAbility>& AbilityToGet, int32 AbilityLevel) override;
+	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
 
 public:

@@ -17,6 +17,10 @@ class BODYCLEANUP_API UDamageTriggerComponent : public UTriggerActorComponent
 public:
 	UDamageTriggerComponent();
 
+private :
+	void __FindTargetActors(TArray<AActor*>& TargetActors) const;
+	bool __CanDamageInteractiveActor(const AActor* Actor) const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
