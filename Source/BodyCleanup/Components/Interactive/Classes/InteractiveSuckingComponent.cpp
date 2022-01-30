@@ -84,6 +84,7 @@ void UInteractiveSuckingComponent::TickComponent(float DeltaTime, ELevelTick Tic
 				{
 					Super::SetInteractiveType(static_cast<uint8>(EInteractiveSuckingType::None));
 					SetComponentTickEnabled(false);
+					SetRigidBodyCollision(false);
 				}
 			}
 		}
@@ -104,7 +105,7 @@ bool UInteractiveSuckingComponent::CanUpdateInteractiveType(uint8 CurrentInterac
 	EInteractiveSuckingType CurrentInteractiveSuckingType = static_cast<EInteractiveSuckingType>(CurrentInteractiveType);
 	EInteractiveSuckingType NextInteractiveSuckingType = static_cast<EInteractiveSuckingType>(DesiredInteractiveType);
 	
-	UE_LOG(LogTemp, Display, TEXT("Kormaga CanUpdateInteractive : <%s> <%s>"), *GetEnumerationToString(NextInteractiveSuckingType), *GetEnumerationToString(CurrentInteractiveSuckingType));
+	//UE_LOG(LogTemp, Display, TEXT("Kormaga CanUpdateInteractive : <%s> <%s>"), *GetEnumerationToString(NextInteractiveSuckingType), *GetEnumerationToString(CurrentInteractiveSuckingType));
 
 	if (EInteractiveSuckingType::ArcShooting == CurrentInteractiveSuckingType
 		|| EInteractiveSuckingType::HoldShooting == CurrentInteractiveSuckingType)
@@ -121,6 +122,16 @@ void UInteractiveSuckingComponent::UpdateInteractiveType(uint8 CurrentInteractiv
 	
 	EInteractiveSuckingType CurrentInteractiveSuckingType = static_cast<EInteractiveSuckingType>(CurrentInteractiveType);
 	EInteractiveSuckingType BeforeInteractiveSuckingType = static_cast<EInteractiveSuckingType>(BeforeInteractiveType);
+}
+
+void UInteractiveSuckingComponent::SetRigidBodyCollision(bool bIsCollision)
+{
+	UE_LOG(LogTemp, Display, TEXT("koramga RigidBodyCollision : <%d>"), static_cast<int32>(bIsCollision));
+	
+	for(TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
+	{
+		PrimitiveComponent->SetNotifyRigidBodyCollision(bIsCollision);
+	}
 }
 
 EInteractiveSuckingType UInteractiveSuckingComponent::GetInteractiveSuckingType() const
@@ -175,6 +186,7 @@ bool UInteractiveSuckingComponent::SetHoldShooting(USceneComponent* SceneCompone
 				}
 			}
 
+			SetRigidBodyCollision(true);
 			SetComponentTickEnabled(true);
 
 			return true;

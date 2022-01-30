@@ -22,7 +22,7 @@ void ULevelTriggerInterfaceSpace::SetupRelationship()
 			}
 			else
 			{
-				PrimitiveComponent->SetNotifyRigidBodyCollision(true);
+				//PrimitiveComponent->SetNotifyRigidBodyCollision(true);
 				PrimitiveComponent->OnComponentHit.AddDynamic(this, &ULevelTriggerInterfaceSpace::__OnTriggerComponentHit);
 			}
 		}

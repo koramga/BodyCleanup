@@ -42,4 +42,6 @@ private :
 	void __InputPressedReturnToTank();
 	void __InputPressedJump();
 	void __InputReleasedJump();
+	void __InputPressedInteractive();
+	void __InputReleasedInteractive();
 };

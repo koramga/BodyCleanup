@@ -18,10 +18,10 @@ ABasePlayerCharacter::ABasePlayerCharacter()
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 
-	//ArmÀ» Root¿¡ ºÙ¿©ÁØ´Ù.
+	//Armì„ Rootì— ë¶™ì—¬ì¤€ë‹¤.
 	SpringArmComponent->SetupAttachment(RootComponent);
 
-	//Camera¸¦ Arm¿¡ ºÙ¿©ÁØ´Ù.
+	//Cameraë¥¼ Armì— ë¶™ì—¬ì¤€ë‹¤.
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -84,6 +84,11 @@ bool ABasePlayerCharacter::IsPressedLeftMouse() const
 bool ABasePlayerCharacter::IsPressedRightMouse() const
 {
 	return bIsPressedRightMouse;
+}
+
+bool ABasePlayerCharacter::IsPressedInteractive() const
+{
+	return bIsPressedInteractive;
 }
 
 void ABasePlayerCharacter::InputMoveForward(float InputAxis)
@@ -203,4 +208,14 @@ void ABasePlayerCharacter::InputPressedMouseRightClick()
 void ABasePlayerCharacter::InputReleasedMouseRightClick()
 {
 	bIsPressedRightMouse = false;
+}
+
+void ABasePlayerCharacter::InputPressedInteractive()
+{
+	bIsPressedInteractive = true;
+}
+
+void ABasePlayerCharacter::InputReleasedInteractive()
+{
+	bIsPressedInteractive = false;
 }

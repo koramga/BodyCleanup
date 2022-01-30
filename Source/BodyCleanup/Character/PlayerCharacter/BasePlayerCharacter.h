@@ -37,6 +37,7 @@ protected :
 
 	bool						bIsPressedLeftMouse = false;
 	bool						bIsPressedRightMouse = false;
+	bool						bIsPressedInteractive = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,6 +50,7 @@ public:
 public :
 	bool	IsPressedLeftMouse() const;
 	bool	IsPressedRightMouse() const;
+	bool	IsPressedInteractive() const;
 
 public :
 	virtual void InputMoveForward(float InputAxis);
@@ -60,4 +62,6 @@ public :
 	virtual void InputReleasedMouseLeftClick();
 	virtual void InputPressedMouseRightClick();
 	virtual void InputReleasedMouseRightClick();
+	virtual void InputPressedInteractive();
+	virtual void InputReleasedInteractive();
 };

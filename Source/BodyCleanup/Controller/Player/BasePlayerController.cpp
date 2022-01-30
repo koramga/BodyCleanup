@@ -30,6 +30,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAxis("InputMouseWheel", this, &ABasePlayerController::__InputMouseWheel);
 	InputComponent->BindAxis("InputMoveForward", this, &ABasePlayerController::__InputMoveForward);
 	InputComponent->BindAxis("InputMoveRight", this, &ABasePlayerController::__InputMoveRight);
+	InputComponent->BindAction("InputInteractive", IE_Pressed, this, &ABasePlayerController::__InputPressedInteractive);
+	InputComponent->BindAction("InputInteractive", IE_Released, this, &ABasePlayerController::__InputReleasedInteractive);
 
 }
 
@@ -138,6 +140,26 @@ void ABasePlayerController::__InputReleasedJump()
 	if (IsValid(PlayerCharacter))
 	{
 		PlayerCharacter->InputStopJumping();
+	}
+}
+
+void ABasePlayerController::__InputPressedInteractive()
+{
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		PlayerCharacter->InputPressedInteractive();
+	}
+}
+
+void ABasePlayerController::__InputReleasedInteractive()
+{
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		PlayerCharacter->InputReleasedInteractive();
 	}
 }
 
