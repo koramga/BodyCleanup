@@ -24,10 +24,11 @@ ABaseCharacter::ABaseCharacter()
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
+	//Super::BeginPlay를 호출하면 Actor의 Component의 BeginPlay가 진행이 된다. Component에서 호출해야할 특정 Object들은 Super::BeginPlay이전에 생성해야 한다.
+	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
+	
 	Super::BeginPlay();
 
-	//Component보다 Actor가 BeginPlay를 더 먼저 호출한다. 그래서 이렇게 해도 된다.
-	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
 	
 	BaseAnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
@@ -133,6 +134,11 @@ void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimatio
 {
 }
 
+void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
+{
+	
+}
+
 void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 {
 	if (false == bIsEnable)
@@ -182,6 +188,14 @@ void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& Attri
 	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
 	
 	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
+
+	TArray<FGameplayAttribute> Attributes;
+	BaseAttribute->GetAttributes(Attributes);
+
+	for(const FGameplayAttribute& Attribute : Attributes)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseCharacter::__OnGASAttributeChanged);
+	}
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const

@@ -20,5 +20,7 @@ UCLASS()
 class BODYCLEANUP_API UBaseAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-	
+
+public :
+	virtual void GetAttributes(TArray<FGameplayAttribute>& Attributes);
 };

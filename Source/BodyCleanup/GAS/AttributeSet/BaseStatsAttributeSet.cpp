@@ -14,3 +14,9 @@ void UBaseStatsAttributeSet::PostInitProperties()
 	MaxHealth.SetBaseValue(__MaxHealth__);
 	MaxHealth.SetCurrentValue(__MaxHealth__);
 }
+
+void UBaseStatsAttributeSet::GetAttributes(TArray<FGameplayAttribute>& Attributes)
+{
+	Attributes.Add(GetHealthAttribute());
+	Attributes.Add(GetMaxHealthAttribute());
+}

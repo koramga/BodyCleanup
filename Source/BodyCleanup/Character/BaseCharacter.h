@@ -8,6 +8,7 @@
 #include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
 #include "AbilitySystemInterface.h"
 #include "../GAS/Interface/Actor/GASActorInterface.h"
+#include "BodyCleanup/GAS/Ability/BaseGameplayAbility.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
@@ -51,6 +52,9 @@ public:
 
 public :
 	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
+
+private :
+	void __OnGASAttributeChanged(const FOnAttributeChangeData& Data);
 
 public :
 	void SetEnableCapsuleCollision(bool bIsEnable);

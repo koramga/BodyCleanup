@@ -34,4 +34,7 @@ protected :
 public :
     ATTRIBUTE_ACCESSORS(UBaseStatsAttributeSet, Health);
     ATTRIBUTE_ACCESSORS(UBaseStatsAttributeSet, MaxHealth)
+
+public :
+    virtual void GetAttributes(TArray<FGameplayAttribute>& Attributes) override;
 };

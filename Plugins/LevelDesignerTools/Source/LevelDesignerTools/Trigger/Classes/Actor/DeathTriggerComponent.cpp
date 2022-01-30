@@ -17,7 +17,7 @@ void UDeathTriggerComponent::BeginPlay()
 
 	AActor* Owner = GetOwner();
 
-	if (Owner->GetClass()->ImplementsInterface(ULevelTriggerActorAssist::StaticClass()))
+	if (Owner->GetClass()->ImplementsInterface(ULevelToolsActorInterface::StaticClass()))
 	{
 		ILevelToolsActorInterface* LevelToolsActor = Cast<ILevelToolsActorInterface>(Owner);
 
@@ -27,7 +27,7 @@ void UDeathTriggerComponent::BeginPlay()
 
 			if (IsValid(LevelTriggerActorAssist))
 			{
-				LevelTriggerActorAssist->RegisterTrigger(this);
+				LevelTriggerActorAssist->RegisterTrigger(this); 
 			}
 		}
 	}

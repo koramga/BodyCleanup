@@ -20,10 +20,10 @@ ABaseActor::ABaseActor()
 // Called when the game starts or when spawned
 void ABaseActor::BeginPlay()
 {
-	Super::BeginPlay();
-
-	//Component보다 Actor가 BeginPlay를 더 먼저 호출한다. 그래서 이렇게 해도 된다.
+	//Super::BeginPlay를 호출하면 Actor의 Component의 BeginPlay가 진행이 된다. Component에서 호출해야할 특정 Object들은 Super::BeginPlay이전에 생성해야 한다.
 	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
+	
+	Super::BeginPlay();
 }
 
 void ABaseActor::PostInitializeComponents()
@@ -78,7 +78,25 @@ void ABaseActor::__SetCollisionProfileNames(USceneComponent* SceneComponent, con
 
 void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
+	TArray<FGameplayAttribute> Attributes;
+	
+	AbilitySystemComponent->GetAllAttributes(Attributes);
+
+	for(FGameplayAttribute& Attribute : Attributes)
+	{
+		if(Data.Attribute == Attribute)
+		{
+			if(TEXT("Health") == Attribute.AttributeName)
+			{
+				if(Data.NewValue <= 0.f)
+				{
+					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+				}
+				 
+				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
+			}
+		}
+	}
 }
 
 void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
@@ -121,15 +139,12 @@ void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& Attribute
 	
 	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
 
-	if(BaseAttribute->IsA(UBaseStatsAttributeSet::StaticClass()))
+	TArray<FGameplayAttribute> Attributes;
+	BaseAttribute->GetAttributes(Attributes);
+
+	for(const FGameplayAttribute& Attribute : Attributes)
 	{
-		UBaseStatsAttributeSet* BaseStatsAttributeSet = Cast<UBaseStatsAttributeSet>(BaseAttribute);
- 
-		if(IsValid(BaseStatsAttributeSet))
-		{
-			UE_LOG(LogTemp, Display, TEXT("koramga AttributeCallbackEnabled"));
-			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseStatsAttributeSet->GetHealthAttribute()).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
-		}
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
 	}
 }
 

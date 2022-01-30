@@ -3,3 +3,6 @@
 
 #include "BaseAttributeSet.h"
 
+void UBaseAttributeSet::GetAttributes(TArray<FGameplayAttribute>& Attributes)
+{
+}

@@ -42,7 +42,6 @@ public:
 private :
 	void __SetEnabledCollisions(USceneComponent* SceneComponent, ECollisionEnabled::Type CollisionEnabledType);
 	void __SetCollisionProfileNames(USceneComponent* SceneComponent, const FName& ProfileName);
-
 	void __OnGASAttributeChanged(const FOnAttributeChangeData& Data);
 
 public :
