@@ -20,6 +20,7 @@ public :
 	UInteractiveTriggerComponent();
 
 protected :
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	uint8 InteractiveType;
 
 protected:

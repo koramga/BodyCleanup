@@ -2,10 +2,8 @@
 
 
 #include "VacuumEntranceComponent.h"
-
-#include <ThirdParty/PhysX3/PxShared/src/foundation/include/PsHash.h>
-
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 
 UVacuumEntranceComponent::UVacuumEntranceComponent()
 {
@@ -15,7 +13,21 @@ void UVacuumEntranceComponent::__GrabActor()
 {
 	if (HoldingActor.IsValid())
 	{
-		UPrimitiveComponent* HoldingPrimitiveComponent = Cast<UPrimitiveComponent>(HoldingActor->GetComponentByClass(UPrimitiveComponent::StaticClass()));
+		UPrimitiveComponent* HoldingPrimitiveComponent = nullptr;
+		//UPrimitiveComponent* HoldingPrimitiveComponent = Cast<UPrimitiveComponent>(HoldingActor->GetRootComponent());
+
+		TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
+
+		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, HoldingActor.Get());
+
+		for(const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
+		{
+			if(PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass()))
+			{
+				HoldingPrimitiveComponent = PrimitiveComponent.Get();
+				break;
+			}
+		}
 
 		if (IsValid(HoldingPrimitiveComponent)
 			&& GrabConstraintComponent.IsValid()

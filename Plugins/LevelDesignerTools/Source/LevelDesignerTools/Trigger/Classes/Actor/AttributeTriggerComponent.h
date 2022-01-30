@@ -24,9 +24,16 @@ struct FLevelAttributeTriggerAction
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelAttributeTriggerActionType	ActionType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32								TriggerIndex;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool								bIsTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName>						Names;
 };
 
@@ -39,7 +46,7 @@ public:
 	UAttributeTriggerComponent();
 
 protected :
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AttributeTriggerComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|AttributeTriggerComponent")
 	TArray<FLevelAttributeTriggerAction>	LevelAttributeTriggerActions;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -20,33 +20,33 @@ public :
 
 protected :
 	//Sucking의 속도를 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	float					SuckingPower = 500.f;
 
 	//흡수되는 정크의 양을 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	int32					JunkValue = 1;
 
 	//HoldShooting시 힘을 정의합니다. 높으면 높을수록 강하게 던져집니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
 	float					HoldShootingPower = 2000.f;
 
 	//Trigger를 수행할 InteractiveSuckingType을 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	TArray<EInteractiveSuckingType>	TriggerInteractiveSuckingTypes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
 	TSubclassOf<class UBaseGameplayAbility>		BaseGameplayAbilityClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
 	TSubclassOf<class UBaseGameplayEffect>		BaseGameplayEffectClass;
 
 	//Tag 유무를 선택합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	bool							bIsTag;
 
 	//영향을 받을 Component의 이름을 입력합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveObjectComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	TArray<FName>					Names;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

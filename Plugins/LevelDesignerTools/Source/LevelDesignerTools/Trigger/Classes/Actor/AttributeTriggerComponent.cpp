@@ -32,7 +32,13 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 
 				if(IsValid(SceneComponent))
 				{
-					SceneComponent->SetHiddenInGame(true);
+					SceneComponent->SetHiddenInGame(false);
+
+					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+					{
+						Cast<UPrimitiveComponent>(SceneComponent)->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+					}
+					
 					//SceneComponent->SetVisibility(true, true);
 				}
 			}
@@ -42,7 +48,13 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 
 				if(IsValid(SceneComponent))
 				{
-					SceneComponent->SetHiddenInGame(false);
+					SceneComponent->SetHiddenInGame(true);
+
+					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+					{
+						Cast<UPrimitiveComponent>(SceneComponent)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+					}
+					
 					//SceneComponent->SetVisibility(false, true);
 				}				
 			}
