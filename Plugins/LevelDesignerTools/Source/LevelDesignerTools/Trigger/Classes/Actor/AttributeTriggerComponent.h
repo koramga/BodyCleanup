@@ -42,9 +42,15 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AttributeTriggerComponent")
 	TArray<FLevelAttributeTriggerAction>	LevelAttributeTriggerActions;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32	MaxTriggerIndex = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32	CurrentTriggerIndex = 0;
+
+protected :
+	virtual void ExecuteTriggerAction(const FLevelAttributeTriggerAction& ExecuteAction);
 	
-
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
