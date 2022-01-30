@@ -13,7 +13,8 @@
 				"AIModule",
 				"CoreUObject",
 				"GameplayAbilities",
-				"LevelDesignerTools"
+				"LevelDesignerTools",
+				"UMG"
 			]
 		}
 	],
