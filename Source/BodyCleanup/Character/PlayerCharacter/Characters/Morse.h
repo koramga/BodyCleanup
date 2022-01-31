@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../BasePlayerCharacter.h"
+#include "MetaTools/Static/InputProperties.h"
 #include "Morse.generated.h"
 
 #define NEW_SUCKING_CODE
@@ -24,6 +25,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor>		ArcShootingSpawnActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FPropertyName			ArcShootingSpawnPhysicsComponents;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					CreateArcShootingSpawnActorOffset = 150.f;

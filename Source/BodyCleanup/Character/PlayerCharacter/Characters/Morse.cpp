@@ -243,8 +243,22 @@ void AMorse::InputReleasedMouseRightClick()
 			}
 
 			TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
-
-			ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, SpawnActor);
+			
+			if(ArcShootingSpawnPhysicsComponents.Names.Num() == 0)
+			{
+				ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, SpawnActor);				
+			}
+			else
+			{
+				if(ArcShootingSpawnPhysicsComponents.bIsTag)
+				{
+					ULevelSupportFunctionLibrary::FindPrimitiveComponentsByTags(PrimitiveComponents, SpawnActor, ArcShootingSpawnPhysicsComponents.Names);
+				}
+				else
+				{
+					ULevelSupportFunctionLibrary::FindPrimitiveComponentsByNames(PrimitiveComponents, SpawnActor, ArcShootingSpawnPhysicsComponents.Names);
+				}
+			}		
 
 			for (const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 			{

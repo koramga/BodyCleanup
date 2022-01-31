@@ -8,7 +8,7 @@ public class BodyCleanup : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "ApexDestruction", "LevelDesignerTools", "GameplayAbilities", "GameplayTasks", "GameplayTags" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "ApexDestruction", "LevelDesignerTools", "MetaTools", "GameplayAbilities", "GameplayTasks", "GameplayTags" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
