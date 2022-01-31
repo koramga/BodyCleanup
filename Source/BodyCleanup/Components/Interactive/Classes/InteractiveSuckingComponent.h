@@ -23,23 +23,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	float					SuckingPower = 500.f;
 
-	//흡수되는 정크의 양을 정의합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
-	int32					JunkValue = 1;
-
-	//HoldShooting시 힘을 정의합니다. 높으면 높을수록 강하게 던져집니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
-	float					HoldShootingPower = 2000.f;
-
 	//Trigger를 수행할 InteractiveSuckingType을 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	TArray<EInteractiveSuckingType>	TriggerInteractiveSuckingTypes;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
-	TSubclassOf<class UBaseGameplayAbility>		BaseGameplayAbilityClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "JunkValue <= 0", EditConditionHides))
-	TSubclassOf<class UBaseGameplayEffect>		BaseGameplayEffectClass;
 
 	//Tag 유무를 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
@@ -48,6 +34,21 @@ protected :
 	//영향을 받을 Component의 이름을 입력합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
 	TArray<FName>					Names;
+
+	//Sucking시 Holding이 되는지 유무입니다. True이면 Holding, False이면 삭제됩니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent")
+	bool					bCanHolding = true;
+
+	//흡수되는 정크의 양을 정의합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "!bCanHolding", EditConditionHides))
+	int32					JunkValue = 1;
+
+	//HoldShooting시 힘을 정의합니다. 높으면 높을수록 강하게 던져집니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "bCanHolding", EditConditionHides))
+	float					HoldShootingPower = 2000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "bCanHolding", EditConditionHides))
+	TSubclassOf<class UBaseGameplayEffect>		BaseGameplayEffectClass;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<TSoftObjectPtr<UPrimitiveComponent>>	PrimitiveComponents;

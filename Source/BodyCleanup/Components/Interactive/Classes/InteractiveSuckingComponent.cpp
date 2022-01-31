@@ -11,23 +11,12 @@
 
 UInteractiveSuckingComponent::UInteractiveSuckingComponent()
 {
-
+	
 }
 
 void UInteractiveSuckingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if(IsValid(BaseGameplayAbilityClass))
-	{
-		AActor* Actor = GetOwner();
-
-		if(Actor->GetClass()->ImplementsInterface(UGASActorInterface::StaticClass()))
-		{
-			HoldShootingAbilitySpec = FGameplayAbilitySpec(BaseGameplayAbilityClass, 0, 0); 
-			Cast<IGASActorInterface>(Actor)->AddAbility(HoldShootingAbilitySpec);	
-		}
-	}
 
 	if(IsValid(BaseGameplayEffectClass))
 	{
@@ -238,12 +227,7 @@ bool UInteractiveSuckingComponent::SetNone(USceneComponent* SceneComponent)
 
 bool UInteractiveSuckingComponent::IsJunk() const
 {
-	if(JunkValue <= 0)
-	{
-		return false;
-	}
-
-	return true;
+	return !bCanHolding;
 }
 
 int32 UInteractiveSuckingComponent::GetJunkValue() const
