@@ -32,7 +32,8 @@ void UBaseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 		BaseCharacter->UpdateAnimationType(InputAnimationType, AnimationType);
 	}
 
-	AnimationType = InputAnimationType;
+	//ë³€ê²½ì— ëŒ€í•´ì„œ ì˜ˆê³ í•˜ê³ 
+	UpdateAnimationType(InputAnimationType, AnimationType);
 }
 
 void UBaseAnimInstance::UpdateLeftAnimation(EAnimationType InputAnimationType)
@@ -41,6 +42,11 @@ void UBaseAnimInstance::UpdateLeftAnimation(EAnimationType InputAnimationType)
 
 void UBaseAnimInstance::UpdateCompleteAnimation(EAnimationType InputAnimationType)
 {
+}
+
+void UBaseAnimInstance::UpdateAnimationType(EAnimationType NextAnimationType, EAnimationType BeforeAnimationType)
+{
+	AnimationType = NextAnimationType;
 }
 
 void UBaseAnimInstance::EnterAnimationType(EAnimationType InputAnimationType)
@@ -54,7 +60,7 @@ void UBaseAnimInstance::LeftAnimationType(EAnimationType InputAnimationType)
 {
 	if (DesiredAnimationType == InputAnimationType)
 	{
-		//°°Àº ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ¼ÒÀ¯ÇÏ°í ÀÖ´Ù¸é Idle·Î º¯°æÇØ¹ö¸°´Ù.
+		//ê°™ì€ ì• ë‹ˆë©”ì´ì…˜ì„ ì†Œìœ í•˜ê³  ìˆë‹¤ë©´ Idleë¡œ ë³€ê²½í•´ë²„ë¦°ë‹¤.
 		DesiredAnimationType = EAnimationType::Idle;
 	}
 

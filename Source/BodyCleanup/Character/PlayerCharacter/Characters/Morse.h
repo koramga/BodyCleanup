@@ -68,6 +68,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TSoftObjectPtr<class UVacuumEntranceComponent>	VacuumEntranceComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	TSoftObjectPtr<class UMorseAnimInstance>		MorseAnimInstance;
+
 
 protected :
 	FVector					ArcShootingVelocity;

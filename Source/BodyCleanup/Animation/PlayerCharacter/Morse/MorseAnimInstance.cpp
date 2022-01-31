@@ -6,12 +6,6 @@
 void UMorseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 {
 	Super::UpdateEnterAnimation(InputAnimationType);
-
-	if (EAnimationType::Shot == InputAnimationType
-		|| EAnimationType::Vacuum == InputAnimationType)
-	{
-		bIsShot = false;
-	}
 }
 
 void UMorseAnimInstance::UpdateLeftAnimation(EAnimationType InputAnimationType)
@@ -24,7 +18,23 @@ void UMorseAnimInstance::UpdateCompleteAnimation(EAnimationType InputAnimationTy
 	Super::UpdateCompleteAnimation(InputAnimationType);
 }
 
+void UMorseAnimInstance::UpdateAnimationType(EAnimationType NextAnimationType, EAnimationType BeforeAnimationType)
+{
+	Super::UpdateAnimationType(NextAnimationType, BeforeAnimationType);
+
+	if(EAnimationType::Shot == BeforeAnimationType
+		|| EAnimationType::Vacuum == BeforeAnimationType)
+	{
+		bIsShot = false;
+	}
+}
+
 void UMorseAnimInstance::SetShot()
 {
 	bIsShot = true;
+}
+
+bool UMorseAnimInstance::IsShot() const
+{
+	return bIsShot;
 }

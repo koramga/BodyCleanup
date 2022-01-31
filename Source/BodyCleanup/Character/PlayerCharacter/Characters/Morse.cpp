@@ -27,6 +27,8 @@ void AMorse::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
+
 	TArray<UActorComponent*> Ranges = GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("VaccumRange"));
 
 	for (UActorComponent* ActorComponent : Ranges)
@@ -107,11 +109,27 @@ void AMorse::Tick(float DeltaTime)
 
 void AMorse::InputMoveForward(float InputAxis)
 {
+	if(MorseAnimInstance.IsValid())
+	{
+		if(MorseAnimInstance->IsShot())
+		{
+			return;
+		}
+	}
+	
 	Super::InputMoveForward(InputAxis);
 }
 
 void AMorse::InputMoveRight(float InputAxis)
 {
+	if(MorseAnimInstance.IsValid())
+	{
+		if(MorseAnimInstance->IsShot())
+		{
+			return;
+		}
+	}
+	
 	Super::InputMoveRight(InputAxis);
 }
 
@@ -183,10 +201,8 @@ void AMorse::InputPressedMouseRightClick()
 						{
 							VacuumEntranceComponent->SetHoldingActor(nullptr);
 							VacuumEntranceComponent->SetSucking(false);
-							
-							UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
 
-							if (IsValid(MorseAnimInstance))
+							if (MorseAnimInstance.IsValid())
 							{
 								MorseAnimInstance->SetShot();
 							}							
@@ -200,7 +216,7 @@ void AMorse::InputPressedMouseRightClick()
 				__SetInteractiveAction(HoldingActor.Get(), EInteractiveAction::HoldShooting);
 				UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
 
-				if (IsValid(MorseAnimInstance))
+				if (MorseAnimInstance.isv)
 				{
 					MorseAnimInstance->SetShot();
 				}
@@ -235,9 +251,7 @@ void AMorse::InputReleasedMouseRightClick()
 				GameModeBase->SetupTriggerAfterSpawn(SpawnActor);
 			}
 
-			UMorseAnimInstance* MorseAnimInstance = Cast<UMorseAnimInstance>(PlayerCharacterAnimInstance);
-
-			if (IsValid(MorseAnimInstance))
+			if (MorseAnimInstance.IsValid())
 			{
 				MorseAnimInstance->SetShot();
 			}

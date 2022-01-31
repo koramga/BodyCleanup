@@ -21,8 +21,10 @@ protected:
 	virtual void UpdateEnterAnimation(EAnimationType InputAnimationType);
 	virtual void UpdateLeftAnimation(EAnimationType InputAnimationType);
 	virtual void UpdateCompleteAnimation(EAnimationType InputAnimationType);
+	virtual void UpdateAnimationType(EAnimationType NextAnimationType, EAnimationType BeforeAnimationType) override;
 
 public :
 	void SetShot();
+	bool IsShot() const;
 
 };
