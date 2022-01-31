@@ -36,10 +36,8 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 
 					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
 					{
-						Cast<UPrimitiveComponent>(SceneComponent)->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+						Cast<UPrimitiveComponent>(SceneComponent)->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);	
 					}
-					
-					//SceneComponent->SetVisibility(true, true);
 				}
 			}
 			else if(ELevelAttributeTriggerActionType::InVisible == ExecuteAction.ActionType)
@@ -52,10 +50,10 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 
 					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
 					{
+						//ECollisionEnabled가 None이 되면 (Invisible상태가 되면) SimulationPhysics가 False여야 Warning이 안뜨는데 문제는 내가 수정했다면, 다시 복귀시킬 때도 복구가 되어야 하는데..
+						Cast<UPrimitiveComponent>(SceneComponent)->SetSimulatePhysics(false);
 						Cast<UPrimitiveComponent>(SceneComponent)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 					}
-					
-					//SceneComponent->SetVisibility(false, true);
 				}				
 			}
 		}
