@@ -12,6 +12,8 @@
  * 
  */
 
+DECLARE_DELEGATE(SelectScreenScriptTimeOver);
+
 USTRUCT(BlueprintType, Blueprintable)
 struct FScreenSelectScript
 {
@@ -47,6 +49,8 @@ protected:
 	UPROPERTY()
 	UProgressBar*				LimitProgressBar;
 	
+	SelectScreenScriptTimeOver	CallbackSelectScreenScriptTimeOver;
+	
 	float						LimitTime = 0.f;
 	float						CurrentTime;
 	int32						SelectCount = 0;
@@ -65,4 +69,11 @@ public :
 	int32 GetSelectIndex() const;
 	void UpSelect();
 	void DownSelect();
+
+public :
+	template <typename T>
+	void SetCallbackSelectScreenScriptTimeOver(T* pObj, void (T::* pFunc)())
+	{
+		CallbackSelectScreenScriptTimeOver.BindUObject(pObj, pFunc);
+	}
 };

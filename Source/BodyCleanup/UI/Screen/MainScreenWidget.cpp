@@ -58,6 +58,7 @@ void UMainScreenWidget::NativeConstruct()
 		}
 
 		SetScreenSelectScriptBottom(true);
+		ScreenSelectScriptUserWidget->SetCallbackSelectScreenScriptTimeOver(this, &UMainScreenWidget::__CallbackTimeOverSelectScreenScript);
 	}
 }
 
@@ -69,6 +70,14 @@ void UMainScreenWidget::NativeDestruct()
 void UMainScreenWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
+}
+
+void UMainScreenWidget::__CallbackTimeOverSelectScreenScript()
+{
+	if(false == ScreenSelectScriptUserWidget->IsHiddenInGame())
+	{
+		SetHiddenInGameScreenSelectScript(true);
+	}
 }
 
 void UMainScreenWidget::InputUp()

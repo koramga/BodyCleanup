@@ -53,15 +53,24 @@ void UScreenSelectScriptUserWidget::NativeTick(const FGeometry& MyGeometry, floa
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if(LimitTime > 0.f)
+	if(false == IsHiddenInGame())
 	{
-		CurrentTime += InDeltaTime;
-
-		if(IsValid(LimitProgressBar))
+		if(LimitTime > 0.f
+			&& CurrentTime < LimitTime)
 		{
-			LimitProgressBar->SetPercent(CurrentTime / LimitTime);
+			CurrentTime += InDeltaTime;
+
+			if(IsValid(LimitProgressBar))
+			{
+				LimitProgressBar->SetPercent(CurrentTime / LimitTime);
+			}
+
+			if(CurrentTime >= LimitTime)
+			{
+				CallbackSelectScreenScriptTimeOver.Execute();
+			}
 		}
-	}	
+	}
 }
 
 void UScreenSelectScriptUserWidget::SetText(float InLimitTime, const TArray<FString>& Texts)

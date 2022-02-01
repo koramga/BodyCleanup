@@ -33,6 +33,9 @@ protected:
 	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
+private :
+	void __CallbackTimeOverSelectScreenScript();
+
 public :
 	virtual void InputUp() override;
 	virtual void InputDown() override;
