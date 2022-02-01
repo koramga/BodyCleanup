@@ -7,6 +7,7 @@
 
 ABaseAIController::ABaseAIController()
 {
+	TeamType = ETeamType::None;
 }
 
 void ABaseAIController::BeginPlay()
@@ -47,4 +48,9 @@ void ABaseAIController::OnUnPossess()
 void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+ETeamType ABaseAIController::GetTeamType() const
+{
+	return TeamType;
 }

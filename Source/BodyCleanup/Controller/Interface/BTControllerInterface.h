@@ -2,13 +2,21 @@
 
 #pragma once
 
-#include "../../ExDefines.h"
+#include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "LevelActionInterface.generated.h"
+#include "BTControllerInterface.generated.h"
+
+UENUM(BlueprintType)
+enum class ETeamType : uint8
+{
+	None,
+	Player,
+	Enemy,
+};
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class ULevelActionInterface : public UInterface
+class UBTControllerInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,11 +24,11 @@ class ULevelActionInterface : public UInterface
 /**
  * 
  */
-class BODYCLEANUP_API ILevelActionInterface
+class BODYCLEANUP_API IBTControllerInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void OnTrigger(bool bIsOnTrigger) = 0;
+	virtual ETeamType GetTeamType() const  = 0;
 };

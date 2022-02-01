@@ -4,13 +4,14 @@
 
 #include "../../ExDefines.h"
 #include "AIController.h"
+#include "../Interface/BTControllerInterface.h"
 #include "BaseAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABaseAIController : public AAIController
+class BODYCLEANUP_API ABaseAIController : public AAIController, public IBTControllerInterface
 {
 	GENERATED_BODY()
 	
@@ -23,6 +24,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|BaseAIController")
 	class UBlackboardData*					BlackboardData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|BaseAIController")
+	ETeamType								TeamType;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -31,4 +35,7 @@ protected:
 
 public :
 	virtual void Tick(float DeltaTime) override;
+
+public :
+	virtual ETeamType GetTeamType() const override;
 };

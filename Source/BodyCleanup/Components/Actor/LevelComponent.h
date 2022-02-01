@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../ExDefines.h"
+#include "../../ExDefines.h"
 #include "Components/ActorComponent.h"
 #include "LevelComponent.generated.h"
 

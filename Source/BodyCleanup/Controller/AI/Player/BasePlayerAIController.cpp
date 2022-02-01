@@ -5,6 +5,7 @@
 
 ABasePlayerAIController::ABasePlayerAIController()
 {
+	TeamType = ETeamType::Player;
 }
 
 void ABasePlayerAIController::BeginPlay()

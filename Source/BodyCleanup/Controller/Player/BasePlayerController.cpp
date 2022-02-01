@@ -342,6 +342,11 @@ bool ABasePlayerController::IsFocusOnCharacter() const
 	return bIsFocusOnCharacter;
 }
 
+ETeamType ABasePlayerController::GetTeamType() const
+{
+	return ETeamType::Player;
+}
+
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
