@@ -18,9 +18,6 @@ void AMainGameModeBase::BeginPlay()
 	if(IsValid(BaseScreenWidget))
 	{
 		MainScreenWidget = Cast<UMainScreenWidget>(BaseScreenWidget);
-		//MainScreenWidget->SetScreenScriptText("koramga", "Test Text");
-		//MainScreenWidget->SetHiddenInGameScreenScript(false);
-
 	}
 }
 

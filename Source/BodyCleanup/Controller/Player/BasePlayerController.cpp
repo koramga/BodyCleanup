@@ -210,33 +210,53 @@ void ABasePlayerController::__InputReleasedInteractive()
 
 void ABasePlayerController::__InputPressedUITestKey()
 {
-	AMainGameModeBase* MainGameMode = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+	float Range = FMath::RandRange(0.f, 10.f);
 
-	if(IsValid(MainGameMode))
+	if(Range < 5.f)
 	{
-		TSoftObjectPtr<UMainScreenWidget> MainScreenWidget = MainGameMode->GetMainScreenWidget();
-
-		if(MainScreenWidget.IsValid())
+		AMainGameModeBase* MainGameMode = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+	
+		if(IsValid(MainGameMode))
 		{
-			TArray<FString> SelectTexts;
-			SelectTexts.Add(TEXT("첫 번째 선택 조항"));
-			SelectTexts.Add(TEXT("두 번째 선택 조항"));
-			SelectTexts.Add(TEXT("세 번째 선택 조항"));
-			SelectTexts.Add(TEXT("네 번째 선택 조항"));
-			SelectTexts.Add(TEXT("다섯 번째 선택 조항"));
-			SelectTexts.Add(TEXT("여섯 번째 선택 조항"));
-		
-			MainScreenWidget->SetScreenSelectScriptTexts(FMath::RandRange(1.f, 10.f), SelectTexts);
-			MainScreenWidget->SetHiddenInGameScreenSelectScript(false);
-		
-			ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>( UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			TSoftObjectPtr<UMainScreenWidget> MainScreenWidget = MainGameMode->GetMainScreenWidget();
 
-			if(IsValid(BasePlayerController))
+			if(MainScreenWidget.IsValid())
 			{
-				BasePlayerController->SetFocusOnCharacter(false);
+				MainScreenWidget->SetScreenScriptText("koramga", "Test Text");
+				MainScreenWidget->SetHiddenInGameScreenScript(false);
 			}
 		}
 	}
+	else
+	{
+		AMainGameModeBase* MainGameMode = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+	
+		if(IsValid(MainGameMode))
+		{
+			TSoftObjectPtr<UMainScreenWidget> MainScreenWidget = MainGameMode->GetMainScreenWidget();
+
+			if(MainScreenWidget.IsValid())
+			{
+				TArray<FString> SelectTexts;
+				SelectTexts.Add(TEXT("첫 번째 선택 조항"));
+				SelectTexts.Add(TEXT("두 번째 선택 조항"));
+				SelectTexts.Add(TEXT("세 번째 선택 조항"));
+				SelectTexts.Add(TEXT("네 번째 선택 조항"));
+				SelectTexts.Add(TEXT("다섯 번째 선택 조항"));
+				SelectTexts.Add(TEXT("여섯 번째 선택 조항"));
+		
+				MainScreenWidget->SetScreenSelectScriptTexts(FMath::RandRange(1.f, 10.f), SelectTexts);
+				MainScreenWidget->SetHiddenInGameScreenSelectScript(false);
+		
+				ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>( UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+				if(IsValid(BasePlayerController))
+				{
+					BasePlayerController->SetFocusOnCharacter(false);
+				}
+			}
+		}		
+	}	
 }
 
 void ABasePlayerController::__InputPressedUIUp()
