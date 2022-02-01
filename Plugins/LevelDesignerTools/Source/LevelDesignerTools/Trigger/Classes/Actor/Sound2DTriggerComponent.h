@@ -21,8 +21,14 @@ public :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|Sound2DTriggerComponent")
 	USoundWave*		SoundWave;
 
-	UPROPERTY(VisibleAnywhere, Category = "Debug|Sound2DTriggerComponent")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Sound2DTriggerComponent")
 	UAudioComponent*	AudioComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|Sound2DTriggerComponent")
+	float			FadeInTime = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|Sound2DTriggerComponent")
+	float			FadeOutTime = 1.f;
 
 protected:
 	// Called when the game starts

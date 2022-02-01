@@ -33,12 +33,20 @@ void USound2DTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inp
 		}
 		
 		AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave);
+
+		if(FadeInTime > 0.f)
+		{
+			AudioComponent->FadeIn(FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);	
+		}		
 	}
 	else
 	{
 		if(IsValid(AudioComponent))
 		{
-			AudioComponent->Stop();
+			if(FadeOutTime > 0.f)
+			{
+				AudioComponent->FadeOut(FadeOutTime, 0.f, EAudioFaderCurve::Linear);	
+			}			
 		}
 	}
 }
