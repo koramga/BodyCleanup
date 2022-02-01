@@ -2,6 +2,7 @@
 
 
 #include "BaseGameModeBase.h"
+#include "../../UI/Screen/BaseScreenWidget.h"
 
 ABaseGameModeBase::ABaseGameModeBase()
 {
@@ -20,6 +21,15 @@ void ABaseGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	//UE_LOG(LogTemp, Display, TEXT("Koramga BeginPlay"));
+
+	if(IsValid(BaseScreenWidgetClass))
+	{
+		BaseScreenWidget = 	CreateWidget<UBaseScreenWidget>(GetWorld(), BaseScreenWidgetClass);
+		
+		if (BaseScreenWidget)
+			BaseScreenWidget->AddToViewport();
+	}
+	
 	InitTrigger();
 }
 

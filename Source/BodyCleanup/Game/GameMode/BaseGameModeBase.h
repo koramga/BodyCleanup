@@ -20,6 +20,11 @@ protected :
 	UPROPERTY()
 	ULevelTriggerManager* LevelTriggerManager;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class UBaseScreenWidget>	BaseScreenWidgetClass;
+
+	class UBaseScreenWidget*	BaseScreenWidget;
+
 public :
 	ABaseGameModeBase();
 
