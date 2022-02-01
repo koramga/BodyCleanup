@@ -3,6 +3,8 @@
 
 #include "MainGameModeBase.h"
 #include "../../UI/Screen/MainScreenWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "../../Controller/Player/BasePlayerController.h"
 
 void AMainGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
@@ -18,5 +20,11 @@ void AMainGameModeBase::BeginPlay()
 		MainScreenWidget = Cast<UMainScreenWidget>(BaseScreenWidget);
 		//MainScreenWidget->SetScreenScriptText("koramga", "Test Text");
 		//MainScreenWidget->SetHiddenInGameScreenScript(false);
+
 	}
+}
+
+TSoftObjectPtr<UMainScreenWidget> AMainGameModeBase::GetMainScreenWidget() const
+{
+	return Cast<UMainScreenWidget>(MainScreenWidget);
 }

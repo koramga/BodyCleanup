@@ -15,6 +15,8 @@ void UScreenSelectScriptUserWidget::NativePreConstruct()
 
 	int Index = 1;
 
+	ScreenSelectScripts.Empty();
+
 	while(true)
 	{
 		FString BorderText = FString::Printf(TEXT("Border%d"), Index);
@@ -64,6 +66,7 @@ void UScreenSelectScriptUserWidget::NativeTick(const FGeometry& MyGeometry, floa
 
 void UScreenSelectScriptUserWidget::SetText(float InLimitTime, const TArray<FString>& Texts)
 {
+	CurrentTime = 0.f;
 	LimitTime = InLimitTime;
 	
 	UVerticalBoxSlot* ProgressBarVerticalBoxSlot = Cast<UVerticalBoxSlot>(LimitProgressBar);
@@ -112,7 +115,7 @@ void UScreenSelectScriptUserWidget::SetText(float InLimitTime, const TArray<FStr
 		}
 	}
 
-	for(int i = Count; Count < MaxCount; ++i)
+	for(int i = Count; i < MaxCount; ++i)
 	{
 		ScreenSelectScripts[i].TextBlock->SetText(FText::FromString(""));
 		ScreenSelectScripts[i].Border->SetBrushColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
@@ -145,5 +148,26 @@ void UScreenSelectScriptUserWidget::SetSelectIndex(int Index)
 		SelectIndex = Index;
 
 		ScreenSelectScripts[SelectIndex].Border->SetBrushColor(FLinearColor(1.f, 1.f, 1.f, 1.f));		
+	}
+}
+
+int32 UScreenSelectScriptUserWidget::GetSelectIndex() const
+{
+	return SelectIndex;
+}
+
+void UScreenSelectScriptUserWidget::UpSelect()
+{
+	if(SelectIndex - 1 >= 0)
+	{
+		SetSelectIndex(SelectIndex - 1);
+	}
+}
+
+void UScreenSelectScriptUserWidget::DownSelect()
+{
+	if(SelectIndex + 1 < SelectCount)
+	{
+		SetSelectIndex(SelectIndex + 1);
 	}
 }

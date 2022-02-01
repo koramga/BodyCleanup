@@ -17,6 +17,9 @@ class BODYCLEANUP_API ABasePlayerController : public APlayerController
 public :
 	ABasePlayerController();
 
+protected:
+	bool	bIsFocusOnCharacter = true;
+
 
 protected :
 	// Begin PlayerController interface
@@ -44,4 +47,12 @@ private :
 	void __InputReleasedJump();
 	void __InputPressedInteractive();
 	void __InputReleasedInteractive();
+	void __InputPressedUITestKey();
+	void __InputPressedUIUp();
+	void __InputPressedUIDown();
+	void __InputPressedEnter();
+
+public :
+	virtual void SetFocusOnCharacter(bool bInIsFocusOnCharacter);
+	virtual bool IsFocusOnCharacter() const;
 };

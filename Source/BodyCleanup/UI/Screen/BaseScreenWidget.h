@@ -19,4 +19,13 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+protected :
+	void SetFocusOnCharacter(bool bIsFocusOnCharacter);
+	bool IsFocusOnCharacter() const;
+
+public :
+	virtual void InputUp();
+	virtual void InputDown();
+	virtual void InputEnter();
 };

@@ -11,6 +11,7 @@ void UMainScreenWidget::NativePreConstruct()
 	Super::NativePreConstruct();
 	
 	ScreenScriptUserWidget = Cast<UScreenScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenScript")));
+	ScreenSelectScriptUserWidget = Cast<UScreenSelectScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenSelectScript")));
 }
 
 void UMainScreenWidget::NativeConstruct()
@@ -37,6 +38,27 @@ void UMainScreenWidget::NativeConstruct()
 
 		SetScreenScriptBottom(true);
 	}
+
+	if(IsValid(ScreenSelectScriptUserWidget))
+	{
+		ScreenSelectScriptUserWidget->SetHiddenInGame(true);
+
+		UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(ScreenSelectScriptUserWidget->Slot);
+
+		if(IsValid(CanvasPanelSlot))
+		{
+			FVector2D Alignment = CanvasPanelSlot->GetAlignment();
+
+			ScreenSelectScriptPosition = CanvasPanelSlot->GetPosition();
+			//만약에 사용자가 Top을 기준으로 정의했을 경우에는 Alignment가 티가 나니까 음수를 곱함으로써 탑에서 정의하더라도 정상적으로 동작할 수 있도록 한다.
+			if(Alignment.Y == 0.f)
+			{			
+				ScreenSelectScriptPosition.Y *= -1.f;
+			}			
+		}
+
+		SetScreenSelectScriptBottom(true);
+	}
 }
 
 void UMainScreenWidget::NativeDestruct()
@@ -49,11 +71,59 @@ void UMainScreenWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
+void UMainScreenWidget::InputUp()
+{
+	Super::InputUp();
+
+	if(false == ScreenSelectScriptUserWidget->IsHiddenInGame())
+	{
+		ScreenSelectScriptUserWidget->UpSelect();
+	}
+}
+
+void UMainScreenWidget::InputDown()
+{
+	Super::InputDown();
+
+	if(false == ScreenSelectScriptUserWidget->IsHiddenInGame())
+	{
+		ScreenSelectScriptUserWidget->DownSelect();
+	}
+}
+
+void UMainScreenWidget::InputEnter()
+{
+	Super::InputEnter();
+
+	if(false == IsFocusOnCharacter())
+	{
+		if(false == ScreenSelectScriptUserWidget->IsHiddenInGame())
+		{
+			SetHiddenInGameScreenSelectScript(true);
+		}
+		else if(false == ScreenScriptUserWidget->IsHiddenInGame())
+		{
+			SetHiddenInGameScreenScript(true);
+		}
+	}
+	
+}
+
 void UMainScreenWidget::SetHiddenInGameScreenScript(bool bIsHiddenInGame)
 {
 	if(IsValid(ScreenScriptUserWidget))
 	{
 		ScreenScriptUserWidget->SetHiddenInGame(bIsHiddenInGame);
+		SetFocusOnCharacter(bIsHiddenInGame);
+	}
+}
+
+void UMainScreenWidget::SetHiddenInGameScreenSelectScript(bool bIsHiddenInGame)
+{
+	if(IsValid(ScreenSelectScriptUserWidget))
+	{
+		ScreenSelectScriptUserWidget->SetHiddenInGame(bIsHiddenInGame);
+		SetFocusOnCharacter(bIsHiddenInGame);
 	}
 }
 
@@ -62,6 +132,14 @@ void UMainScreenWidget::SetScreenScriptText(const FString& Speaker, const FStrin
 	if(IsValid(ScreenScriptUserWidget))
 	{
 		ScreenScriptUserWidget->SetText(Speaker, Text);
+	}	
+}
+
+void UMainScreenWidget::SetScreenSelectScriptTexts(float InLimitTime, const TArray<FString>& Texts)
+{
+	if(IsValid(ScreenScriptUserWidget))
+	{
+		ScreenSelectScriptUserWidget->SetText(InLimitTime, Texts);
 	}	
 }
 
@@ -81,6 +159,28 @@ void UMainScreenWidget::SetScreenScriptBottom(bool bIsBottom)
 			else
 			{
 				CanvasPanelSlot->SetPosition(FVector2D(0.f, -ScreenScriptPosition.Y));
+				CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.f));				
+			}
+		}		
+	}
+}
+
+void UMainScreenWidget::SetScreenSelectScriptBottom(bool bIsBottom)
+{
+	if(IsValid(ScreenSelectScriptUserWidget))
+	{
+		UCanvasPanelSlot* CanvasPanelSlot = Cast<UCanvasPanelSlot>(ScreenSelectScriptUserWidget->Slot);
+
+		if(IsValid(CanvasPanelSlot))
+		{
+			if(bIsBottom)
+			{
+				CanvasPanelSlot->SetPosition(FVector2D(0.f, ScreenSelectScriptPosition.Y));
+				CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 1.f));
+			}
+			else
+			{
+				CanvasPanelSlot->SetPosition(FVector2D(0.f, -ScreenSelectScriptPosition.Y));
 				CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.f));				
 			}
 		}		

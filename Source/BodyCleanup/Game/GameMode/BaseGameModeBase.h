@@ -42,4 +42,9 @@ public:
 	virtual void UpdateTrigger(class ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger) override;
 	virtual void UpdateTriggerOnce(class ILevelTriggerInterface* LevelTriggerInterface) override;
 	virtual void SetupTriggerAfterSpawn(AActor* Actor);
+
+public :
+	TSoftObjectPtr<UBaseScreenWidget> GetBaseScreenWidget() const;
+	void SetFocusOnCharacter(bool bIsFocusOnTheCharacter);
+	bool IsFocusOnCharacter() const;
 };

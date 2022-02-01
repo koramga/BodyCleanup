@@ -3,6 +3,7 @@
 
 #include "BaseGameModeBase.h"
 #include "../../UI/Screen/BaseScreenWidget.h"
+#include "../../Controller/Player/BasePlayerController.h"
 
 ABaseGameModeBase::ABaseGameModeBase()
 {
@@ -66,4 +67,31 @@ void ABaseGameModeBase::UpdateTriggerOnce(class ILevelTriggerInterface* LevelTri
 void ABaseGameModeBase::SetupTriggerAfterSpawn(AActor* Actor)
 {
 	LevelTriggerManager->SetupTriggerAfterSpawn(Actor);
+}
+
+TSoftObjectPtr<UBaseScreenWidget> ABaseGameModeBase::GetBaseScreenWidget() const
+{
+	return BaseScreenWidget;
+}
+
+void ABaseGameModeBase::SetFocusOnCharacter(bool bIsFocusOnTheCharacter)
+{
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>( UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if(IsValid(BasePlayerController))
+	{
+		BasePlayerController->SetFocusOnCharacter(bIsFocusOnTheCharacter);
+	}
+}
+
+bool ABaseGameModeBase::IsFocusOnCharacter() const
+{
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>( UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if(IsValid(BasePlayerController))
+	{
+		return BasePlayerController->IsFocusOnCharacter();
+	}
+
+	return true;
 }

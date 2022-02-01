@@ -62,4 +62,7 @@ public :
 	void SetText(float InLimitTime, const TArray<FString>& Texts);
 	int32 GetSelectCount() const;
 	void SetSelectIndex(int Index);
+	int32 GetSelectIndex() const;
+	void UpSelect();
+	void DownSelect();
 };

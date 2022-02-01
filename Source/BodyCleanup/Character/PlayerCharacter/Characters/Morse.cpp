@@ -66,8 +66,7 @@ void AMorse::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//마우스의 움직임을 감시하여 캐릭터가 회전할 수 있도록 한다.
-
-
+	
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
 		if (EAnimationType::Wait != PlayerCharacterAnimInstance->GetAnimationType())
