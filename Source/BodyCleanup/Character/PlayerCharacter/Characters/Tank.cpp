@@ -16,8 +16,6 @@ void ATank::BeginPlay()
 	Super::BeginPlay();
 
 	SetActorScale3D(FVector(0.3f, 0.3f, 0.3f));
-	
-	SetTextToSpeechBubble(TEXT("I'm Tank!"));
 }
 
 void ATank::Tick(float DeltaTime)

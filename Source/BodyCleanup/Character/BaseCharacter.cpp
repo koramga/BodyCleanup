@@ -35,11 +35,12 @@ void ABaseCharacter::BeginPlay()
 	LevelTriggerActorAssist = NewObject<ULevelTriggerActorAssist>();
 	
 	Super::BeginPlay();
-
 	
 	BaseAnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
 	BodyCollisionProfileName = GetCapsuleComponent()->GetCollisionProfileName();
+	
+	SetHiddenInGameSpeechBubble(true);
 }
 
 void ABaseCharacter::PossessedBy(AController* NewController)

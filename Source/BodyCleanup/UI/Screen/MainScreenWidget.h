@@ -17,6 +17,9 @@ class BODYCLEANUP_API UMainScreenWidget : public UBaseScreenWidget
 protected:
 	UPROPERTY()
 	class UScreenScriptUserWidget* ScreenScriptUserWidget;
+
+	UPROPERTY()
+	FVector2D	ScreenScriptPosition;
 	
 protected:
 	virtual void NativePreConstruct() override;
@@ -27,4 +30,5 @@ protected:
 public :
 	void SetHiddenInGameScreenScript(bool bIsHiddenInGame);
 	void SetScreenScriptText(const FString& Speaker, const FString& Text);
+	void SetScreenScriptBottom(bool bIsBottom);
 };
