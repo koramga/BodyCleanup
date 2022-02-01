@@ -9,8 +9,8 @@ void UJunkValueViewerUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	
-	TextBlockJunkValue = Cast<UTextBlock>(GetWidgetFromName(TEXT("BorderJunkValue")));
-	BorderJunkValue = Cast<UBorder>(GetWidgetFromName(TEXT("TextBlockJunkValue")));
+	TextBlockJunkValue = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlockJunkValue")));
+	BorderJunkValue = Cast<UBorder>(GetWidgetFromName(TEXT("BorderJunkValue")));
 }
 
 void UJunkValueViewerUserWidget::NativeConstruct()
@@ -30,32 +30,41 @@ void UJunkValueViewerUserWidget::NativeTick(const FGeometry& MyGeometry, float I
 
 void UJunkValueViewerUserWidget::SetJunkValue(int32 InJunkValue)
 {
-	if(IsValid(BorderJunkValue))
+	if(InJunkValue <= 0)
 	{
-		float Percent = InJunkValue / 4.f;
-
-		if(Percent > 3.f)
-		{
-			Percent = 3.f;
-		}
-
-		UMaterialInstanceDynamic* MaterialInstanceDynamic = BorderJunkValue->GetDynamicMaterial();
-
-		if(IsValid(MaterialInstanceDynamic))
-		{
-			MaterialInstanceDynamic->SetScalarParameterValue("ComplateRange", Percent);
-		}		
+		SetHiddenInGame(true);
 	}
-
-	if(IsValid(TextBlockJunkValue))
+	else
 	{
-		int32 UIJunkValue = InJunkValue;
-		
-		if(InJunkValue >= 10000)
+		SetHiddenInGame(false);
+	
+		if(IsValid(BorderJunkValue))
 		{
-			UIJunkValue = 9999;
+			float Percent = InJunkValue / 4.f;
+
+			if(Percent > 3.f)
+			{
+				Percent = 3.f;
+			}
+
+			UMaterialInstanceDynamic* MaterialInstanceDynamic = BorderJunkValue->GetDynamicMaterial();
+
+			if(IsValid(MaterialInstanceDynamic))
+			{
+				MaterialInstanceDynamic->SetScalarParameterValue("ComplateRange", Percent);
+			}		
 		}
+
+		if(IsValid(TextBlockJunkValue))
+		{
+			int32 UIJunkValue = InJunkValue;
 		
-		TextBlockJunkValue->SetText(FText::FromString(FString::Printf(TEXT("%d"), UIJunkValue)));
-	}		
+			if(InJunkValue >= 10000)
+			{
+				UIJunkValue = 9999;
+			}
+		
+			TextBlockJunkValue->SetText(FText::FromString(FString::Printf(TEXT("%d"), UIJunkValue)));
+		}
+	}
 }
