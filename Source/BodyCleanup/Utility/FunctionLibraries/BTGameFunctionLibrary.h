@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "BehaviorTreeFunctionLibrary.generated.h"
+#include "BTGameFunctionLibrary.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTFunctionLibrary : public UBlueprintFunctionLibrary
+class BODYCLEANUP_API UBTGameFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	
