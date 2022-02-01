@@ -4,14 +4,14 @@
 
 #include "../../ExDefines.h"
 #include "AIController.h"
-#include "../Interface/BaseControllerInterface.h"
+#include "../Interface/BTControllerInterface.h"
 #include "BaseAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABaseAIController : public AAIController, public IBaseControllerInterface
+class BODYCLEANUP_API ABaseAIController : public AAIController, public IBTControllerInterface
 {
 	GENERATED_BODY()
 	

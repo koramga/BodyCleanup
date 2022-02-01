@@ -4,14 +4,14 @@
 
 #include "../../ExDefines.h"
 #include "GameFramework/PlayerController.h"
-#include "../Interface/BaseControllerInterface.h"
+#include "../Interface/BTControllerInterface.h"
 #include "BasePlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABasePlayerController : public APlayerController, public IBaseControllerInterface
+class BODYCLEANUP_API ABasePlayerController : public APlayerController, public IBTControllerInterface
 {
 	GENERATED_BODY()
 

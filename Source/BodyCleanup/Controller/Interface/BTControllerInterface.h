@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "BaseControllerInterface.generated.h"
+#include "BTControllerInterface.generated.h"
 
 UENUM(BlueprintType)
 enum class ETeamType : uint8
@@ -16,7 +16,7 @@ enum class ETeamType : uint8
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UBaseControllerInterface : public UInterface
+class UBTControllerInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -24,7 +24,7 @@ class UBaseControllerInterface : public UInterface
 /**
  * 
  */
-class BODYCLEANUP_API IBaseControllerInterface
+class BODYCLEANUP_API IBTControllerInterface
 {
 	GENERATED_BODY()
 
