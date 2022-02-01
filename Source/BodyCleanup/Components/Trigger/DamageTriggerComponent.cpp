@@ -8,7 +8,7 @@
 #include "../../GAS/Interface/Actor/GASActorInterface.h"
 #include "../Interactive/Classes/InteractiveSuckingComponent.h"
 #include "../../GAS/Ability/BaseGameplayAbility.h"
-#include "../../Utility/FunctionLibraries/ComponentFunctionLibrary.h"
+#include "../../Components/Utility/ComponentFunctionLibrary.h"
 #include "BodyCleanup/GAS/Effect/BaseGameplayEffect.h"
 #include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
 #include "LevelDesignerTools/Actor/Assist/LevelTriggerActorAssist.h"

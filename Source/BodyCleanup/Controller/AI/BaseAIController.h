@@ -4,7 +4,7 @@
 
 #include "../../ExDefines.h"
 #include "AIController.h"
-#include "../Interface/BTControllerInterface.h"
+#include "../../BT/Interface/BTControllerInterface.h"
 #include "BaseAIController.generated.h"
 
 /**

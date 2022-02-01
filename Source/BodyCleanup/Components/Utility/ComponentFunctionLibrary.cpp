@@ -2,15 +2,15 @@
 
 
 #include "ComponentFunctionLibrary.h"
-#include "../../Components/Interactive/Interfaces/InteractiveComponentInterface.h"
+#include "../Interactive/Interfaces/InteractiveComponentInterface.h"
 #include "LevelDesignerTools/Markup/Interfaces/LevelMarkupInterface.h"
-#include "../../Components/Interactive/Interfaces/InteractiveComponentInterface.h"
+#include "../Interactive/Interfaces/InteractiveComponentInterface.h"
 #include "LevelDesignerTools/Trigger/Interfaces/LevelTriggerInterface.h"
-#include "../../Components/Interactive/Classes/InteractiveAbilityComponent.h"
-#include "../../Components/Interactive/Classes/InteractiveActorComponent.h"
-#include "../../Components/Interactive/Classes/InteractiveScriptComponent.h"
-#include "../../Components/Interactive/Classes/InteractiveSuckingComponent.h"
-#include "../../Components/Interactive/Interfaces/InteractiveComponentInterface.h"
+#include "../Interactive/Classes/InteractiveAbilityComponent.h"
+#include "../Interactive/Classes/InteractiveActorComponent.h"
+#include "../Interactive/Classes/InteractiveScriptComponent.h"
+#include "../Interactive/Classes/InteractiveSuckingComponent.h"
+#include "../Interactive/Interfaces/InteractiveComponentInterface.h"
 
 void UComponentFunctionLibrary::FindInteractiveComponents(
 	TArray<TSoftObjectPtr<USceneComponent>>& InputInteractiveComponents, USceneComponent* SceneComponent)

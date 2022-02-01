@@ -9,10 +9,11 @@
 #include "AbilitySystemInterface.h"
 #include "../GAS/Interface/Actor/GASActorInterface.h"
 #include "BodyCleanup/GAS/Ability/BaseGameplayAbility.h"
+#include "../BT/Interface/BTCharacterInterface.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public IAbilitySystemInterface, public IGASActorInterface
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public IAbilitySystemInterface, public IGASActorInterface, public IBTCharacterInterface
 {
 	GENERATED_BODY()
 

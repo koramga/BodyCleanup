@@ -8,7 +8,7 @@
 #include "../../../Actor/Level/BaseLevelActor.h"
 #include "../../../Character/BaseCharacter.h"
 #include "Components/PrimitiveComponent.h"
-#include "../../../Utility/FunctionLibraries/ComponentFunctionLibrary.h"
+#include "../../../Components/Utility/ComponentFunctionLibrary.h"
 #include "../../../Components/Character/VacuumEntranceComponent.h"
 #include "../../../Animation/PlayerCharacter/Morse/MorseAnimInstance.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"

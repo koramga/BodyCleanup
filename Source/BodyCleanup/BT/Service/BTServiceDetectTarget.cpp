@@ -4,7 +4,7 @@
 #include "BTServiceDetectTarget.h"
 #include "../../Character/BaseCharacter.h"
 #include "../../Controller/AI/BaseAIController.h"
-#include "../../Controller/Interface/BTControllerInterface.h"
+#include "../../BT/Interface/BTControllerInterface.h"
 #include "../../Controller/Player/BasePlayerController.h"
 
 UBTServiceDetectTarget::UBTServiceDetectTarget()
@@ -17,6 +17,14 @@ void UBTServiceDetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-
+	AAIController* OwnerAIController = OwnerComp.GetAIOwner();
 	
+	if(OwnerAIController->GetClass()->ImplementsInterface(UBTControllerInterface::StaticClass()))
+	{
+		return;
+	}
+	
+	IBTControllerInterface* AIOwner = Cast<IBTControllerInterface>(OwnerComp.GetAIOwner());
+
+	ABaseCharacter* OwnerAICharacter = Cast<ABaseCharacter>(OwnerAIController->GetPawn());	
 }

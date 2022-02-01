@@ -2,4 +2,5 @@
 
 
 #include "BTGameFunctionLibrary.h"
-#include "../../Controller/Interface/BTControllerInterface.h"
+#include "../Interface/BTControllerInterface.h"
+#include "../Interface/BTCharacterInterface.h"
