@@ -5,6 +5,7 @@
 
 ABaseNPCCharacter::ABaseNPCCharacter()
 {
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void ABaseNPCCharacter::BeginPlay()
