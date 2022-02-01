@@ -18,7 +18,7 @@ void UMainScreenWidget::NativeConstruct()
 
 	if(IsValid(ScreenScriptUserWidget))
 	{
-		ScreenScriptUserWidget->SetVisibility(ESlateVisibility::Hidden);
+		ScreenScriptUserWidget->SetHiddenInGame(true);
 	}
 }
 
@@ -30,4 +30,20 @@ void UMainScreenWidget::NativeDestruct()
 void UMainScreenWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
+}
+
+void UMainScreenWidget::SetHiddenInGameScreenScript(bool bIsHiddenInGame)
+{
+	if(IsValid(ScreenScriptUserWidget))
+	{
+		ScreenScriptUserWidget->SetHiddenInGame(bIsHiddenInGame);
+	}
+}
+
+void UMainScreenWidget::SetScreenScriptText(const FString& Speaker, const FString& Text)
+{
+	if(IsValid(ScreenScriptUserWidget))
+	{
+		ScreenScriptUserWidget->SetText(Speaker, Text);
+	}	
 }

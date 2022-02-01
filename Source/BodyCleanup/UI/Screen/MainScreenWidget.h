@@ -23,4 +23,8 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+public :
+	void SetHiddenInGameScreenScript(bool bIsHiddenInGame);
+	void SetScreenScriptText(const FString& Speaker, const FString& Text);
 };

@@ -22,3 +22,27 @@ void UBaseUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
+
+void UBaseUserWidget::SetHiddenInGame(bool bIsHidden)
+{
+	if(bIsHidden)
+	{
+		Super::SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		Super::SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+bool UBaseUserWidget::IsHiddenInGame() const
+{
+	ESlateVisibility SlateVisibility = GetVisibility();
+
+	if(ESlateVisibility::Hidden == SlateVisibility)
+	{
+		return true;
+	}
+
+	return false;
+}

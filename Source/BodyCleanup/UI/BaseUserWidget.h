@@ -19,4 +19,8 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+public :
+	virtual void SetHiddenInGame(bool bIsHidden);
+	bool IsHiddenInGame() const;
 };

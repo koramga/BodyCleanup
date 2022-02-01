@@ -58,7 +58,7 @@ void AMorse::BeginPlay()
 	}
 	
 	SetTextToSpeechBubble(TEXT("가나다라마바사\n아자차카타파하"));
-	SetVisibleSpeechBubble(false);
+	SetHiddenInGameSpeechBubble(true);
 }
 
 void AMorse::Tick(float DeltaTime)

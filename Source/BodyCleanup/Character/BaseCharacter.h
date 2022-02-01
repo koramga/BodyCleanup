@@ -72,7 +72,7 @@ public :
 
 public :
 	virtual void SetTextToSpeechBubble(const FString& Text);
-	virtual void SetVisibleSpeechBubble(bool bIsVisible);
+	virtual void SetHiddenInGameSpeechBubble(bool bIsHidden);
 	
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;

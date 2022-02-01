@@ -239,20 +239,13 @@ void ABaseCharacter::SetTextToSpeechBubble(const FString& Text)
 	}
 }
 
-void ABaseCharacter::SetVisibleSpeechBubble(bool bIsVisible)
+void ABaseCharacter::SetHiddenInGameSpeechBubble(bool bIsHidden)
 {
-	UBubbleScriptUserWidget* BubbleScriptUserWidget = Cast<UBubbleScriptUserWidget>(SpeechBubbleWidgetComponent->GetWidget());
+	UBaseUserWidget* BaseUserWidget = Cast<UBaseUserWidget>(SpeechBubbleWidgetComponent->GetWidget());
 
-	if(IsValid(BubbleScriptUserWidget))
+	if(IsValid(BaseUserWidget))
 	{
-		if(false == bIsVisible)
-		{
-			BubbleScriptUserWidget->SetVisibility(ESlateVisibility::Hidden);	
-		}
-		else
-		{
-			BubbleScriptUserWidget->SetVisibility(ESlateVisibility::Visible);
-		}
+		BaseUserWidget->SetHiddenInGame(bIsHidden);
 	}	
 }
 
