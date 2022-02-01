@@ -2,6 +2,10 @@
 
 
 #include "BTServiceDetectTarget.h"
+#include "../../Character/BaseCharacter.h"
+#include "../../Controller/AI/BaseAIController.h"
+#include "../../Controller/Interface/BTControllerInterface.h"
+#include "../../Controller/Player/BasePlayerController.h"
 
 UBTServiceDetectTarget::UBTServiceDetectTarget()
 {
@@ -12,5 +16,7 @@ UBTServiceDetectTarget::UBTServiceDetectTarget()
 void UBTServiceDetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
+
 	
 }
