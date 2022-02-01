@@ -4,6 +4,9 @@
 #include "BaseAIController.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BodyCleanup/Character/BaseCharacter.h"
+#include "../../BT/Utility/BTGameFunctionLibrary.h"
 
 ABaseAIController::ABaseAIController()
 {
@@ -34,6 +37,8 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 			return;
 		}
 
+		InitializeBlackboardData();
+
 		UE_LOG(LogTemp, Display, TEXT("AI OnPossess Success"));
 	}
 	
@@ -50,7 +55,101 @@ void ABaseAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+
+void ABaseAIController::InitializeBlackboardData()
+{
+	TBlackboardVariable TraceRangeVariable;
+	TraceRangeVariable.Set<float>(TraceRange.GetMetaVariable().Get<float>());
+
+	SetBlackboardVariable(UBTGameFunctionLibrary::TraceRangeName, TraceRangeVariable);
+
+	TBlackboardVariable LookAroundTimeVariable;
+	LookAroundTimeVariable.Set<float>(LookAroundTime.GetMetaVariable().Get<float>());
+
+	SetBlackboardVariable(UBTGameFunctionLibrary::LookAroundTimeName, LookAroundTimeVariable);
+}
+
 ETeamType ABaseAIController::GetTeamType() const
 {
 	return TeamType;
+}
+
+TBlackboardVariable ABaseAIController::GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const
+{
+	TBlackboardVariable Variable;
+	
+	switch (BlackboardVariableType)
+	{
+	case EBlackboardVariableType::Float :
+		Variable.Set<float>(Blackboard->GetValueAsFloat(Name));
+		break;
+	case EBlackboardVariableType::Int32 :
+		Variable.Set<int32>(Blackboard->GetValueAsInt(Name));
+		break;
+	case EBlackboardVariableType::Object :
+		Variable.Set<UObject*>(Blackboard->GetValueAsObject(Name));
+		break;
+	case EBlackboardVariableType::FVector :
+		Variable.Set<FVector>(Blackboard->GetValueAsVector(Name));
+		break;
+	}
+	
+	return Variable;
+}
+
+bool ABaseAIController::SetBlackboardVariable(const FName& Name, const TBlackboardVariable& Variable)
+{
+	switch (static_cast<EBlackboardVariableType>(Variable.GetIndex()))
+	{
+	case EBlackboardVariableType::Float :
+		Blackboard->SetValueAsFloat(Name, Variable.Get<float>());
+		break;
+	case EBlackboardVariableType::Int32 :
+		Blackboard->SetValueAsInt(Name, Variable.Get<int32>());
+		break;
+	case EBlackboardVariableType::Object :
+		Blackboard->SetValueAsObject(Name, Variable.Get<UObject*>());
+		break;
+	case EBlackboardVariableType::FVector :
+		Blackboard->SetValueAsVector(Name, Variable.Get<FVector>());
+		break;
+	}
+	
+	return true;
+}
+
+bool ABaseAIController::IsDeathCharacter() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->IsDeath();
+	}
+
+	return true;
+}
+
+FVector ABaseAIController::GetCharacterLocation() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->GetActorLocation();
+	}
+
+	return FVector();
+}
+
+ACharacter* ABaseAIController::GetControlCharacter() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter;
+	}
+
+	return nullptr;
 }

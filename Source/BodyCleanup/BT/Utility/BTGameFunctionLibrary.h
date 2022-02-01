@@ -9,9 +9,23 @@
 /**
  * 
  */
+
+class IBTCharacterInterface;
+class IBTControllerInterface;
+
 UCLASS()
 class BODYCLEANUP_API UBTGameFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
+public :
+	static const FName TraceRangeName;
+	static const FName LookAroundTimeName;
+	static const FName TargetObjectName;
+
+public :
+	static bool IsBTActor(const AActor* Actor);
+	static bool IsBTController(const AController* Controller);
+	static bool IsEnemy(const IBTControllerInterface* LHS, const IBTControllerInterface* RHS);
 	
 };

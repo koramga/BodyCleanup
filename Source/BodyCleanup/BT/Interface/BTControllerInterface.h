@@ -24,6 +24,18 @@ class UBTControllerInterface : public UInterface
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EBlackboardVariableType : uint8
+{
+	Object,
+	Float,
+	Int32,
+	FVector,
+};
+
+typedef TVariant<UObject*, float, int32, FVector> TBlackboardVariable;	
+
 class BODYCLEANUP_API IBTControllerInterface
 {
 	GENERATED_BODY()
@@ -31,4 +43,9 @@ class BODYCLEANUP_API IBTControllerInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual ETeamType GetTeamType() const  = 0;
+	virtual TBlackboardVariable GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const = 0;
+	virtual bool SetBlackboardVariable(const FName& Name, const TBlackboardVariable& Variable) = 0;
+	virtual bool IsDeathCharacter() const = 0;
+	virtual FVector GetCharacterLocation() const = 0;
+	virtual ACharacter* GetControlCharacter() const = 0;
 };

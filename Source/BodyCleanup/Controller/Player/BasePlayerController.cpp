@@ -347,6 +347,52 @@ ETeamType ABasePlayerController::GetTeamType() const
 	return ETeamType::Player;
 }
 
+TBlackboardVariable ABasePlayerController::GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const
+{
+	return TBlackboardVariable();
+}
+
+bool ABasePlayerController::SetBlackboardVariable(const FName& Name, const TBlackboardVariable& Variable)
+{
+	return false;
+}
+
+bool ABasePlayerController::IsDeathCharacter() const
+{
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		return PlayerCharacter->IsDeath();
+	}
+
+	return true;
+}
+
+FVector ABasePlayerController::GetCharacterLocation() const
+{	
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		return PlayerCharacter->GetActorLocation();
+	}
+
+	return FVector();
+}
+
+ACharacter* ABasePlayerController::GetControlCharacter() const
+{
+	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+	if (IsValid(PlayerCharacter))
+	{
+		return PlayerCharacter;
+	}
+
+	return nullptr;
+}
+
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

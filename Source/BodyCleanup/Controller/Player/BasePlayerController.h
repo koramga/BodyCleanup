@@ -59,4 +59,9 @@ public :
 	
 public :
 	virtual ETeamType GetTeamType() const override;
+	virtual TBlackboardVariable GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const override;
+	virtual bool SetBlackboardVariable(const FName& Name, const TBlackboardVariable& Variable) override;
+	virtual bool IsDeathCharacter() const override;
+	virtual FVector GetCharacterLocation() const override;
+	virtual ACharacter* GetControlCharacter() const override;
 };
