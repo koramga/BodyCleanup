@@ -1,0 +1,61 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "JunkValueViewerUserWidget.h"
+#include "Components/Border.h"
+#include "Components/TextBlock.h"
+
+void UJunkValueViewerUserWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+	
+	TextBlockJunkValue = Cast<UTextBlock>(GetWidgetFromName(TEXT("BorderJunkValue")));
+	BorderJunkValue = Cast<UBorder>(GetWidgetFromName(TEXT("TextBlockJunkValue")));
+}
+
+void UJunkValueViewerUserWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
+void UJunkValueViewerUserWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+}
+
+void UJunkValueViewerUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+}
+
+void UJunkValueViewerUserWidget::SetJunkValue(int32 InJunkValue)
+{
+	if(IsValid(BorderJunkValue))
+	{
+		float Percent = InJunkValue / 4.f;
+
+		if(Percent > 3.f)
+		{
+			Percent = 3.f;
+		}
+
+		UMaterialInstanceDynamic* MaterialInstanceDynamic = BorderJunkValue->GetDynamicMaterial();
+
+		if(IsValid(MaterialInstanceDynamic))
+		{
+			MaterialInstanceDynamic->SetScalarParameterValue("ComplateRange", Percent);
+		}		
+	}
+
+	if(IsValid(TextBlockJunkValue))
+	{
+		int32 UIJunkValue = InJunkValue;
+		
+		if(InJunkValue >= 10000)
+		{
+			UIJunkValue = 9999;
+		}
+		
+		TextBlockJunkValue->SetText(FText::FromString(FString::Printf(TEXT("%d"), UIJunkValue)));
+	}		
+}

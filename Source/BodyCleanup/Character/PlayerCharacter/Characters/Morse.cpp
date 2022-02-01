@@ -17,10 +17,16 @@
 #include "../../../Game/GameMode/BaseGameModeBase.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 #include "../../../Components/Interactive/Classes/InteractiveSuckingComponent.h"
+#include "../../../UI/Viewer/JunkValueViewerUserWidget.h"
+#include "Components/WidgetComponent.h"
 
 AMorse::AMorse()
 {
 	JunkValue = 0;
+	
+	JunkValueViewerWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("JunkValueViewer");
+	JunkValueViewerWidgetComponent->SetupAttachment(GetMesh());
+	JunkValueViewerWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 void AMorse::BeginPlay()
@@ -59,6 +65,8 @@ void AMorse::BeginPlay()
 	
 	SetTextToSpeechBubble(TEXT("가나다라마바사\n아자차카타파하"));
 	SetHiddenInGameSpeechBubble(true);
+
+	SetJunkValue(JunkValue);
 }
 
 void AMorse::Tick(float DeltaTime)
@@ -183,7 +191,10 @@ void AMorse::InputPressedMouseRightClick()
 	{
 		if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Idle)
 		{
-			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Shot);
+			if(JunkValue >= 4)
+			{
+				PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Shot);				
+			}			
 		}
 		else if (PlayerCharacterAnimInstance->GetAnimationType() == EAnimationType::Vacuum)
 		{
@@ -240,6 +251,8 @@ void AMorse::InputReleasedMouseRightClick()
 		if (bIsCanArcShooting
 			&& EAnimationType::Shot == PlayerCharacterAnimInstance->GetAnimationType())
 		{
+			AddJunkValue(-4);
+			
 			AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(ArcShootingSpawnActor, FTransform(GetActorForwardVector().Rotation(), GetActorLocation() + GetActorForwardVector() * CreateArcShootingSpawnActorOffset));
 
 			if (!SpawnActor)
@@ -690,6 +703,31 @@ void AMorse::__SetSucking(UInteractiveSuckingComponent* InteractiveSuckingCompon
 	}
 }
 
+void AMorse::SetJunkValue(int32 InJunkValue)
+{
+	JunkValue = InJunkValue;
+
+	if(IsValid(JunkValueViewerWidgetComponent))
+	{
+		UJunkValueViewerUserWidget* JunkValueViewerUserWidget = Cast<UJunkValueViewerUserWidget>(JunkValueViewerWidgetComponent->GetWidget());
+
+		if(IsValid(JunkValueViewerUserWidget))
+		{
+			JunkValueViewerUserWidget->SetJunkValue(JunkValue);
+		}
+	}	
+}
+
+void AMorse::AddJunkValue(int32 DeltaJunkValue)
+{
+	SetJunkValue(JunkValue + DeltaJunkValue);
+}
+
+int32 AMorse::GetJunkValue() const
+{
+	return JunkValue;
+}
+
 bool AMorse::__SetHoldShooting(UInteractiveSuckingComponent* InteractiveSuckingComponent)
 {
 	if(InteractiveSuckingComponent->SetHoldShooting(VacuumEntranceComponent.Get()))
@@ -843,7 +881,7 @@ void AMorse::__OnVaccumOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 			{
 				if (InteractiveSuckingComponent->IsJunk())
 				{
-					JunkValue += InteractiveSuckingComponent->GetJunkValue();
+					AddJunkValue(InteractiveSuckingComponent->GetJunkValue());
 					OtherActor->Destroy();
 				}
 				else

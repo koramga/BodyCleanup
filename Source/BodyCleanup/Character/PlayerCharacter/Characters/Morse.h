@@ -71,6 +71,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TSoftObjectPtr<class UMorseAnimInstance>		MorseAnimInstance;
 
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent*							JunkValueViewerWidgetComponent;
+
 
 protected :
 	FVector					ArcShootingVelocity;
@@ -101,6 +104,7 @@ private :
 	bool __IsArcShooting() const;
 	void __UpdateOverlapInteractigeSuckingComponent(float DeltaTime);
 	FVector __ProcessMaxDistnace(const FVector& StartArcShootingLocation, const FVector& EndArcShootingLocation);
+	
 #ifdef NEW_SUCKING_CODE
 
 	//void __SetOverlapVacuumActorsInteractiveAction(EInteractiveSuckingType InteractiveSuckingType);
@@ -120,7 +124,13 @@ private :
 	void __SetInteractiveComponent(TSoftObjectPtr<AActor> Actor, TSoftObjectPtr<class UVacuumEntranceComponent> SetInteractiveComponent);
 	void __SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAction InteractiveAction);
 	
-#endif 
+#endif
+
+public :
+	void SetJunkValue(int32 InJunkValue);
+	void AddJunkValue(int32 DeltaJunkValue);
+	int32 GetJunkValue() const;
+	
 private :
 	UFUNCTION()
 	void __OnVaccumRangeOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
