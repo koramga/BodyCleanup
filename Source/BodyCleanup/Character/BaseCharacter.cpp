@@ -10,6 +10,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "../GAS/Ability/BaseGameplayAbility.h"
 #include "../GAS/AttributeSet/BaseAttributeSet.h"
+#include "Components/Widget.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/Script/BubbleScriptUserWidget.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -19,6 +22,10 @@ ABaseCharacter::ABaseCharacter()
 
 	GameActorSettingsComponent = CreateDefaultSubobject<UGameActorSettingsComponent>(TEXT("GameActorSettingsComponent"));
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	SpeechBubbleWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("SpeechBubbleWidget");
+
+	SpeechBubbleWidgetComponent->SetupAttachment(GetMesh());
+	SpeechBubbleWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 // Called when the game starts or when spawned
@@ -220,6 +227,33 @@ void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& Attri
 bool ABaseCharacter::IsDeath() const
 {
 	return bIsDeath;
+}
+
+void ABaseCharacter::SetTextToSpeechBubble(const FString& Text)
+{
+	UBubbleScriptUserWidget* BubbleScriptUserWidget = Cast<UBubbleScriptUserWidget>(SpeechBubbleWidgetComponent->GetWidget());
+
+	if(IsValid(BubbleScriptUserWidget))
+	{
+		BubbleScriptUserWidget->SetText(Text);
+	}
+}
+
+void ABaseCharacter::SetVisibleSpeechBubble(bool bIsVisible)
+{
+	UBubbleScriptUserWidget* BubbleScriptUserWidget = Cast<UBubbleScriptUserWidget>(SpeechBubbleWidgetComponent->GetWidget());
+
+	if(IsValid(BubbleScriptUserWidget))
+	{
+		if(false == bIsVisible)
+		{
+			BubbleScriptUserWidget->SetVisibility(ESlateVisibility::Hidden);	
+		}
+		else
+		{
+			BubbleScriptUserWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}	
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const

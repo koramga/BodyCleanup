@@ -56,6 +56,9 @@ void AMorse::BeginPlay()
 		VacuumEntranceComponent->SetGrabConstraintComponent(GrabConstraintComponent);
 		VacuumEntranceComponent->OnComponentBeginOverlap.AddDynamic(this, &AMorse::__OnVaccumOverlapBegin);
 	}
+	
+	SetTextToSpeechBubble(TEXT("가나다라마바사\n아자차카타파하"));
+	SetVisibleSpeechBubble(false);
 }
 
 void AMorse::Tick(float DeltaTime)
@@ -63,6 +66,7 @@ void AMorse::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//마우스의 움직임을 감시하여 캐릭터가 회전할 수 있도록 한다.
+
 
 	if (IsValid(PlayerCharacterAnimInstance))
 	{

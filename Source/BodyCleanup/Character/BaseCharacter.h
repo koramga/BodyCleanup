@@ -39,6 +39,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UGameActorSettingsComponent*	GameActorSettingsComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UWidgetComponent*			SpeechBubbleWidgetComponent;
+
 	UPROPERTY(VisibleAnywhere)
 	bool bIsDeath = false;
 
@@ -66,6 +69,10 @@ public :
 	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
 	virtual bool IsDeath() const override;
+
+public :
+	virtual void SetTextToSpeechBubble(const FString& Text);
+	virtual void SetVisibleSpeechBubble(bool bIsVisible);
 	
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
