@@ -4,13 +4,14 @@
 
 #include "../../ExDefines.h"
 #include "GameFramework/PlayerController.h"
+#include "../Interface/BaseControllerInterface.h"
 #include "BasePlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABasePlayerController : public APlayerController
+class BODYCLEANUP_API ABasePlayerController : public APlayerController, public IBaseControllerInterface
 {
 	GENERATED_BODY()
 
@@ -55,4 +56,7 @@ private :
 public :
 	virtual void SetFocusOnCharacter(bool bInIsFocusOnCharacter);
 	virtual bool IsFocusOnCharacter() const;
+	
+public :
+	virtual ETeamType GetTeamType() const override;
 };

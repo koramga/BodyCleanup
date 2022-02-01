@@ -5,6 +5,7 @@
 
 ABaseMonsterController::ABaseMonsterController()
 {
+	TeamType = ETeamType::Enemy;
 }
 
 void ABaseMonsterController::BeginPlay()

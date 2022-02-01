@@ -20,7 +20,7 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
-protected :
+protected:
 	UPROPERTY(VisibleAnywhere)
 	class UBaseAnimInstance* BaseAnimInstance;
 
@@ -69,7 +69,7 @@ public :
 	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
 	virtual bool IsDeath() const override;
-
+	
 public :
 	virtual void SetTextToSpeechBubble(const FString& Text);
 	virtual void SetHiddenInGameSpeechBubble(bool bIsHidden);
