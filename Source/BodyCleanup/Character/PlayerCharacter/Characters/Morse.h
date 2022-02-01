@@ -6,8 +6,6 @@
 #include "MetaTools/Static/InputProperties.h"
 #include "Morse.generated.h"
 
-#define NEW_SUCKING_CODE
-
 /**
  * 
  */
@@ -63,9 +61,6 @@ protected:
 	TSet<class UInteractiveSuckingComponent*>		OverlapInteractiveSuckingComponents;
 	
 	UPROPERTY(VisibleAnywhere)
-	TSet<TSoftObjectPtr<AActor>>					VacuumOverlapActors;
-	
-	UPROPERTY(VisibleAnywhere)
 	TSoftObjectPtr<class UVacuumEntranceComponent>	VacuumEntranceComponent;
 
 	UPROPERTY(VisibleAnywhere)
@@ -105,26 +100,9 @@ private :
 	void __UpdateOverlapInteractigeSuckingComponent(float DeltaTime);
 	FVector __ProcessMaxDistnace(const FVector& StartArcShootingLocation, const FVector& EndArcShootingLocation);
 	
-#ifdef NEW_SUCKING_CODE
-
-	//void __SetOverlapVacuumActorsInteractiveAction(EInteractiveSuckingType InteractiveSuckingType);
-	
-#else
-	
-	void __SetOverlapVacuumActorsInteractiveAction(EInteractiveAction InteractiveAction);
-
-#endif
-
-#ifdef NEW_SUCKING_CODE
 	bool __SetHoldShooting(UInteractiveSuckingComponent* InteractiveSuckingComponent);
 	bool __SetHolding(UInteractiveSuckingComponent* InteractiveSuckingComponent);
 	void __SetSucking(UInteractiveSuckingComponent* InteractiveSuckingComponent);
-#else
-	
-	void __SetInteractiveComponent(TSoftObjectPtr<AActor> Actor, TSoftObjectPtr<class UVacuumEntranceComponent> SetInteractiveComponent);
-	void __SetInteractiveAction(TSoftObjectPtr<AActor> Actor, EInteractiveAction InteractiveAction);
-	
-#endif
 
 public :
 	void SetJunkValue(int32 InJunkValue);

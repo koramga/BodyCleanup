@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "FindFunctionLibrary.generated.h"
+#include "ComponentFunctionLibrary.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UFindFunctionLibrary : public UBlueprintFunctionLibrary
+class BODYCLEANUP_API UComponentFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

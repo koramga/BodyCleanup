@@ -2,7 +2,7 @@
 
 
 #include "BaseLevelActor.h"
-#include "../../Components/LevelComponent.h"
+#include "../../Components/Actor/LevelComponent.h"
 //#include "../../Components/Actions/WarpComponent.h"
 #include "LevelDesignerTools/Trigger/Classes/Scene/WarpComponent.h"
 #include "LevelDesignerTools/Markup/Classes/MarkupComponent.h"

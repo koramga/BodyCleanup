@@ -7,8 +7,8 @@
 #include "AbilitySystemInterface.h"
 #include "../../GAS/Interface/Actor/GASActorInterface.h"
 #include "../Interactive/Classes/InteractiveSuckingComponent.h"
-#include "../../Utilities/FunctionLibraries/FindFunctionLibrary.h"
 #include "../../GAS/Ability/BaseGameplayAbility.h"
+#include "../../Utility/FunctionLibraries/ComponentFunctionLibrary.h"
 #include "BodyCleanup/GAS/Effect/BaseGameplayEffect.h"
 #include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
 #include "LevelDesignerTools/Actor/Assist/LevelTriggerActorAssist.h"
@@ -126,7 +126,7 @@ void UDamageTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inpu
 			{
 				if(__CanDamageInteractiveActor(Owner))
 				{
-					TSoftObjectPtr<UInteractiveSuckingComponent> InteractiveSuckingComponent = UFindFunctionLibrary::FindInteractiveSuckingComponent(Owner);
+					TSoftObjectPtr<UInteractiveSuckingComponent> InteractiveSuckingComponent = UComponentFunctionLibrary::FindInteractiveSuckingComponent(Owner);
 
 					if(InteractiveSuckingComponent.IsValid())
 					{
