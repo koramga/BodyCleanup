@@ -357,7 +357,7 @@ bool ABasePlayerController::SetBlackboardVariable(const FName& Name, const TBlac
 	return false;
 }
 
-bool ABasePlayerController::IsDeathCharacter() const
+bool ABasePlayerController::IsDeathPossessActor() const
 {
 	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
@@ -381,7 +381,7 @@ FVector ABasePlayerController::GetCharacterLocation() const
 	return FVector();
 }
 
-ACharacter* ABasePlayerController::GetControlCharacter() const
+AActor* ABasePlayerController::GetPossessActor() const
 {
 	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
@@ -391,6 +391,21 @@ ACharacter* ABasePlayerController::GetControlCharacter() const
 	}
 
 	return nullptr;
+}
+
+bool ABasePlayerController::CanUpdateTaskPattern(EBTTaskPatternType PatternType) const
+{
+	return false;
+}
+
+bool ABasePlayerController::SetTaskPattern(EBTTaskPatternType PatternType)
+{
+	return false;
+}
+
+EBTTaskPatternType ABasePlayerController::GetTaskPattern() const
+{
+	return EBTTaskPatternType::Idle;
 }
 
 void ABasePlayerController::BeginPlay()

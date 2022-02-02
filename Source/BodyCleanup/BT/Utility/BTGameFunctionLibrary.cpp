@@ -8,6 +8,7 @@
 const FName UBTGameFunctionLibrary::TraceRangeName = TEXT("TraceRange");
 const FName UBTGameFunctionLibrary::LookAroundTimeName = TEXT("LookAroundTime");
 const FName UBTGameFunctionLibrary::TargetObjectName = TEXT("TargetObject");
+const FName UBTGameFunctionLibrary::LookAroundCycleTimeName = TEXT("LookAroundCycleTime");
 
 bool UBTGameFunctionLibrary::IsBTActor(const AActor* Actor)
 {

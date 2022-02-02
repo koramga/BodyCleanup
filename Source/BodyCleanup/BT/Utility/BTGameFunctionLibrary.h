@@ -22,6 +22,7 @@ public :
 	static const FName TraceRangeName;
 	static const FName LookAroundTimeName;
 	static const FName TargetObjectName;
+	static const FName LookAroundCycleTimeName;
 
 public :
 	static bool IsBTActor(const AActor* Actor);

@@ -13,9 +13,16 @@ UCLASS()
 class BODYCLEANUP_API ABaseNPCController : public ABaseAIController
 {
 	GENERATED_BODY()
-
+	
 public :
 	ABaseNPCController();
+
+protected :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|BaseNPCController")
+	FFloatVariableMetaData					LookAroundTime;
+
+protected:
+	virtual void InitializeBlackboardData() override;
 	
 protected:
 	virtual void BeginPlay() override;

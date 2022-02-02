@@ -2,10 +2,21 @@
 
 
 #include "BaseMonsterController.h"
+#include "../../../../BT/Utility/BTGameFunctionLibrary.h"
 
 ABaseMonsterController::ABaseMonsterController()
 {
 	TeamType = ETeamType::Enemy;
+}
+
+void ABaseMonsterController::InitializeBlackboardData()
+{
+	Super::InitializeBlackboardData();
+	
+	TBlackboardVariable TraceRangeVariable;
+	TraceRangeVariable.Set<float>(TraceRange.GetMetaVariable().Get<float>());
+
+	SetBlackboardVariable(UBTGameFunctionLibrary::TraceRangeName, TraceRangeVariable);
 }
 
 void ABaseMonsterController::BeginPlay()

@@ -2,12 +2,11 @@
 
 
 #include "BTServiceDetectTarget.h"
-#include "../../Character/BaseCharacter.h"
-#include "../../Controller/AI/BaseAIController.h"
+#include "AIController.h"
 #include "../../BT/Interface/BTControllerInterface.h"
 #include "../../BT/Interface/BTCharacterInterface.h"
 #include "../../Controller/Player/BasePlayerController.h"
-#include "BodyCleanup/BT/Utility/BTGameFunctionLibrary.h"
+#include "../Utility/BTGameFunctionLibrary.h"
 #include "DrawDebugHelpers.h"
 
 UBTServiceDetectTarget::UBTServiceDetectTarget()
@@ -27,7 +26,7 @@ void UBTServiceDetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	
 	IBTControllerInterface* OwnerControllerInterface = Cast<IBTControllerInterface>(OwnerComp.GetAIOwner());
 
-	if(OwnerControllerInterface->IsDeathCharacter())
+	if(OwnerControllerInterface->IsDeathPossessActor())
 	{
 		return;
 	}
@@ -39,7 +38,7 @@ void UBTServiceDetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 
 	if(TraceRangeVariable.IsType<float>())
 	{
-		FCollisionQueryParams param(NAME_None, true, OwnerControllerInterface->GetControlCharacter());
+		FCollisionQueryParams param(NAME_None, true, OwnerControllerInterface->GetPossessActor());
 		GetWorld()->SweepMultiByChannel(HitResults, OwnerCharacterLocation, OwnerCharacterLocation, FQuat::Identity,  ECollisionChannel::ECC_Pawn, FCollisionShape::MakeSphere(TraceRangeVariable.Get<float>()), param);	
 	}
 
@@ -57,7 +56,7 @@ void UBTServiceDetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 
 		IBTControllerInterface* ControllerInterface = Cast<IBTControllerInterface>(HitActor->GetInstigatorController());
 
-		if(ControllerInterface->IsDeathCharacter())
+		if(ControllerInterface->IsDeathPossessActor())
 		{
 			continue;
 		}

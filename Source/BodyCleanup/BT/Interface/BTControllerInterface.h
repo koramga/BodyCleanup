@@ -32,9 +32,18 @@ enum class EBlackboardVariableType : uint8
 	Float,
 	Int32,
 	FVector,
+	Bool,
 };
 
-typedef TVariant<UObject*, float, int32, FVector> TBlackboardVariable;	
+typedef TVariant<UObject*, float, int32, FVector, bool> TBlackboardVariable;
+
+UENUM(BlueprintType)
+enum class EBTTaskPatternType : uint8
+{
+	Idle,
+	Move,
+	LookAround,
+};
 
 class BODYCLEANUP_API IBTControllerInterface
 {
@@ -45,7 +54,10 @@ public:
 	virtual ETeamType GetTeamType() const  = 0;
 	virtual TBlackboardVariable GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const = 0;
 	virtual bool SetBlackboardVariable(const FName& Name, const TBlackboardVariable& Variable) = 0;
-	virtual bool IsDeathCharacter() const = 0;
+	virtual bool IsDeathPossessActor() const = 0;
 	virtual FVector GetCharacterLocation() const = 0;
-	virtual ACharacter* GetControlCharacter() const = 0;
+	virtual AActor* GetPossessActor() const = 0;
+	virtual bool CanUpdateTaskPattern(EBTTaskPatternType PatternType) const = 0;
+	virtual bool SetTaskPattern(EBTTaskPatternType PatternType) = 0;
+	virtual EBTTaskPatternType GetTaskPattern() const = 0;
 };

@@ -2,10 +2,21 @@
 
 
 #include "BaseNPCController.h"
+#include "../../../BT/Utility/BTGameFunctionLibrary.h"
 
 ABaseNPCController::ABaseNPCController()
 {
 	
+}
+
+void ABaseNPCController::InitializeBlackboardData()
+{
+	Super::InitializeBlackboardData();
+	
+	TBlackboardVariable TraceRangeVariable;
+	TraceRangeVariable.Set<float>(LookAroundTime.GetMetaVariable().Get<float>());
+
+	SetBlackboardVariable(UBTGameFunctionLibrary::LookAroundTimeName, TraceRangeVariable);
 }
 
 void ABaseNPCController::BeginPlay()

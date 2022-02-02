@@ -58,15 +58,7 @@ void ABaseAIController::Tick(float DeltaTime)
 
 void ABaseAIController::InitializeBlackboardData()
 {
-	TBlackboardVariable TraceRangeVariable;
-	TraceRangeVariable.Set<float>(TraceRange.GetMetaVariable().Get<float>());
-
-	SetBlackboardVariable(UBTGameFunctionLibrary::TraceRangeName, TraceRangeVariable);
-
-	TBlackboardVariable LookAroundTimeVariable;
-	LookAroundTimeVariable.Set<float>(LookAroundTime.GetMetaVariable().Get<float>());
-
-	SetBlackboardVariable(UBTGameFunctionLibrary::LookAroundTimeName, LookAroundTimeVariable);
+	
 }
 
 ETeamType ABaseAIController::GetTeamType() const
@@ -92,6 +84,10 @@ TBlackboardVariable ABaseAIController::GetBlackboardVariable(const FName& Name, 
 	case EBlackboardVariableType::FVector :
 		Variable.Set<FVector>(Blackboard->GetValueAsVector(Name));
 		break;
+
+	case EBlackboardVariableType::Bool :
+		Variable.Set<bool>(Blackboard->GetValueAsBool(Name));
+		break;
 	}
 	
 	return Variable;
@@ -113,12 +109,15 @@ bool ABaseAIController::SetBlackboardVariable(const FName& Name, const TBlackboa
 	case EBlackboardVariableType::FVector :
 		Blackboard->SetValueAsVector(Name, Variable.Get<FVector>());
 		break;
+	case EBlackboardVariableType::Bool :
+		Blackboard->SetValueAsBool(Name, Variable.Get<bool>());
+		break;
 	}
 	
 	return true;
 }
 
-bool ABaseAIController::IsDeathCharacter() const
+bool ABaseAIController::IsDeathPossessActor() const
 {
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
 
@@ -127,7 +126,7 @@ bool ABaseAIController::IsDeathCharacter() const
 		return BaseCharacter->IsDeath();
 	}
 
-	return true;
+	return true;	
 }
 
 FVector ABaseAIController::GetCharacterLocation() const
@@ -142,7 +141,7 @@ FVector ABaseAIController::GetCharacterLocation() const
 	return FVector();
 }
 
-ACharacter* ABaseAIController::GetControlCharacter() const
+AActor* ABaseAIController::GetPossessActor() const
 {
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
 
@@ -152,4 +151,19 @@ ACharacter* ABaseAIController::GetControlCharacter() const
 	}
 
 	return nullptr;
+}
+
+bool ABaseAIController::CanUpdateTaskPattern(EBTTaskPatternType PatternType) const
+{
+	return true;
+}
+
+bool ABaseAIController::SetTaskPattern(EBTTaskPatternType PatternType)
+{
+	return true;
+}
+
+EBTTaskPatternType ABaseAIController::GetTaskPattern() const
+{
+	return EBTTaskPatternType::Idle;
 }

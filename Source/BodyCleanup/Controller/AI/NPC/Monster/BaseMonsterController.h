@@ -3,19 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../BaseAIController.h"
+#include "../BaseNPCController.h"
+#include "BodyCleanup/Character/NPCCharacter/BaseNPCCharacter.h"
 #include "BaseMonsterController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABaseMonsterController : public ABaseAIController
+class BODYCLEANUP_API ABaseMonsterController : public ABaseNPCController
 {
 	GENERATED_BODY()
 	
 public :
 	ABaseMonsterController();
+
+protected: 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|BaseMonsterController")
+	FFloatVariableMetaData					TraceRange;
+	
+protected:
+	virtual void InitializeBlackboardData() override;
 	
 protected:
 	virtual void BeginPlay() override;
