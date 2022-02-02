@@ -393,21 +393,6 @@ AActor* ABasePlayerController::GetPossessActor() const
 	return nullptr;
 }
 
-bool ABasePlayerController::CanUpdateTaskPattern(EBTTaskPatternType PatternType) const
-{
-	return false;
-}
-
-bool ABasePlayerController::SetTaskPattern(EBTTaskPatternType PatternType)
-{
-	return false;
-}
-
-EBTTaskPatternType ABasePlayerController::GetTaskPattern() const
-{
-	return EBTTaskPatternType::Idle;
-}
-
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

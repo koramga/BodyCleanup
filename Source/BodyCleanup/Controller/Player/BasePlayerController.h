@@ -64,7 +64,4 @@ public :
 	virtual bool IsDeathPossessActor() const override;
 	virtual FVector GetCharacterLocation() const override;
 	virtual AActor* GetPossessActor() const override;
-	virtual bool CanUpdateTaskPattern(EBTTaskPatternType PatternType) const override;
-	virtual bool SetTaskPattern(EBTTaskPatternType PatternType) override;
-	virtual EBTTaskPatternType GetTaskPattern() const override;
 };

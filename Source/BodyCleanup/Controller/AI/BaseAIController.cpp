@@ -152,18 +152,3 @@ AActor* ABaseAIController::GetPossessActor() const
 
 	return nullptr;
 }
-
-bool ABaseAIController::CanUpdateTaskPattern(EBTTaskPatternType PatternType) const
-{
-	return true;
-}
-
-bool ABaseAIController::SetTaskPattern(EBTTaskPatternType PatternType)
-{
-	return true;
-}
-
-EBTTaskPatternType ABaseAIController::GetTaskPattern() const
-{
-	return EBTTaskPatternType::Idle;
-}
