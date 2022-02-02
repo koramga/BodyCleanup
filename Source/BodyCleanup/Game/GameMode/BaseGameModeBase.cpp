@@ -7,7 +7,8 @@
 
 ABaseGameModeBase::ABaseGameModeBase()
 {
-	//
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABaseGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
@@ -20,9 +21,7 @@ void ABaseGameModeBase::InitGame(const FString& MapName, const FString& Options,
 void ABaseGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//UE_LOG(LogTemp, Display, TEXT("Koramga BeginPlay"));
-
+	
 	if(IsValid(BaseScreenWidgetClass))
 	{
 		BaseScreenWidget = 	CreateWidget<UBaseScreenWidget>(GetWorld(), BaseScreenWidgetClass);
@@ -30,13 +29,13 @@ void ABaseGameModeBase::BeginPlay()
 		if (BaseScreenWidget)
 			BaseScreenWidget->AddToViewport();
 	}
-	
-	InitTrigger();
 }
 
-void ABaseGameModeBase::InitTrigger()
+void ABaseGameModeBase::Tick(float DeltaSeconds)
 {
-	LevelTriggerManager->BeginPlay();
+	Super::Tick(DeltaSeconds);
+
+	LevelTriggerManager->Tick(DeltaSeconds);
 }
 
 void ABaseGameModeBase::RegisterTrigger(ILevelTriggerInterface* LevelTriggerInterface)
@@ -62,11 +61,6 @@ void ABaseGameModeBase::UpdateTrigger(class ILevelTriggerInterface* LevelTrigger
 void ABaseGameModeBase::UpdateTriggerOnce(class ILevelTriggerInterface* LevelTriggerInterface)
 {
 	LevelTriggerManager->UpdateTriggerOnce(LevelTriggerInterface);
-}
-
-void ABaseGameModeBase::SetupTriggerAfterSpawn(AActor* Actor)
-{
-	LevelTriggerManager->SetupTriggerAfterSpawn(Actor);
 }
 
 TSoftObjectPtr<UBaseScreenWidget> ABaseGameModeBase::GetBaseScreenWidget() const

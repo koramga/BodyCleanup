@@ -95,6 +95,10 @@ protected :
 	UPROPERTY()
 	TMap<TSoftObjectPtr<UObject>, ULevelTriggerInterfaceSpace*>						LevelTriggerInterfaceSpaces;
 
+	//최초로 등록한 LevelTriggerInterface는 관계를 맺어줘야 하므로 Tick에서 관계를 설정한다. BeginPlay에서 관계를 설정하려고 하였으나 World에서 모두 세팅되지 않은 상태에서 관계를 설정하려하면 Overlap이 이상하게 동작하는 문제 발생
+	UPROPERTY()
+	TArray<TSoftObjectPtr<ULevelTriggerInterfaceSpace>>								RegisterTriggerInterfaceSpaces;
+
 public :
 	ULevelTriggerInterfaceSpace* GetLevelTriggerInterfaceSpace(const ILevelTriggerInterface* TriggerInterface) const;
 	void RegisterTrigger(ILevelTriggerInterface* TriggerInterface);
@@ -104,6 +108,6 @@ public :
 	void UpdateTriggerOnce(ILevelTriggerInterface* LevelTriggerInterface);
 
 public :
-	void BeginPlay();
+	void Tick(float DeltaSeconds);
 	void SetupTriggerAfterSpawn(AActor* Acotr);
 };

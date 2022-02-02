@@ -31,9 +31,7 @@ public :
 protected :
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
-
-protected:
-	virtual void InitTrigger() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	virtual void RegisterTrigger(class ILevelTriggerInterface* LevelTriggerInterface) override;
@@ -41,7 +39,6 @@ public:
 	virtual const ULevelTriggerManager* GetLevelTriggerManager() const override;
 	virtual void UpdateTrigger(class ILevelTriggerInterface* LevelTriggerInterface, bool bInputIsOnTrigger) override;
 	virtual void UpdateTriggerOnce(class ILevelTriggerInterface* LevelTriggerInterface) override;
-	virtual void SetupTriggerAfterSpawn(AActor* Actor);
 
 public :
 	TSoftObjectPtr<UBaseScreenWidget> GetBaseScreenWidget() const;

@@ -2,6 +2,8 @@
 
 
 #include "LevelTriggerManager.h"
+
+#include "DrawDebugHelpers.h"
 #include "../../Utility/LevelSupportFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -19,6 +21,16 @@ void ULevelTriggerInterfaceSpace::SetupRelationship()
 			{
 				PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin);
 				PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapEnd);
+
+				const TArray<FOverlapInfo>& OverlapInfos = PrimitiveComponent->GetOverlapInfos();
+
+				for(const FOverlapInfo& OverlapInfo : OverlapInfos)
+				{
+					if (CurrentLevelTriggerInterface->IsApplyTriggerFromPrimitiveComopnent(OverlapInfo.OverlapInfo.GetComponent(), OverlapInfo.OverlapInfo.GetActor(), FHitResult()))
+					{
+						__AddTriggerComponentFromPrimitiveEvent(PrimitiveComponent, OverlapInfo.OverlapInfo.GetComponent());
+					}
+				}
 			}
 			else
 			{
@@ -424,6 +436,7 @@ void ULevelTriggerManager::RegisterTrigger(ILevelTriggerInterface* TriggerInterf
 		LevelTriggerInterface->SetLevelTriggerInterface(TriggerInterface);
 
 		LevelTriggerInterfaceSpaces.Add(Cast<UObject>(TriggerInterface), LevelTriggerInterface);
+		RegisterTriggerInterfaceSpaces.Add(LevelTriggerInterface);
 	}
 
 }
@@ -472,33 +485,44 @@ void ULevelTriggerManager::UpdateTriggerOnce(ILevelTriggerInterface* LevelTrigge
 	}
 }
 
-void ULevelTriggerManager::BeginPlay()
+void ULevelTriggerManager::Tick(float DeltaSeconds)
 {
-	for (auto& LevelTriggerInterfaceSpace : LevelTriggerInterfaceSpaces)
+	if(RegisterTriggerInterfaceSpaces.Num() > 0)
 	{
-		if (LevelTriggerInterfaceSpace.Value->HasTriggerComponents())
+		for (auto& LevelTriggerInterfaceSpace : RegisterTriggerInterfaceSpaces)
 		{
-			LevelTriggerInterfaceSpace.Value->SetupRelationship();
-		}
-	}
-
-	for (const auto& LevelTriggerInterfaceSpace : LevelTriggerInterfaceSpaces)
-	{
-		const ILevelTriggerInterface* LevelTriggerInterface = LevelTriggerInterfaceSpace.Value->GetLevelTriggerInterface();
-
-		if (nullptr != LevelTriggerInterface)
-		{
-			const FLevelTriggerInputFrom* LevelTriggerInputFrom = LevelTriggerInterface->GetLevelTriggerInputFrom();
-
-			if (nullptr != LevelTriggerInputFrom)
+			if(LevelTriggerInterfaceSpace.IsValid())
 			{
-				if (ELevelTriggerInputNodeFromType::Action != LevelTriggerInputFrom->LevelTriggerInputNodeFromType)
+				if (LevelTriggerInterfaceSpace->HasTriggerComponents())
 				{
-					LevelTriggerInterfaceSpace.Value->ProcessTrigger(true);
-				}
+					LevelTriggerInterfaceSpace->SetupRelationship();
+				}				
 			}
 		}
-	}
+
+		for (const auto& LevelTriggerInterfaceSpace : RegisterTriggerInterfaceSpaces)
+		{
+			if(LevelTriggerInterfaceSpace.IsValid())
+			{
+				const ILevelTriggerInterface* LevelTriggerInterface = LevelTriggerInterfaceSpace->GetLevelTriggerInterface();
+
+				if (nullptr != LevelTriggerInterface)
+				{
+					const FLevelTriggerInputFrom* LevelTriggerInputFrom = LevelTriggerInterface->GetLevelTriggerInputFrom();
+
+					if (nullptr != LevelTriggerInputFrom)
+					{
+						if (ELevelTriggerInputNodeFromType::Action != LevelTriggerInputFrom->LevelTriggerInputNodeFromType)
+						{
+							LevelTriggerInterfaceSpace->ProcessTrigger(true);
+						}
+					}
+				}				
+			}
+		}
+
+		RegisterTriggerInterfaceSpaces.Empty();		
+	}	
 }
 
 void ULevelTriggerManager::SetupTriggerAfterSpawn(AActor* Actor)

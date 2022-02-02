@@ -66,7 +66,7 @@ void ABaseCharacter::PostInitializeComponents()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	UCharacterMovementComponent* Movement = GetCharacterMovement();
 	FVector Forward = GetActorForwardVector();
 	FVector Velocity = Movement->Velocity;

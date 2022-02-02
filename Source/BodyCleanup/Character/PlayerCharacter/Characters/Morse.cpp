@@ -244,13 +244,6 @@ void AMorse::InputReleasedMouseRightClick()
 				return;
 			}
 
-			ABaseGameModeBase* GameModeBase = Cast<ABaseGameModeBase>(GetWorld()->GetAuthGameMode());
-
-			if (IsValid(GameModeBase))
-			{
-				GameModeBase->SetupTriggerAfterSpawn(SpawnActor);
-			}
-
 			if (MorseAnimInstance.IsValid())
 			{
 				MorseAnimInstance->SetShot();
