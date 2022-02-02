@@ -39,8 +39,6 @@ bool USuperJumpComponent::__IsAllowActor(AActor* Actor)
 void USuperJumpComponent::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Display, TEXT("koramga Overlap Begin in the SuperJump"));
-	
 	if(IsValid(OtherActor)
 		&& OtherActor != GetOwner()
 		&& OtherComp != this)

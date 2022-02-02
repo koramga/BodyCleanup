@@ -29,5 +29,5 @@ void ABaseMonsterCharacter::Tick(float DeltaTime)
 
 void ABaseMonsterCharacter::__OverlapSuperJump(AActor* Actor)
 {
-	UE_LOG(LogTemp, Display, TEXT("Overlap Super Jump"));
+	//Stun이든 뭐든 여기다가 넣으면 된다.
 }

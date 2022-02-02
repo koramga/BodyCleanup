@@ -32,7 +32,7 @@ void USound2DTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inp
 			AudioComponent->Stop();
 		}
 		
-		AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave);
+		AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave, VolumeMultiplier, PitchMultiplier, StartTimer, SoundConcurrency);
 
 		if(FadeInTime > 0.f)
 		{
