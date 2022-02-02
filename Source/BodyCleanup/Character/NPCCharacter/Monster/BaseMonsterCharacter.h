@@ -18,10 +18,17 @@ public :
 	ABaseMonsterCharacter();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USuperJumpComponent* SuperJumpComponent;
+	
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;	
+	virtual void Tick(float DeltaTime) override;
+
+private :
+	void __OverlapSuperJump(AActor* Actor);
 };
