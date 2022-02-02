@@ -450,9 +450,9 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 		TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
 		TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
 		TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
-		ObjectTypes.Add(WorldStatic);
-		ObjectTypes.Add(WorldDynamic);
-		ObjectTypes.Add(WorldPhysicsBody);
+		//ObjectTypes.Add(WorldStatic);
+		//ObjectTypes.Add(WorldDynamic);
+		//ObjectTypes.Add(WorldPhysicsBody);
 
 		if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ArcShootingArcValue))
 		{
