@@ -14,7 +14,8 @@
 				"CoreUObject",
 				"GameplayAbilities",
 				"LevelDesignerTools",
-				"UMG"
+				"UMG",
+				"GameCapabilitySystem"
 			]
 		}
 	],
