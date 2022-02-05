@@ -2,6 +2,9 @@
 
 
 #include "CapabilitySystemComponent.h"
+#include "CAPAttributeSet.h"
+#include "CAPEffect.h"
+#include "CAPTypes.h"
 
 // Sets default values for this component's properties
 UCapabilitySystemComponent::UCapabilitySystemComponent()
@@ -30,5 +33,27 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubclassOf<UCAPAttributeSet> CAPAttributeSetClass)
+{
+	TSoftObjectPtr<UCAPAttributeSet> CAPAttributeSet;
+
+	if(CAPAttributeSet.IsValid())
+	{
+		UCAPAttributeSet* NewCAPAttributeSet = NewObject<UCAPAttributeSet>(this, CAPAttributeSetClass);
+
+		if(IsValid(NewCAPAttributeSet))
+		{
+			CAPAttributeSets.Add(NewCAPAttributeSet);
+			CAPAttributeSet = NewCAPAttributeSet;
+		}
+	}	 
+	
+	return CAPAttributeSet;
+}
+
+void UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target)
+{
 }
 
