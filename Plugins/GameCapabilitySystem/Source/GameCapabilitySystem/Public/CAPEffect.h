@@ -21,7 +21,7 @@ protected:
 	ECAPEffectDurationPolicy				DurationPolicy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect", meta = (EditCondition = "DurationPolicy == ECAPEffectDurationPolicy::Duration", EditConditionHides))
-	FCAPEffectModifierMagnitude				Duration;
+	FCAPEffectDurationMagnitude				Duration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect", meta = (EditCondition = "DurationPolicy != ECAPEffectDurationPolicy::Instant", EditConditionHides))
 	FCAPEffectPeriodMagnitude				Period;
@@ -46,4 +46,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer			RemovalAssetTags;
+
+public :
+	ECAPEffectDurationPolicy GetEffectDurationPolicy() const;
+	const FCAPEffectDurationMagnitude* GetEffectDurationMagnitude() const;
+	const FCAPEffectPeriodMagnitude* GetEffectPeriodMagnitude() const;
+	const FCAPEffectModifierEvaluatedData* GetEffectModifierEvaluatedData() const;
+	FFloatVariableMetaData GetMagnitude(int AbilityLevel);
+	
 };

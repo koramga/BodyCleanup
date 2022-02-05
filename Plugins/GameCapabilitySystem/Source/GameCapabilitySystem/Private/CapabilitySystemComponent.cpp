@@ -2,9 +2,12 @@
 
 
 #include "CapabilitySystemComponent.h"
+
+#include "CAPAffect.h"
 #include "CAPAttributeSet.h"
 #include "CAPEffect.h"
 #include "CAPTypes.h"
+#include "CAPAffect.h"
 
 // Sets default values for this component's properties
 UCapabilitySystemComponent::UCapabilitySystemComponent()
@@ -33,6 +36,13 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	for(UCAPAffect* CAPAffect : OwnCAPAffects)
+	{
+		if(IsValid(CAPAffect))
+		{
+			CAPAffect->Tick(DeltaTime);
+		}
+	}
 }
 
 TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubclassOf<UCAPAttributeSet> CAPAttributeSetClass)
@@ -53,7 +63,27 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 	return CAPAttributeSet;
 }
 
-void UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target)
+void UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability)
 {
+	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
+	UCAPAffect* CAPAffect = NewObject<UCAPAffect>();
+
+	if(IsValid(CAPAffect))
+	{
+		CAPAffect->SetSourceCapabilitySystemComponent(this);
+		CAPAffect->SetTargetCapabilitySystemComponent(Target);
+		CAPAffect->SetEffect(CAPEffect, Ability);
+		OwnCAPAffects.Add(CAPAffect);
+	}
 }
 
+bool UCapabilitySystemComponent::AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value)
+{
+	//누군가에게 영향을 받았다. 
+	return false;
+}
+
+void UCapabilitySystemComponent::AffectTo()
+{
+	//누군가에게 영향을 줬다.
+}

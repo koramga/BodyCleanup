@@ -11,7 +11,7 @@
  */
 
 UENUM(BlueprintType)
-enum class CAPModifierOp : uint8
+enum class ECAPModifierOp : uint8
 {
 	Additive = 0,
 	Multiply,
@@ -62,12 +62,12 @@ struct FCAPEffectModifierEvaluatedData
 	FName					AttributeName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	CAPModifierOp			ModifierOp;
+	ECAPModifierOp			ModifierOp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ECAPEffectMagnitudeType	MagnitudeType;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MagnitudeType == ECAPEffectMagnitudeType::Direct", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FFloatVariableMetaData	Magnitude;
 };
 

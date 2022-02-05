@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CAPAffect.h"
 #include "CAPAttributeSet.h"
 #include "Components/ActorComponent.h"
+#include "CAPTypes.h"
 #include "CapabilitySystemComponent.generated.h"
 
 
@@ -20,7 +22,10 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<UCAPAttributeSet*>		CAPAttributeSets;
-	
+
+	//영향을 준 것
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<UCAPAffect*>				OwnCAPAffects;	
 
 protected:
 	// Called when the game starts
@@ -32,5 +37,7 @@ public:
 
 public :
 	TSoftObjectPtr<UCAPAttributeSet> AddAttribute(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass);
-	void ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target);
+	void ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability);
+	bool AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
+	void AffectTo();
 };
