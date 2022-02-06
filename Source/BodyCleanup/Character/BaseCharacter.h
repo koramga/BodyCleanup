@@ -62,7 +62,7 @@ public :
 	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
 
 private :
-	void __OnGASAttributeChanged(const FOnAttributeChangeData& Data);
+	void __OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data);
 
 public :
 	void SetEnableCapsuleCollision(bool bIsEnable);

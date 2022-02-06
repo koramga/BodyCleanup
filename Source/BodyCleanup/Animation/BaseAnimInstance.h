@@ -34,6 +34,12 @@ protected :
 	UPROPERTY(VisibleAnywhere, BlueprintREadonly)
 	TArray<EAnimationState>	AnimationStates;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float					AnimationPlayTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float					AnimationDurationTime;
+
 protected :
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -58,6 +64,7 @@ public :
 	void SetMoveBlendAngle(float InputMoveBlendAngle);
 	void SetMovementMode(EMovementMode InputMovementMode);
 	void SetAnimationType(EAnimationType InputAnimationType);
+	void SetAnimationDruationTime(float InAnimationDurationTime);
 
 public :
 	virtual bool CanMove() const;

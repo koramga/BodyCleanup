@@ -3,6 +3,7 @@
 
 #include "BaseMonsterCharacter.h"
 #include "../../../Components/Scene/SuperJumpComponent.h"
+#include "BodyCleanup/Animation/BaseAnimInstance.h"
 
 ABaseMonsterCharacter::ABaseMonsterCharacter()
 {
@@ -30,4 +31,9 @@ void ABaseMonsterCharacter::Tick(float DeltaTime)
 void ABaseMonsterCharacter::__OverlapSuperJump(AActor* Actor)
 {
 	//Stun이든 뭐든 여기다가 넣으면 된다.
+	if(IsValid(BaseAnimInstance))
+	{
+		BaseAnimInstance->SetAnimationType(EAnimationType::Stun);
+		BaseAnimInstance->SetAnimationDruationTime(3.f);
+	}
 }

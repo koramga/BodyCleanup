@@ -51,16 +51,16 @@ void USuperJumpComponent::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 			{
 				OverlapActors.Add(OtherActor);
 				
-				if(CallbackDoSuperJump.IsBound())
-				{
-					CallbackDoSuperJump.Execute(OtherActor);
-				}
-				
 				if(__IsAllowActor(OtherActor))
 				{
 					if(CharacterMovementComponent->IsFalling())
 					{
 						CharacterMovementComponent->Velocity.Z = SuperJumpVelocity;
+				
+						if(CallbackDoSuperJump.IsBound())
+						{
+							CallbackDoSuperJump.Execute(OtherActor);
+						}
 					}
 				}
 			}			

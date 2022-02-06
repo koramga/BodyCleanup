@@ -13,6 +13,8 @@
 #include "Components/Widget.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/Script/BubbleScriptUserWidget.h"
+#include "BodyCleanup/Game/GameInstance/BaseGameInstance.h"
+#include "BodyCleanup/Game/GameMode/BaseGameModeBase.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -142,6 +144,29 @@ void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimatio
 {
 }
 
+void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data)
+{
+	UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+	if(IsValid(BaseGameInstance))
+	{
+		FName StatTypeName = BaseGameInstance->GetStatTypeToName(EGameStatType::HP);
+		
+		if(StatTypeName == Data.AttributeName)
+		{
+			if(Data.NewValue <= 0.f)
+			{
+				if(IsValid(BaseAnimInstance))
+				{
+					BaseAnimInstance->SetAnimationType(EAnimationType::Death);
+				}
+				LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+				bIsDeath = true;
+			}
+		}
+	}
+}
+
 //void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
 //{	
 //	TArray<FGameplayAttribute> Attributes;
@@ -199,6 +224,15 @@ EAnimationType ABaseCharacter::GetAnimationType() const
 
 void ABaseCharacter::AddAttributeSet(TSubclassOf<UCAPAttributeSet> CAPAttributeSetClass)
 {
+	if(IsValid(CapabilitySystemComponent))
+	{
+		TSoftObjectPtr<UCAPAttributeSet> CAPAttributeSet = CapabilitySystemComponent->AddAttribute(CAPAttributeSetClass);
+
+		if(CAPAttributeSet.IsValid())
+		{
+			CAPAttributeSet->SetCallbackOnAttributeChanged(this, &ABaseCharacter::__OnGCSAttributeChanged);
+		}
+	}
 }
 
 //void ABaseCharacter::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)

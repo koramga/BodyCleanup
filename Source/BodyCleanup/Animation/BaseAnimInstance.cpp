@@ -20,11 +20,18 @@ void UBaseAnimInstance::NativeInitializeAnimation()
 
 void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
+	if(AnimationDurationTime > 0.f)
+	{
+		AnimationPlayTime += DeltaSeconds;		
+	}
+	
 	Super::NativeUpdateAnimation(DeltaSeconds);
 }
 
 void UBaseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 {
+	AnimationPlayTime = 0.f;
+	
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
 
 	if (IsValid(BaseCharacter))
@@ -38,6 +45,7 @@ void UBaseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 
 void UBaseAnimInstance::UpdateLeftAnimation(EAnimationType InputAnimationType)
 {
+	AnimationDurationTime = 0.f;
 }
 
 void UBaseAnimInstance::UpdateCompleteAnimation(EAnimationType InputAnimationType)
@@ -94,6 +102,11 @@ void UBaseAnimInstance::SetMovementMode(EMovementMode InputMovementMode)
 void UBaseAnimInstance::SetAnimationType(EAnimationType InputAnimationType)
 {
 	DesiredAnimationType = InputAnimationType;
+}
+
+void UBaseAnimInstance::SetAnimationDruationTime(float InAnimationDurationTime)
+{
+	AnimationDurationTime = InAnimationDurationTime;
 }
 
 bool UBaseAnimInstance::CanMove() const
