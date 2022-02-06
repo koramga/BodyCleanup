@@ -56,6 +56,34 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	{
 		OwnCAPAffects.Remove(DoneCAPAffect);
 	}
+
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsActivate())
+		{
+			CAPAbility->Tick(DeltaTime);
+		}
+	}
+}
+
+bool UCapabilitySystemComponent::IsBlockEffect(UCAPEffect* CAPEffect)
+{
+	const FGameplayTagContainer& EffectAssetTag = CAPEffect->GetEffectAssetTags();
+	
+	for(UCAPAffect* CAPAffect : OwnCAPAffects)
+	{
+		TSoftObjectPtr<UCAPEffect> CAPEffectInAffect = CAPAffect->GetEffect();
+
+		const FGameplayTagContainer& BlockAssetTags = CAPEffectInAffect->GetBlockAssetTags();
+
+		if(BlockAssetTags.DoesTagContainerMatch(EffectAssetTag, EGameplayTagMatchType::IncludeParentTags, EGameplayTagMatchType::IncludeParentTags, EGameplayContainerMatchType::Any))
+		{
+			//UE_LOG(LogTemp, Display, TEXT("koramga Block"));
+			return true;
+		}
+	}
+
+	return false;
 }
 
 TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubclassOf<UCAPAttributeSet> CAPAttributeSetClass)
@@ -76,20 +104,9 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
-
-	const FGameplayTagContainer& EffectAssetTag = CAPEffect->GetEffectAssetTags();
-	
-	for(UCAPAffect* CAPAffect : OwnCAPAffects)
+	if(IsBlockEffect(CAPEffect))
 	{
-		TSoftObjectPtr<UCAPEffect> CAPEffectInAffect = CAPAffect->GetEffect();
-
-		const FGameplayTagContainer& BlockAssetTags = CAPEffectInAffect->GetBlockAssetTags();
-
-		if(BlockAssetTags.DoesTagContainerMatch(EffectAssetTag, EGameplayTagMatchType::IncludeParentTags, EGameplayTagMatchType::IncludeParentTags, EGameplayContainerMatchType::Any))
-		{
-			//UE_LOG(LogTemp, Display, TEXT("koramga Block"));
-			return false;
-		}
+		return false;
 	}
 	
 	UCAPAffect* CAPAffect = NewObject<UCAPAffect>();
@@ -98,6 +115,31 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(class UCAPEffect* C
 	{
 		CAPAffect->SetSourceCapabilitySystemComponent(this);
 		CAPAffect->SetTargetCapabilitySystemComponent(Target);
+		CAPAffect->SetEffect(CAPEffect, AbilityLevel);
+		if(nullptr != Advantages)
+		{
+			CAPAffect->SetAdvantage(*Advantages);
+		}
+		OwnCAPAffects.Add(CAPAffect);
+	}
+
+	return true;
+}
+
+bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(UCAPEffect* CAPEffect, int32 AbilityLevel,
+	const TArray<FCAPEffectAdvantage>* Advantages)
+{
+	if(IsBlockEffect(CAPEffect))
+	{
+		return false;
+	}
+	
+	UCAPAffect* CAPAffect = NewObject<UCAPAffect>();
+
+	if(IsValid(CAPAffect))
+	{
+		CAPAffect->SetSourceCapabilitySystemComponent(this);
+		CAPAffect->SetTargetCapabilitySystemComponent(this);
 		CAPAffect->SetEffect(CAPEffect, AbilityLevel);
 		if(nullptr != Advantages)
 		{
@@ -127,4 +169,37 @@ bool UCapabilitySystemComponent::AffectFrom(TSoftObjectPtr<UCAPAffect> Affect, c
 void UCapabilitySystemComponent::AffectTo(TSoftObjectPtr<UCAPAffect> Affect)
 {
 	//누군가에게 영향을 줬다.
+}
+
+TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+{	
+	TSoftObjectPtr<UCAPAbility> CAPAbility;
+
+	UCAPAttributeSet* NewCAPAbility = NewObject<UCAPAttributeSet>(this, CAPAbilityClass);
+
+	if(IsValid(NewCAPAbility))
+	{
+		CAPAttributeSets.Add(NewCAPAbility);
+		CAPAbility = NewCAPAbility;
+	}
+	
+	return CAPAbility;
+}
+
+bool UCapabilitySystemComponent::TryActivateAbilityByClass(TSubclassOf<UCAPAbility> AbilityClass)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsA(AbilityClass))
+		{
+			return CAPAbility->Activate();
+		}
+	}
+
+	return false;
+}
+
+bool UCapabilitySystemComponent::TryActivateAbilityByTag(FGameplayTag Tag)
+{
+	return false;
 }
