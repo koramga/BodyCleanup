@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "CAPTypes.h"
 #include "CAPAffect.generated.h"
 
 /**
@@ -30,6 +31,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TSoftObjectPtr<class UCapabilitySystemComponent> TargetCapabilitySystemComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FCAPEffectAdvantage>						Advantages;
+	
 protected:
 	bool											bIsDone = false;
 	bool											bIsFinish = false;
@@ -44,6 +48,7 @@ protected:
 	
 public :
 	void SetEffect(class UCAPEffect* InCAPEffect, int32 InAbilityLevel);
+	void SetAdvantage(const TArray<FCAPEffectAdvantage>& InAdvantages);
 	void SetSourceCapabilitySystemComponent(class UCapabilitySystemComponent* InSourceCapabilitySystemComponent);
 	void SetTargetCapabilitySystemComponent(class UCapabilitySystemComponent* InTargetCapabilitySystemComponent);
 	

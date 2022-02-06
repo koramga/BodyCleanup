@@ -19,6 +19,7 @@
 #include "LevelDesignerTools/Trigger/Classes/Scene/HitTriggerComponent.h"
 #include "../../GCS/Effect/BaseCAPEffect.h"
 #include "../../GCS/Interface/GCSActorInterface.h"
+#include "../../GCS/Component/BaseCapabilitySystemComponent.h"
 #include "CapabilitySystemInterface.h"
 
 UDamageTriggerComponent::UDamageTriggerComponent()
@@ -47,39 +48,6 @@ void UDamageTriggerComponent::__FindTargetActors(TArray<AActor*>& TargetActors) 
 				TargetActors.AddUnique(OverlapActor.Get());
 			}
 		}
-
-//		const ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(Cast<ILevelTriggerInterface>(this));
-//
-//		if(IsValid(LevelTriggerInterfaceSpace))
-//		{
-//			TArray<TSoftObjectPtr<UPrimitiveComponent>> TriggerPrimitiveComponents;
-//
-//			LevelTriggerInterfaceSpace->GetTriggerPrimitiveComponents(TriggerPrimitiveComponents);				
-//
-//			for(TSoftObjectPtr<UPrimitiveComponent> Key : TriggerPrimitiveComponents)
-//			{
-//				if(Key.IsValid())
-//				{
-//					const FLevelTriggerCertificate* LevelTriggerCertificate = LevelTriggerInterfaceSpace->GetLevelTriggerCertificate(Key.Get());
-//
-//					if(nullptr != LevelTriggerCertificate)
-//					{
-//						for(TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : LevelTriggerCertificate->OtherComps)
-//						{
-//							if(PrimitiveComponent.IsValid())
-//							{
-//								AActor* TargetComponentOwner = PrimitiveComponent->GetOwner();
-//
-//								if(__CanDamageInteractiveActor(TargetComponentOwner))
-//								{
-//									TargetActors.AddUnique(TargetComponentOwner);
-//								}
-//							}
-//						}
-//					}						
-//				}
-//			}
-//		}
 	}	
 }
 
@@ -118,11 +86,6 @@ void UDamageTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inpu
 
 	if(IsValid(Owner))
 	{
-		//if(Owner->GetClass()->ImplementsInterface(ULevelToolsActorInterface::StaticClass()))
-		//{
-		//	ULevelTriggerActorAssist* LevelTriggerActorAssist = Cast<ILevelToolsActorInterface>(Owner)->GetLevelTriggerActorAssist();
-		//}
-
 		if (true == InputLevelTriggerUpdateParam.bIsOnTrigger)
 		{
 			TArray<AActor*>		TargetActors;
@@ -148,10 +111,18 @@ void UDamageTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inpu
 							{
 								//Effect를 넣는다.
 								UCapabilitySystemComponent* CapabilitySystemComponent = Cast<ICapabilitySystemInterface>(Owner)->GetCapabilitySystemComponent();
+								UBaseCapabilitySystemComponent* BaseCapabilitySystemComponent = Cast<UBaseCapabilitySystemComponent>(CapabilitySystemComponent);
 
 								for(AActor* TargetActor : TargetActors)
 								{
-									CapabilitySystemComponent->ApplyGameplayEffectToTarget(HoldShootingGameplayEffect, Cast<ICapabilitySystemInterface>(TargetActor)->GetCapabilitySystemComponent(), 0);
+									if(IsValid(BaseCapabilitySystemComponent))
+									{
+										BaseCapabilitySystemComponent->ApplyGameplayEffectToTargetWithAdvantage(HoldShootingGameplayEffect, Cast<ICapabilitySystemInterface>(TargetActor)->GetCapabilitySystemComponent());	
+									}
+									else
+									{
+										CapabilitySystemComponent->ApplyGameplayEffectToTarget(HoldShootingGameplayEffect, Cast<ICapabilitySystemInterface>(TargetActor)->GetCapabilitySystemComponent());										
+									}									
 								}		
 							}						
 						}					

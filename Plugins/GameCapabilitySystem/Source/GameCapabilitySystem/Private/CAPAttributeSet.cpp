@@ -2,6 +2,7 @@
 
 
 #include "CAPAttributeSet.h"
+#include "CAPAffect.h"
 
 bool UCAPAttributeSet::PreUpdateAttribute(FOnCAPAttributeChangeData& OnCapAttributeChangeData)
 {
@@ -22,7 +23,7 @@ void UCAPAttributeSet::PostUpdateAttribute(const FOnCAPAttributeChangeData& OnCa
 //	}
 //	
 //}
-bool UCAPAttributeSet::AffectAttribute(const FName& AttributeName, ECAPModifierOp Op, float Magnitude)
+bool UCAPAttributeSet::AffectAttribute(TSoftObjectPtr<UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp Op, float Magnitude)
 {
 	for(FCAPAttributeData& CAPAttributeData : CAPAttributeDatas)
 	{

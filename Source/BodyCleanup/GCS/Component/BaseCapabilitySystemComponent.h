@@ -13,5 +13,8 @@ UCLASS()
 class BODYCLEANUP_API UBaseCapabilitySystemComponent : public UCapabilitySystemComponent
 {
 	GENERATED_BODY()
+
+public :
+	virtual bool ApplyGameplayEffectToTargetWithAdvantage(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0);
 	
 };

@@ -122,3 +122,16 @@ struct FOnCAPAttributeChangeData
 	FName AttributeName;
 	TSoftObjectPtr<class UCAPAttributeSet> AttributeSet;
 };
+
+USTRUCT(BlueprintType)
+struct FCAPEffectAdvantage
+{
+	GENERATED_BODY()
+
+	FCAPEffectAdvantage(){}
+	FCAPEffectAdvantage(const FName& InPropertyName, float InAdvantage)
+		: PropertyName(InPropertyName), Advantage(InAdvantage){}
+	
+	FName	PropertyName;
+	float	Advantage;
+};

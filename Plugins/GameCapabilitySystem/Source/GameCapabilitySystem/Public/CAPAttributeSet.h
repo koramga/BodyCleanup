@@ -92,7 +92,7 @@ private :
 public :
 	virtual bool PreUpdateAttribute(FOnCAPAttributeChangeData& OnCapAttributeChangeData);
 	virtual void PostUpdateAttribute(const FOnCAPAttributeChangeData& OnCapAttributeChangeData);
-	virtual bool AffectAttribute(const FName& AttributeName, ECAPModifierOp Op, float Magnitude);
+	virtual bool AffectAttribute(TSoftObjectPtr<class UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp Op, float Magnitude);
 
 public :
 	template <typename T>

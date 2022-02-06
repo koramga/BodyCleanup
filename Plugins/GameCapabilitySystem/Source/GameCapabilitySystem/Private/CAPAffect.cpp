@@ -44,6 +44,11 @@ void UCAPAffect::SetEffect(UCAPEffect* InCAPEffect, int32 InAbilityLevel)
 	AbilityLevel = InAbilityLevel;
 }
 
+void UCAPAffect::SetAdvantage(const TArray<FCAPEffectAdvantage>& InAdvantages)
+{
+	Advantages = InAdvantages;
+}
+
 void UCAPAffect::SetSourceCapabilitySystemComponent(UCapabilitySystemComponent* InSourceCapabilitySystemComponent)
 {
 	SourceCapabilitySystemComponent = InSourceCapabilitySystemComponent;
@@ -82,9 +87,18 @@ void UCAPAffect::Tick(float DeltaTime)
 			FFloatVariableMetaData MagnitudeMetaData = Magnitude.GetMagnitude(AbilityLevel);
 			float MagnitudeVariable = MagnitudeMetaData.GetMetaVariable().Get<float>();
 
-			if(TargetCapabilitySystemComponent->AffectFrom(Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable))
+			for(const FCAPEffectAdvantage& Advantage : Advantages)
 			{
-				SourceCapabilitySystemComponent->AffectTo();
+				if(Advantage.PropertyName == Magnitude.AttributeName)
+				{
+					MagnitudeVariable *= Advantage.Advantage;
+					break;
+				}
+			}
+
+			if(TargetCapabilitySystemComponent->AffectFrom(this, Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable))
+			{
+				SourceCapabilitySystemComponent->AffectTo(this);
 			}
 		}
 	}	

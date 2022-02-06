@@ -37,7 +37,7 @@ public:
 
 public :
 	TSoftObjectPtr<UCAPAttributeSet> AddAttribute(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass);
-	bool ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability);
-	bool AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
-	void AffectTo();
+	virtual bool ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
+	bool AffectFrom(TSoftObjectPtr<class UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
+	void AffectTo(TSoftObjectPtr<class UCAPAffect> Affect);
 };

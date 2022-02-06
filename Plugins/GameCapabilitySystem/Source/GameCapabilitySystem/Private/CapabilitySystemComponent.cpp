@@ -73,7 +73,7 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 	return CAPAttributeSet;
 }
 
-bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability)
+bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
 
@@ -98,20 +98,24 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffe
 	{
 		CAPAffect->SetSourceCapabilitySystemComponent(this);
 		CAPAffect->SetTargetCapabilitySystemComponent(Target);
-		CAPAffect->SetEffect(CAPEffect, Ability);
+		CAPAffect->SetEffect(CAPEffect, AbilityLevel);
+		if(nullptr != Advantages)
+		{
+			CAPAffect->SetAdvantage(*Advantages);
+		}
 		OwnCAPAffects.Add(CAPAffect);
 	}
 
 	return true;
 }
 
-bool UCapabilitySystemComponent::AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value)
+bool UCapabilitySystemComponent::AffectFrom(TSoftObjectPtr<UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value)
 {
 	//누군가에게 영향을 받았다.
 
 	for(UCAPAttributeSet* CAPAttribute : CAPAttributeSets)
 	{
-		if(CAPAttribute->AffectAttribute(AttributeName, ModifierOp, Value))
+		if(CAPAttribute->AffectAttribute(Affect, AttributeName, ModifierOp, Value))
 		{
 			return true;
 		}
@@ -120,7 +124,7 @@ bool UCapabilitySystemComponent::AffectFrom(const FName& AttributeName, ECAPModi
 	return false;
 }
 
-void UCapabilitySystemComponent::AffectTo()
+void UCapabilitySystemComponent::AffectTo(TSoftObjectPtr<UCAPAffect> Affect)
 {
 	//누군가에게 영향을 줬다.
 }
