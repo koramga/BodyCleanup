@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseCAPAbility.h"
+#include "BodyCleanup/ExDefines.h"
 #include "MontageCAPAbility.generated.h"
 
 /**
@@ -13,5 +14,19 @@ UCLASS()
 class BODYCLEANUP_API UMontageCAPAbility : public UBaseCAPAbility
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAnimMontage*	Montage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EAnimationType	AnimationType;
+
+protected:
+	virtual void OnActivateAbility();
+	virtual bool CanActivate();
+	virtual void OnEndAbility();
 	
+public :
+	virtual void UpdateAnimationType(EAnimationType InAnimationType, EAnimationType BeforeAnimationType) override;
 };

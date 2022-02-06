@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CAPAbility.h"
+#include "../../ExDefines.h"
 #include "BaseCAPAbility.generated.h"
 
 /**
@@ -13,5 +14,7 @@ UCLASS()
 class BODYCLEANUP_API UBaseCAPAbility : public UCAPAbility
 {
 	GENERATED_BODY()
-	
+
+public :
+	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
 };

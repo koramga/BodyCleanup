@@ -57,6 +57,11 @@ void UBaseAnimInstance::UpdateAnimationType(EAnimationType NextAnimationType, EA
 	AnimationType = NextAnimationType;
 }
 
+void UBaseAnimInstance::OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterrupt)
+{
+	
+}
+
 void UBaseAnimInstance::EnterAnimationType(EAnimationType InputAnimationType)
 {
 	AnimationStates[static_cast<int32>(InputAnimationType)] = EAnimationState::Enter;
@@ -102,6 +107,44 @@ void UBaseAnimInstance::SetMovementMode(EMovementMode InputMovementMode)
 void UBaseAnimInstance::SetAnimationType(EAnimationType InputAnimationType)
 {
 	DesiredAnimationType = InputAnimationType;
+}
+
+void UBaseAnimInstance::__OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterrupt)
+{
+	OnMontageLeft(AnimMontage, bIsInterrupt);
+
+	LeftAnimationType(AnimationType);
+}
+
+void UBaseAnimInstance::SetAnimationMontage(UAnimMontage* AnimMontage)
+{
+	if(IsValid(AnimMontage))
+	{
+		Montage_Play(AnimMontage);
+		
+		FOnMontageEnded BlendEnded;
+		BlendEnded.BindUObject(this, &UBaseAnimInstance::__OnMontageLeft);
+
+		Montage_SetEndDelegate(BlendEnded, AnimMontage);
+	}	
+}
+
+bool UBaseAnimInstance::IsPlayingMontage(UAnimMontage* AnimMontage)
+{	
+	return Montage_IsPlaying(AnimMontage);
+}
+
+bool UBaseAnimInstance::IsActivateMontage(UAnimMontage* AnimMontage)
+{
+	return Montage_IsActive(AnimMontage);
+}
+
+void UBaseAnimInstance::SetStopAnimationMontage(UAnimMontage* AnimMontage)
+{
+	if(Montage_IsPlaying(AnimMontage))
+	{
+		Montage_Stop(0.1f, AnimMontage);
+	}	
 }
 
 void UBaseAnimInstance::SetAnimationDruationTime(float InAnimationDurationTime)

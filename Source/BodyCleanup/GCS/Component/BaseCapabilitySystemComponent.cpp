@@ -6,6 +6,7 @@
 #include "../../Components/Actor/GameActorSettingsComponent.h"
 #include "../../Game/GameInstance/BaseGameInstance.h"
 #include "../../Game/GameMode/BaseGameModeBase.h"
+#include "BodyCleanup/GCS/Ability/BaseCAPAbility.h"
 
 bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UCAPEffect* CAPEffect,
                                                                               UCapabilitySystemComponent* Target, int32 AbilityLevel)
@@ -117,4 +118,18 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 	}
 
 	return false;
+}
+
+void UBaseCapabilitySystemComponent::UpdateAnimationType(EAnimationType AnimationType,
+	EAnimationType BeforeAnimationType)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		UBaseCAPAbility* BaseCAPAbility = Cast<UBaseCAPAbility>(CAPAbility);
+
+		if(IsValid(BaseCAPAbility))
+		{
+			BaseCAPAbility->UpdateAnimationType(AnimationType, BeforeAnimationType);
+		}
+	}
 }

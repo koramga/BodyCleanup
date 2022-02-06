@@ -142,6 +142,10 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType)
 {
+	if(IsValid(CapabilitySystemComponent))
+	{
+		CapabilitySystemComponent->UpdateAnimationType(AnimationType, BeforeAnimationType);
+	}
 }
 
 void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data)
@@ -204,11 +208,44 @@ void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 	}
 }
 
-void ABaseCharacter::SetAnimationType(EAnimationType AnimationType)
+void ABaseCharacter::SetAnimationType(EAnimationType AnimationType, UAnimMontage* Montage)
 {
 	if (IsValid(BaseAnimInstance))
 	{
 		BaseAnimInstance->SetAnimationType(AnimationType);
+
+		if(IsValid(Montage))
+		{
+			BaseAnimInstance->SetAnimationMontage(Montage);
+		}
+	}	
+}
+
+bool ABaseCharacter::IsPlayingMontage(UAnimMontage* AnimMontage)
+{
+	if (IsValid(BaseAnimInstance))
+	{
+		return BaseAnimInstance->IsPlayingMontage(AnimMontage);
+	}
+
+	return false;	
+}
+
+bool ABaseCharacter::IsActivateMontage(UAnimMontage* AnimMontage)
+{	
+	if (IsValid(BaseAnimInstance))
+	{
+		return BaseAnimInstance->IsActivateMontage(AnimMontage);
+	}
+
+	return false;
+}
+
+void ABaseCharacter::SetStopMontage(UAnimMontage* AnimMontage)
+{
+	if(IsValid(BaseAnimInstance))
+	{
+		BaseAnimInstance->SetStopAnimationMontage(AnimMontage);
 	}
 }
 

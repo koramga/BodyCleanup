@@ -59,10 +59,7 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	for(UCAPAbility* CAPAbility : CAPAbilities)
 	{
-		if(CAPAbility->IsActivate())
-		{
-			CAPAbility->Tick(DeltaTime);
-		}
+		CAPAbility->Tick(DeltaTime);
 	}
 }
 

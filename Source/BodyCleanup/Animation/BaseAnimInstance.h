@@ -40,6 +40,9 @@ protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float					AnimationDurationTime;
 
+private :
+	void __OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterrupt);
+
 protected :
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -49,6 +52,7 @@ protected :
 	virtual void UpdateLeftAnimation(EAnimationType InputAnimationType);
 	virtual void UpdateCompleteAnimation(EAnimationType InputAnimationType);
 	virtual void UpdateAnimationType(EAnimationType NextAnimationType, EAnimationType BeforeAnimationType);
+	virtual void OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterrupt);
 	
 
 protected:
@@ -64,6 +68,10 @@ public :
 	void SetMoveBlendAngle(float InputMoveBlendAngle);
 	void SetMovementMode(EMovementMode InputMovementMode);
 	void SetAnimationType(EAnimationType InputAnimationType);
+	void SetAnimationMontage(UAnimMontage* AnimMontage);
+	bool IsPlayingMontage(UAnimMontage* AnimMontage);
+	bool IsActivateMontage(UAnimMontage* AnimMontage);
+	void SetStopAnimationMontage(UAnimMontage* AnimMontage);
 	void SetAnimationDruationTime(float InAnimationDurationTime);
 
 public :

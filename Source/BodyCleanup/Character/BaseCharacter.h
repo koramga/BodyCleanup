@@ -66,7 +66,10 @@ private :
 
 public :
 	void SetEnableCapsuleCollision(bool bIsEnable);
-	void SetAnimationType(EAnimationType AnimationType);
+	void SetAnimationType(EAnimationType AnimationType, UAnimMontage* AnimMontage = nullptr);
+	bool IsPlayingMontage(UAnimMontage* AnimMontage);
+	bool IsActivateMontage(UAnimMontage* AnimMontage);
+	void SetStopMontage(UAnimMontage* AnimMontage);
 	EAnimationType GetAnimationType() const;
 	//virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;

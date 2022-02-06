@@ -16,6 +16,11 @@ void UCAPAbility::OnEndAbility()
 	
 }
 
+TSoftObjectPtr<UCapabilitySystemComponent> UCAPAbility::GetOwnerCapabilitySystemComponent() const
+{
+	return OwnerCapabilitySystemComponent;
+}
+
 void UCAPAbility::CommitAbility()
 {
 	if(OwnerCapabilitySystemComponent.IsValid())
@@ -35,6 +40,8 @@ void UCAPAbility::Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> In
 	{
 		CostCAPEffect = NewObject<UCAPEffect>(this, CostCAPEffectClass);
 	}
+
+	CurrentCooldown = InitCooldown;
 }
 
 bool UCAPAbility::IsActivate()
@@ -44,12 +51,25 @@ bool UCAPAbility::IsActivate()
 
 bool UCAPAbility::CanActivate()
 {
+	if(CurrentCooldown > 0.f)
+	{
+		return false;
+	}
+	
 	return true;
 }
 
 void UCAPAbility::Tick(float DeltaTime)
 {
-	
+	if(CurrentCooldown > 0.f)
+	{
+		CurrentCooldown -= DeltaTime;
+
+		if(CurrentCooldown <= 0.f)
+		{
+			CurrentCooldown = 0.f;
+		}		
+	}	
 }
 
 bool UCAPAbility::Activate()
