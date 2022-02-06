@@ -6,6 +6,8 @@
 #include "../GAS/Effect/BaseGameplayEffect.h"
 #include "../GAS/AttributeSet/BaseAttributeSet.h"
 #include  "../GAS/AttributeSet/BaseStatsAttributeSet.h"
+#include "../Game/GameInstance/BaseGameInstance.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 ABaseActor::ABaseActor()
@@ -79,14 +81,22 @@ void ABaseActor::__SetCollisionProfileNames(USceneComponent* SceneComponent, con
 
 void ABaseActor::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data)
 {
-	if(Data.AttributeName == "Health")
+	UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+	if(IsValid(BaseGameInstance))
 	{
-		if(Data.NewValue <= 0.f)
+		FName StatTypeName = BaseGameInstance->GetStatTypeToName(EGameStatType::HP);
+		
+		if(StatTypeName == Data.AttributeName)
 		{
-			LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
-			bIsDeath = true;
+			if(Data.NewValue <= 0.f)
+			{
+				LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+				bIsDeath = true;
+			}
 		}
 	}
+	
 }
 
 //void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)

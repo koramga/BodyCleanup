@@ -4,6 +4,8 @@
 #include "BaseCapabilitySystemComponent.h"
 #include "../../ExDefines.h"
 #include "../../Components/Actor/GameActorSettingsComponent.h"
+#include "../../Game/GameInstance/BaseGameInstance.h"
+#include "../../Game/GameMode/BaseGameModeBase.h"
 
 bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UCAPEffect* CAPEffect,
                                                                               UCapabilitySystemComponent* Target, int32 AbilityLevel)
@@ -92,6 +94,14 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 		break;
 	}
 	
-	Advantages.Add(FCAPEffectAdvantage("Health", Advantage));
+	UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+	if(IsValid(BaseGameInstance))
+	{
+		FName StatTypeName = BaseGameInstance->GetStatTypeToName(EGameStatType::HP);
+		
+		Advantages.Add(FCAPEffectAdvantage(StatTypeName, Advantage));
+	}
+	
 	return Super::ApplyGameplayEffectToTarget(CAPEffect, Target, AbilityLevel, &Advantages);
 }

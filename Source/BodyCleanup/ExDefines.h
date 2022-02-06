@@ -85,6 +85,15 @@ enum class EInteractiveType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EGameStatType : uint8
+{
+	HP,
+	MaxHP,
+	MP,
+	MaxMP,
+};
+
+UENUM(BlueprintType)
 enum class EInteractiveActive : uint8
 {
 	Activate,
