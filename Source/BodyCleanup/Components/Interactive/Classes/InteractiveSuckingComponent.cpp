@@ -116,7 +116,7 @@ void UInteractiveSuckingComponent::UpdateInteractiveType(uint8 CurrentInteractiv
 
 void UInteractiveSuckingComponent::SetRigidBodyCollision(bool bIsCollision)
 {
-	UE_LOG(LogTemp, Display, TEXT("koramga RigidBodyCollision : <%d>"), static_cast<int32>(bIsCollision));
+	//UE_LOG(LogTemp, Display, TEXT("koramga RigidBodyCollision : <%d>"), static_cast<int32>(bIsCollision));
 	
 	for(TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
 	{

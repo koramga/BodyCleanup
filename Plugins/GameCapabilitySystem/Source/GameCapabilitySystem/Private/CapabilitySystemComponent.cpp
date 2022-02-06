@@ -87,7 +87,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffe
 
 		if(BlockAssetTags.DoesTagContainerMatch(EffectAssetTag, EGameplayTagMatchType::IncludeParentTags, EGameplayTagMatchType::IncludeParentTags, EGameplayContainerMatchType::Any))
 		{
-			UE_LOG(LogTemp, Display, TEXT("koramga Block"));
+			//UE_LOG(LogTemp, Display, TEXT("koramga Block"));
 			return false;
 		}
 	}

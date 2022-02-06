@@ -22,16 +22,21 @@ enum class ECAPModifierOp : uint8
 UENUM(BlueprintType)
 enum class ECAPEffectMagnitudeType : uint8
 {
+	//기본 방식으로 입력한 Default 값에만 영향을 주게 됩니다.
 	Default,
+	//AbilityLevel에 따라 값을 다르게 설정할 수 있습니다.
 	AbilityLevel,
 };
 
 UENUM(BlueprintType)
 enum class ECAPEffectDurationPolicy : uint8
 {
+	//한 번만 실행합니다.
 	Instant,
-	Infinite,
-	Duration,	
+	//정해진 기간동안 실행합니다.
+	Duration,
+	//무한히 실행됩니다.
+	Infinite UMETA(Hidden),
 };
 
 UENUM(BlueprintType)
@@ -46,15 +51,19 @@ struct FCAPEffectModifierEvaluatedData
 {
 	GENERATED_USTRUCT_BODY()
 
+	//Attribute 이름 입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName					AttributeName;
 
+	//어떻게 데미지를 줄 것인지에 대한 연산 방식을 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ECAPModifierOp			ModifierOp;
 
+	//값을 전달할 방식에 대한 방법을 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ECAPEffectMagnitudeType	MagnitudeType;
-	
+
+	//기본 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FFloatVariableMetaData	DefaultMagnitude;
 
@@ -79,10 +88,11 @@ struct FCAPEffectPeriodMagnitude
 {
 	GENERATED_USTRUCT_BODY()
 
+	//주기를 설정합니다. 만약 Duration이 2이고 Period가 0.5이면 총 4번 Effect가 실행됩니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					Period;
 
-	//매 Period마다 영향을 줄 것이냐 (버프같은경우에는 Duration은 존재하지만 한 번만 실행시킬 수 있어야 한다.)
+	//매 Period마다 영향을 줄 것인지를 설정합니다. 버프 같은 경우에는 false로 설정하여 1번만 실행하는 것이 좋습니다. 만약 true로 되면 중첩되어 버프효과가 배가 될 것입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					ExecutePeriodicEffectOnApplication = true; 
 };
