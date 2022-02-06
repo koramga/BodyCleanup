@@ -12,7 +12,7 @@ UGameActorSettingsComponent::UGameActorSettingsComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
-	WeightType = EWeightType::None;
+	WeightType = EWeightType::Dust;
 }
 
 

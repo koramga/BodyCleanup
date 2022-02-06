@@ -43,7 +43,6 @@ enum class ELevelType : uint8
 UENUM(BlueprintType)
 enum class EWeightType : uint8
 {
-	None,
 	Dust,
 	Light,
 	Middle,

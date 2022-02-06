@@ -39,7 +39,7 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 	case EWeightType::Dust :
 		if(TargetWeightType == EWeightType::Dust)
 		{
-			
+
 		}
 		else
 		{
@@ -83,7 +83,7 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 			|| TargetWeightType == EWeightType::Middle
 			|| TargetWeightType == EWeightType::Heavy)
 		{
-			
+
 		}
 		else
 		{
@@ -95,13 +95,26 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 	}
 	
 	UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
-
+	
 	if(IsValid(BaseGameInstance))
 	{
 		FName StatTypeName = BaseGameInstance->GetStatTypeToName(EGameStatType::HP);
 		
 		Advantages.Add(FCAPEffectAdvantage(StatTypeName, Advantage));
 	}
-	
-	return Super::ApplyGameplayEffectToTarget(CAPEffect, Target, AbilityLevel, &Advantages);
+
+	if(Super::ApplyGameplayEffectToTarget(CAPEffect, Target, AbilityLevel, &Advantages))
+	{
+	 	int32 WeightTypeIndex = static_cast<int32>(WeightType);
+		int32 TargetWeightTypeIndex = static_cast<int32>(TargetWeightType);
+
+		if(WeightTypeIndex <= TargetWeightTypeIndex)
+		{
+			Target->ApplyGameplayEffectToTarget(CAPEffect, this, AbilityLevel);	
+		}
+
+		return true;
+	}
+
+	return false;
 }
