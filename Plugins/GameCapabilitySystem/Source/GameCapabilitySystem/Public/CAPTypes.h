@@ -22,8 +22,8 @@ enum class ECAPModifierOp : uint8
 UENUM(BlueprintType)
 enum class ECAPEffectMagnitudeType : uint8
 {
+	Default,
 	AbilityLevel,
-	Direct,
 };
 
 UENUM(BlueprintType)
@@ -42,18 +42,6 @@ enum class ECAPEffectStackingPolicy : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FCAPEffectModifierMagnitude
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32					AbilityLevel;					
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FFloatVariableMetaData	Magnitude;
-};
-
-USTRUCT(BlueprintType)
 struct FCAPEffectModifierEvaluatedData
 {
 	GENERATED_USTRUCT_BODY()
@@ -68,7 +56,13 @@ struct FCAPEffectModifierEvaluatedData
 	ECAPEffectMagnitudeType	MagnitudeType;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FFloatVariableMetaData	Magnitude;
+	FFloatVariableMetaData	DefaultMagnitude;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MagnitudeType == ECAPEffectMagnitudeType::AbilityLevel", EditConditionHides))
+	TArray<FFloatVariableMetaData>	AbilityLevelMagnitudes;
+
+public :
+	FFloatVariableMetaData GetMagnitude(int32 AbilityLevel) const;
 };
 
 USTRUCT(BlueprintType)
@@ -109,4 +103,12 @@ struct FCAPEffectStack
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "Policy == ECAPEffectStackingPolicy::Count", EditConditionHides))
 	bool						bIsRefreshPeriod;
+};
+
+struct FOnCAPAttributeChangeData
+{
+	float OldValue;
+	float NewValue;
+	FName AttributeName;
+	TSoftObjectPtr<class UCAPAttributeSet> AttributeSet;
 };

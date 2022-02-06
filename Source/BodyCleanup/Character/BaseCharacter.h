@@ -6,14 +6,15 @@
 #include "GameFramework/Character.h"
 #include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
-#include "AbilitySystemInterface.h"
-#include "../GAS/Interface/Actor/GASActorInterface.h"
-#include "BodyCleanup/GAS/Ability/BaseGameplayAbility.h"
+#include "CapabilitySystemInterface.h"
+#include "../GCS/Interface/GCSActorInterface.h"
+#include "../GAS/Ability/BaseGameplayAbility.h"
 #include "../BT/Interface/BTCharacterInterface.h"
+#include "../GCS/Component/BaseCapabilitySystemComponent.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public IAbilitySystemInterface, public IGASActorInterface, public IBTCharacterInterface
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public ICapabilitySystemInterface, public IBTCharacterInterface, public IGCSActorInterface
 {
 	GENERATED_BODY()
 
@@ -35,7 +36,7 @@ protected:
 	ULevelTriggerActorAssist*		LevelTriggerActorAssist;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UAbilitySystemComponent*	AbilitySystemComponent;
+	UBaseCapabilitySystemComponent*		CapabilitySystemComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UGameActorSettingsComponent*	GameActorSettingsComponent;
@@ -67,8 +68,8 @@ public :
 	void SetEnableCapsuleCollision(bool bIsEnable);
 	void SetAnimationType(EAnimationType AnimationType);
 	EAnimationType GetAnimationType() const;
-	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
-	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
+	//virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
+	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;
 	virtual bool IsDeath() const override;
 	
 public :
@@ -76,6 +77,6 @@ public :
 	virtual void SetHiddenInGameSpeechBubble(bool bIsHidden);
 	
 public:
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UCapabilitySystemComponent* GetCapabilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
 };

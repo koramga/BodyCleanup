@@ -2,7 +2,7 @@
 
 
 #include "GameActorSettingsComponent.h"
-#include "../../GAS/Interface/Actor/GASActorInterface.h"
+#include "../../GCS/Interface/GCSActorInterface.h"
 
 // Sets default values for this component's properties
 UGameActorSettingsComponent::UGameActorSettingsComponent()
@@ -26,11 +26,11 @@ void UGameActorSettingsComponent::BeginPlay()
 
 	if(IsValid(Owner))
 	{
-		if(Owner->GetClass()->ImplementsInterface(UGASActorInterface::StaticClass()))
+		if(Owner->GetClass()->ImplementsInterface(UGCSActorInterface::StaticClass()))
 		{
-			IGASActorInterface* GASActor = Cast<IGASActorInterface>(Owner);
+			IGCSActorInterface* GASActor = Cast<IGCSActorInterface>(Owner);
 
-			for(const TSubclassOf<class UBaseAttributeSet>& BaseAttributeSetClass : BaseAttributeSetClasses)
+			for(const TSubclassOf<class UCAPAttributeSet>& BaseAttributeSetClass : BaseAttributeSetClasses)
 			{
 				GASActor->AddAttributeSet(BaseAttributeSetClass);
 			}

@@ -18,25 +18,8 @@ const FCAPEffectPeriodMagnitude* UCAPEffect::GetEffectPeriodMagnitude() const
 	return &Period;
 }
 
-const FCAPEffectModifierEvaluatedData* UCAPEffect::GetEffectModifierEvaluatedData() const
-{
-	return &Modifiers;
-}
 
-FFloatVariableMetaData UCAPEffect::GetMagnitude(int AbilityLevel)
+const TArray<FCAPEffectModifierEvaluatedData>& UCAPEffect::GetModifierMagnitude() const
 {
-	FFloatVariableMetaData Magnitude = Modifiers.Magnitude;
-	
-	if(ECAPEffectMagnitudeType::AbilityLevel == Modifiers.MagnitudeType)
-	{
-		for(const FCAPEffectModifierMagnitude& CAPEffectModifierMagnitde : Magnitudes)
-		{
-			if(CAPEffectModifierMagnitde.AbilityLevel == AbilityLevel)
-			{
-				Magnitude = CAPEffectModifierMagnitde.Magnitude;
-			}
-		}
-	}
-
-	return Magnitude;
+	return Modifiers;
 }

@@ -8,6 +8,7 @@
 #include "../../../GAS/Ability/BaseGameplayAbility.h"
 #include "../../../GAS/Interface/Actor/GASActorInterface.h"
 #include "../../../GAS/Effect/BaseGameplayEffect.h"
+#include "../../../GCS/Effect/BaseCAPEffect.h"
 
 UInteractiveSuckingComponent::UInteractiveSuckingComponent()
 {
@@ -18,9 +19,9 @@ void UInteractiveSuckingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(IsValid(BaseGameplayEffectClass))
+	if(IsValid(BaseCAPEffectClass))
 	{
-		BaseGameplayEffect = NewObject<UBaseGameplayEffect>(this, BaseGameplayEffectClass); 
+		BaseCAPEffect = NewObject<UBaseCAPEffect>(this, BaseCAPEffectClass); 
 	}
 
 	for(EInteractiveSuckingType TriggerInteractiveSuckingType : TriggerInteractiveSuckingTypes)
@@ -235,12 +236,7 @@ int32 UInteractiveSuckingComponent::GetJunkValue() const
 	return JunkValue;
 }
 
-const FGameplayAbilitySpec& UInteractiveSuckingComponent::GetHoldShootingAbilitySpec() const
+UBaseCAPEffect* UInteractiveSuckingComponent::GetHoldShootingCAPEffect()
 {
-	return HoldShootingAbilitySpec;
-}
-
-UBaseGameplayEffect* UInteractiveSuckingComponent::GetHoldShootingGameplayEffect()
-{
-	return BaseGameplayEffect;
+	return BaseCAPEffect;
 }

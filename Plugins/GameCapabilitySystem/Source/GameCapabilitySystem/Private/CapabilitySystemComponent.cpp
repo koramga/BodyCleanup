@@ -36,12 +36,25 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	TArray<UCAPAffect*> DoneAffects;
+	
 	for(UCAPAffect* CAPAffect : OwnCAPAffects)
 	{
 		if(IsValid(CAPAffect))
 		{
 			CAPAffect->Tick(DeltaTime);
+
+			if(CAPAffect->IsDone())
+			{
+				DoneAffects.Add(CAPAffect);
+			}
 		}
+	}
+
+	for(UCAPAffect* DoneCAPAffect : DoneAffects)
+	{
+		OwnCAPAffects.Remove(DoneCAPAffect);
 	}
 }
 
@@ -49,16 +62,13 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 {
 	TSoftObjectPtr<UCAPAttributeSet> CAPAttributeSet;
 
-	if(CAPAttributeSet.IsValid())
-	{
-		UCAPAttributeSet* NewCAPAttributeSet = NewObject<UCAPAttributeSet>(this, CAPAttributeSetClass);
+	UCAPAttributeSet* NewCAPAttributeSet = NewObject<UCAPAttributeSet>(this, CAPAttributeSetClass);
 
-		if(IsValid(NewCAPAttributeSet))
-		{
-			CAPAttributeSets.Add(NewCAPAttributeSet);
-			CAPAttributeSet = NewCAPAttributeSet;
-		}
-	}	 
+	if(IsValid(NewCAPAttributeSet))
+	{
+		CAPAttributeSets.Add(NewCAPAttributeSet);
+		CAPAttributeSet = NewCAPAttributeSet;
+	}
 	
 	return CAPAttributeSet;
 }
@@ -79,7 +89,16 @@ void UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffe
 
 bool UCapabilitySystemComponent::AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value)
 {
-	//누군가에게 영향을 받았다. 
+	//누군가에게 영향을 받았다.
+
+	for(UCAPAttributeSet* CAPAttribute : CAPAttributeSets)
+	{
+		if(CAPAttribute->AffectAttribute(AttributeName, ModifierOp, Value))
+		{
+			return true;
+		}
+	}
+	
 	return false;
 }
 

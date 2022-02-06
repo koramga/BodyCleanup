@@ -18,20 +18,16 @@ class GAMECAPABILITYSYSTEM_API UCAPEffect : public UObject
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect")
-	ECAPEffectDurationPolicy				DurationPolicy;
+	ECAPEffectDurationPolicy						DurationPolicy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect", meta = (EditCondition = "DurationPolicy == ECAPEffectDurationPolicy::Duration", EditConditionHides))
-	FCAPEffectDurationMagnitude				Duration;
+	FCAPEffectDurationMagnitude						Duration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect", meta = (EditCondition = "DurationPolicy != ECAPEffectDurationPolicy::Instant", EditConditionHides))
-	FCAPEffectPeriodMagnitude				Period;
+	FCAPEffectPeriodMagnitude						Period;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect")
-	FCAPEffectModifierEvaluatedData			Modifiers;
-
-protected:	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Magnitude")
-	TArray<FCAPEffectModifierMagnitude>		Magnitudes;
+	TArray<FCAPEffectModifierEvaluatedData>			Modifiers;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Stacking")
@@ -51,7 +47,6 @@ public :
 	ECAPEffectDurationPolicy GetEffectDurationPolicy() const;
 	const FCAPEffectDurationMagnitude* GetEffectDurationMagnitude() const;
 	const FCAPEffectPeriodMagnitude* GetEffectPeriodMagnitude() const;
-	const FCAPEffectModifierEvaluatedData* GetEffectModifierEvaluatedData() const;
-	FFloatVariableMetaData GetMagnitude(int AbilityLevel);
+	const TArray<FCAPEffectModifierEvaluatedData>& GetModifierMagnitude() const;
 	
 };

@@ -48,16 +48,13 @@ protected :
 	float					HoldShootingPower = 2000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|InteractiveSuckingComponent", meta = (EditCondition = "bCanHolding", EditConditionHides))
-	TSubclassOf<class UBaseGameplayEffect>		BaseGameplayEffectClass;
+	TSubclassOf<class UBaseCAPEffect>			BaseCAPEffectClass;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<TSoftObjectPtr<UPrimitiveComponent>>	PrimitiveComponents;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FGameplayAbilitySpec						HoldShootingAbilitySpec;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UBaseGameplayEffect*					BaseGameplayEffect;
+	class UBaseCAPEffect*						BaseCAPEffect;
 	
 protected:
 	// Called when the game starts
@@ -82,6 +79,5 @@ public :
 public :
 	bool IsJunk() const;
 	int32 GetJunkValue() const;
-	const FGameplayAbilitySpec& GetHoldShootingAbilitySpec() const;
-	UBaseGameplayEffect* GetHoldShootingGameplayEffect();		
+	UBaseCAPEffect* GetHoldShootingCAPEffect();		
 };

@@ -14,7 +14,8 @@ ABaseActor::ABaseActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GameActorSettingsComponent = CreateDefaultSubobject<UGameActorSettingsComponent>(TEXT("GameActorSettingsComponent"));
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	//AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	CapabilitySystemComponent = CreateDefaultSubobject<UBaseCapabilitySystemComponent>("CapabilitySystemComponent");
 }
 
 // Called when the game starts or when spawned
@@ -76,29 +77,41 @@ void ABaseActor::__SetCollisionProfileNames(USceneComponent* SceneComponent, con
 	}
 }
 
-void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
+void ABaseActor::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data)
 {
-	TArray<FGameplayAttribute> Attributes;
-	
-	AbilitySystemComponent->GetAllAttributes(Attributes);
-
-	for(FGameplayAttribute& Attribute : Attributes)
+	if(Data.AttributeName == "Health")
 	{
-		if(Data.Attribute == Attribute)
+		if(Data.NewValue <= 0.f)
 		{
-			if(TEXT("Health") == Attribute.AttributeName)
-			{
-				if(Data.NewValue <= 0.f)
-				{
-					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
-					bIsDeath = true;
-				}
-				 
-				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
-			}
+			LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+			bIsDeath = true;
 		}
 	}
 }
+
+//void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
+//{
+//	TArray<FGameplayAttribute> Attributes;
+//	
+//	AbilitySystemComponent->GetAllAttributes(Attributes);
+//
+//	for(FGameplayAttribute& Attribute : Attributes)
+//	{
+//		if(Data.Attribute == Attribute)
+//		{
+//			if(TEXT("Health") == Attribute.AttributeName)
+//			{
+//				if(Data.NewValue <= 0.f)
+//				{
+//					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+//					bIsDeath = true;
+//				}
+//				 
+//				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
+//			}
+//		}
+//	}
+//}
 
 void ABaseActor::SetEnabledCollisions(bool bIsEnableCollision)
 {
@@ -121,31 +134,16 @@ void ABaseActor::SetCollisionProfileNames(const FName& ProfileName)
 	__SetCollisionProfileNames(GetRootComponent(), ProfileName);
 }
 
-void ABaseActor::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
+void ABaseActor::AddAttributeSet(TSubclassOf<UCAPAttributeSet> CAPAttributeSetClass)
 {
-	if (IsValid(AbilitySystemComponent))
+	if(IsValid(CapabilitySystemComponent))
 	{
-		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
+		TSoftObjectPtr<UCAPAttributeSet> CAPAttributeSet = CapabilitySystemComponent->AddAttribute(CAPAttributeSetClass);
+
+		if(CAPAttributeSet.IsValid())
 		{
-			AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
+			CAPAttributeSet->SetCallbackOnAttributeChanged(this, &ABaseActor::__OnGCSAttributeChanged);
 		}
-
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	}
-}
-
-void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
-{
-	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
-	
-	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
-
-	TArray<FGameplayAttribute> Attributes;
-	BaseAttribute->GetAttributes(Attributes);
-
-	for(const FGameplayAttribute& Attribute : Attributes)
-	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
 	}
 }
 
@@ -154,10 +152,44 @@ bool ABaseActor::IsDeath() const
 	return bIsDeath;
 }
 
-UAbilitySystemComponent* ABaseActor::GetAbilitySystemComponent() const
+UCapabilitySystemComponent* ABaseActor::GetCapabilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return CapabilitySystemComponent;
 }
+
+//void ABaseActor::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
+//{
+//	if (IsValid(AbilitySystemComponent))
+//	{
+//		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
+//		{
+//			AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
+//		}
+//
+//		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+//	}
+//}
+//
+//void ABaseActor::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
+//{
+//	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
+//	
+//	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
+//
+//	TArray<FGameplayAttribute> Attributes;
+//	BaseAttribute->GetAttributes(Attributes);
+//
+//	for(const FGameplayAttribute& Attribute : Attributes)
+//	{
+//		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseActor::__OnGASAttributeChanged);
+//	}
+//}
+//
+//
+//UAbilitySystemComponent* ABaseActor::GetAbilitySystemComponent() const
+//{
+//	return AbilitySystemComponent;
+//}
 
 ULevelTriggerActorAssist* ABaseActor::GetLevelTriggerActorAssist() const
 {

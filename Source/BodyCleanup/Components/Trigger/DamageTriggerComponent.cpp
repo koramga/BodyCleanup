@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
+#include "CapabilitySystemComponent.h"
 #include "../../GAS/Interface/Actor/GASActorInterface.h"
 #include "../Interactive/Classes/InteractiveSuckingComponent.h"
 #include "../../GAS/Ability/BaseGameplayAbility.h"
@@ -16,6 +17,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "LevelDesignerTools/Trigger/Managers/LevelTriggerManager.h"
 #include "LevelDesignerTools/Trigger/Classes/Scene/HitTriggerComponent.h"
+#include "../../GCS/Effect/BaseCAPEffect.h"
+#include "../../GCS/Interface/GCSActorInterface.h"
+#include "CapabilitySystemInterface.h"
 
 UDamageTriggerComponent::UDamageTriggerComponent()
 {
@@ -81,11 +85,11 @@ void UDamageTriggerComponent::__FindTargetActors(TArray<AActor*>& TargetActors) 
 
 bool UDamageTriggerComponent::__CanDamageInteractiveActor(const AActor* Actor) const
 {
-	bool bImplementationAbilitySystem = Actor->GetClass()->ImplementsInterface(UAbilitySystemInterface::StaticClass());
-	bool bImplementationGAS = Actor->GetClass()->ImplementsInterface(UGASActorInterface::StaticClass());
+	bool bImplementationCapabilitySystem = Actor->GetClass()->ImplementsInterface(UCapabilitySystemInterface::StaticClass());
+	bool bImplementationGCS = Actor->GetClass()->ImplementsInterface(UGCSActorInterface::StaticClass());
 
-	if(bImplementationAbilitySystem
-		&& bImplementationGAS)
+	if(bImplementationCapabilitySystem
+		&& bImplementationGCS)
 	{
 		return true;
 	}
@@ -131,7 +135,7 @@ void UDamageTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inpu
 					if(InteractiveSuckingComponent.IsValid())
 					{
 						//Shoot인지 확인한다.
-						UBaseGameplayEffect* HoldShootingGameplayEffect = InteractiveSuckingComponent->GetHoldShootingGameplayEffect();
+						UBaseCAPEffect* HoldShootingGameplayEffect = InteractiveSuckingComponent->GetHoldShootingCAPEffect();
 					
 						if(IsValid(HoldShootingGameplayEffect))
 						{
@@ -140,16 +144,12 @@ void UDamageTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inpu
 							if(EInteractiveSuckingType::HoldShooting == InteractiveSuckingType)
 							{
 								//Effect를 넣는다.
-								UAbilitySystemComponent* AbilitySystemComponent = Cast<IAbilitySystemInterface>(Owner)->GetAbilitySystemComponent();
+								UCapabilitySystemComponent* CapabilitySystemComponent = Cast<ICapabilitySystemInterface>(Owner)->GetCapabilitySystemComponent();
 
 								for(AActor* TargetActor : TargetActors)
 								{
-									UE_LOG(LogTemp, Display, TEXT("koramga <%s> To <%s>"), *Owner->GetName(), *TargetActor->GetName());
-									AbilitySystemComponent->ApplyGameplayEffectToTarget(HoldShootingGameplayEffect, Cast<IAbilitySystemInterface>(TargetActor)->GetAbilitySystemComponent());
-								}						
-							
-								//AbilitySystemComponent->TryActivateAbilityByClass(HoldShootingAbility, true);
-								//AbilitySystemComponent->BP_ApplyGameplayEffectToTarget(HoldShootingAbility, nullptr, 0, FGameplayEffectContextHandle());
+									CapabilitySystemComponent->ApplyGameplayEffectToTarget(HoldShootingGameplayEffect, Cast<ICapabilitySystemInterface>(TargetActor)->GetCapabilitySystemComponent(), 0);
+								}		
 							}						
 						}					
 					}

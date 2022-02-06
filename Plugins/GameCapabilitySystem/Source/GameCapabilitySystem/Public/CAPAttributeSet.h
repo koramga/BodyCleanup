@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CAPTypes.h"
 #include "UObject/NoExportTypes.h"
 #include "CAPAttributeSet.generated.h"
 
@@ -75,6 +76,7 @@ protected:
 /**
  * 
  */
+DECLARE_DELEGATE_OneParam(FOnCAPAttributeChanged, const FOnCAPAttributeChangeData&);
 UCLASS(DefaultToInstanced, Blueprintable)
 class GAMECAPABILITYSYSTEM_API UCAPAttributeSet : public UObject
 {
@@ -82,6 +84,20 @@ class GAMECAPABILITYSYSTEM_API UCAPAttributeSet : public UObject
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup")	
-	TArray<FCAPAttributeData>	CapAttributeDatas;
-	
+	TArray<FCAPAttributeData>	CAPAttributeDatas;
+
+private :
+	FOnCAPAttributeChanged	CallbackOnCAPAttirbuteChanged;
+
+public :
+	virtual bool PreUpdateAttribute(FOnCAPAttributeChangeData& OnCapAttributeChangeData);
+	virtual void PostUpdateAttribute(const FOnCAPAttributeChangeData& OnCapAttributeChangeData);
+	virtual bool AffectAttribute(const FName& AttributeName, ECAPModifierOp Op, float Magnitude);
+
+public :
+	template <typename T>
+	void SetCallbackOnAttributeChanged(T* pObj, void (T::* pFunc)(const FOnCAPAttributeChangeData&))
+	{
+		CallbackOnCAPAttirbuteChanged.BindUObject(pObj, pFunc);	
+	}	
 };

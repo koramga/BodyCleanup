@@ -76,15 +76,19 @@ void UCAPAffect::Tick(float DeltaTime)
 		&& false == bIsFinish)
 	{
 		ECAPEffectDurationPolicy DurationPolicy =  CAPEffect->GetEffectDurationPolicy();
+		const TArray<FCAPEffectModifierEvaluatedData>& Magnitudes = CAPEffect->GetModifierMagnitude();
 
-		const FCAPEffectModifierEvaluatedData* EffectModifierEvaluatedData = CAPEffect->GetEffectModifierEvaluatedData();
-
-		FFloatVariableMetaData Magnitude = CAPEffect->GetMagnitude(AbilityLevel);
-		float MagnitudeVariable = Magnitude.GetMetaVariable().Get<float>();
-		
-		if(TargetCapabilitySystemComponent->AffectFrom(EffectModifierEvaluatedData->AttributeName, EffectModifierEvaluatedData->ModifierOp, MagnitudeVariable))
+		for(const FCAPEffectModifierEvaluatedData& Magnitude : Magnitudes)
 		{
-			SourceCapabilitySystemComponent->AffectTo();
+			FFloatVariableMetaData MagnitudeMetaData = Magnitude.GetMagnitude(AbilityLevel);
+			float MagnitudeVariable = MagnitudeMetaData.GetMetaVariable().Get<float>();
+
+			UE_LOG(LogTemp, Display, TEXT("koramga %s to %s"), *SourceCapabilitySystemComponent->GetOwner()->GetName(), *TargetCapabilitySystemComponent->GetOwner()->GetName());
+			
+			if(TargetCapabilitySystemComponent->AffectFrom(Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable))
+			{
+				SourceCapabilitySystemComponent->AffectTo();
+			}
 		}
 		
 		if(ECAPEffectDurationPolicy::Instant == DurationPolicy)
@@ -93,16 +97,15 @@ void UCAPAffect::Tick(float DeltaTime)
 		}
 		else if(ECAPEffectDurationPolicy::Duration == DurationPolicy)
 		{
-			if(TotalTickTime >= CAPEffect->GetEffectDurationMagnitude()->Duration)
-			{
-				__SetDone();
-			}
-			else
-			{
-				const FCAPEffectPeriodMagnitude* Period = CAPEffect->GetEffectPeriodMagnitude();
-			}
-		}
-
+			//if(TotalTickTime >= CAPEffect->GetEffectDurationMagnitude()->Duration)
+			//{
+			//	__SetDone();
+			//}
+			//else
+			//{
+			//	const FCAPEffectPeriodMagnitude* Period = CAPEffect->GetEffectPeriodMagnitude();
+			//}
+		}		
 	}	
 }
 

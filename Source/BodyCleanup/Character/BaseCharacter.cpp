@@ -21,7 +21,7 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GameActorSettingsComponent = CreateDefaultSubobject<UGameActorSettingsComponent>(TEXT("GameActorSettingsComponent"));
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	CapabilitySystemComponent = CreateDefaultSubobject<UBaseCapabilitySystemComponent>("CapabilitySystemComponent");
 	SpeechBubbleWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("SpeechBubbleWidget");
 
 	SpeechBubbleWidgetComponent->SetupAttachment(GetMesh());
@@ -142,29 +142,29 @@ void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimatio
 {
 }
 
-void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
-{	
-	TArray<FGameplayAttribute> Attributes;
-	
-	AbilitySystemComponent->GetAllAttributes(Attributes);
-
-	for(FGameplayAttribute& Attribute : Attributes)
-	{
-		if(Data.Attribute == Attribute)
-		{
-			if(TEXT("Health") == Attribute.AttributeName)
-			{
-				if(Data.NewValue <= 0.f)
-				{
-					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
-					bIsDeath = true;
-				}
-				 
-				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
-			}
-		}
-	}
-}
+//void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
+//{	
+//	TArray<FGameplayAttribute> Attributes;
+//	
+//	AbilitySystemComponent->GetAllAttributes(Attributes);
+//
+//	for(FGameplayAttribute& Attribute : Attributes)
+//	{
+//		if(Data.Attribute == Attribute)
+//		{
+//			if(TEXT("Health") == Attribute.AttributeName)
+//			{
+//				if(Data.NewValue <= 0.f)
+//				{
+//					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+//					bIsDeath = true;
+//				}
+//				 
+//				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
+//			}
+//		}
+//	}
+//}
 
 void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 {
@@ -197,33 +197,37 @@ EAnimationType ABaseCharacter::GetAnimationType() const
 	return EAnimationType::Idle;
 }
 
-void ABaseCharacter::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
+void ABaseCharacter::AddAttributeSet(TSubclassOf<UCAPAttributeSet> CAPAttributeSetClass)
 {
-	if (IsValid(AbilitySystemComponent))
-	{
-		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
-		{
-			FGameplayAbilitySpecHandle GameplayAbilitySpecHandle = AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
-		}
-
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	}
 }
 
-void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
-{
-	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
-	
-	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
+//void ABaseCharacter::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
+//{
+//	if (IsValid(AbilitySystemComponent))
+//	{
+//		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
+//		{
+//			FGameplayAbilitySpecHandle GameplayAbilitySpecHandle = AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
+//		}
+//
+//		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+//	}
+//}
 
-	TArray<FGameplayAttribute> Attributes;
-	BaseAttribute->GetAttributes(Attributes);
-
-	for(const FGameplayAttribute& Attribute : Attributes)
-	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseCharacter::__OnGASAttributeChanged);
-	}
-}
+//void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
+//{
+//	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
+//	
+//	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
+//
+//	TArray<FGameplayAttribute> Attributes;
+//	BaseAttribute->GetAttributes(Attributes);
+//
+//	for(const FGameplayAttribute& Attribute : Attributes)
+//	{
+//		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseCharacter::__OnGASAttributeChanged);
+//	}
+//}
 
 bool ABaseCharacter::IsDeath() const
 {
@@ -250,10 +254,15 @@ void ABaseCharacter::SetHiddenInGameSpeechBubble(bool bIsHidden)
 	}	
 }
 
-UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
+UCapabilitySystemComponent* ABaseCharacter::GetCapabilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return CapabilitySystemComponent;
 }
+
+//UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
+//{
+//	return AbilitySystemComponent;
+//}
 
 ULevelTriggerActorAssist* ABaseCharacter::GetLevelTriggerActorAssist() const
 {

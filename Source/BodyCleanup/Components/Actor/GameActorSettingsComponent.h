@@ -21,7 +21,7 @@ protected :
 	EWeightType WeightType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<TSubclassOf<class UBaseAttributeSet>>	BaseAttributeSetClasses;
+	TArray<TSubclassOf<class UCAPAttributeSet>>	BaseAttributeSetClasses;
 
 protected:
 	// Called when the game starts

@@ -6,13 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "../Components/Actor/GameActorSettingsComponent.h"
 #include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
-#include "AbilitySystemInterface.h"
 #include "BodyCleanup/GAS/Ability/BaseGameplayAbility.h"
-#include "../GAS/Interface/Actor/GASActorInterface.h"
+#include "CapabilitySystemInterface.h"
+#include "../GCS/Interface/GCSActorInterface.h"
+#include "../GCS/Component/BaseCapabilitySystemComponent.h"
 #include "BaseActor.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseActor : public AActor, public ILevelToolsActorInterface, public IAbilitySystemInterface, public IGASActorInterface
+class BODYCLEANUP_API ABaseActor : public AActor, public ILevelToolsActorInterface, public ICapabilitySystemInterface, public IGCSActorInterface
 {
 	GENERATED_BODY()
 	
@@ -28,7 +29,10 @@ protected :
 	UGameActorSettingsComponent*	GameActorSettingsComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UAbilitySystemComponent*	AbilitySystemComponent;
+	UBaseCapabilitySystemComponent* CapabilitySystemComponent;
+	
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	//class UAbilitySystemComponent*	AbilitySystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsDeath = false;
@@ -45,16 +49,18 @@ public:
 private :
 	void __SetEnabledCollisions(USceneComponent* SceneComponent, ECollisionEnabled::Type CollisionEnabledType);
 	void __SetCollisionProfileNames(USceneComponent* SceneComponent, const FName& ProfileName);
-	void __OnGASAttributeChanged(const FOnAttributeChangeData& Data);
+	void __OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data);
 
 public :
 	void SetEnabledCollisions(bool bIsEnableCollision);
 	void SetCollisionProfileNames(const FName& ProfileName);
-	virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
-	virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
-	virtual bool IsDeath() const override; 
+	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;
+	virtual bool IsDeath() const override;
+	//virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
+	//virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
+	 
 	
 public :
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UCapabilitySystemComponent* GetCapabilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
 };
