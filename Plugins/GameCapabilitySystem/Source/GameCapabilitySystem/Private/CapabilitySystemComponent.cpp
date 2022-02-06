@@ -171,15 +171,17 @@ void UCapabilitySystemComponent::AffectTo(TSoftObjectPtr<UCAPAffect> Affect)
 	//누군가에게 영향을 줬다.
 }
 
-TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass, int32 AbilityLevel)
 {	
 	TSoftObjectPtr<UCAPAbility> CAPAbility;
 
-	UCAPAttributeSet* NewCAPAbility = NewObject<UCAPAttributeSet>(this, CAPAbilityClass);
+	UCAPAbility* NewCAPAbility = NewObject<UCAPAbility>(this, CAPAbilityClass);
 
 	if(IsValid(NewCAPAbility))
 	{
-		CAPAttributeSets.Add(NewCAPAbility);
+		NewCAPAbility->Initialize(this);
+		NewCAPAbility->SetAbilityLevel(AbilityLevel);
+		CAPAbilities.Add(NewCAPAbility);		
 		CAPAbility = NewCAPAbility;
 	}
 	

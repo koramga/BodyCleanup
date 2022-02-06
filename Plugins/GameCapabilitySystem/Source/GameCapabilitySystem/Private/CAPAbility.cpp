@@ -57,6 +57,7 @@ bool UCAPAbility::Activate()
 	if(false == IsActivate()
 		&& CanActivate())
 	{
+		CurrentCooldown = Cooldown;
 		bIsActivate = true;
 		OnActivateAbility();
 		return true;

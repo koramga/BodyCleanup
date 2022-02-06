@@ -51,7 +51,7 @@ public :
 	void AffectTo(TSoftObjectPtr<class UCAPAffect> Affect);
 
 public :
-	TSoftObjectPtr<UCAPAbility> AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass);
+	TSoftObjectPtr<UCAPAbility> AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass, int32 AbilityLevel);
 
 public :
 	bool TryActivateAbilityByClass(TSubclassOf<UCAPAbility> AbilityClass);

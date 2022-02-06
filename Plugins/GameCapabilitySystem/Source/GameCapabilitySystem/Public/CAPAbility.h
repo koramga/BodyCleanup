@@ -37,9 +37,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32	AbilityLevel = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float								CurrentCooldown;
 	
 protected:
 	virtual void OnActivateAbility();
+	virtual bool CanActivate();
 	virtual void OnEndAbility();
 
 public :
@@ -47,8 +51,7 @@ public :
 
 public :
 	void Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> InOwnerCapabilitySystemComponent);
-	virtual bool CanActivate();
-	virtual void Tick(float DeltaTime);
+	void Tick(float DeltaTime);
 	bool IsActivate();	
 	bool Activate();
 	bool DeActivate();
@@ -58,5 +61,4 @@ public :
 
 public :
 	int32 GetAbilityLevel() const;
-	
 };
