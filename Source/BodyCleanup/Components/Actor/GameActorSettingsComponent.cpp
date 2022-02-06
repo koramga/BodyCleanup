@@ -34,6 +34,11 @@ void UGameActorSettingsComponent::BeginPlay()
 			{
 				GASActor->AddAttributeSet(BaseAttributeSetClass);
 			}
+
+			for(const TSubclassOf<class UCAPAbility>& AbilityClass : BaseAbilityClasses)
+			{
+				GASActor->AddAbility(AbilityClass);
+			}
 		}
 	}
 }

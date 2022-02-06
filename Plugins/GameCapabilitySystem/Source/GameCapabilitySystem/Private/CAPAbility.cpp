@@ -107,3 +107,8 @@ int32 UCAPAbility::GetAbilityLevel() const
 {
 	return AbilityLevel;
 }
+
+bool UCAPAbility::IsAbilityTag(const FGameplayTag& GameplayTag)
+{
+	return AbilityTags.HasTagExact(GameplayTag);
+}

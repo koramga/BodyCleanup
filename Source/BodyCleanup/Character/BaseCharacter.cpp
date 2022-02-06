@@ -272,6 +272,19 @@ void ABaseCharacter::AddAttributeSet(TSubclassOf<UCAPAttributeSet> CAPAttributeS
 	}
 }
 
+void ABaseCharacter::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		TSoftObjectPtr<UCAPAbility> CAPAbility = CapabilitySystemComponent->AddAbility(CAPAbilityClass, 0);
+
+		if(CAPAbility.IsValid())
+		{
+			
+		}
+	}
+}
+
 //void ABaseCharacter::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
 //{
 //	if (IsValid(AbilitySystemComponent))
@@ -338,4 +351,34 @@ UCapabilitySystemComponent* ABaseCharacter::GetCapabilitySystemComponent() const
 ULevelTriggerActorAssist* ABaseCharacter::GetLevelTriggerActorAssist() const
 {
 	return LevelTriggerActorAssist;
+}
+
+bool ABaseCharacter::CanActivateAbilityByTag(const FGameplayTag& Tag) const
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		return CapabilitySystemComponent->CanActivateAbilityByTag(Tag);
+	}
+
+	return false;
+}
+
+bool ABaseCharacter::ActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		return CapabilitySystemComponent->TryActivateAbilityByTag(Tag);
+	}
+	
+	return false;
+}
+
+bool ABaseCharacter::IsActivateAbilityByTag(const FGameplayTag& Tag) const
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		return CapabilitySystemComponent->IsActivateAbilityByTag(Tag);
+	}
+
+	return false;
 }

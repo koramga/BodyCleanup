@@ -49,4 +49,7 @@ public:
 	virtual bool IsDeathPossessActor() const = 0;
 	virtual FVector GetCharacterLocation() const = 0;
 	virtual AActor* GetPossessActor() const = 0;
+	virtual bool CanActivateAbilityByTag(const struct FGameplayTag& Tag) const = 0;
+	virtual bool ActivateAbilityByTag(const struct FGameplayTag& Tag) = 0;
+	virtual bool IsActivateAbilityByTag(const struct FGameplayTag& Tag) const = 0;
 };

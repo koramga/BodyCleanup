@@ -2,12 +2,10 @@
 
 
 #include "CapabilitySystemComponent.h"
-
 #include "CAPAffect.h"
 #include "CAPAttributeSet.h"
 #include "CAPEffect.h"
 #include "CAPTypes.h"
-#include "CAPAffect.h"
 
 // Sets default values for this component's properties
 UCapabilitySystemComponent::UCapabilitySystemComponent()
@@ -198,7 +196,41 @@ bool UCapabilitySystemComponent::TryActivateAbilityByClass(TSubclassOf<UCAPAbili
 	return false;
 }
 
-bool UCapabilitySystemComponent::TryActivateAbilityByTag(FGameplayTag Tag)
+bool UCapabilitySystemComponent::TryActivateAbilityByTag(const FGameplayTag& Tag)
 {
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsAbilityTag(Tag))
+		{
+			return CAPAbility->Activate();			
+		}
+	}
+
+	return false;
+}
+
+bool UCapabilitySystemComponent::CanActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsAbilityTag(Tag))
+		{
+			return CAPAbility->CanActivate();
+		}
+	}
+
+	return false;
+}
+
+bool UCapabilitySystemComponent::IsActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsAbilityTag(Tag))
+		{
+			return CAPAbility->IsActivate();
+		}
+	}
+	
 	return false;
 }

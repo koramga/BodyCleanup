@@ -73,6 +73,7 @@ public :
 	EAnimationType GetAnimationType() const;
 	//virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;
+	virtual void AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
 	virtual bool IsDeath() const override;
 	
 public :
@@ -82,4 +83,7 @@ public :
 public:
 	virtual UCapabilitySystemComponent* GetCapabilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
+	virtual bool CanActivateAbilityByTag(const FGameplayTag& Tag) const override;
+	virtual bool ActivateAbilityByTag(const FGameplayTag& Tag) override;
+	virtual bool IsActivateAbilityByTag(const FGameplayTag& Tag) const override;
 };

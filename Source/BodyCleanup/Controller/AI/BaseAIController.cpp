@@ -152,3 +152,39 @@ AActor* ABaseAIController::GetPossessActor() const
 
 	return nullptr;
 }
+
+bool ABaseAIController::CanActivateAbilityByTag(const FGameplayTag& Tag) const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->CanActivateAbilityByTag(Tag);
+	}
+
+	return false;
+}
+
+bool ABaseAIController::ActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->ActivateAbilityByTag(Tag);
+	}
+
+	return false;
+}
+
+bool ABaseAIController::IsActivateAbilityByTag(const FGameplayTag& Tag) const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->IsActivateAbilityByTag(Tag);
+	}
+
+	return false;
+}

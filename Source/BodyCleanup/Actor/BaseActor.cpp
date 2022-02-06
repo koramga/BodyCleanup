@@ -157,6 +157,10 @@ void ABaseActor::AddAttributeSet(TSubclassOf<UCAPAttributeSet> CAPAttributeSetCl
 	}
 }
 
+void ABaseActor::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+{
+}
+
 bool ABaseActor::IsDeath() const
 {
 	return bIsDeath;

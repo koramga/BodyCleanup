@@ -50,7 +50,6 @@ protected:
 	
 protected:
 	virtual void OnActivateAbility();
-	virtual bool CanActivate();
 	virtual void OnEndAbility();
 
 protected:
@@ -65,10 +64,12 @@ public :
 	bool IsActivate();	
 	bool Activate();
 	bool DeActivate();
+	virtual bool CanActivate();
 
 public :
 	void SetAbilityLevel(int32 InAbilityLevel);
 
 public :
 	int32 GetAbilityLevel() const;
+	bool IsAbilityTag(const FGameplayTag& GameplayTag);
 };

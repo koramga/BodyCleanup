@@ -23,5 +23,6 @@ class BODYCLEANUP_API IGCSActorInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) = 0;
+	virtual void AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) = 0;
 	virtual bool IsDeath() const = 0;
 };

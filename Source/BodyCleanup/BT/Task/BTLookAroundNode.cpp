@@ -13,10 +13,14 @@ UBTTaskNodeLookAround::UBTTaskNodeLookAround()
 {
 	NodeName = TEXT("LookAround");
 	bNotifyTick = true;
+
+	AbilityGameplayTag = FGameplayTag::RequestGameplayTag(TEXT("NPC.Ability.LookAround"));
 }
 
 EBTNodeResult::Type UBTTaskNodeLookAround::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	Super::ExecuteTask(OwnerComp, NodeMemory);
+
 	if(false == UBTGameFunctionLibrary::IsBTController(OwnerComp.GetAIOwner()))
 	{
 		return EBTNodeResult::Failed;
@@ -28,18 +32,48 @@ EBTNodeResult::Type UBTTaskNodeLookAround::ExecuteTask(UBehaviorTreeComponent& O
 	{
 		return EBTNodeResult::Failed;
 	}
-
-	TBlackboardVariable LookAroundBlackboardVariable = OwnerControllerInterface->GetBlackboardVariable(UBTGameFunctionLibrary::LookAroundTimeName, EBlackboardVariableType::Float);
-
-	if(LookAroundBlackboardVariable.Get<float>() <= 0.f)
+	
+	if(false == OwnerControllerInterface->CanActivateAbilityByTag(AbilityGameplayTag))
 	{
 		return EBTNodeResult::Failed;
 	}
 	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	return EBTNodeResult::InProgress;
 }
 
 void UBTTaskNodeLookAround::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	
+	if(false == UBTGameFunctionLibrary::IsBTController(OwnerComp.GetAIOwner()))
+	{
+		return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
+
+	IBTControllerInterface* OwnerControllerInterface = Cast<IBTControllerInterface>(OwnerComp.GetAIOwner());
+
+	if(OwnerControllerInterface->IsDeathPossessActor())
+	{
+		return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
+
+	if(false == bIsActivateLookAround)
+	{
+		if(false == OwnerControllerInterface->ActivateAbilityByTag(AbilityGameplayTag))
+		{
+			return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		}
+		else
+		{
+			bIsActivateLookAround = true;
+		}		
+	}
+	else
+	{
+		if(false == OwnerControllerInterface->IsActivateAbilityByTag(AbilityGameplayTag))
+		{
+			return FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			bIsActivateLookAround = false;
+		}
+	}
 }

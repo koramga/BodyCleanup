@@ -23,6 +23,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<class UCAPAttributeSet>>	BaseAttributeSetClasses;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<TSubclassOf<class UCAPAbility>>		BaseAbilityClasses;		
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

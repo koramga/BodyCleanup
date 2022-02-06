@@ -393,6 +393,21 @@ AActor* ABasePlayerController::GetPossessActor() const
 	return nullptr;
 }
 
+bool ABasePlayerController::CanActivateAbilityByTag(const FGameplayTag& Tag) const
+{
+	return false;
+}
+
+bool ABasePlayerController::ActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	return false;
+}
+
+bool ABasePlayerController::IsActivateAbilityByTag(const FGameplayTag& Tag) const
+{
+	return false;
+}
+
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

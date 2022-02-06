@@ -24,9 +24,9 @@ protected:
 
 protected:
 	virtual void OnActivateAbility();
-	virtual bool CanActivate();
 	virtual void OnEndAbility();
 	
 public :
+	virtual bool CanActivate() override;
 	virtual void UpdateAnimationType(EAnimationType InAnimationType, EAnimationType BeforeAnimationType) override;
 };
