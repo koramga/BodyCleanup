@@ -72,8 +72,8 @@ void UBTTaskNodeLookAround::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 	{
 		if(false == OwnerControllerInterface->IsActivateAbilityByTag(AbilityGameplayTag))
 		{
-			return FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			bIsActivateLookAround = false;
+			return FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);			
 		}
 	}
 }
