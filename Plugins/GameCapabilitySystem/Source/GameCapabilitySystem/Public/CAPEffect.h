@@ -48,5 +48,8 @@ public :
 	const FCAPEffectDurationMagnitude* GetEffectDurationMagnitude() const;
 	const FCAPEffectPeriodMagnitude* GetEffectPeriodMagnitude() const;
 	const TArray<FCAPEffectModifierEvaluatedData>& GetModifierMagnitude() const;
+	const FGameplayTagContainer& GetEffectAssetTags() const;
+	const FGameplayTagContainer& GetBlockAssetTags() const;
+	const FGameplayTagContainer& GetRemovalAssetTags() const;
 	
 };

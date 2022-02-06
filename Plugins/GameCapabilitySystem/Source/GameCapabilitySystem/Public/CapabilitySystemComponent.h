@@ -37,7 +37,7 @@ public:
 
 public :
 	TSoftObjectPtr<UCAPAttributeSet> AddAttribute(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass);
-	void ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability);
+	bool ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability);
 	bool AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
 	void AffectTo();
 };

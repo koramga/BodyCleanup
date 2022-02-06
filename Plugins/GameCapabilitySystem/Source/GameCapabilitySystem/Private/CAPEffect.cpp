@@ -23,3 +23,18 @@ const TArray<FCAPEffectModifierEvaluatedData>& UCAPEffect::GetModifierMagnitude(
 {
 	return Modifiers;
 }
+
+const FGameplayTagContainer& UCAPEffect::GetEffectAssetTags() const
+{
+	return EffectAssetTags;
+}
+
+const FGameplayTagContainer& UCAPEffect::GetBlockAssetTags() const
+{
+	return BlockAssetTags;
+}
+
+const FGameplayTagContainer& UCAPEffect::GetRemovalAssetTags() const
+{
+	return RemovalAssetTags;
+}

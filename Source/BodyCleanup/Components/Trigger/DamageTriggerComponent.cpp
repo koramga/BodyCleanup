@@ -91,7 +91,10 @@ bool UDamageTriggerComponent::__CanDamageInteractiveActor(const AActor* Actor) c
 	if(bImplementationCapabilitySystem
 		&& bImplementationGCS)
 	{
-		return true;
+		if(false == Cast<IGCSActorInterface>(Actor)->IsDeath())
+		{
+			return true;
+		}
 	}
 
 	return false;

@@ -70,7 +70,7 @@ void UInteractiveSuckingComponent::TickComponent(float DeltaTime, ELevelTick Tic
 			{
 				FVector LinearVelocity = PrimitiveComponent->GetPhysicsLinearVelocity();
 
-				if (LinearVelocity.Size() <= 10.f)
+				if (LinearVelocity.Size() <= 500.f)
 				{
 					Super::SetInteractiveType(static_cast<uint8>(EInteractiveSuckingType::None));
 					SetComponentTickEnabled(false);

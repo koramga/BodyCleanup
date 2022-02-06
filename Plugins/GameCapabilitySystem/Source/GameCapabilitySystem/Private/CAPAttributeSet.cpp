@@ -24,13 +24,13 @@ void UCAPAttributeSet::PostUpdateAttribute(const FOnCAPAttributeChangeData& OnCa
 //}
 bool UCAPAttributeSet::AffectAttribute(const FName& AttributeName, ECAPModifierOp Op, float Magnitude)
 {
-	for(FCAPAttributeData CAPAttributeData : CAPAttributeDatas)
+	for(FCAPAttributeData& CAPAttributeData : CAPAttributeDatas)
 	{
 		if(CAPAttributeData.GetAttributeName() == AttributeName)
 		{
 			FOnCAPAttributeChangeData AttributeChangeData;
 			AttributeChangeData.AttributeName = AttributeName;
-			AttributeChangeData.OldValue = CAPAttributeData.GetBaseValue();
+			AttributeChangeData.OldValue = CAPAttributeData.GetCurrentValue();
 			AttributeChangeData.AttributeSet = this;
 			
 			switch (Op)
@@ -58,7 +58,7 @@ bool UCAPAttributeSet::AffectAttribute(const FName& AttributeName, ECAPModifierO
 
 				PostUpdateAttribute(AttributeChangeData);
 
-				CAPAttributeData.SetBaseValue(AttributeChangeData.NewValue);
+				CAPAttributeData.SetCurrentValue(AttributeChangeData.NewValue);
 			}
 
 			return true;

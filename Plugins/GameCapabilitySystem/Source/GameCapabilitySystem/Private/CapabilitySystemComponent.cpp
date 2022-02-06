@@ -73,9 +73,25 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 	return CAPAttributeSet;
 }
 
-void UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability)
+bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 Ability)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
+
+	const FGameplayTagContainer& EffectAssetTag = CAPEffect->GetEffectAssetTags();
+	
+	for(UCAPAffect* CAPAffect : OwnCAPAffects)
+	{
+		TSoftObjectPtr<UCAPEffect> CAPEffectInAffect = CAPAffect->GetEffect();
+
+		const FGameplayTagContainer& BlockAssetTags = CAPEffectInAffect->GetBlockAssetTags();
+
+		if(BlockAssetTags.DoesTagContainerMatch(EffectAssetTag, EGameplayTagMatchType::IncludeParentTags, EGameplayTagMatchType::IncludeParentTags, EGameplayContainerMatchType::Any))
+		{
+			UE_LOG(LogTemp, Display, TEXT("koramga Block"));
+			return false;
+		}
+	}
+	
 	UCAPAffect* CAPAffect = NewObject<UCAPAffect>();
 
 	if(IsValid(CAPAffect))
@@ -85,6 +101,8 @@ void UCapabilitySystemComponent::ApplyGameplayEffectToTarget(UCAPEffect* CAPEffe
 		CAPAffect->SetEffect(CAPEffect, Ability);
 		OwnCAPAffects.Add(CAPAffect);
 	}
+
+	return true;
 }
 
 bool UCapabilitySystemComponent::AffectFrom(const FName& AttributeName, ECAPModifierOp ModifierOp, float Value)

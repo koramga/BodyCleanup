@@ -51,5 +51,6 @@ public :
 	void BeginPlay();
 	void Tick(float DeltaTime);
 	bool IsDone() const;
+	const TSoftObjectPtr<class UCAPEffect> GetEffect() const;
 };
 

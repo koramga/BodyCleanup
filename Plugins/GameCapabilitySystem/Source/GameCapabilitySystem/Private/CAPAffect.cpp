@@ -75,7 +75,6 @@ void UCAPAffect::Tick(float DeltaTime)
 	if(RemainTime <= 0.f
 		&& false == bIsFinish)
 	{
-		ECAPEffectDurationPolicy DurationPolicy =  CAPEffect->GetEffectDurationPolicy();
 		const TArray<FCAPEffectModifierEvaluatedData>& Magnitudes = CAPEffect->GetModifierMagnitude();
 
 		for(const FCAPEffectModifierEvaluatedData& Magnitude : Magnitudes)
@@ -83,33 +82,58 @@ void UCAPAffect::Tick(float DeltaTime)
 			FFloatVariableMetaData MagnitudeMetaData = Magnitude.GetMagnitude(AbilityLevel);
 			float MagnitudeVariable = MagnitudeMetaData.GetMetaVariable().Get<float>();
 
-			UE_LOG(LogTemp, Display, TEXT("koramga %s to %s"), *SourceCapabilitySystemComponent->GetOwner()->GetName(), *TargetCapabilitySystemComponent->GetOwner()->GetName());
-			
 			if(TargetCapabilitySystemComponent->AffectFrom(Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable))
 			{
 				SourceCapabilitySystemComponent->AffectTo();
 			}
 		}
-		
-		if(ECAPEffectDurationPolicy::Instant == DurationPolicy)
+	}	
+	ECAPEffectDurationPolicy DurationPolicy =  CAPEffect->GetEffectDurationPolicy();
+	
+	if(ECAPEffectDurationPolicy::Instant == DurationPolicy)
+	{
+		__SetDone();
+	}
+	else if(ECAPEffectDurationPolicy::Duration == DurationPolicy)
+	{
+		const FCAPEffectDurationMagnitude* DurationMagnitude = CAPEffect->GetEffectDurationMagnitude();
+		const FCAPEffectPeriodMagnitude* PeriodMagnnitude = CAPEffect->GetEffectPeriodMagnitude();
+
+		if(false == PeriodMagnnitude->ExecutePeriodicEffectOnApplication)
+		{
+			bIsFinish = true;
+		}
+		else
+		{
+			RemainTime = PeriodMagnnitude->Period;
+		}
+
+		if(TotalTickTime >= DurationMagnitude->Duration)
 		{
 			__SetDone();
 		}
-		else if(ECAPEffectDurationPolicy::Duration == DurationPolicy)
+	}
+	else if(ECAPEffectDurationPolicy::Infinite == DurationPolicy)
+	{
+		const FCAPEffectPeriodMagnitude* PeriodMagnnitude = CAPEffect->GetEffectPeriodMagnitude();
+
+		if(false == PeriodMagnnitude->ExecutePeriodicEffectOnApplication)
 		{
-			//if(TotalTickTime >= CAPEffect->GetEffectDurationMagnitude()->Duration)
-			//{
-			//	__SetDone();
-			//}
-			//else
-			//{
-			//	const FCAPEffectPeriodMagnitude* Period = CAPEffect->GetEffectPeriodMagnitude();
-			//}
-		}		
-	}	
+			bIsFinish = true;
+		}
+		else
+		{
+			RemainTime = PeriodMagnnitude->Period;
+		}
+	}
 }
 
 bool UCAPAffect::IsDone() const
 {
 	return bIsDone;
+}
+
+const TSoftObjectPtr<UCAPEffect> UCAPAffect::GetEffect() const
+{
+	return CAPEffect;
 }
