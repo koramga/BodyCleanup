@@ -231,6 +231,16 @@ bool ABaseCharacter::CanUpdateAnimationType(EAnimationType InAnimationType) cons
 	return false;
 }
 
+bool ABaseCharacter::CanMove() const
+{
+	if(IsValid(BaseAnimInstance))
+	{
+		return BaseAnimInstance->CanMove();
+	}
+
+	return false;
+}
+
 bool ABaseCharacter::IsPlayingMontage(UAnimMontage* AnimMontage)
 {
 	if (IsValid(BaseAnimInstance))

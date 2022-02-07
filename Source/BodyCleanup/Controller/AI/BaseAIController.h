@@ -47,6 +47,8 @@ public :
 	virtual bool IsDeathPossessActor() const override;
 	virtual FVector GetCharacterLocation() const override;
 	virtual AActor* GetPossessActor() const override;
+	virtual bool CanMovePossessActor() const override;
+	virtual bool CanUpdateAnimationPossessActor(uint8 InAnimationType) const override;
 	virtual bool CanActivateAbilityByTag(const struct FGameplayTag& Tag) const override;
 	virtual bool ActivateAbilityByTag(const struct FGameplayTag& Tag) override;
 	virtual bool IsActivateAbilityByTag(const struct FGameplayTag& Tag) const override;

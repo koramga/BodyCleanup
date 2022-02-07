@@ -153,6 +153,30 @@ AActor* ABaseAIController::GetPossessActor() const
 	return nullptr;
 }
 
+bool ABaseAIController::CanMovePossessActor() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->CanMove();
+	}
+
+	return false;
+}
+
+bool ABaseAIController::CanUpdateAnimationPossessActor(uint8 InAnimationType) const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->CanUpdateAnimationType(static_cast<EAnimationType>(InAnimationType));
+	}
+
+	return false;
+}
+
 bool ABaseAIController::CanActivateAbilityByTag(const FGameplayTag& Tag) const
 {
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());

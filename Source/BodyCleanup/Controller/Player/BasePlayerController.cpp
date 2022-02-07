@@ -393,6 +393,16 @@ AActor* ABasePlayerController::GetPossessActor() const
 	return nullptr;
 }
 
+bool ABasePlayerController::CanMovePossessActor() const
+{
+	return false;
+}
+
+bool ABasePlayerController::CanUpdateAnimationPossessActor(uint8 InAnimationType) const
+{
+	return false;
+}
+
 bool ABasePlayerController::CanActivateAbilityByTag(const FGameplayTag& Tag) const
 {
 	return false;
