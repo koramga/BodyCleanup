@@ -38,8 +38,11 @@ bool UBTBaseTaskNode::IsGoalActor(AActor* Source, AActor* Target, float Radius, 
 	
 #ifdef ENABLE_DRAW_DEBUG
 
-	FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
-	DrawDebugSphere(GetWorld(), SourceLocation, Radius, 20, DrawColor, false, 0.5f);
+	if(bIsDebugDrawing)
+	{
+		FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
+		DrawDebugSphere(GetWorld(), SourceLocation, Radius, 20, DrawColor, false, 0.5f);		
+	}	
 	
 #endif
 
