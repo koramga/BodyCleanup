@@ -120,8 +120,7 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 	return false;
 }
 
-void UBaseCapabilitySystemComponent::UpdateAnimationType(EAnimationType AnimationType,
-	EAnimationType BeforeAnimationType)
+void UBaseCapabilitySystemComponent::LeftAnimationType(EAnimationType AnimationType)
 {
 	for(UCAPAbility* CAPAbility : CAPAbilities)
 	{
@@ -129,7 +128,7 @@ void UBaseCapabilitySystemComponent::UpdateAnimationType(EAnimationType Animatio
 
 		if(IsValid(BaseCAPAbility))
 		{
-			BaseCAPAbility->UpdateAnimationType(AnimationType, BeforeAnimationType);
+			BaseCAPAbility->LeftAnimationType(AnimationType);
 		}
 	}
 }

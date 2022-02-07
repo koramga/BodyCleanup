@@ -54,11 +54,11 @@ void UMontageCAPAbility::OnEndAbility()
 	Super::OnEndAbility();
 }
 
-void UMontageCAPAbility::UpdateAnimationType(EAnimationType InAnimationType, EAnimationType BeforeAnimationType)
+void UMontageCAPAbility::LeftAnimationType(EAnimationType InAnimationType)
 {
-	Super::UpdateAnimationType(InAnimationType, BeforeAnimationType);
+	Super::LeftAnimationType(InAnimationType);
 
-	if(BeforeAnimationType == AnimationType)
+	if(AnimationType == InAnimationType)
 	{
 		DeActivate();
 	}

@@ -17,6 +17,12 @@ void ABaseMonsterController::InitializeBlackboardData()
 	TraceRangeVariable.Set<float>(TraceRange.GetMetaVariable().Get<float>());
 
 	SetBlackboardVariable(UBTGameFunctionLibrary::TraceRangeName, TraceRangeVariable);
+
+	
+	TBlackboardVariable PhaseVariable;
+	PhaseVariable.Set<int32>(0);
+	
+	SetBlackboardVariable(UBTGameFunctionLibrary::PhaseName, PhaseVariable);
 }
 
 void ABaseMonsterController::BeginPlay()

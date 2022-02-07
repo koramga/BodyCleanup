@@ -29,6 +29,7 @@ enum class EAnimationType : uint8
 	Wait,
 	LookAround,
 	Stun,
+	Attack,
 };
 
 UENUM(BlueprintType)

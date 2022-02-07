@@ -142,9 +142,14 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType)
 {
+
+}
+
+void ABaseCharacter::LeftAnimationType(EAnimationType AnimationType)
+{
 	if(IsValid(CapabilitySystemComponent))
 	{
-		CapabilitySystemComponent->UpdateAnimationType(AnimationType, BeforeAnimationType);
+		CapabilitySystemComponent->LeftAnimationType(AnimationType);
 	}
 }
 

@@ -7,7 +7,6 @@
 #include "../../BT/Interface/BTCharacterInterface.h"
 #include "../../Controller/Player/BasePlayerController.h"
 #include "../Utility/BTGameFunctionLibrary.h"
-#include "DrawDebugHelpers.h"
 
 UBTTaskTraceTargetNode::UBTTaskTraceTargetNode()
 {
@@ -52,7 +51,9 @@ EBTNodeResult::Type UBTTaskTraceTargetNode::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
-	if(IsGoalActor(OwnerControllerInterface->GetPossessActor(), TargetControllerInterface->GetPossessActor(), 50.f))
+	TBlackboardVariable GoalTraceTargetRangeName = OwnerControllerInterface->GetBlackboardVariable(UBTGameFunctionLibrary::GoalTraceTargetRangeName, EBlackboardVariableType::Float);
+
+	if(IsGoalActor(OwnerControllerInterface->GetPossessActor(), TargetControllerInterface->GetPossessActor(), GoalTraceTargetRangeName.Get<float>()))
 	{
 		return EBTNodeResult::Succeeded;
 	}
@@ -95,7 +96,9 @@ void UBTTaskTraceTargetNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 		return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
 
-	if(IsGoalActor(OwnerControllerInterface->GetPossessActor(), TargetControllerInterface->GetPossessActor(), 50.f))
+	TBlackboardVariable GoalTraceTargetRangeName = OwnerControllerInterface->GetBlackboardVariable(UBTGameFunctionLibrary::GoalTraceTargetRangeName, EBlackboardVariableType::Float);
+	
+	if(IsGoalActor(OwnerControllerInterface->GetPossessActor(), TargetControllerInterface->GetPossessActor(), GoalTraceTargetRangeName.Get<float>()))
 	{
 		OwnerAIController->StopMovement();
 		return FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

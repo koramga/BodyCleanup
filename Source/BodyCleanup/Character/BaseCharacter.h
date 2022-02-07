@@ -60,6 +60,7 @@ public:
 
 public :
 	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
+	virtual void LeftAnimationType(EAnimationType AnimationType);
 
 private :
 	void __OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data);

@@ -3,6 +3,6 @@
 
 #include "BaseCAPAbility.h"
 
-void UBaseCAPAbility::UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType)
+void UBaseCAPAbility::LeftAnimationType(EAnimationType InAnimationType)
 {
 }

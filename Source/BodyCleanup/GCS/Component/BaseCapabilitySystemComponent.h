@@ -17,5 +17,5 @@ class BODYCLEANUP_API UBaseCapabilitySystemComponent : public UCapabilitySystemC
 
 public :
 	virtual bool ApplyGameplayEffectToTargetWithAdvantage(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0);
-	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
+	virtual void LeftAnimationType(EAnimationType AnimationType);
 };

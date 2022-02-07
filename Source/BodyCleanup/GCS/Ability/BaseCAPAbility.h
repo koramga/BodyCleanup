@@ -16,5 +16,5 @@ class BODYCLEANUP_API UBaseCAPAbility : public UCAPAbility
 	GENERATED_BODY()
 
 public :
-	virtual void UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType);
+	virtual void LeftAnimationType(EAnimationType InAnimationType);
 };

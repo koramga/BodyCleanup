@@ -23,6 +23,8 @@ public :
 	static const FName LookAroundTimeName;
 	static const FName TargetObjectName;
 	static const FName LookAroundCycleTimeName;
+	static const FName PhaseName;
+	static const FName GoalTraceTargetRangeName;
 
 public :
 	static bool IsBTActor(const AActor* Actor);

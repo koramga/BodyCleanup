@@ -79,6 +79,14 @@ void UBaseAnimInstance::LeftAnimationType(EAnimationType InputAnimationType)
 
 	AnimationStates[static_cast<int32>(InputAnimationType)] = EAnimationState::Left;
 
+	
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
+
+	if (IsValid(BaseCharacter))
+	{
+		BaseCharacter->LeftAnimationType(InputAnimationType);
+	}
+
 	UpdateLeftAnimation(InputAnimationType);
 }
 
