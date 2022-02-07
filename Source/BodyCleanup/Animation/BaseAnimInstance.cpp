@@ -157,6 +157,27 @@ bool UBaseAnimInstance::CanMove() const
 	return true;
 }
 
+bool UBaseAnimInstance::CanUpdateAnimationType(EAnimationType InAnimationType) const
+{
+	if(EAnimationType::Death == AnimationType)
+	{
+		return false;
+	}
+	else if(EAnimationType::Stun == AnimationType)
+	{
+		if(EAnimationType::Death == InAnimationType)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 EAnimationType UBaseAnimInstance::GetAnimationType() const
 {
 	return AnimationType;

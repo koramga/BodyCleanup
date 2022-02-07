@@ -221,6 +221,16 @@ void ABaseCharacter::SetAnimationType(EAnimationType AnimationType, UAnimMontage
 	}	
 }
 
+bool ABaseCharacter::CanUpdateAnimationType(EAnimationType InAnimationType) const
+{
+	if (IsValid(BaseAnimInstance))
+	{
+		return BaseAnimInstance->CanUpdateAnimationType(InAnimationType);
+	}
+
+	return false;
+}
+
 bool ABaseCharacter::IsPlayingMontage(UAnimMontage* AnimMontage)
 {
 	if (IsValid(BaseAnimInstance))

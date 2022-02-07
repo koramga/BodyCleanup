@@ -67,6 +67,7 @@ public :
 	void SetMoveBlendSpeed(float InputMoveBlendSpeed);
 	void SetMoveBlendAngle(float InputMoveBlendAngle);
 	void SetMovementMode(EMovementMode InputMovementMode);
+	
 	void SetAnimationType(EAnimationType InputAnimationType);
 	void SetAnimationMontage(UAnimMontage* AnimMontage);
 	bool IsPlayingMontage(UAnimMontage* AnimMontage);
@@ -76,6 +77,7 @@ public :
 
 public :
 	virtual bool CanMove() const;
+	virtual bool CanUpdateAnimationType(EAnimationType InAnimationType) const;
 
 public :
 	EAnimationType GetAnimationType() const;

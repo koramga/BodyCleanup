@@ -34,10 +34,13 @@ bool UMontageCAPAbility::CanActivate()
 
 				if(IsValid(BaseCharacter))
 				{
-					if(false == BaseCharacter->IsActivateMontage(nullptr))
+					if(BaseCharacter->CanUpdateAnimationType(AnimationType))
 					{
-						return true;
-					}
+						if(false == BaseCharacter->IsActivateMontage(nullptr))
+						{
+							return true;
+						}						
+					}					
 				}
 			}			
 		}
