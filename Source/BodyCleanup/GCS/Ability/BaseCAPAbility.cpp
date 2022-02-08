@@ -6,3 +6,8 @@
 void UBaseCAPAbility::LeftAnimationType(EAnimationType InAnimationType)
 {
 }
+
+float UBaseCAPAbility::GetAbilityRange() const
+{
+	return AbilityRange;
+}

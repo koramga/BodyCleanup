@@ -132,3 +132,25 @@ void UBaseCapabilitySystemComponent::LeftAnimationType(EAnimationType AnimationT
 		}
 	}
 }
+
+float UBaseCapabilitySystemComponent::GetAbilityRangeByTag(const FGameplayTag& Tag)
+{
+	for (UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if (CAPAbility->IsAbilityTag(Tag))
+		{
+			float AbilityRange = 0.f;
+
+			UBaseCAPAbility* BaseCAPAbility = Cast<UBaseCAPAbility>(CAPAbility);
+
+			if (IsValid(BaseCAPAbility))
+			{
+				AbilityRange = BaseCAPAbility->GetAbilityRange();
+			}
+
+			return AbilityRange;
+		}
+	}
+
+	return 0.f;
+}

@@ -177,16 +177,17 @@ bool ABaseAIController::CanUpdateAnimationPossessActor(uint8 InAnimationType) co
 	return false;
 }
 
-bool ABaseAIController::CanActivateAbilityByTag(const FGameplayTag& Tag) const
+FBTAbilityInfo ABaseAIController::GetAbilityInfoByTag(const FGameplayTag& Tag) const
 {
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
 
-	if(IsValid(BaseCharacter))
+	if (IsValid(BaseCharacter))
 	{
-		return BaseCharacter->CanActivateAbilityByTag(Tag);
+		return BaseCharacter->GetAbilityInfoByTag(Tag);
 	}
 
-	return false;
+	return FBTAbilityInfo();
+	
 }
 
 bool ABaseAIController::ActivateAbilityByTag(const FGameplayTag& Tag)
@@ -196,18 +197,6 @@ bool ABaseAIController::ActivateAbilityByTag(const FGameplayTag& Tag)
 	if(IsValid(BaseCharacter))
 	{
 		return BaseCharacter->ActivateAbilityByTag(Tag);
-	}
-
-	return false;
-}
-
-bool ABaseAIController::IsActivateAbilityByTag(const FGameplayTag& Tag) const
-{
-	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
-
-	if(IsValid(BaseCharacter))
-	{
-		return BaseCharacter->IsActivateAbilityByTag(Tag);
 	}
 
 	return false;

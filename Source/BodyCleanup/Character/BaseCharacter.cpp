@@ -378,14 +378,25 @@ ULevelTriggerActorAssist* ABaseCharacter::GetLevelTriggerActorAssist() const
 	return LevelTriggerActorAssist;
 }
 
-bool ABaseCharacter::CanActivateAbilityByTag(const FGameplayTag& Tag) const
+FBTAbilityInfo ABaseCharacter::GetAbilityInfoByTag(const FGameplayTag& Tag) const
 {
-	if(IsValid(CapabilitySystemComponent))
+	FBTAbilityInfo AbilityInfo;
+
+	AbilityInfo.CanActivate = CapabilitySystemComponent->CanActivateAbilityByTag(Tag);
+	AbilityInfo.IsActivate = CapabilitySystemComponent->IsActivateAbilityByTag(Tag);
+
+	UBaseCapabilitySystemComponent* BaseCapabilitySystemComponent = Cast<UBaseCapabilitySystemComponent>(CapabilitySystemComponent);
+
+	if (IsValid(BaseCapabilitySystemComponent))
 	{
-		return CapabilitySystemComponent->CanActivateAbilityByTag(Tag);
+		AbilityInfo.Range = BaseCapabilitySystemComponent->GetAbilityRangeByTag(Tag);
+	}
+	else
+	{
+		AbilityInfo.Range = 0.f;
 	}
 
-	return false;
+	return AbilityInfo;
 }
 
 bool ABaseCharacter::ActivateAbilityByTag(const FGameplayTag& Tag)
@@ -395,15 +406,5 @@ bool ABaseCharacter::ActivateAbilityByTag(const FGameplayTag& Tag)
 		return CapabilitySystemComponent->TryActivateAbilityByTag(Tag);
 	}
 	
-	return false;
-}
-
-bool ABaseCharacter::IsActivateAbilityByTag(const FGameplayTag& Tag) const
-{
-	if(IsValid(CapabilitySystemComponent))
-	{
-		return CapabilitySystemComponent->IsActivateAbilityByTag(Tag);
-	}
-
 	return false;
 }

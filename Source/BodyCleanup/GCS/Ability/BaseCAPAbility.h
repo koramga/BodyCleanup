@@ -15,6 +15,11 @@ class BODYCLEANUP_API UBaseCAPAbility : public UCAPAbility
 {
 	GENERATED_BODY()
 
+protected :
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AbilityRange;
+
 public :
 	virtual void LeftAnimationType(EAnimationType InAnimationType);
+	float GetAbilityRange() const;
 };

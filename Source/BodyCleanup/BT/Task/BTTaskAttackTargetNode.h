@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "BTBaseTaskNode.h"
-#include "BTLookAroundNode.generated.h"
+#include "BTTaskAttackTargetNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTTaskNodeLookAround : public UBTBaseTaskNode
+class BODYCLEANUP_API UBTTaskAttackTargetNode : public UBTBaseTaskNode
 {
 	GENERATED_BODY()
-	
-public:
-	UBTTaskNodeLookAround();
 
+public :
+	UBTTaskAttackTargetNode();
+	
 protected:
 	FGameplayTag	AbilityGameplayTag;
-	bool			bIsActivateLookAround = false;
+	bool			bIsActivateAttack = false;
 
 protected:
 	/** starts this task, should return Succeeded, Failed or InProgress

@@ -86,7 +86,6 @@ public :
 public:
 	virtual UCapabilitySystemComponent* GetCapabilitySystemComponent() const override;
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
-	virtual bool CanActivateAbilityByTag(const FGameplayTag& Tag) const override;
+	virtual FBTAbilityInfo GetAbilityInfoByTag(const struct FGameplayTag& Tag) const override;
 	virtual bool ActivateAbilityByTag(const FGameplayTag& Tag) override;
-	virtual bool IsActivateAbilityByTag(const FGameplayTag& Tag) const override;
 };

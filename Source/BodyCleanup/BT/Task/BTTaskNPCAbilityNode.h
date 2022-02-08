@@ -4,22 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "BTBaseTaskNode.h"
-#include "BTAttackTargetNode.generated.h"
+#include "BTTaskNPCAbilityNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTAttackTargetNode : public UBTBaseTaskNode
+class BODYCLEANUP_API UBTTaskNPCAbilityNode : public UBTBaseTaskNode
 {
 	GENERATED_BODY()
 
-public :
-	UBTAttackTargetNode();
-	
+public:
+	UBTTaskNPCAbilityNode();
+
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag	AbilityGameplayTag;
-	bool			bIsActivateAttack = false;
+
+
+	bool			bIsActivateAbility = false;
 
 protected:
 	/** starts this task, should return Succeeded, Failed or InProgress

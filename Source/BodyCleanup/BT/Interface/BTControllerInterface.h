@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "../BTDefines.h"
 #include "BTControllerInterface.generated.h"
 
 UENUM(BlueprintType)
@@ -51,7 +52,6 @@ public:
 	virtual AActor* GetPossessActor() const = 0;
 	virtual bool CanMovePossessActor() const = 0;
 	virtual bool CanUpdateAnimationPossessActor(uint8 InAnimationType) const = 0;
-	virtual bool CanActivateAbilityByTag(const struct FGameplayTag& Tag) const = 0;
+	virtual FBTAbilityInfo GetAbilityInfoByTag(const struct FGameplayTag& Tag) const = 0;
 	virtual bool ActivateAbilityByTag(const struct FGameplayTag& Tag) = 0;
-	virtual bool IsActivateAbilityByTag(const struct FGameplayTag& Tag) const = 0;
 };

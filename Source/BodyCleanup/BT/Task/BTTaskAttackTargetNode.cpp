@@ -1,20 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTAttackTargetNode.h"
+#include "BTTaskAttackTargetNode.h"
 #include "AIController.h"
 #include "../../BT/Interface/BTControllerInterface.h"
 #include "../../BT/Interface/BTCharacterInterface.h"
 #include "../../Controller/Player/BasePlayerController.h"
 #include "../Utility/BTGameFunctionLibrary.h"
 
-UBTAttackTargetNode::UBTAttackTargetNode()
+UBTTaskAttackTargetNode::UBTTaskAttackTargetNode()
 {
 	NodeName = TEXT("AttackTarget");
 	bNotifyTick = true;
 }
 
-EBTNodeResult::Type UBTAttackTargetNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTaskAttackTargetNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 	
@@ -45,15 +45,6 @@ EBTNodeResult::Type UBTAttackTargetNode::ExecuteTask(UBehaviorTreeComponent& Own
 	{
 		return EBTNodeResult::Failed;
 	}
-
-	TBlackboardVariable TraceTargetRangeVariable;
-	TraceTargetRangeVariable.Set<float>(200.f);
-	
-	if(false == IsGoalActor(OwnerControllerInterface->GetPossessActor(), TargetControllerInterface->GetPossessActor(), TraceTargetRangeVariable.Get<float>()))
-	{
-		OwnerControllerInterface->SetBlackboardVariable(UBTGameFunctionLibrary::GoalTraceTargetRangeName, TraceTargetRangeVariable);
-		return EBTNodeResult::Failed;
-	}
 	
 	TBlackboardVariable BlackboardVariable = OwnerControllerInterface->GetBlackboardVariable(UBTGameFunctionLibrary::PhaseName, EBlackboardVariableType::Int32);
 	int32 Phase = BlackboardVariable.Get<int32>();
@@ -62,19 +53,39 @@ EBTNodeResult::Type UBTAttackTargetNode::ExecuteTask(UBehaviorTreeComponent& Own
 	{
 		FString AttackAbilityTag = FString::Printf(TEXT("NPC.Attack.%d.%d"), Phase, i);
 
-		FGameplayTag GameplayTag = FGameplayTag::RequestGameplayTag(FName(AttackAbilityTag));
-		
-		if(true == OwnerControllerInterface->CanActivateAbilityByTag(GameplayTag))
+		AbilityGameplayTag = FGameplayTag::RequestGameplayTag(FName(AttackAbilityTag));
+
+		FBTAbilityInfo AbilityInfo = OwnerControllerInterface->GetAbilityInfoByTag(AbilityGameplayTag);
+
+		if (false == AbilityInfo.IsActivate
+			&& true == AbilityInfo.CanActivate)
 		{
-			AbilityGameplayTag = GameplayTag;
-			return EBTNodeResult::InProgress;
+			if (AbilityInfo.Range <= 0.f)
+			{
+				return EBTNodeResult::InProgress;
+			}
+			else
+			{
+				TBlackboardVariable TraceTargetRangeVariable;
+				TraceTargetRangeVariable.Set<float>(AbilityInfo.Range);
+
+				if (IsGoalActor(OwnerControllerInterface->GetPossessActor(), TargetControllerInterface->GetPossessActor(), TraceTargetRangeVariable.Get<float>()))
+				{
+					return EBTNodeResult::InProgress;
+				}
+				else
+				{
+					OwnerControllerInterface->SetBlackboardVariable(UBTGameFunctionLibrary::GoalTraceTargetRangeName, TraceTargetRangeVariable);
+					return EBTNodeResult::Failed;
+				}
+			}
 		}
 	}
 	
 	return EBTNodeResult::Failed;
 }
 
-void UBTAttackTargetNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTaskAttackTargetNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -99,7 +110,9 @@ void UBTAttackTargetNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	}
 	else
 	{
-		if(false == OwnerControllerInterface->IsActivateAbilityByTag(AbilityGameplayTag))
+		FBTAbilityInfo AbilityInfo = OwnerControllerInterface->GetAbilityInfoByTag(AbilityGameplayTag);
+
+		if(false == AbilityInfo.IsActivate)
 		{
 			bIsActivateAttack = false;
 			return FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);			

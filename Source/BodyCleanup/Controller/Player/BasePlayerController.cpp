@@ -403,9 +403,9 @@ bool ABasePlayerController::CanUpdateAnimationPossessActor(uint8 InAnimationType
 	return false;
 }
 
-bool ABasePlayerController::CanActivateAbilityByTag(const FGameplayTag& Tag) const
+FBTAbilityInfo ABasePlayerController::GetAbilityInfoByTag(const FGameplayTag& Tag) const
 {
-	return false;
+	return FBTAbilityInfo();
 }
 
 bool ABasePlayerController::ActivateAbilityByTag(const FGameplayTag& Tag)
@@ -413,10 +413,6 @@ bool ABasePlayerController::ActivateAbilityByTag(const FGameplayTag& Tag)
 	return false;
 }
 
-bool ABasePlayerController::IsActivateAbilityByTag(const FGameplayTag& Tag) const
-{
-	return false;
-}
 
 void ABasePlayerController::BeginPlay()
 {
