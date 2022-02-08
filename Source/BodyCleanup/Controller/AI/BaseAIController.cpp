@@ -201,3 +201,49 @@ bool ABaseAIController::ActivateAbilityByTag(const FGameplayTag& Tag)
 
 	return false;
 }
+
+bool ABaseAIController::DeActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->DeActivateAbilityByTag(Tag);
+	}
+	
+	return false;
+}
+
+EBTPatrolType ABaseAIController::GetPatrolType() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->GetPatrolType();
+	}
+	
+	return EBTPatrolType::None;
+}
+
+IBTPatrolActorInterface* ABaseAIController::GetPatrolActorInterface() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->GetPatrolActorInterface();
+	}
+
+	return nullptr;
+}
+
+void ABaseAIController::SetNextPatrol()
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->SetNextPatrol();
+	}
+}

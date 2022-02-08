@@ -17,6 +17,8 @@ void UMontageCAPAbility::OnActivateAbility()
 		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(CapabilitySystemComponent->GetOwner());
 		
 		BaseCharacter->SetAnimationType(AnimationType, Montage);
+
+		bIsFinishMontage = false;
 	}
 }
 
@@ -50,7 +52,19 @@ bool UMontageCAPAbility::CanActivate()
 }
 
 void UMontageCAPAbility::OnEndAbility()
-{	
+{
+	if(false == bIsFinishMontage)
+	{
+		TSoftObjectPtr<UCapabilitySystemComponent> CapabilitySystemComponent = GetOwnerCapabilitySystemComponent();
+		
+		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(CapabilitySystemComponent->GetOwner());
+
+		if(IsValid(BaseCharacter))
+		{
+			BaseCharacter->SetStopMontage(Montage);
+		}
+	}
+	
 	Super::OnEndAbility();
 }
 
@@ -60,6 +74,8 @@ void UMontageCAPAbility::LeftAnimationType(EAnimationType InAnimationType)
 
 	if(AnimationType == InAnimationType)
 	{
+		bIsFinishMontage = true;
+		
 		DeActivate();
 	}
 }

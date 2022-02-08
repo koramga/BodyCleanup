@@ -413,6 +413,25 @@ bool ABasePlayerController::ActivateAbilityByTag(const FGameplayTag& Tag)
 	return false;
 }
 
+bool ABasePlayerController::DeActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	return false;
+}
+
+EBTPatrolType ABasePlayerController::GetPatrolType() const
+{
+	return EBTPatrolType::None;
+}
+
+IBTPatrolActorInterface* ABasePlayerController::GetPatrolActorInterface() const
+{
+	return nullptr;
+}
+
+void ABasePlayerController::SetNextPatrol()
+{
+	
+}
 
 void ABasePlayerController::BeginPlay()
 {

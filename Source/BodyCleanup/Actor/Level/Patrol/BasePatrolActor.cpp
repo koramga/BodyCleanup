@@ -26,3 +26,25 @@ void ABasePatrolActor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
+
+bool ABasePatrolActor::IsGoal(const AActor* InActor) const
+{
+	TArray<AActor*> OutOverlappingActors;
+	
+	BoxComponent->GetOverlappingActors(OutOverlappingActors, InActor->GetClass());
+
+	for(AActor* Actor : OutOverlappingActors)
+	{
+		if(Actor == InActor)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+FVector ABasePatrolActor::GetGoalPosition() const
+{
+	return GetActorLocation();
+}

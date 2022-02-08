@@ -88,4 +88,8 @@ public:
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const override;
 	virtual FBTAbilityInfo GetAbilityInfoByTag(const struct FGameplayTag& Tag) const override;
 	virtual bool ActivateAbilityByTag(const FGameplayTag& Tag) override;
+	virtual bool DeActivateAbilityByTag(const struct FGameplayTag& Tag) override;
+	virtual EBTPatrolType GetPatrolType() const override;
+	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
+	virtual void SetNextPatrol() override;
 };

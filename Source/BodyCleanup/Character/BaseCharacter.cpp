@@ -408,3 +408,27 @@ bool ABaseCharacter::ActivateAbilityByTag(const FGameplayTag& Tag)
 	
 	return false;
 }
+
+bool ABaseCharacter::DeActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		return CapabilitySystemComponent->TryDeActivateAbilityByTag(Tag);
+	}
+	
+	return false;
+}
+
+EBTPatrolType ABaseCharacter::GetPatrolType() const
+{
+	return EBTPatrolType::None;
+}
+
+IBTPatrolActorInterface* ABaseCharacter::GetPatrolActorInterface() const
+{
+	return nullptr;
+}
+
+void ABaseCharacter::SetNextPatrol()
+{
+}

@@ -209,6 +209,19 @@ bool UCapabilitySystemComponent::TryActivateAbilityByTag(const FGameplayTag& Tag
 	return false;
 }
 
+bool UCapabilitySystemComponent::TryDeActivateAbilityByTag(const FGameplayTag& Tag)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsAbilityTag(Tag))
+		{
+			return CAPAbility->DeActivate();			
+		}
+	}
+
+	return false;
+}
+
 bool UCapabilitySystemComponent::CanActivateAbilityByTag(const FGameplayTag& Tag)
 {
 	for(UCAPAbility* CAPAbility : CAPAbilities)

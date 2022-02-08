@@ -56,6 +56,7 @@ public :
 public :
 	bool TryActivateAbilityByClass(TSubclassOf<UCAPAbility> AbilityClass);
 	bool TryActivateAbilityByTag(const FGameplayTag& Tag);
+	bool TryDeActivateAbilityByTag(const FGameplayTag& Tag);
 	bool CanActivateAbilityByTag(const FGameplayTag& Tag);
 	bool IsActivateAbilityByTag(const FGameplayTag& Tag);
 };

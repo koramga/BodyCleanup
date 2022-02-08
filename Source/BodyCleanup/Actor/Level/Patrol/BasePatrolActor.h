@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "../BaseLevelActor.h"
+#include "Interface/BTPatrolActorInterface.h"
 #include "BasePatrolActor.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABasePatrolActor : public ABaseLevelActor
+class BODYCLEANUP_API ABasePatrolActor : public ABaseLevelActor, public IBTPatrolActorInterface
 {
 	GENERATED_BODY()
 
@@ -26,4 +27,8 @@ protected:
 
 public :
 	virtual void Tick(float DeltaSeconds) override;
+
+public :
+	virtual bool IsGoal(const AActor* InActor) const override;
+	virtual FVector GetGoalPosition() const override;
 };

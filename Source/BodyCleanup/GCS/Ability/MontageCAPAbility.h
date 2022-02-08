@@ -22,6 +22,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EAnimationType	AnimationType;
 
+	bool bIsFinishMontage;
+
 protected:
 	virtual void OnActivateAbility();
 	virtual void OnEndAbility();

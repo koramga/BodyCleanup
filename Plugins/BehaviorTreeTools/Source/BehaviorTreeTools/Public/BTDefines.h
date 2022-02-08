@@ -17,3 +17,11 @@ struct FBTAbilityInfo
 	FBTAbilityInfo()
 		: CanActivate(false), IsActivate(false), Range(0.f) {}
 };
+
+UENUM(BlueprintType)
+enum class EBTPatrolType : uint8
+{
+	None,
+	Point,
+	Space,	
+};

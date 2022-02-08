@@ -24,10 +24,10 @@ public :
 	static const FName LookAroundCycleTimeName;
 	static const FName PhaseName;
 	static const FName GoalTraceTargetRangeName;
+	static const FName PatrolCooldownName;
 
 public :
 	static bool IsBTActor(const AActor* Actor);
 	static bool IsBTController(const AController* Controller);
 	static bool IsEnemy(const IBTControllerInterface* LHS, const IBTControllerInterface* RHS);
-	
 };

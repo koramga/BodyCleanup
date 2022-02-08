@@ -6,12 +6,28 @@
 #include "Interface/BTControllerInterface.h"
 #include "Interface/BTCharacterInterface.h"
 #include "BTGameFunctionLibrary.h"
-#include "DrawDebugHelpers.h"
 
 UBTTaskNPCAbilityNode::UBTTaskNPCAbilityNode()
 {
 	NodeName = TEXT("AbilityNode");
 	bNotifyTick = true;
+}
+
+void UBTTaskNPCAbilityNode::Release(UBehaviorTreeComponent& OwnerComp, EBTNodeResult::Type InType)
+{
+	IBTControllerInterface* OwnerControllerInterface = Cast<IBTControllerInterface>(OwnerComp.GetAIOwner());
+	
+	if(bIsActivateAbility)
+	{
+		bIsActivateAbility = false;
+
+		if(EBTNodeResult::Failed == InType)
+		{
+			OwnerControllerInterface->DeActivateAbilityByTag(AbilityGameplayTag);
+		}
+	}
+	
+	return Super::Release(OwnerComp, InType);
 }
 
 EBTNodeResult::Type UBTTaskNPCAbilityNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -46,21 +62,30 @@ void UBTTaskNPCAbilityNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 	if (false == UBTGameFunctionLibrary::IsBTController(OwnerComp.GetAIOwner()))
 	{
-		return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		return Release(OwnerComp, EBTNodeResult::Failed);
 	}
 
 	IBTControllerInterface* OwnerControllerInterface = Cast<IBTControllerInterface>(OwnerComp.GetAIOwner());
 
 	if (OwnerControllerInterface->IsDeathPossessActor())
 	{
-		return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		return Release(OwnerComp, EBTNodeResult::Failed);
+	}
+
+	TBlackboardVariable BlackboardTargetVariable = OwnerControllerInterface->GetBlackboardVariable(UBTGameFunctionLibrary::TargetObjectName, EBlackboardVariableType::Object);
+	
+	IBTControllerInterface* TargetControllerInterface = Cast<IBTControllerInterface>(BlackboardTargetVariable.Get<UObject*>());
+
+	if(TargetControllerInterface != nullptr)
+	{
+		return Release(OwnerComp, EBTNodeResult::Failed);
 	}
 
 	if (false == bIsActivateAbility)
 	{
 		if (false == OwnerControllerInterface->ActivateAbilityByTag(AbilityGameplayTag))
 		{
-			return FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+			return Release(OwnerComp, EBTNodeResult::Failed);
 		}
 		else
 		{
@@ -73,8 +98,7 @@ void UBTTaskNPCAbilityNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 		if (false == AbilityInfo.IsActivate)
 		{
-			bIsActivateAbility = false;
-			return FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return Release(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
 }

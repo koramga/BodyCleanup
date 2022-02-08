@@ -54,4 +54,8 @@ public:
 	virtual bool CanUpdateAnimationPossessActor(uint8 InAnimationType) const = 0;
 	virtual FBTAbilityInfo GetAbilityInfoByTag(const struct FGameplayTag& Tag) const = 0;
 	virtual bool ActivateAbilityByTag(const struct FGameplayTag& Tag) = 0;
+	virtual bool DeActivateAbilityByTag(const struct FGameplayTag& Tag) = 0;
+	virtual EBTPatrolType GetPatrolType() const = 0;
+	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const = 0;
+	virtual void SetNextPatrol() = 0;
 };

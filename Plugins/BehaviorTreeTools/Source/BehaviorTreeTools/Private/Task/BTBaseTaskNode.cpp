@@ -3,12 +3,15 @@
 
 #include "Task/BTBaseTaskNode.h"
 #include "DrawDebugHelpers.h"
+#include "BTGameFunctionLibrary.h"
+#include "AIController.h"
+#include "Interface/BTControllerInterface.h"
 
 UBTBaseTaskNode::UBTBaseTaskNode()
 {
 }
 
-bool UBTBaseTaskNode::IsGoalActor(AActor* Source, AActor* Target, float Radius, bool bIsDebugDrawing)
+bool UBTBaseTaskNode::IsGoalActor(AActor* Source, AActor* Target, float Radius, bool bIsDebugDrawing) const
 {
 	if(nullptr == Source
 		|| nullptr == Target
@@ -23,7 +26,6 @@ bool UBTBaseTaskNode::IsGoalActor(AActor* Source, AActor* Target, float Radius, 
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams param(NAME_None, true, Source);
 	GetWorld()->SweepMultiByChannel(HitResults, SourceLocation, SourceLocation, FQuat::Identity,  ECollisionChannel::ECC_Pawn, FCollisionShape::MakeSphere(Radius), param);
-
 
 	bool bIsGoal = false;
 	
@@ -47,6 +49,28 @@ bool UBTBaseTaskNode::IsGoalActor(AActor* Source, AActor* Target, float Radius, 
 #endif
 
 	return bIsGoal;
+}
+
+bool UBTBaseTaskNode::IsAvailableController(AAIController* InAIController) const
+{
+	if (false == UBTGameFunctionLibrary::IsBTController(InAIController))
+	{
+		return false;
+	}
+
+	const IBTControllerInterface* OwnerControllerInterface = Cast<IBTControllerInterface>(InAIController);
+
+	if (OwnerControllerInterface->IsDeathPossessActor())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void UBTBaseTaskNode::Release(UBehaviorTreeComponent& OwnerComp, EBTNodeResult::Type InType)
+{
+	return FinishLatentTask(OwnerComp, InType);
 }
 
 EBTNodeResult::Type UBTBaseTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
