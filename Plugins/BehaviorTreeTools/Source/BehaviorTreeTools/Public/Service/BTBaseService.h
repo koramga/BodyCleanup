@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTBaseService : public UBTService
+class BEHAVIORTREETOOLS_API UBTBaseService : public UBTService
 {
 	GENERATED_BODY()
 

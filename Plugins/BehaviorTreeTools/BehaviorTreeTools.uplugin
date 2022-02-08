@@ -1,0 +1,34 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "BehaviorTreeTools",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "koramga",
+	"CreatedByURL": "https://blog.naver.com/koramga",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "BehaviorTreeTools",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins" : [
+		{
+			"Name": "MetaTools",
+			"Enabled": true
+		},
+		{
+			"Name": "GameCapabilitySystem",
+			"Enabled": true			
+		}
+	]
+}

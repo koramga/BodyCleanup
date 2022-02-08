@@ -40,6 +40,7 @@ enum class ELevelType : uint8
 	Stair,
 	Floor,
 	Junk,
+	Patrol,
 };
 
 UENUM(BlueprintType)

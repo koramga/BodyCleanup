@@ -2,7 +2,7 @@
 
 
 #include "BaseMonsterController.h"
-#include "../../../../BT/Utility/BTGameFunctionLibrary.h"
+#include "BTGameFunctionLibrary.h"
 
 ABaseMonsterController::ABaseMonsterController()
 {

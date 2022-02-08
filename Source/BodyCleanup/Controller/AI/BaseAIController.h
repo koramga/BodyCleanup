@@ -4,7 +4,7 @@
 
 #include "../../ExDefines.h"
 #include "AIController.h"
-#include "../../BT/Interface/BTControllerInterface.h"
+#include "Interface/BTControllerInterface.h"
 #include "MetaTools/Variable/FloatVariableMetaData.h"
 #include "BaseAIController.generated.h"
 

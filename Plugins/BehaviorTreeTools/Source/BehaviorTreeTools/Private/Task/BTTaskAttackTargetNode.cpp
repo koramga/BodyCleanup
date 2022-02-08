@@ -1,12 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTaskAttackTargetNode.h"
+#include "Task/BTTaskAttackTargetNode.h"
 #include "AIController.h"
-#include "../../BT/Interface/BTControllerInterface.h"
-#include "../../BT/Interface/BTCharacterInterface.h"
-#include "../../Controller/Player/BasePlayerController.h"
-#include "../Utility/BTGameFunctionLibrary.h"
+#include "Interface/BTControllerInterface.h"
+#include "Interface/BTCharacterInterface.h"
+#include "BTGameFunctionLibrary.h"
 
 UBTTaskAttackTargetNode::UBTTaskAttackTargetNode()
 {

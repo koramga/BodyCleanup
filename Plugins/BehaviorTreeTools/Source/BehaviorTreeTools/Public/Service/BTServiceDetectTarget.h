@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTServiceDetectTarget : public UBTBaseService
+class BEHAVIORTREETOOLS_API UBTServiceDetectTarget : public UBTBaseService
 {
 	GENERATED_BODY()
 

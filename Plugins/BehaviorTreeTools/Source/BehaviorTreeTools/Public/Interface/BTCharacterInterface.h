@@ -17,7 +17,7 @@ class UBTCharacterInterface : public UInterface
 /**
  * 
  */
-class BODYCLEANUP_API IBTCharacterInterface
+class BEHAVIORTREETOOLS_API IBTCharacterInterface
 {
 	GENERATED_BODY()
 

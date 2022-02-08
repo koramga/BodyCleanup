@@ -1,12 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTServiceDetectTarget.h"
+#include "Service/BTServiceDetectTarget.h"
 #include "AIController.h"
-#include "../../BT/Interface/BTControllerInterface.h"
-#include "../../BT/Interface/BTCharacterInterface.h"
-#include "../../Controller/Player/BasePlayerController.h"
-#include "../Utility/BTGameFunctionLibrary.h"
+#include "Interface/BTControllerInterface.h"
+#include "Interface/BTCharacterInterface.h"
+#include "BTGameFunctionLibrary.h"
 #include "DrawDebugHelpers.h"
 
 UBTServiceDetectTarget::UBTServiceDetectTarget()

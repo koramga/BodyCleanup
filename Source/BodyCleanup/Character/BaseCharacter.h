@@ -9,7 +9,7 @@
 #include "CapabilitySystemInterface.h"
 #include "../GCS/Interface/GCSActorInterface.h"
 #include "../GAS/Ability/BaseGameplayAbility.h"
-#include "../BT/Interface/BTCharacterInterface.h"
+#include "Interface/BTCharacterInterface.h"
 #include "../GCS/Component/BaseCapabilitySystemComponent.h"
 #include "BaseCharacter.generated.h"
 

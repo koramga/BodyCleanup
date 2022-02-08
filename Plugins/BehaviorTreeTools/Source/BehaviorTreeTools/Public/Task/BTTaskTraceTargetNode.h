@@ -3,22 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
-#include "BTBaseTaskNode.generated.h"
+#include "BTBaseTaskNode.h"
+#include "BTTaskTraceTargetNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTBaseTaskNode : public UBTTaskNode
+class BEHAVIORTREETOOLS_API UBTTaskTraceTargetNode : public UBTBaseTaskNode
 {
 	GENERATED_BODY()
 
 public :
-	UBTBaseTaskNode();
-
-protected :
-	bool IsGoalActor(class AActor* Source, class AActor* Target, float Radius, bool bIsDebugDrawing = false);
+	UBTTaskTraceTargetNode();
 
 protected:
 	/** starts this task, should return Succeeded, Failed or InProgress

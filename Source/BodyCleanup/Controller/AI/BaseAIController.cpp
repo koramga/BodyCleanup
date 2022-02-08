@@ -6,7 +6,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BodyCleanup/Character/BaseCharacter.h"
-#include "../../BT/Utility/BTGameFunctionLibrary.h"
+#include "BTGameFunctionLibrary.h"
 
 ABaseAIController::ABaseAIController()
 {

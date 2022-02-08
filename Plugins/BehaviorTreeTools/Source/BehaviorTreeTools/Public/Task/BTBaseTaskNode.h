@@ -3,26 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BTBaseTaskNode.h"
-#include "BTTaskNPCAbilityNode.generated.h"
+#include "BehaviorTree/BTTaskNode.h"
+#include "BTBaseTaskNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTTaskNPCAbilityNode : public UBTBaseTaskNode
+class BEHAVIORTREETOOLS_API UBTBaseTaskNode : public UBTTaskNode
 {
 	GENERATED_BODY()
 
-public:
-	UBTTaskNPCAbilityNode();
+public :
+	UBTBaseTaskNode();
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FGameplayTag	AbilityGameplayTag;
-
-
-	bool			bIsActivateAbility = false;
+protected :
+	bool IsGoalActor(class AActor* Source, class AActor* Target, float Radius, bool bIsDebugDrawing = false);
 
 protected:
 	/** starts this task, should return Succeeded, Failed or InProgress

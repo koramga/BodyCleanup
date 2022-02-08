@@ -9,6 +9,15 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class ENPCPatrolType : uint8
+{
+	None,
+	Point,
+	Space,	
+};
+
 UCLASS()
 class BODYCLEANUP_API ABaseNPCCharacter : public ABaseCharacter
 {
@@ -16,6 +25,13 @@ class BODYCLEANUP_API ABaseNPCCharacter : public ABaseCharacter
 
 public :
 	ABaseNPCCharacter();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|NPCCharacter")
+	ENPCPatrolType						PatrolType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|NPCCharacter", meta = (EditCondition = "PatrolType != ENPCPatrolType::None", EditConditionHides))
+	TArray<class ABasePatrolActor*>		PatrolActors;
 
 protected:
 	// Called when the game starts or when spawned

@@ -2,11 +2,10 @@
 
 
 #include "BTGameFunctionLibrary.h"
-#include "../Interface/BTControllerInterface.h"
-#include "../Interface/BTCharacterInterface.h"
+#include "Interface/BTControllerInterface.h"
+#include "Interface/BTCharacterInterface.h"
 
 const FName UBTGameFunctionLibrary::TraceRangeName = TEXT("TraceRange");
-const FName UBTGameFunctionLibrary::LookAroundTimeName = TEXT("LookAroundTime");
 const FName UBTGameFunctionLibrary::TargetObjectName = TEXT("TargetObject");
 const FName UBTGameFunctionLibrary::LookAroundCycleTimeName = TEXT("LookAroundCycleTime");
 const FName UBTGameFunctionLibrary::PhaseName = TEXT("Phase");

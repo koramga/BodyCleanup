@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBTTaskAttackTargetNode : public UBTBaseTaskNode
+class BEHAVIORTREETOOLS_API UBTTaskAttackTargetNode : public UBTBaseTaskNode
 {
 	GENERATED_BODY()
 

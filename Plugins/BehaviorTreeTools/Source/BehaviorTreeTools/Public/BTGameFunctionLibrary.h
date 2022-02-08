@@ -14,13 +14,12 @@ class IBTCharacterInterface;
 class IBTControllerInterface;
 
 UCLASS()
-class BODYCLEANUP_API UBTGameFunctionLibrary : public UBlueprintFunctionLibrary
+class BEHAVIORTREETOOLS_API UBTGameFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 public :
 	static const FName TraceRangeName;
-	static const FName LookAroundTimeName;
 	static const FName TargetObjectName;
 	static const FName LookAroundCycleTimeName;
 	static const FName PhaseName;

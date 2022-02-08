@@ -4,7 +4,7 @@
 
 #include "../../ExDefines.h"
 #include "GameFramework/PlayerController.h"
-#include "../../BT/Interface/BTControllerInterface.h"
+#include "Interface/BTControllerInterface.h"
 #include "BasePlayerController.generated.h"
 
 /**

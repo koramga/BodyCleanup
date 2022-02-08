@@ -38,7 +38,7 @@ enum class EBlackboardVariableType : uint8
 
 typedef TVariant<UObject*, float, int32, FVector, bool> TBlackboardVariable;
 
-class BODYCLEANUP_API IBTControllerInterface
+class BEHAVIORTREETOOLS_API IBTControllerInterface
 {
 	GENERATED_BODY()
 

@@ -6,6 +6,8 @@
 ABaseNPCCharacter::ABaseNPCCharacter()
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	PatrolType = ENPCPatrolType::None;
 }
 
 void ABaseNPCCharacter::BeginPlay()
