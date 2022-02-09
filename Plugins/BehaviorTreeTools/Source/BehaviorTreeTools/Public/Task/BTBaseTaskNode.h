@@ -33,5 +33,6 @@ protected:
 	/** ticks this task
 	 * this function should be considered as const (don't modify state of object) if node is not instanced! */
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds);
+	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
 	
 };

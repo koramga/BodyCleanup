@@ -82,3 +82,8 @@ void UBTBaseTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 }
+
+void UBTBaseTaskNode::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
+{
+	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
+}
