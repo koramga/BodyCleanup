@@ -45,11 +45,20 @@ void UInteractiveSuckingComponent::BeginPlay()
 		}
 	}
 
-	for(TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
+	AActor* Owner = GetOwner();
+
+	if(Owner->IsA(ABaseCharacter::StaticClass()))
 	{
-		if(PrimitiveComponent.IsValid())
+		
+	}
+	else
+	{
+		for(TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 		{
-			PrimitiveComponent->SetSimulatePhysics(true);
+			if(PrimitiveComponent.IsValid())
+			{
+				PrimitiveComponent->SetSimulatePhysics(true);
+			}
 		}
 	}
 }
