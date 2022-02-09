@@ -24,19 +24,43 @@ void ABaseNPCCharacter::Tick(float DeltaTime)
 
 EBTPatrolType ABaseNPCCharacter::GetPatrolType() const
 {
-	if(PatrolActors.Num() <= 1)
+	if(EBTPatrolType::Point == PatrolType)
 	{
-		return EBTPatrolType::None;
+		if(PatrolActors.Num() <= 1)
+		{
+			return EBTPatrolType::None;
+		}		
 	}
-	
+	else if(EBTPatrolType::Space == PatrolType)
+	{
+		if(PatrolActors.Num() <= 0)
+		{
+			return EBTPatrolType::None;
+		}
+	}
+		
 	return PatrolType;
 }
 
 IBTPatrolActorInterface* ABaseNPCCharacter::GetPatrolActorInterface() const
 {
-	if(PatrolActors.Num() <= 1)
+	if(EBTPatrolType::None == PatrolType)
 	{
 		return nullptr;
+	}
+	else if(EBTPatrolType::Point == PatrolType)
+	{
+		if(PatrolActors.Num() <= 1)
+		{
+			return nullptr;
+		}		
+	}
+	else if(EBTPatrolType::Space == PatrolType)
+	{
+		if(PatrolActors.Num() <= 0)
+		{
+			return nullptr;
+		}
 	}
 
 	return Cast<IBTPatrolActorInterface>(PatrolActors[PatrolActorIndex]);
@@ -44,25 +68,38 @@ IBTPatrolActorInterface* ABaseNPCCharacter::GetPatrolActorInterface() const
 
 void ABaseNPCCharacter::SetNextPatrol()
 {
-	if(PatrolActors.Num() >= 2)
+	if(EBTPatrolType::Point == PatrolType)
 	{
-		PatrolActorIndex += PatrolActorDirection;
+		if(PatrolActors.Num() >= 2)
+		{
+			PatrolActorIndex += PatrolActorDirection;
 
-		if(PatrolActorDirection < 0)
-		{
-			if(PatrolActorIndex < 0)
+			if(PatrolActorDirection < 0)
 			{
-				PatrolActorIndex = 1;
-				PatrolActorDirection *= -1;
+				if(PatrolActorIndex < 0)
+				{
+					PatrolActorIndex = 1;
+					PatrolActorDirection *= -1;
+				}
 			}
-		}
-		else if(PatrolActorDirection > 0)
-		{
-			if(PatrolActorIndex >= PatrolActors.Num())
+			else if(PatrolActorDirection > 0)
 			{
-				PatrolActorIndex = PatrolActors.Num() - 2;
-				PatrolActorDirection *= -1;
+				if(PatrolActorIndex >= PatrolActors.Num())
+				{
+					PatrolActorIndex = PatrolActors.Num() - 2;
+					PatrolActorDirection *= -1;
+				}
 			}
-		}
+		}		
 	}
+}
+
+FBTPatrolInfo ABaseNPCCharacter::GetPatrolInfo() const
+{
+	FBTPatrolInfo PatrolInfo = Super::GetPatrolInfo();
+
+	PatrolInfo.MinDistance = MinPatrolDistance.GetMetaVariable().Get<float>();
+	PatrolInfo.MaxDistance = MaxPatrolDistance.GetMetaVariable().Get<float>();
+
+	return PatrolInfo;
 }

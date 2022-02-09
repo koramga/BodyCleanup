@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BTDefines.h"
 #include "Task/BTBaseTaskNode.h"
 #include "BTTaskPatrolNode.generated.h"
 
@@ -20,6 +21,8 @@ public :
 protected:
 	FGameplayTag	AbilityGameplayTag;
 	bool			bIsActivateAbility = false;
+	EBTPatrolType	PatrolType;
+	FVector			SpaceGoalPoint;
 
 protected:
 	virtual void Release(UBehaviorTreeComponent& OwnerComp, EBTNodeResult::Type InType) override;

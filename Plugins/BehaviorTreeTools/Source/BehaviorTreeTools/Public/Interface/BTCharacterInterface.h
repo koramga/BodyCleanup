@@ -29,5 +29,6 @@ public:
 	virtual FBTAbilityInfo GetAbilityInfoByTag(const struct FGameplayTag& Tag) const = 0;
 	virtual EBTPatrolType GetPatrolType() const = 0;
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const = 0;
+	virtual FBTPatrolInfo GetPatrolInfo() const = 0;
 	virtual void SetNextPatrol() = 0;
 };

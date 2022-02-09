@@ -72,4 +72,5 @@ public :
 	virtual EBTPatrolType GetPatrolType() const override;
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
 	virtual void SetNextPatrol() override;
+	virtual FBTPatrolInfo GetPatrolInfo() const override;
 };

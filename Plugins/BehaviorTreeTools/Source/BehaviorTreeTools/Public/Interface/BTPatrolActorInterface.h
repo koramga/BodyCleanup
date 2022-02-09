@@ -24,4 +24,5 @@ class BEHAVIORTREETOOLS_API IBTPatrolActorInterface
 public:
 	virtual bool IsGoal(const AActor* InActor) const = 0;
 	virtual FVector GetGoalPosition() const = 0;
+	virtual bool IsPointInActor(const FVector& InVector) const = 0;
 };

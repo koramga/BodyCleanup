@@ -11,6 +11,42 @@ UBTBaseTaskNode::UBTBaseTaskNode()
 {
 }
 
+bool UBTBaseTaskNode::IsGoalLocation(AActor* Target, const FVector& GoalLocation, float Radius, bool bIsDebugDrawing) const
+{
+	if(nullptr == Target
+		|| Radius <= 0.f)
+	{
+		return true;
+	}
+	
+	TArray<FHitResult> HitResults;
+	FCollisionQueryParams param(NAME_None, true);
+	GetWorld()->SweepMultiByChannel(HitResults, GoalLocation, GoalLocation, FQuat::Identity,  ECollisionChannel::ECC_Pawn, FCollisionShape::MakeSphere(Radius), param);
+
+	bool bIsGoal = false;
+	
+	for(const FHitResult& HitResult : HitResults)
+	{
+		if(HitResult.GetActor() == Target)
+		{
+			bIsGoal = true;
+			break;
+		}
+	}
+	
+#ifdef ENABLE_DRAW_DEBUG
+
+	if(bIsDebugDrawing)
+	{
+		FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
+		DrawDebugSphere(GetWorld(), GoalLocation, Radius, 20, DrawColor, false, 0.5f);		
+	}	
+	
+#endif
+
+	return bIsGoal;
+}
+
 bool UBTBaseTaskNode::IsGoalActor(AActor* Source, AActor* Target, float Radius, bool bIsDebugDrawing) const
 {
 	if(nullptr == Source

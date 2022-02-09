@@ -91,5 +91,6 @@ public:
 	virtual bool DeActivateAbilityByTag(const struct FGameplayTag& Tag) override;
 	virtual EBTPatrolType GetPatrolType() const override;
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
+	virtual FBTPatrolInfo GetPatrolInfo() const override;
 	virtual void SetNextPatrol() override;
 };

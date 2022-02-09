@@ -18,6 +18,7 @@ public :
 	UBTBaseTaskNode();
 
 protected :
+	bool IsGoalLocation(class AActor* Target, const FVector& GoalLocation, float Radius, bool bIsDebugDrawing = false) const;
 	bool IsGoalActor(class AActor* Source, class AActor* Target, float Radius, bool bIsDebugDrawing = false) const;
 	bool IsAvailableController(AAIController* InAIController) const;
 

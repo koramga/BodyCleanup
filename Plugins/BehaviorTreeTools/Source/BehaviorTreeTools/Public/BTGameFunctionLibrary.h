@@ -30,4 +30,5 @@ public :
 	static bool IsBTActor(const AActor* Actor);
 	static bool IsBTController(const AController* Controller);
 	static bool IsEnemy(const IBTControllerInterface* LHS, const IBTControllerInterface* RHS);
+	static float GetSurface(UWorld* World, const FVector& Point, bool bDrawDebugLines = false, const TArray<AActor*>* IgnoreActors = nullptr);
 };

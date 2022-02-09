@@ -4,6 +4,7 @@
 #include "BTGameFunctionLibrary.h"
 #include "Interface/BTControllerInterface.h"
 #include "Interface/BTCharacterInterface.h"
+#include "DrawDebugHelpers.h"
 
 const FName UBTGameFunctionLibrary::TraceRangeName = TEXT("TraceRange");
 const FName UBTGameFunctionLibrary::TargetObjectName = TEXT("TargetObject");
@@ -56,4 +57,58 @@ bool UBTGameFunctionLibrary::IsEnemy(const IBTControllerInterface* LHS, const IB
 	}
 
 	return false;
+}
+
+float UBTGameFunctionLibrary::GetSurface(UWorld* World, const FVector& Point, bool bDrawDebugLines, const TArray<AActor*>* IgnoreActors)
+{
+	if (World)
+	{
+		FVector StartLocation{ Point.X, Point.Y, 1000 };    // Raytrace starting point.
+		FVector EndLocation{ Point.X, Point.Y, -1000 };            // Raytrace end point.
+
+		FCollisionQueryParams param;
+
+		if (nullptr != IgnoreActors)
+		{
+			for (AActor* IgnoreActor : (*IgnoreActors))
+			{
+				param.AddIgnoredActor(IgnoreActor);
+			}
+		}
+
+		// Raytrace for overlapping actors.
+		FHitResult HitResult;
+		World->LineTraceSingleByObjectType(
+			OUT HitResult,
+			StartLocation,
+			EndLocation,
+			FCollisionObjectQueryParams(ECollisionChannel::ECC_WorldStatic),
+			param
+		);
+
+		// Draw debug line.
+		if (bDrawDebugLines)
+		{
+			FColor LineColor;
+
+			if (HitResult.GetActor()) LineColor = FColor::Red;
+			else LineColor = FColor::Green;
+
+			DrawDebugLine(
+				World,
+				StartLocation,
+				EndLocation,
+				LineColor,
+				true,
+				5.f,
+				0.f,
+				10.f
+			);
+		}
+
+		// Return Z location.
+		if (HitResult.GetActor()) return HitResult.ImpactPoint.Z;
+	}
+
+	return 0;
 }

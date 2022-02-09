@@ -247,3 +247,15 @@ void ABaseAIController::SetNextPatrol()
 		return BaseCharacter->SetNextPatrol();
 	}
 }
+
+FBTPatrolInfo ABaseAIController::GetPatrolInfo() const
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(GetCharacter());
+
+	if(IsValid(BaseCharacter))
+	{
+		return BaseCharacter->GetPatrolInfo();
+	}
+
+	return FBTPatrolInfo();
+}

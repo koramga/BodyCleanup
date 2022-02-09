@@ -433,6 +433,11 @@ void ABasePlayerController::SetNextPatrol()
 	
 }
 
+FBTPatrolInfo ABasePlayerController::GetPatrolInfo() const
+{
+	return FBTPatrolInfo();
+}
+
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

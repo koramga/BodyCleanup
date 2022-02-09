@@ -2,6 +2,8 @@
 
 
 #include "BasePatrolActor.h"
+
+#include "DetailLayoutBuilder.h"
 #include "Components/BoxComponent.h"
 #include "../../../Components/Actor/LevelComponent.h"
 
@@ -47,4 +49,11 @@ bool ABasePatrolActor::IsGoal(const AActor* InActor) const
 FVector ABasePatrolActor::GetGoalPosition() const
 {
 	return GetActorLocation();
+}
+
+bool ABasePatrolActor::IsPointInActor(const FVector& InVector) const
+{
+	FTransform Transform = BoxComponent->GetComponentTransform();
+
+	return UKismetMathLibrary::IsPointInBox(InVector, Transform.GetLocation(), BoxComponent->GetScaledBoxExtent());
 }

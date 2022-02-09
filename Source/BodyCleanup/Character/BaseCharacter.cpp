@@ -429,6 +429,11 @@ IBTPatrolActorInterface* ABaseCharacter::GetPatrolActorInterface() const
 	return nullptr;
 }
 
+FBTPatrolInfo ABaseCharacter::GetPatrolInfo() const
+{
+	return FBTPatrolInfo();
+}
+
 void ABaseCharacter::SetNextPatrol()
 {
 }

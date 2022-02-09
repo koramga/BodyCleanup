@@ -18,6 +18,19 @@ struct FBTAbilityInfo
 		: CanActivate(false), IsActivate(false), Range(0.f) {}
 };
 
+struct FBTPatrolInfo
+{	
+	float MaxDistance;
+	float MinDistance;
+	float GoalRadius;
+	
+	FBTPatrolInfo()
+		: MaxDistance(200.f), MinDistance(200.f), GoalRadius(200.f)
+	{
+		
+	}
+};
+
 UENUM(BlueprintType)
 enum class EBTPatrolType : uint8
 {

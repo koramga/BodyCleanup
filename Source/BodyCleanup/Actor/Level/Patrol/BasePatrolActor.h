@@ -31,4 +31,5 @@ public :
 public :
 	virtual bool IsGoal(const AActor* InActor) const override;
 	virtual FVector GetGoalPosition() const override;
+	virtual bool IsPointInActor(const FVector& InVector) const override;
 };
