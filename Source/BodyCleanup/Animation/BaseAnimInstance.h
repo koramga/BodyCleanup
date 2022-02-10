@@ -9,6 +9,29 @@
 /**
  * 
  */
+USTRUCT(BlueprintType)
+struct FAnimationStateInfo
+{
+	GENERATED_BODY()
+
+	FAnimationStateInfo()
+		: AnimationState(EAnimationState::Left), Duration(0.f)
+	{
+		
+	}
+	FAnimationStateInfo(EAnimationState InAnimiationState)
+		: AnimationState(InAnimiationState), Duration(0.f)
+	{
+		
+	}
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EAnimationState  AnimationState;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float Duration;
+};
+
 UCLASS()
 class BODYCLEANUP_API UBaseAnimInstance : public UAnimInstance
 {
@@ -31,8 +54,8 @@ protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EAnimationType	AnimationType = EAnimationType::Idle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintREadonly)
-	TArray<EAnimationState>	AnimationStates;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FAnimationStateInfo>	AnimationStateInfos;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float					AnimationPlayTime;
@@ -73,7 +96,7 @@ public :
 	bool IsPlayingMontage(UAnimMontage* AnimMontage);
 	bool IsActivateMontage(UAnimMontage* AnimMontage);
 	void SetStopAnimationMontage(UAnimMontage* AnimMontage);
-	void SetAnimationDruationTime(float InAnimationDurationTime);
+	void SetAnimationDruationTime(EAnimationType InAnimationType, float InAnimationDurationTime);
 
 public :
 	virtual bool CanMove() const;

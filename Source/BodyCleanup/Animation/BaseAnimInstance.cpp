@@ -8,13 +8,13 @@ void UBaseAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	AnimationStates.Empty();
+	AnimationStateInfos.Empty();
 
 	int32 AnimationTypeCount = GetMaxEnumValue<EAnimationType>() + 1;
 
-	for (int i = 0; i < AnimationTypeCount; ++i)
+	for(int i = 0; i < AnimationTypeCount; ++i)
 	{
-		AnimationStates.Add(EAnimationState::Left);
+		AnimationStateInfos.Add(FAnimationStateInfo());
 	}
 }
 
@@ -45,7 +45,7 @@ void UBaseAnimInstance::UpdateEnterAnimation(EAnimationType InputAnimationType)
 
 void UBaseAnimInstance::UpdateLeftAnimation(EAnimationType InputAnimationType)
 {
-	AnimationDurationTime = 0.f;
+	AnimationDurationTime = AnimationStateInfos[static_cast<int32>(InputAnimationType)].Duration;
 }
 
 void UBaseAnimInstance::UpdateCompleteAnimation(EAnimationType InputAnimationType)
@@ -64,7 +64,7 @@ void UBaseAnimInstance::OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterru
 
 void UBaseAnimInstance::EnterAnimationType(EAnimationType InputAnimationType)
 {
-	AnimationStates[static_cast<int32>(InputAnimationType)] = EAnimationState::Enter;
+	AnimationStateInfos[static_cast<int32>(InputAnimationType)].AnimationState = EAnimationState::Enter;
 
 	UpdateEnterAnimation(InputAnimationType);
 }
@@ -77,7 +77,7 @@ void UBaseAnimInstance::LeftAnimationType(EAnimationType InputAnimationType)
 		DesiredAnimationType = EAnimationType::Idle;
 	}
 
-	AnimationStates[static_cast<int32>(InputAnimationType)] = EAnimationState::Left;
+	AnimationStateInfos[static_cast<int32>(InputAnimationType)].AnimationState = EAnimationState::Left;
 
 	
 	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
@@ -92,7 +92,7 @@ void UBaseAnimInstance::LeftAnimationType(EAnimationType InputAnimationType)
 
 void UBaseAnimInstance::CompleteAnimationType(EAnimationType InputAnimationType)
 {
-	AnimationStates[static_cast<int32>(InputAnimationType)] = EAnimationState::Complete;
+	AnimationStateInfos[static_cast<int32>(InputAnimationType)].AnimationState = EAnimationState::Complete;
 
 	UpdateCompleteAnimation(InputAnimationType);
 }
@@ -155,9 +155,9 @@ void UBaseAnimInstance::SetStopAnimationMontage(UAnimMontage* AnimMontage)
 	}	
 }
 
-void UBaseAnimInstance::SetAnimationDruationTime(float InAnimationDurationTime)
+void UBaseAnimInstance::SetAnimationDruationTime(EAnimationType InAnimationType, float InAnimationDurationTime)
 {
-	AnimationDurationTime = InAnimationDurationTime;
+	AnimationStateInfos[static_cast<int32>(InAnimationType)].Duration = InAnimationDurationTime;
 }
 
 bool UBaseAnimInstance::CanMove() const
@@ -198,5 +198,5 @@ EAnimationType UBaseAnimInstance::GetDesiredAnimationType() const
 
 EAnimationState UBaseAnimInstance::GetAnimationState(EAnimationType InputAnimationType) const
 {
-	return AnimationStates[static_cast<int32>(InputAnimationType)];
+	return AnimationStateInfos[static_cast<int32>(InputAnimationType)].AnimationState;
 }

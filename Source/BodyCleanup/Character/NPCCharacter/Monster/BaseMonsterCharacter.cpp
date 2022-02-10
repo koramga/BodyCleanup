@@ -7,20 +7,19 @@
 
 ABaseMonsterCharacter::ABaseMonsterCharacter()
 {
-	SuperJumpComponent = CreateDefaultSubobject<USuperJumpComponent>(TEXT("SuperJumpComponent"));
-
-	//Arm을 Root에 붙여준다.
-	SuperJumpComponent->SetupAttachment(GetMesh());
+	
 }
 
 void ABaseMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	TArray<UActorComponent*> SuperJumpComponents = GetComponentsByClass(USuperJumpComponent::StaticClass());
 
-	if(IsValid(SuperJumpComponent))
+	for(UActorComponent* SuperJumpComponent : SuperJumpComponents)
 	{
-		SuperJumpComponent->SetCallbackOverlapSuperJump(this, &ABaseMonsterCharacter::__OverlapSuperJump);
-	}	
+		Cast<USuperJumpComponent>(SuperJumpComponent)->SetCallbackOverlapSuperJump(this, &ABaseMonsterCharacter::__OverlapSuperJump);
+	}
 }
 
 void ABaseMonsterCharacter::Tick(float DeltaTime)
@@ -34,6 +33,6 @@ void ABaseMonsterCharacter::__OverlapSuperJump(AActor* Actor)
 	if(IsValid(BaseAnimInstance))
 	{
 		BaseAnimInstance->SetAnimationType(EAnimationType::Stun);
-		BaseAnimInstance->SetAnimationDruationTime(3.f);
+		BaseAnimInstance->SetAnimationDruationTime(EAnimationType::Stun, 3.f);
 	}
 }

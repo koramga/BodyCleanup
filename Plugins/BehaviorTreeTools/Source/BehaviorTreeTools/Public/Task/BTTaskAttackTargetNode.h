@@ -21,6 +21,9 @@ protected:
 	FGameplayTag	AbilityGameplayTag;
 	bool			bIsActivateAttack = false;
 
+protected :
+	virtual void Release(UBehaviorTreeComponent& OwnerComp, EBTNodeResult::Type InType) override;
+	
 protected:
 	/** starts this task, should return Succeeded, Failed or InProgress
 	 *  (use FinishLatentTask() when returning InProgress)
@@ -30,5 +33,4 @@ protected:
 	/** ticks this task
 	 * this function should be considered as const (don't modify state of object) if node is not instanced! */
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds);
-	
 };

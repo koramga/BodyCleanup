@@ -16,10 +16,6 @@ class BODYCLEANUP_API ABaseMonsterCharacter : public ABaseNPCCharacter
 	
 public :
 	ABaseMonsterCharacter();
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class USuperJumpComponent* SuperJumpComponent;
 	
 protected:
 	// Called when the game starts or when spawned
