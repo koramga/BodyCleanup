@@ -49,6 +49,9 @@ struct FSoundWave2DInfo
 	//사운드의 병렬을 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USoundConcurrency*		SoundConcurrency;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool					bIsIgnoreWhenContaintsName = false;
 };
 
 
@@ -59,7 +62,7 @@ struct FSoundWave3DInfo
 
 	//이름을 지정합니다. 이름을 지정하면 원하는 타이밍에 제거할 수 있습니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName Name;
+	FName					Name;
 
 	//같은 이름을 중복 허용하는지 여부입니다. 허용하지 않는다면, 기존에 재생되고 있던 사운드는 종료됩니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -70,16 +73,22 @@ struct FSoundWave3DInfo
 	USoundWave*				SoundWave;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool					bIsAttachSound = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
 	FName					AttachName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
+	bool					bIsStopWhenAttachedToDestroyed = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
+	TEnumAsByte<EAttachLocation::Type> AttachLocationType = EAttachLocation::Type::KeepRelativeOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector					Location;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FRotator				Rotator;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TEnumAsByte<EAttachLocation::Type> AttachLocationType;
 
 	//시작 시, Fade In Time을 고려하여 시작합니다. 0이하의 값은 Fade In을 활용하지 않겠다는 의미가 됩니다. 기준은 초(Sec) 입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -108,4 +117,7 @@ struct FSoundWave3DInfo
 	//사운드의 병렬을 정의합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USoundConcurrency*		SoundConcurrency;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool					bIsIgnoreWhenContaintsName = false;
 };

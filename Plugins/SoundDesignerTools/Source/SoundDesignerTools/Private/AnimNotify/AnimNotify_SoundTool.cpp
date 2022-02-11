@@ -44,10 +44,23 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 
 						for (const FSoundWave2DInfo& SoundWave2DInfo : Sound2DWaveInfos)
 						{
+							if (SoundWave2DInfo.bIsIgnoreWhenContaintsName)
+							{
+								if (SoundToolsManager->IsContainsName(SoundWave2DInfo.Name))
+								{
+									continue;
+								}
+							}
+
 							AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave2DInfo.SoundWave, SoundWave2DInfo.VolumeMultiplier, SoundWave2DInfo.PitchMultiplier, SoundWave2DInfo.StartTimer, SoundWave2DInfo.SoundConcurrency);
 
 							if (IsValid(AudioComponent))
 							{
+								if (SoundWave2DInfo.FadeInTime > 0.f)
+								{
+									AudioComponent->FadeIn(SoundWave2DInfo.FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);
+								}
+
 								if (false == SoundWave2DInfo.bIsAvailableDuplicated)
 								{
 									SoundToolsManager->RemoveAudioComponents(SoundWave2DInfo.Name);
@@ -61,32 +74,48 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 
 						for (const FSoundWave3DInfo& SoundWave3DInfo : Sound3DWaveInfos)
 						{
-							//EAttachLocation::Type
+							if (SoundWave3DInfo.bIsIgnoreWhenContaintsName)
+							{
+								if (SoundToolsManager->IsContainsName(SoundWave3DInfo.Name))
+								{
+									continue;
+								}
+							}
 
-							if (SoundWave3DInfo.AttachName.IsNone())
+							if (false == SoundWave3DInfo.bIsAttachSound)
 							{
 								AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, SoundWave3DInfo.SoundWave, SoundWave3DInfo.Location, SoundWave3DInfo.Rotator, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency);
 							}
 							else
 							{
-
+								AudioComponent = UGameplayStatics::SpawnSoundAttached(SoundWave3DInfo.SoundWave, MeshComp,  SoundWave3DInfo.AttachName, SoundWave3DInfo.Location, SoundWave3DInfo.AttachLocationType, SoundWave3DInfo.bIsStopWhenAttachedToDestroyed, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency, true);
 							}
 
-							//UGameplayStatics::SpawnSoundAtLocation()
-							//UGameplayStatics::SpawnSoundAttached()
+							if (IsValid(AudioComponent))
+							{
+								if (SoundWave3DInfo.FadeInTime > 0.f)
+								{
+									AudioComponent->FadeIn(SoundWave3DInfo.FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);
+								}
+
+								if (false == SoundWave3DInfo.bIsAvailableDuplicated)
+								{
+									SoundToolsManager->RemoveAudioComponents(SoundWave3DInfo.Name);
+								}
+
+								SoundToolsManager->AddAudioComponent(SoundWave3DInfo.Name, AudioComponent, SoundWave3DInfo.FadeOutTime);
+							}
 						}
 
 						const TArray<FName>& SoundWaveTurnOffNames = SoundWaveToolDataAsset->GetSoundWaveTurnOffNames();
 
 						for (const FName& Name : SoundWaveTurnOffNames)
 						{
-
+							SoundToolsManager->RemoveAudioComponents(Name);
 						}
 					}
 				}
 			}
-
-			//AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave, VolumeMultiplier, PitchMultiplier, StartTimer, SoundConcurrency);
 		}
 	}
 }

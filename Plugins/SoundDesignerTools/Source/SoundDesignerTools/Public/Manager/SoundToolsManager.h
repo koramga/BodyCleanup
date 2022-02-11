@@ -45,5 +45,7 @@ protected :
 
 public :
 	bool AddAudioComponent(const FName& InName, class UAudioComponent* InAudioComponent, float InFadeOutTime);
+	bool IsContainsName(const FName& InName);
 	bool RemoveAudioComponents(const FName& InName);
+	void ClearAudioComponents();
 };
