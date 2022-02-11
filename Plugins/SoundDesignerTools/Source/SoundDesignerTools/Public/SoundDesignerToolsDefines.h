@@ -14,42 +14,43 @@ struct FSoundWave2DInfo
 {
 	GENERATED_BODY();
 
-	//ÀÌ¸§À» ÁöÁ¤ÇÕ´Ï´Ù. ÀÌ¸§À» ÁöÁ¤ÇÏ¸é ¿øÇÏ´Â Å¸ÀÌ¹Ö¿¡ Á¦°ÅÇÒ ¼ö ÀÖ½À´Ï´Ù.
+	//ì´ë¦„ì…ë‹ˆë‹¤. ë§Œì•½ í•„ìš”í•œ ê²½ìš°ì— ì‚¬ìš´ë“œë¥¼ ë„ê³  ì‹¶ìœ¼ë©´ ë§¤ìš° ì¤‘ìš”í•´ì§‘ë‹ˆë‹¤. (ì´ë¦„ë‹¨ìœ„ë¡œ ì œê±°ê°€ ê°€ëŠ¥í•©ë‹ˆë‹¤.)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName Name;
 
-	//°°Àº ÀÌ¸§À» Áßº¹ Çã¿ëÇÏ´ÂÁö ¿©ºÎÀÔ´Ï´Ù. Çã¿ëÇÏÁö ¾Ê´Â´Ù¸é, ±âÁ¸¿¡ Àç»ıµÇ°í ÀÖ´ø »ç¿îµå´Â Á¾·áµË´Ï´Ù.
+	//ë³µì‚¬ë¥¼ í—ˆìš©í• ì§€ ì—¬ë¶€ì…ë‹ˆë‹¤. í—ˆìš©ë˜ì§€ ì•ŠëŠ”ë‹¤ë©´ ê¸°ì¡´ì— ì¬ìƒë˜ë˜ ì‚¬ìš´ë“œëŠ” ì œê±°í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					bIsAvailableDuplicated = true;
 
-	//Sound Wave´Â Resource¸¦ ÁöÁ¤ÇØ¾ßÇÕ´Ï´Ù.
+	//SoundWaveì˜ DataAssetì´ í•„ìš”í•©ë‹ˆë‹¤. (USoundWaveSourceDataAsset)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USoundWaveSourceDataAsset*	SoundWaveSourceDataAsset;
 
-	//½ÃÀÛ ½Ã, Fade In TimeÀ» °í·ÁÇÏ¿© ½ÃÀÛÇÕ´Ï´Ù. 0ÀÌÇÏÀÇ °ªÀº Fade InÀ» È°¿ëÇÏÁö ¾Ê°Ú´Ù´Â ÀÇ¹Ì°¡ µË´Ï´Ù. ±âÁØÀº ÃÊ(Sec) ÀÔ´Ï´Ù.
+	//ì‹œì‘ ì‹œ, Fade In Timeì„ ê³ ë ¤í•˜ì—¬ ì‹œì‘í•©ë‹ˆë‹¤. 0ì´í•˜ì˜ ê°’ì€ Fade Inì„ í™œìš©í•˜ì§€ ì•Šê² ë‹¤ëŠ” ì˜ë¯¸ê°€ ë©ë‹ˆë‹¤. ê¸°ì¤€ì€ ì´ˆ(Sec) ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					FadeInTime = 0.f;
 
-	//Á¾·á ½Ã, Fade Out TimeÀ» °í·ÁÇÏ¿© Á¾·áÇÕ´Ï´Ù. 0ÀÌÇÏÀÇ °ªÀº Fade OutÀ» È°¿ëÇÏÁö ¾Ê°Ú´Ù´Â ÀÇ¹Ì°¡ µË´Ï´Ù. ±âÁØÀº ÃÊ(Sec) ÀÔ´Ï´Ù.
+	//ì¢…ë£Œ ì‹œ, Fade Out Timeì„ ê³ ë ¤í•˜ì—¬ ì¢…ë£Œí•©ë‹ˆë‹¤. 0ì´í•˜ì˜ ê°’ì€ Fade Outì„ í™œìš©í•˜ì§€ ì•Šê² ë‹¤ëŠ” ì˜ë¯¸ê°€ ë©ë‹ˆë‹¤. ê¸°ì¤€ì€ ì´ˆ(Sec) ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					FadeOutTime = 1.f;
 
-	//Àç»ı ½Ã VolumeÀÇ °ª¿¡ °öÇØÁİ´Ï´Ù.
+	//ì¬ìƒ ì‹œ Volumeì˜ ê°’ì— ê³±í•´ì¤ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					VolumeMultiplier = 1.f;
 
-	//Àç»ı ½Ã PitchÀÇ °ª¿¡ °öÇØÁİ´Ï´Ù.
+	//ì¬ìƒ ì‹œ Pitchì˜ ê°’ì— ê³±í•´ì¤ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					PitchMultiplier = 1.f;
 
-	//»ç¿îµåÀÇ ½ÃÀÛ½Ã°£À» Á¤ÀÇÇÕ´Ï´Ù.
+	//ì‚¬ìš´ë“œì˜ ì‹œì‘ì‹œê°„ì„ ì •ì˜í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					StartTimer = 0.f;
 
-	//»ç¿îµåÀÇ º´·ÄÀ» Á¤ÀÇÇÕ´Ï´Ù.
+	//ì‚¬ìš´ë“œì˜ ë³‘ë ¬ì„ ì •ì˜í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USoundConcurrency*		SoundConcurrency;
 
+	//ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ì´ë¦„ì´ ìˆë‹¤ë©´ í–‰ìœ„ë¥¼ ë¬´ì‹œí•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					bIsIgnoreWhenContaintsName = false;
 };
@@ -60,64 +61,67 @@ struct FSoundWave3DInfo
 {
 	GENERATED_BODY();
 
-	//ÀÌ¸§À» ÁöÁ¤ÇÕ´Ï´Ù. ÀÌ¸§À» ÁöÁ¤ÇÏ¸é ¿øÇÏ´Â Å¸ÀÌ¹Ö¿¡ Á¦°ÅÇÒ ¼ö ÀÖ½À´Ï´Ù.
+	//ì´ë¦„ì…ë‹ˆë‹¤. ë§Œì•½ í•„ìš”í•œ ê²½ìš°ì— ì‚¬ìš´ë“œë¥¼ ë„ê³  ì‹¶ìœ¼ë©´ ë§¤ìš° ì¤‘ìš”í•´ì§‘ë‹ˆë‹¤. (ì´ë¦„ë‹¨ìœ„ë¡œ ì œê±°ê°€ ê°€ëŠ¥í•©ë‹ˆë‹¤.)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName					Name;
 
-	//°°Àº ÀÌ¸§À» Áßº¹ Çã¿ëÇÏ´ÂÁö ¿©ºÎÀÔ´Ï´Ù. Çã¿ëÇÏÁö ¾Ê´Â´Ù¸é, ±âÁ¸¿¡ Àç»ıµÇ°í ÀÖ´ø »ç¿îµå´Â Á¾·áµË´Ï´Ù.
+	//ë³µì‚¬ë¥¼ í—ˆìš©í• ì§€ ì—¬ë¶€ì…ë‹ˆë‹¤. í—ˆìš©ë˜ì§€ ì•ŠëŠ”ë‹¤ë©´ ê¸°ì¡´ì— ì¬ìƒë˜ë˜ ì‚¬ìš´ë“œëŠ” ì œê±°í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					bIsAvailableDuplicated = true;
 
-	//Sound Wave´Â Resource¸¦ ÁöÁ¤ÇØ¾ßÇÕ´Ï´Ù.
+	//SoundWaveì˜ DataAssetì´ í•„ìš”í•©ë‹ˆë‹¤. (USoundWaveSourceDataAsset)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USoundWaveSourceDataAsset*	SoundWaveSourceDataAsset;
 
+	//Soundì˜ ìœ„ì¹˜ë¥¼ Boneì— ë¶™ì¼ì§€ ì—¬ë¶€ë¥¼ ê²°ì •í•©ë‹ˆë‹¤. Trueì´ë©´ Boneì— ë¶™ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					bIsAttachSound = false;
 
+	//ë¶™ì¼ ë³¸ì˜ ì´ë¦„ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
 	FName					AttachName;
 
+	//Attachëœ Boneì´ Destroyê°€ ëœ ê²½ìš° í”Œë ˆì´ ì¬ìƒì„ ë©ˆì¶œì§€ ì—¬ë¶€ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
 	bool					bIsStopWhenAttachedToDestroyed = true;
 
+	//Locationì˜ ê¸°ì¤€ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
 	TEnumAsByte<EAttachLocation::Type> AttachLocationType = EAttachLocation::Type::KeepRelativeOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//ê¸°ì¤€ì— ë”°ë¥¸ Location ì¢Œí‘œë¥¼ ì„¤ì •í•©ë‹ˆë‹¤.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "bIsAttachSound", EditConditionHides))
 	FVector					Location;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FRotator				Rotator;
-
-	//½ÃÀÛ ½Ã, Fade In TimeÀ» °í·ÁÇÏ¿© ½ÃÀÛÇÕ´Ï´Ù. 0ÀÌÇÏÀÇ °ªÀº Fade InÀ» È°¿ëÇÏÁö ¾Ê°Ú´Ù´Â ÀÇ¹Ì°¡ µË´Ï´Ù. ±âÁØÀº ÃÊ(Sec) ÀÔ´Ï´Ù.
+	//ì‹œì‘ ì‹œ, Fade In Timeì„ ê³ ë ¤í•˜ì—¬ ì‹œì‘í•©ë‹ˆë‹¤. 0ì´í•˜ì˜ ê°’ì€ Fade Inì„ í™œìš©í•˜ì§€ ì•Šê² ë‹¤ëŠ” ì˜ë¯¸ê°€ ë©ë‹ˆë‹¤. ê¸°ì¤€ì€ ì´ˆ(Sec) ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					FadeInTime = 0.f;
 
-	//Á¾·á ½Ã, Fade Out TimeÀ» °í·ÁÇÏ¿© Á¾·áÇÕ´Ï´Ù. 0ÀÌÇÏÀÇ °ªÀº Fade OutÀ» È°¿ëÇÏÁö ¾Ê°Ú´Ù´Â ÀÇ¹Ì°¡ µË´Ï´Ù. ±âÁØÀº ÃÊ(Sec) ÀÔ´Ï´Ù.
+	//ì¢…ë£Œ ì‹œ, Fade Out Timeì„ ê³ ë ¤í•˜ì—¬ ì¢…ë£Œí•©ë‹ˆë‹¤. 0ì´í•˜ì˜ ê°’ì€ Fade Outì„ í™œìš©í•˜ì§€ ì•Šê² ë‹¤ëŠ” ì˜ë¯¸ê°€ ë©ë‹ˆë‹¤. ê¸°ì¤€ì€ ì´ˆ(Sec) ì…ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					FadeOutTime = 1.f;
 
-	//Àç»ı ½Ã VolumeÀÇ °ª¿¡ °öÇØÁİ´Ï´Ù.
+	//ì¬ìƒ ì‹œ Volumeì˜ ê°’ì— ê³±í•´ì¤ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					VolumeMultiplier = 1.f;
 
-	//Àç»ı ½Ã PitchÀÇ °ª¿¡ °öÇØÁİ´Ï´Ù.
+	//ì¬ìƒ ì‹œ Pitchì˜ ê°’ì— ê³±í•´ì¤ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					PitchMultiplier = 1.f;
 
-	//»ç¿îµåÀÇ ½ÃÀÛ½Ã°£À» Á¤ÀÇÇÕ´Ï´Ù.
+	//ì‚¬ìš´ë“œì˜ ì‹œì‘ì‹œê°„ì„ ì •ì˜í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float					StartTimer = 0.f;
 
-	//»ç¿îµåÀÇ °¨¼è¼³Á¤À» Á¤ÀÇÇÕ´Ï´Ù.
+	//ì‚¬ìš´ë“œì˜ ê°ì‡ ì„¤ì •ì„ ì •ì˜í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USoundAttenuation*		SoundAttenuation;
 
-	//»ç¿îµåÀÇ º´·ÄÀ» Á¤ÀÇÇÕ´Ï´Ù.
+	//ì‚¬ìš´ë“œì˜ ë³‘ë ¬ì„ ì •ì˜í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USoundConcurrency*		SoundConcurrency;
 
+	//ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ì´ë¦„ì´ ìˆë‹¤ë©´ í–‰ìœ„ë¥¼ ë¬´ì‹œí•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					bIsIgnoreWhenContaintsName = false;
 };

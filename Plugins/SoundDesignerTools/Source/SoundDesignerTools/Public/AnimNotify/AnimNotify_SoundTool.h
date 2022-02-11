@@ -18,6 +18,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<class USoundToolDataAsset*>	SoundToolDataAssets;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FName>						SoundWaveTurnOffNames;
+
 protected:
 	virtual int32 GetPhysicalMaterialIndex() const;
 	

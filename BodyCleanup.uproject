@@ -15,7 +15,10 @@
 				"GameplayAbilities",
 				"LevelDesignerTools",
 				"UMG",
-				"GameCapabilitySystem"
+				"GameCapabilitySystem",
+				"SoundDesignerTools",
+				"BehaviorTreeTools",
+				"MetaTools"
 			]
 		}
 	],
@@ -26,6 +29,10 @@
 		},
 		{
 			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelingToolsEditorMode",
 			"Enabled": true
 		}
 	]

@@ -43,7 +43,26 @@ bool USoundToolsManager::IsContainsName(const FName& InName)
 		return false;
 	}
 
-	return SoundToolItemLists.Contains(InName);
+	FSoundToolItemList* SoundToolItemList = SoundToolItemLists.Find(InName);
+
+	if(nullptr == SoundToolItemList)
+	{
+		return false;
+	}
+
+	bool bIsContained = false;
+
+	for (FSoundToolItem& SoundToolItem : SoundToolItemList->SoundToolItemList)
+	{
+		if(IsValid(SoundToolItem.AudioComponent))
+		{
+			return true;
+		}
+	}
+
+	SoundToolItemLists.Remove(InName);
+
+	return false;
 }
 
 bool USoundToolsManager::RemoveAudioComponents(const FName& InName)

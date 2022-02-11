@@ -27,116 +27,137 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	int32 PhysicalMaterialIndex = GetPhysicalMaterialIndex();
 	AGameModeBase* GameModeBase = MeshComp->GetWorld()->GetAuthGameMode();
 	TSoftObjectPtr<USoundToolsManager> SoundToolsManager;
-
-	if (GameModeBase->GetClass()->ImplementsInterface(USoundToolsGameModeBaseInterface::StaticClass()))
+	
+	if(IsValid(GameModeBase))
 	{
-		SoundToolsManager = Cast<ISoundToolsGameModeBaseInterface>(GameModeBase)->GetSoundToolsManager();
-	}
-
-	if (SoundToolsManager.IsValid())
-	{
-		for (USoundToolDataAsset* SoundToolDataAsset : SoundToolDataAssets)
+		if (GameModeBase->GetClass()->ImplementsInterface(USoundToolsGameModeBaseInterface::StaticClass()))
 		{
-			if (IsValid(SoundToolDataAsset))
+			SoundToolsManager = Cast<ISoundToolsGameModeBaseInterface>(GameModeBase)->GetSoundToolsManager();
+		}		
+	}
+	
+	for (USoundToolDataAsset* SoundToolDataAsset : SoundToolDataAssets)
+	{
+		if (IsValid(SoundToolDataAsset))
+		{
+			UAudioComponent* AudioComponent = nullptr;
+
+			if (SoundToolDataAsset->IsA(USoundWaveToolDataAsset::StaticClass()))
 			{
-				UAudioComponent* AudioComponent = nullptr;
+				USoundWaveToolDataAsset* SoundWaveToolDataAsset = Cast<USoundWaveToolDataAsset>(SoundToolDataAsset);
 
-				if (SoundToolDataAsset->IsA(USoundWaveToolDataAsset::StaticClass()))
+				if (IsValid(SoundWaveToolDataAsset))
 				{
-					USoundWaveToolDataAsset* SoundWaveToolDataAsset = Cast<USoundWaveToolDataAsset>(SoundToolDataAsset);
+					const TArray<FSoundWave2DInfo>& Sound2DWaveInfos = SoundWaveToolDataAsset->GetSoundWave2DInfos();
 
-					if (IsValid(SoundWaveToolDataAsset))
+					for (const FSoundWave2DInfo& SoundWave2DInfo : Sound2DWaveInfos)
 					{
-						const TArray<FSoundWave2DInfo>& Sound2DWaveInfos = SoundWaveToolDataAsset->GetSoundWave2DInfos();
-
-						for (const FSoundWave2DInfo& SoundWave2DInfo : Sound2DWaveInfos)
+						if (SoundWave2DInfo.bIsIgnoreWhenContaintsName)
 						{
-							if (SoundWave2DInfo.bIsIgnoreWhenContaintsName)
-							{
-								if (SoundToolsManager->IsContainsName(SoundWave2DInfo.Name))
-								{
-									continue;
-								}
-							}
-
-							USoundWave* SoundWave = SoundWave2DInfo.SoundWaveSourceDataAsset->GetSoundWave(PhysicalMaterialIndex);
-
-							if(false == IsValid(SoundWave))
+							if (SoundToolsManager.IsValid()
+								&& SoundToolsManager->IsContainsName(SoundWave2DInfo.Name))
 							{
 								continue;
 							}
+						}
 
-							AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave, SoundWave2DInfo.VolumeMultiplier, SoundWave2DInfo.PitchMultiplier, SoundWave2DInfo.StartTimer, SoundWave2DInfo.SoundConcurrency);
+						USoundWave* SoundWave = SoundWave2DInfo.SoundWaveSourceDataAsset->GetSoundWave(PhysicalMaterialIndex);
 
-							if (IsValid(AudioComponent))
+						if(false == IsValid(SoundWave))
+						{
+							continue;
+						}
+
+						AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave, SoundWave2DInfo.VolumeMultiplier, SoundWave2DInfo.PitchMultiplier, SoundWave2DInfo.StartTimer, SoundWave2DInfo.SoundConcurrency);
+
+						if (IsValid(AudioComponent))
+						{
+							if (SoundWave2DInfo.FadeInTime > 0.f)
 							{
-								if (SoundWave2DInfo.FadeInTime > 0.f)
-								{
-									AudioComponent->FadeIn(SoundWave2DInfo.FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);
-								}
+								AudioComponent->FadeIn(SoundWave2DInfo.FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);
+							}
 
+							if(SoundToolsManager.IsValid())
+							{
 								if (false == SoundWave2DInfo.bIsAvailableDuplicated)
 								{
 									SoundToolsManager->RemoveAudioComponents(SoundWave2DInfo.Name);
 								}
 
-								SoundToolsManager->AddAudioComponent(SoundWave2DInfo.Name, AudioComponent, SoundWave2DInfo.FadeOutTime);
+								SoundToolsManager->AddAudioComponent(SoundWave2DInfo.Name, AudioComponent, SoundWave2DInfo.FadeOutTime);								
 							}
 						}
+					}
 
-						const TArray<FSoundWave3DInfo>& Sound3DWaveInfos = SoundWaveToolDataAsset->GetSoundWave3DInfos();
+					const TArray<FSoundWave3DInfo>& Sound3DWaveInfos = SoundWaveToolDataAsset->GetSoundWave3DInfos();
 
-						for (const FSoundWave3DInfo& SoundWave3DInfo : Sound3DWaveInfos)
+					for (const FSoundWave3DInfo& SoundWave3DInfo : Sound3DWaveInfos)
+					{
+						if (SoundWave3DInfo.bIsIgnoreWhenContaintsName)
 						{
-							if (SoundWave3DInfo.bIsIgnoreWhenContaintsName)
-							{
-								if (SoundToolsManager->IsContainsName(SoundWave3DInfo.Name))
-								{
-									continue;
-								}
-							}
-
-							USoundWave* SoundWave = SoundWave3DInfo.SoundWaveSourceDataAsset->GetSoundWave(PhysicalMaterialIndex);
-
-							if(false == IsValid(SoundWave))
+							if (SoundToolsManager.IsValid()
+								&& SoundToolsManager->IsContainsName(SoundWave3DInfo.Name))
 							{
 								continue;
 							}
+						}
 
-							if (false == SoundWave3DInfo.bIsAttachSound)
+						USoundWave* SoundWave = SoundWave3DInfo.SoundWaveSourceDataAsset->GetSoundWave(PhysicalMaterialIndex);
+
+						if(false == IsValid(SoundWave))
+						{
+							continue;
+						}
+
+						if (false == SoundWave3DInfo.bIsAttachSound)
+						{
+							FTransform ComponentTranform = MeshComp->GetComponentTransform();
+							
+							AudioComponent = UGameplayStatics::SpawnSoundAtLocation(MeshComp->GetWorld(), SoundWave, ComponentTranform.GetLocation(), ComponentTranform.GetRotation().Rotator(), SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency);
+						}
+						else
+						{
+							AudioComponent = UGameplayStatics::SpawnSoundAttached(SoundWave, MeshComp,  SoundWave3DInfo.AttachName, SoundWave3DInfo.Location, SoundWave3DInfo.AttachLocationType, SoundWave3DInfo.bIsStopWhenAttachedToDestroyed, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency, true);
+						}
+
+						if (IsValid(AudioComponent))
+						{
+							if (SoundWave3DInfo.FadeInTime > 0.f)
 							{
-								AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, SoundWave, SoundWave3DInfo.Location, SoundWave3DInfo.Rotator, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency);
+								AudioComponent->FadeIn(SoundWave3DInfo.FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);
 							}
-							else
-							{
-								AudioComponent = UGameplayStatics::SpawnSoundAttached(SoundWave, MeshComp,  SoundWave3DInfo.AttachName, SoundWave3DInfo.Location, SoundWave3DInfo.AttachLocationType, SoundWave3DInfo.bIsStopWhenAttachedToDestroyed, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency, true);
-							}
 
-							if (IsValid(AudioComponent))
+							if(SoundToolsManager.IsValid())
 							{
-								if (SoundWave3DInfo.FadeInTime > 0.f)
-								{
-									AudioComponent->FadeIn(SoundWave3DInfo.FadeInTime, 1.f, 0.f, EAudioFaderCurve::Linear);
-								}
-
 								if (false == SoundWave3DInfo.bIsAvailableDuplicated)
 								{
 									SoundToolsManager->RemoveAudioComponents(SoundWave3DInfo.Name);
 								}
 
-								SoundToolsManager->AddAudioComponent(SoundWave3DInfo.Name, AudioComponent, SoundWave3DInfo.FadeOutTime);
+								SoundToolsManager->AddAudioComponent(SoundWave3DInfo.Name, AudioComponent, SoundWave3DInfo.FadeOutTime);								
 							}
 						}
+					}
 
-						const TArray<FName>& SoundWaveTurnOffNames = SoundWaveToolDataAsset->GetSoundWaveTurnOffNames();
+					if(SoundToolsManager.IsValid())
+					{
+						const TArray<FName>& DataAssetSoundWaveTurnOffNames = SoundWaveToolDataAsset->GetSoundWaveTurnOffNames();
 
-						for (const FName& Name : SoundWaveTurnOffNames)
+						for (const FName& Name : DataAssetSoundWaveTurnOffNames)
 						{
 							SoundToolsManager->RemoveAudioComponents(Name);
 						}
 					}
 				}
 			}
+		}
+	}
+	
+	if(SoundToolsManager.IsValid())
+	{
+		for(const FName& Name : SoundWaveTurnOffNames)
+		{
+			SoundToolsManager->RemoveAudioComponents(Name);
 		}
 	}
 }
