@@ -27,9 +27,6 @@ protected:
 	class UBaseAnimInstance* BaseAnimInstance;
 
 	UPROPERTY(VisibleAnywhere)
-	FName BodyCollisionProfileName;
-
-	UPROPERTY(VisibleAnywhere)
 	AController* BaseController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -46,6 +43,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsDeath = false;
+	
+	FName	CapsuleCollisionProfileName;
 
 protected:
 	// Called when the game starts or when spawned
@@ -64,6 +63,9 @@ public :
 
 private :
 	void __OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data);
+
+protected:
+	virtual void UpdateDeath(bool bInIsDeath);
 
 public :
 	void SetEnableCapsuleCollision(bool bIsEnable);

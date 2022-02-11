@@ -4,6 +4,7 @@
 #include "BaseNPCCharacter.h"
 #include "Interface/BTPatrolActorInterface.h"
 #include "../../Actor/Level/Patrol/BasePatrolActor.h"
+#include "Components/CapsuleComponent.h"
 
 ABaseNPCCharacter::ABaseNPCCharacter()
 {
@@ -20,6 +21,18 @@ void ABaseNPCCharacter::BeginPlay()
 void ABaseNPCCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABaseNPCCharacter::UpdateDeath(bool bInIsDeath)
+{
+	Super::UpdateDeath(bInIsDeath);
+
+	if(true == bInIsDeath)
+	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		GetMesh()->SetSimulatePhysics(true);
+	}
 }
 
 EBTPatrolType ABaseNPCCharacter::GetPatrolType() const

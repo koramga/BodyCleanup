@@ -40,7 +40,8 @@ void ABaseCharacter::BeginPlay()
 	
 	BaseAnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
-	BodyCollisionProfileName = GetCapsuleComponent()->GetCollisionProfileName();
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleCollisionProfileName = GetCapsuleComponent()->GetCollisionProfileName();
 	
 	SetHiddenInGameSpeechBubble(true);
 }
@@ -170,10 +171,15 @@ void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Da
 					BaseAnimInstance->SetAnimationType(EAnimationType::Death);
 				}
 				LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
-				bIsDeath = true;
+				UpdateDeath(true);
 			}
 		}
 	}
+}
+
+void ABaseCharacter::UpdateDeath(bool bInIsDeath)
+{
+	bIsDeath = bInIsDeath;
 }
 
 //void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
@@ -208,8 +214,8 @@ void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
 	}
 	else
 	{
+		GetCapsuleComponent()->SetCollisionProfileName(CapsuleCollisionProfileName);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-		GetCapsuleComponent()->SetCollisionProfileName(BodyCollisionProfileName);
 	}
 }
 
