@@ -6,19 +6,25 @@
 #include "LevelDesignerTools/GameMode/LevelToolsGameModeBase.h"
 #include "LevelDesignerTools/Trigger/Managers/LevelTriggerManager.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameMode/SoundToolsGameModeBaseInterface.h"
+#include "Manager/SoundToolsManager.h"
 #include "BaseGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABaseGameModeBase : public AGameModeBase, public ILevelToolsGameModeBase
+class BODYCLEANUP_API ABaseGameModeBase : public AGameModeBase, public ILevelToolsGameModeBase, public ISoundToolsGameModeBaseInterface
 {
 	GENERATED_BODY()
 
 protected :
 	UPROPERTY()
-	ULevelTriggerManager* LevelTriggerManager;
+	ULevelTriggerManager*	LevelTriggerManager;
+
+	UPROPERTY()
+	USoundToolsManager*		SoundToolsManager;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class UBaseScreenWidget>	BaseScreenWidgetClass;
@@ -42,6 +48,7 @@ public:
 
 public :
 	TSoftObjectPtr<UBaseScreenWidget> GetBaseScreenWidget() const;
+	virtual TSoftObjectPtr<class USoundToolsManager> GetSoundToolsManager() override;
 	void SetFocusOnCharacter(bool bIsFocusOnTheCharacter);
 	bool IsFocusOnCharacter() const;
 };

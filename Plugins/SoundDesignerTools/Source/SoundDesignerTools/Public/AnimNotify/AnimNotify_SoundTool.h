@@ -18,6 +18,9 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<class USoundToolDataAsset*>	SoundToolDataAssets;
 
+protected:
+	virtual int32 GetPhysicalMaterialIndex() const;
+	
 public :
 	virtual FString GetNotifyName_Implementation() const override;
 

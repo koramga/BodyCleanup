@@ -7,7 +7,13 @@
 #include "SoundTool/SoundWaveToolDataAsset.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameMode/SoundToolsGameModeBaseInterface.h"
+#include "SoundTool/SoundWaveSourceDataAsset.h"
 #include "Manager/SoundToolsManager.h"
+
+int32 UAnimNotify_SoundTool::GetPhysicalMaterialIndex() const
+{
+	return 0;
+}
 
 FString UAnimNotify_SoundTool::GetNotifyName_Implementation() const
 {
@@ -18,6 +24,7 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation);
 
+	int32 PhysicalMaterialIndex = GetPhysicalMaterialIndex();
 	AGameModeBase* GameModeBase = MeshComp->GetWorld()->GetAuthGameMode();
 	TSoftObjectPtr<USoundToolsManager> SoundToolsManager;
 
@@ -52,7 +59,14 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 								}
 							}
 
-							AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave2DInfo.SoundWave, SoundWave2DInfo.VolumeMultiplier, SoundWave2DInfo.PitchMultiplier, SoundWave2DInfo.StartTimer, SoundWave2DInfo.SoundConcurrency);
+							USoundWave* SoundWave = SoundWave2DInfo.SoundWaveSourceDataAsset->GetSoundWave(PhysicalMaterialIndex);
+
+							if(false == IsValid(SoundWave))
+							{
+								continue;
+							}
+
+							AudioComponent = UGameplayStatics::SpawnSound2D(this, SoundWave, SoundWave2DInfo.VolumeMultiplier, SoundWave2DInfo.PitchMultiplier, SoundWave2DInfo.StartTimer, SoundWave2DInfo.SoundConcurrency);
 
 							if (IsValid(AudioComponent))
 							{
@@ -82,13 +96,20 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 								}
 							}
 
+							USoundWave* SoundWave = SoundWave3DInfo.SoundWaveSourceDataAsset->GetSoundWave(PhysicalMaterialIndex);
+
+							if(false == IsValid(SoundWave))
+							{
+								continue;
+							}
+
 							if (false == SoundWave3DInfo.bIsAttachSound)
 							{
-								AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, SoundWave3DInfo.SoundWave, SoundWave3DInfo.Location, SoundWave3DInfo.Rotator, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency);
+								AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, SoundWave, SoundWave3DInfo.Location, SoundWave3DInfo.Rotator, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency);
 							}
 							else
 							{
-								AudioComponent = UGameplayStatics::SpawnSoundAttached(SoundWave3DInfo.SoundWave, MeshComp,  SoundWave3DInfo.AttachName, SoundWave3DInfo.Location, SoundWave3DInfo.AttachLocationType, SoundWave3DInfo.bIsStopWhenAttachedToDestroyed, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency, true);
+								AudioComponent = UGameplayStatics::SpawnSoundAttached(SoundWave, MeshComp,  SoundWave3DInfo.AttachName, SoundWave3DInfo.Location, SoundWave3DInfo.AttachLocationType, SoundWave3DInfo.bIsStopWhenAttachedToDestroyed, SoundWave3DInfo.VolumeMultiplier, SoundWave3DInfo.PitchMultiplier, SoundWave3DInfo.StartTimer, SoundWave3DInfo.SoundAttenuation, SoundWave3DInfo.SoundConcurrency, true);
 							}
 
 							if (IsValid(AudioComponent))

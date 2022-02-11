@@ -24,7 +24,7 @@ struct FSoundWave2DInfo
 
 	//Sound Wave는 Resource를 지정해야합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	USoundWave* SoundWave;
+	class USoundWaveSourceDataAsset*	SoundWaveSourceDataAsset;
 
 	//시작 시, Fade In Time을 고려하여 시작합니다. 0이하의 값은 Fade In을 활용하지 않겠다는 의미가 됩니다. 기준은 초(Sec) 입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -70,7 +70,7 @@ struct FSoundWave3DInfo
 
 	//Sound Wave는 Resource를 지정해야합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	USoundWave*				SoundWave;
+	class USoundWaveSourceDataAsset*	SoundWaveSourceDataAsset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool					bIsAttachSound = false;

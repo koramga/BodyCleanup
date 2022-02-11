@@ -16,6 +16,7 @@ void ABaseGameModeBase::InitGame(const FString& MapName, const FString& Options,
 	Super::InitGame(MapName, Options, ErrorMessage);
 
 	LevelTriggerManager = NewObject<ULevelTriggerManager>(this);
+	SoundToolsManager = NewObject<USoundToolsManager>(this);
 }
 
 void ABaseGameModeBase::BeginPlay()
@@ -66,6 +67,11 @@ void ABaseGameModeBase::UpdateTriggerOnce(class ILevelTriggerInterface* LevelTri
 TSoftObjectPtr<UBaseScreenWidget> ABaseGameModeBase::GetBaseScreenWidget() const
 {
 	return BaseScreenWidget;
+}
+
+TSoftObjectPtr<USoundToolsManager> ABaseGameModeBase::GetSoundToolsManager()
+{
+	return SoundToolsManager;
 }
 
 void ABaseGameModeBase::SetFocusOnCharacter(bool bIsFocusOnTheCharacter)
