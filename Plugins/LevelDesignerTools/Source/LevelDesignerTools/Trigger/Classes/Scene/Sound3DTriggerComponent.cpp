@@ -36,7 +36,7 @@ void USound3DTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& Inp
 		
 		FTransform Transform = GetComponentToWorld();
 		
-		AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, SoundWave, Transform.GetLocation(), Transform.Rotator(), 1.f, 1.f, 0.f, SoundAttenuation, SoundConcurrency);
+		AudioComponent = UGameplayStatics::SpawnSoundAtLocation(this, SoundWave, Transform.GetLocation(), Transform.Rotator(), VolumeMultiplier, PitchMultiplier, StartTimer, SoundAttenuation, SoundConcurrency);
 
 		if(FadeInTime > 0.f)
 		{

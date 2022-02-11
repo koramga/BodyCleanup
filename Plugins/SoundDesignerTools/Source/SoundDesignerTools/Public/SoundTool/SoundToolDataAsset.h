@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "SoundToolMetaData.generated.h"
+#include "SoundToolDataAsset.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class SOUNDDESIGNERTOOLS_API USoundToolMetaData : public UObject
+UCLASS(DefaultToInstanced, Blueprintable)
+class SOUNDDESIGNERTOOLS_API USoundToolDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	
