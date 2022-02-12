@@ -5,7 +5,6 @@
 #include "../../UI/Screen/MainScreenWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../Controller/Player/BasePlayerController.h"
-#include "../../Actor/Class/CharacterSuckingActor.h"
 
 void AMainGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
@@ -19,20 +18,6 @@ void AMainGameModeBase::BeginPlay()
 	if(IsValid(BaseScreenWidget))
 	{
 		MainScreenWidget = Cast<UMainScreenWidget>(BaseScreenWidget);
-	}
-
-	TArray<AActor*> FindActors;
-	
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacterSuckingActor::StaticClass(), FindActors);
-
-	for(AActor* Actor : FindActors)
-	{
-		ACharacterSuckingActor* CharacterSuckingActor = Cast<ACharacterSuckingActor>(Actor);
-
-		if(IsValid(CharacterSuckingActor))
-		{
-			CharacterSuckingActors.Add(CharacterSuckingActor);
-		}
 	}
 }
 

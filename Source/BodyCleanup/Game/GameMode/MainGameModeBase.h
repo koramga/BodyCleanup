@@ -17,9 +17,6 @@ class BODYCLEANUP_API AMainGameModeBase : public ABaseGameModeBase
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UMainScreenWidget*	MainScreenWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<class ACharacterSuckingActor*>	CharacterSuckingActors;
 	
 protected :
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
