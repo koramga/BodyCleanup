@@ -31,8 +31,10 @@ void ABaseNPCCharacter::UpdateDeath(bool bInIsDeath)
 	if(true == bInIsDeath)
 	{
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
 		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
 		TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
 		
