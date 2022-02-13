@@ -630,9 +630,7 @@ bool AMorse::__SetHoldShooting(UInteractiveSuckingComponent* InteractiveSuckingC
 void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (IsValid(OtherActor))
-	{
-		UE_LOG(LogTemp, Display, TEXT("SuckingOverlapStart <%s> <%s>"), *OtherComp->GetName(), *OtherActor->GetName());
-		
+	{		
 		TSoftObjectPtr<UInteractiveSuckingComponent> SuckingComponent = UComponentFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
 
 		if(SuckingComponent.IsValid())
@@ -657,9 +655,7 @@ void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {	
 	if (IsValid(OtherActor))
-	{
-		UE_LOG(LogTemp, Display, TEXT("SuckingOverlapEnd <%s> <%s>"), *OtherComp->GetName(), *OtherActor->GetName());
-		
+	{		
 		TSoftObjectPtr<UInteractiveSuckingComponent> SuckingComponent = UComponentFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
 
 		if(SuckingComponent.IsValid())
