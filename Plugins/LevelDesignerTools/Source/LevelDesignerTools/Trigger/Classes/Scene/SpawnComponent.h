@@ -23,7 +23,7 @@ struct FSpawnMarkupParam
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AActor>								ActorClass;
+	TArray<TSubclassOf<AActor>>						ActorClasses;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ESpawnActorCollisionHandlingMethod				SpawnMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -36,6 +36,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName>									Names;
+
+	TSubclassOf<AActor> GetActorClass() const;
 };
 
 USTRUCT(BlueprintType, Blueprintable)

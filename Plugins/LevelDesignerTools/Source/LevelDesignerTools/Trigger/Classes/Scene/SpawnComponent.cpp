@@ -6,6 +6,25 @@
 #include "../../../Markup/Classes/VelocityMarkupComponent.h"
 #include "../../../Utility/LevelSupportFunctionLibrary.h"
 
+TSubclassOf<AActor> FSpawnMarkupParam::GetActorClass() const
+{
+	if(ActorClasses.Num() == 0)
+	{
+		return nullptr;
+	}
+	else if(ActorClasses.Num() == 1)
+	{
+		return ActorClasses[0];
+	}
+	else
+	{
+		int32 RandIndex = FMath::RandRange(0, ActorClasses.Num() - 1);
+		return ActorClasses[RandIndex];
+	}
+	
+	return nullptr;
+}
+
 void USpawnComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -50,8 +69,8 @@ void USpawnComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTr
 			SpawnInfo.Owner = GetOwner();
 
 			for (FSpawnMarkupParam& SpawnMarkupParam : SpawnMarkupParams)
-			{
-				if (IsValid(SpawnMarkupParam.ActorClass.Get()))
+			{				
+				if (SpawnMarkupParam.ActorClasses.Num() > 0)
 				{
 					TArray<TSoftObjectPtr<UObject>> Objects;
 
@@ -67,15 +86,25 @@ void USpawnComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTr
 
 							const FTransform& Transform = LevelMarkupInterface->GetMarkupTransform();
 
-							AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+							TSubclassOf<AActor> ActorClass = SpawnMarkupParam.GetActorClass();
 
-							LevelMarkupInterface->UpdateFromMarkup(SpawnActor);
+							if(IsValid(ActorClass))
+							{
+								AActor* SpawnActor = GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.GetActorClass(), Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+
+								LevelMarkupInterface->UpdateFromMarkup(SpawnActor);
+							}
 						}
 						else if (Object->IsA(AActor::StaticClass()))
 						{
 							AActor* Actor = Cast<AActor>(Object.Get());
 
-							GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Actor->GetActorLocation(), Actor->GetActorRotation(), SpawnInfo);
+							TSubclassOf<AActor> ActorClass = SpawnMarkupParam.GetActorClass();
+
+							if(IsValid(ActorClass))
+							{
+								GetWorld()->SpawnActor<AActor>(ActorClass, Actor->GetActorLocation(), Actor->GetActorRotation(), SpawnInfo);
+							}							
 						}
 						else if (Object->IsA(USceneComponent::StaticClass()))
 						{
@@ -83,7 +112,12 @@ void USpawnComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTr
 
 							const FTransform& Transform = SceneComponenet->GetComponentToWorld();
 
-							GetWorld()->SpawnActor<AActor>(SpawnMarkupParam.ActorClass, Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+							TSubclassOf<AActor> ActorClass = SpawnMarkupParam.GetActorClass();
+
+							if(IsValid(ActorClass))
+							{
+								GetWorld()->SpawnActor<AActor>(ActorClass, Transform.GetLocation(), Transform.GetRotation().Rotator(), SpawnInfo);
+							}						
 						}
 					}
 				}
@@ -194,7 +228,7 @@ void USpawnComponent::GetAffectPoints(TArray<FVector>& Locations)
 	{
 		for (const FSpawnMarkupParam& SpawnMarkupParam : SpawnMarkupParams)
 		{
-			if (IsValid(SpawnMarkupParam.ActorClass.Get()))
+			if (SpawnMarkupParam.ActorClasses.Num() > 0)
 			{
 				TArray<FTransform> Transforms;
 
