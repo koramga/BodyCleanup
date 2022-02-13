@@ -29,30 +29,28 @@ void UInteractiveSuckingComponent::BeginPlay()
 		AddTriggerState(static_cast<uint8>(TriggerInteractiveSuckingType));
 	}
 
-	if(Names.Num() <= 0)
+	if(IsCharacter())
 	{
-		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, GetOwner());
+		PrimitiveComponents.Add(Cast<ABaseCharacter>(GetOwner())->GetMesh());
 	}
 	else
 	{
-		if(bIsTag)
+		if(Names.Num() <= 0)
 		{
-			ULevelSupportFunctionLibrary::FindPrimitiveComponentsByTags(PrimitiveComponents, GetOwner(), Names);
+			ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, GetOwner());
 		}
 		else
 		{
-			ULevelSupportFunctionLibrary::FindPrimitiveComponentsByNames(PrimitiveComponents, GetOwner(), Names);
+			if(bIsTag)
+			{
+				ULevelSupportFunctionLibrary::FindPrimitiveComponentsByTags(PrimitiveComponents, GetOwner(), Names);
+			}
+			else
+			{
+				ULevelSupportFunctionLibrary::FindPrimitiveComponentsByNames(PrimitiveComponents, GetOwner(), Names);
+			}
 		}
-	}
-
-	AActor* Owner = GetOwner();
-
-	if(Owner->IsA(ABaseCharacter::StaticClass()))
-	{
 		
-	}
-	else
-	{
 		for(TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 		{
 			if(PrimitiveComponent.IsValid())
@@ -125,12 +123,36 @@ void UInteractiveSuckingComponent::UpdateInteractiveType(uint8 CurrentInteractiv
 
 void UInteractiveSuckingComponent::SetRigidBodyCollision(bool bIsCollision)
 {
-	//UE_LOG(LogTemp, Display, TEXT("koramga RigidBodyCollision : <%d>"), static_cast<int32>(bIsCollision));
-	
 	for(TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
 	{
 		PrimitiveComponent->SetNotifyRigidBodyCollision(bIsCollision);
 	}
+}
+
+bool UInteractiveSuckingComponent::IsCharacter() const
+{
+	const AActor* Owner = GetOwner();
+
+	if(Owner->IsA(ABaseCharacter::StaticClass()))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool UInteractiveSuckingComponent::IsAvailableInteractiveCharacter() const
+{
+	const AActor* Owner = GetOwner();
+	const ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Owner);
+	
+	if(IsValid(BaseCharacter)
+		&& BaseCharacter->IsDeath())
+	{
+		return true;
+	}
+
+	return false;
 }
 
 EInteractiveSuckingType UInteractiveSuckingComponent::GetInteractiveSuckingType() const
@@ -139,7 +161,15 @@ EInteractiveSuckingType UInteractiveSuckingComponent::GetInteractiveSuckingType(
 }
 
 bool UInteractiveSuckingComponent::SetSucking(USceneComponent* SceneComponent)
-{
+{		
+	if(IsCharacter())
+	{
+		if(false == IsAvailableInteractiveCharacter())
+		{
+			return false;
+		}		
+	}
+	
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
 	if(EInteractiveSuckingType::Sucking != InteractiveSuckingType)
@@ -149,7 +179,7 @@ bool UInteractiveSuckingComponent::SetSucking(USceneComponent* SceneComponent)
 			InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 		}
 	}
-
+	
 	if(EInteractiveSuckingType::Sucking == InteractiveSuckingType)
 	{
 		for(TSoftObjectPtr<UPrimitiveComponent> PrimitiveComponent : PrimitiveComponents)
@@ -171,6 +201,14 @@ bool UInteractiveSuckingComponent::SetSucking(USceneComponent* SceneComponent)
 
 bool UInteractiveSuckingComponent::SetHoldShooting(USceneComponent* SceneComponent)
 {
+	if(IsCharacter())
+	{
+		if(false == IsAvailableInteractiveCharacter())
+		{
+			return false;
+		}		
+	}
+	
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
 	if(EInteractiveSuckingType::Holding == InteractiveSuckingType)
@@ -197,6 +235,14 @@ bool UInteractiveSuckingComponent::SetHoldShooting(USceneComponent* SceneCompone
 
 bool UInteractiveSuckingComponent::SetHolding(USceneComponent* SceneComponent)
 {
+	if(IsCharacter())
+	{
+		if(false == IsAvailableInteractiveCharacter())
+		{
+			return false;
+		}		
+	}
+	
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
 	if(EInteractiveSuckingType::Holding != InteractiveSuckingType)
@@ -216,7 +262,15 @@ bool UInteractiveSuckingComponent::SetHolding(USceneComponent* SceneComponent)
 }
 
 bool UInteractiveSuckingComponent::SetNone(USceneComponent* SceneComponent)
-{
+{	
+	if(IsCharacter())
+	{
+		if(false == IsAvailableInteractiveCharacter())
+		{
+			return false;
+		}		
+	}
+	
 	EInteractiveSuckingType InteractiveSuckingType = static_cast<EInteractiveSuckingType>(InteractiveType);
 
 	if(EInteractiveSuckingType::None != InteractiveSuckingType)

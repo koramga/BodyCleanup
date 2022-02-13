@@ -5,6 +5,7 @@
 #include "Interface/BTPatrolActorInterface.h"
 #include "../../Actor/Level/Patrol/BasePatrolActor.h"
 #include "Components/CapsuleComponent.h"
+#include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 
 ABaseNPCCharacter::ABaseNPCCharacter()
 {
@@ -32,6 +33,10 @@ void ABaseNPCCharacter::UpdateDeath(bool bInIsDeath)
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 		GetMesh()->SetSimulatePhysics(true);
+
+		TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
+		
+		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, this);
 	}
 }
 

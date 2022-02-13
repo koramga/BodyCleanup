@@ -2,8 +2,10 @@
 
 
 #include "VacuumEntranceComponent.h"
+#include "BodyCleanup/Character/BaseCharacter.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
+#include "Components/CapsuleComponent.h"
 
 UVacuumEntranceComponent::UVacuumEntranceComponent()
 {
@@ -14,25 +16,37 @@ void UVacuumEntranceComponent::__GrabActor()
 	if (HoldingActor.IsValid())
 	{
 		UPrimitiveComponent* HoldingPrimitiveComponent = nullptr;
-		//UPrimitiveComponent* HoldingPrimitiveComponent = Cast<UPrimitiveComponent>(HoldingActor->GetRootComponent());
+		UPrimitiveComponent* SizePrimitiveComponent = nullptr;
 
-		TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
-
-		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, HoldingActor.Get());
-
-		for(const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
+		if(HoldingActor->IsA(ABaseCharacter::StaticClass()))
 		{
-			if(PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass()))
-			{
-				HoldingPrimitiveComponent = PrimitiveComponent.Get();
-				break;
-			}
+			const ABaseCharacter* HoldingCharacter = Cast<ABaseCharacter>(HoldingActor.Get());
+			
+			HoldingPrimitiveComponent = HoldingCharacter->GetMesh();
+			SizePrimitiveComponent = HoldingCharacter->GetCapsuleComponent();
 		}
+		else
+		{
+			TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
+
+			ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, HoldingActor.Get());
+
+			for(const TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
+			{
+				if(PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass()))
+				{
+					HoldingPrimitiveComponent = PrimitiveComponent.Get();
+					break;
+				}
+			}			
+		}		
 
 		if (IsValid(HoldingPrimitiveComponent)
 			&& GrabConstraintComponent.IsValid()
 			&& HeldObjectSlotComponent.IsValid())
 		{
+			float Size = 0;
+		
 			if (HoldingPrimitiveComponent->IsA(UStaticMeshComponent::StaticClass()))
 			{
 				UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(HoldingPrimitiveComponent);
@@ -45,12 +59,35 @@ void UVacuumEntranceComponent::__GrabActor()
 					{
 						FBoxSphereBounds StaticMeshBounds = StaticMesh->GetBounds();
 
-						HoldingPrimitiveComponent->SetWorldLocation(GetComponentToWorld().GetLocation() + GetOwner()->GetActorForwardVector() * StaticMeshBounds.GetBox().GetExtent().Size() / 2.f, false, nullptr, ETeleportType::ResetPhysics);
+						Size = StaticMeshBounds.GetBox().GetExtent().Size();
 					}
 				}
 			}
+			else if(HoldingPrimitiveComponent->IsA(USkeletalMeshComponent::StaticClass()))
+			{
+				USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(HoldingPrimitiveComponent);
 
-			//HeldObjectSlotComponent->SetWorldLocation(GetComponentToWorld().GetLocation() , false, nullptr, ETeleportType::ResetPhysics);
+				FVector ComponentOrigin;
+				FVector ComponentBoxExtent;
+				float	ComponentSphereRadius;
+
+				if(IsValid(SizePrimitiveComponent))
+				{
+					UKismetSystemLibrary::GetComponentBounds(SizePrimitiveComponent, ComponentOrigin, ComponentBoxExtent, ComponentSphereRadius);					
+				}
+				else
+				{
+					UKismetSystemLibrary::GetComponentBounds(SkeletalMeshComponent, ComponentOrigin, ComponentBoxExtent, ComponentSphereRadius);					
+				}				
+
+				Size = ComponentBoxExtent.Size();
+			}
+			
+			if(Size > 0.f)
+			{
+				HoldingPrimitiveComponent->SetWorldLocation(GetComponentToWorld().GetLocation() + GetOwner()->GetActorForwardVector() * Size / 2.f, false, nullptr, ETeleportType::ResetPhysics);	
+			}			
+			
 			GrabConstraintComponent->SetConstrainedComponents(HeldObjectSlotComponent.Get(), NAME_None, HoldingPrimitiveComponent, NAME_None);
 		}
 	}

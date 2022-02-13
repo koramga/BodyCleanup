@@ -74,3 +74,8 @@ void USuperJumpComponent::__OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AA
 	OverlapActors.Remove(OtherActor);
 }
 
+void USuperJumpComponent::ClearCallbackOverlapSuperJump()
+{
+	CallbackDoSuperJump.Unbind();
+}
+

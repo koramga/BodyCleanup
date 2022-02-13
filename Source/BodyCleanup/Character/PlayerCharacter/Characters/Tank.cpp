@@ -64,12 +64,12 @@ void ATank::SetFlyMode(TSoftObjectPtr<ACharacter> InputFollowCharacter)
 {
 	if (InputFollowCharacter.IsValid())
 	{
-		SetEnableCapsuleCollision(false);
+		SetActorEnableCollision(false);
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 	}
 	else
 	{
-		SetEnableCapsuleCollision(true);
+		SetActorEnableCollision(true);
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		GetCharacterMovement()->Velocity = GetActorForwardVector() * GetCharacterMovement()->MaxWalkSpeed * 2;
 	}

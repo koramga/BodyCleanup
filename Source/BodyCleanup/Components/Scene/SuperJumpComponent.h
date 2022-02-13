@@ -54,4 +54,6 @@ public :
 	{
 		CallbackDoSuperJump.BindUObject(pObj, pFunc);
 	}
+
+	void ClearCallbackOverlapSuperJump();
 };

@@ -2,14 +2,10 @@
 
 
 #include "BaseCharacter.h"
-#include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "../Animation/BaseAnimInstance.h"
 #include "AbilitySystemComponent.h"
-#include "Abilities/GameplayAbility.h"
-#include "../GAS/Ability/BaseGameplayAbility.h"
-#include "../GAS/AttributeSet/BaseAttributeSet.h"
 #include "Components/Widget.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/Script/BubbleScriptUserWidget.h"
@@ -41,7 +37,6 @@ void ABaseCharacter::BeginPlay()
 	BaseAnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CapsuleCollisionProfileName = GetCapsuleComponent()->GetCollisionProfileName();
 	
 	SetHiddenInGameSpeechBubble(true);
 }
@@ -166,11 +161,6 @@ void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Da
 		{
 			if(Data.NewValue <= 0.f)
 			{
-				if(IsValid(BaseAnimInstance))
-				{
-					BaseAnimInstance->SetAnimationType(EAnimationType::Death);
-				}
-				LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
 				UpdateDeath(true);
 			}
 		}
@@ -179,44 +169,8 @@ void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Da
 
 void ABaseCharacter::UpdateDeath(bool bInIsDeath)
 {
-	bIsDeath = bInIsDeath;
-}
-
-//void ABaseCharacter::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
-//{	
-//	TArray<FGameplayAttribute> Attributes;
-//	
-//	AbilitySystemComponent->GetAllAttributes(Attributes);
-//
-//	for(FGameplayAttribute& Attribute : Attributes)
-//	{
-//		if(Data.Attribute == Attribute)
-//		{
-//			if(TEXT("Health") == Attribute.AttributeName)
-//			{
-//				if(Data.NewValue <= 0.f)
-//				{
-//					LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
-//					bIsDeath = true;
-//				}
-//				 
-//				UE_LOG(LogTemp, Display, TEXT("koramga %.2f -> %.2f"), Data.OldValue, Data.NewValue);
-//			}
-//		}
-//	}
-//}
-
-void ABaseCharacter::SetEnableCapsuleCollision(bool bIsEnable)
-{
-	if (false == bIsEnable)
-	{
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
-	}
-	else
-	{
-		GetCapsuleComponent()->SetCollisionProfileName(CapsuleCollisionProfileName);
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-	}
+	LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
+	bIsDeath = bInIsDeath;	
 }
 
 void ABaseCharacter::SetAnimationType(EAnimationType AnimationType, UAnimMontage* Montage)
@@ -315,34 +269,6 @@ void ABaseCharacter::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 		}
 	}
 }
-
-//void ABaseCharacter::AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec)
-//{
-//	if (IsValid(AbilitySystemComponent))
-//	{
-//		if (HasAuthority() && IsValid(GameplayAbilitySpec.Ability))
-//		{
-//			FGameplayAbilitySpecHandle GameplayAbilitySpecHandle = AbilitySystemComponent->GiveAbility(GameplayAbilitySpec);
-//		}
-//
-//		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-//	}
-//}
-
-//void ABaseCharacter::AddAttributeSet(const TSubclassOf<UBaseAttributeSet>& AttributeSet)
-//{
-//	UBaseAttributeSet* BaseAttribute = NewObject<UBaseAttributeSet>(this, AttributeSet);
-//	
-//	AbilitySystemComponent->AddAttributeSetSubobject(BaseAttribute);
-//
-//	TArray<FGameplayAttribute> Attributes;
-//	BaseAttribute->GetAttributes(Attributes);
-//
-//	for(const FGameplayAttribute& Attribute : Attributes)
-//	{
-//		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ABaseCharacter::__OnGASAttributeChanged);
-//	}
-//}
 
 bool ABaseCharacter::IsDeath() const
 {

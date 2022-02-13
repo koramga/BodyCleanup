@@ -480,16 +480,16 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 		{
 			//모두 Sucking상태여야 합니다.
 
-			for (UInteractiveSuckingComponent* InteractiveSuckingComponent : OverlapInteractiveSuckingComponents)
+			for (auto OverlapTuple : OverlapInteractiveSuckingComponents)
 			{
-				InteractiveSuckingComponent->SetSucking(VacuumEntranceComponent.Get());
+				OverlapTuple.Key->SetSucking(VacuumEntranceComponent.Get());
 			}
 		}
 		else
 		{
-			for (UInteractiveSuckingComponent* InteractiveSuckingComponent : OverlapInteractiveSuckingComponents)
+			for (auto OverlapTuple : OverlapInteractiveSuckingComponents)
 			{
-				EInteractiveSuckingType InteractiveSuckingType = InteractiveSuckingComponent->GetInteractiveSuckingType();
+				EInteractiveSuckingType InteractiveSuckingType = OverlapTuple.Key->GetInteractiveSuckingType();
 
 				if (EInteractiveSuckingType::Holding == InteractiveSuckingType)
 				{
@@ -497,7 +497,7 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 				}
 				else if (EInteractiveSuckingType::None != InteractiveSuckingType)
 				{
-					InteractiveSuckingComponent->SetNone(VacuumEntranceComponent.Get());
+					OverlapTuple.Key->SetNone(VacuumEntranceComponent.Get());
 				}
 			}
 		}
@@ -631,29 +631,50 @@ void AMorse::__OnVaccumRangeOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 {
 	if (IsValid(OtherActor))
 	{
+		UE_LOG(LogTemp, Display, TEXT("SuckingOverlapStart <%s> <%s>"), *OtherComp->GetName(), *OtherActor->GetName());
+		
 		TSoftObjectPtr<UInteractiveSuckingComponent> SuckingComponent = UComponentFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
 
 		if(SuckingComponent.IsValid())
 		{
-			if(false == OverlapInteractiveSuckingComponents.Contains(SuckingComponent.Get()))
+			FSuckingInteractiveCertificate* SuckingInteractiveCertificate = OverlapInteractiveSuckingComponents.Find(SuckingComponent.Get());
+
+			if(nullptr == SuckingInteractiveCertificate)
 			{
 				OverlapInteractiveSuckingComponents.Add(SuckingComponent.Get());
+				SuckingInteractiveCertificate = OverlapInteractiveSuckingComponents.Find(SuckingComponent.Get());
+			}
+
+			if(nullptr != SuckingInteractiveCertificate
+				&& false == SuckingInteractiveCertificate->OtherComponents.Contains(OtherComp))
+			{
+				SuckingInteractiveCertificate->OtherComponents.Add(OtherComp);
 			}
 		}
 	}
 }
 
 void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
+{	
 	if (IsValid(OtherActor))
 	{
+		UE_LOG(LogTemp, Display, TEXT("SuckingOverlapEnd <%s> <%s>"), *OtherComp->GetName(), *OtherActor->GetName());
+		
 		TSoftObjectPtr<UInteractiveSuckingComponent> SuckingComponent = UComponentFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
 
 		if(SuckingComponent.IsValid())
 		{
-			if(OverlapInteractiveSuckingComponents.Remove(SuckingComponent.Get()) > 0)
+			FSuckingInteractiveCertificate* SuckingInteractiveCertificate = OverlapInteractiveSuckingComponents.Find(SuckingComponent.Get());
+
+			if(nullptr != SuckingInteractiveCertificate)
 			{
-				SuckingComponent->SetNone(VacuumEntranceComponent.Get());
+				SuckingInteractiveCertificate->OtherComponents.Remove(OtherComp);
+
+				if(SuckingInteractiveCertificate->OtherComponents.Num() == 0)
+				{
+					OverlapInteractiveSuckingComponents.Remove(SuckingComponent.Get());
+					SuckingComponent->SetNone(VacuumEntranceComponent.Get());
+				}
 			}
 		}
 	}
@@ -661,7 +682,7 @@ void AMorse::__OnVaccumRangeOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 
 void AMorse::__OnVaccumOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(ABaseActor::StaticClass()))
+	if (IsValid(OtherActor))
 	{
 		TSoftObjectPtr<UInteractiveSuckingComponent> InteractiveSuckingComponent = UComponentFunctionLibrary::FindInteractiveSuckingComponent(OtherActor);
 

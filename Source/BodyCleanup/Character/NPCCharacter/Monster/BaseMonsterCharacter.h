@@ -25,6 +25,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	virtual void UpdateDeath(bool bInIsDeath) override;
+
 private :
 	void __OverlapSuperJump(AActor* Actor);
 };

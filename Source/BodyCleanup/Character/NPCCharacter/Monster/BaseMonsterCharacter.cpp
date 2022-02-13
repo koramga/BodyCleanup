@@ -27,6 +27,24 @@ void ABaseMonsterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABaseMonsterCharacter::UpdateDeath(bool bInIsDeath)
+{
+	Super::UpdateDeath(bInIsDeath);
+
+	if(bInIsDeath)
+	{
+		TArray<UActorComponent*> SuperJumpComponents = GetComponentsByClass(USuperJumpComponent::StaticClass());
+	
+		for(UActorComponent* SuperJumpActorComponent : SuperJumpComponents)
+		{
+			USuperJumpComponent* SuperJumpComponent = Cast<USuperJumpComponent>(SuperJumpActorComponent);
+		
+			SuperJumpComponent->ClearCallbackOverlapSuperJump();
+			SuperJumpComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}		
+	}	
+}
+
 void ABaseMonsterCharacter::__OverlapSuperJump(AActor* Actor)
 {
 	//Stun이든 뭐든 여기다가 넣으면 된다.

@@ -68,6 +68,10 @@ protected :
 	virtual bool CanUpdateInteractiveType(uint8 CurrentInteractiveType, uint8 DesiredInteractiveType) override;
 	virtual void UpdateInteractiveType(uint8 CurrentInteractiveType, uint8 BeforeInteractiveType) override;
 	virtual void SetRigidBodyCollision(bool bIsCollision);
+
+public :
+	bool IsCharacter() const;
+	bool IsAvailableInteractiveCharacter() const;
 	
 public :
 	EInteractiveSuckingType GetInteractiveSuckingType() const;

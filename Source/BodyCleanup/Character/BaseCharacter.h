@@ -43,8 +43,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsDeath = false;
-	
-	FName	CapsuleCollisionProfileName;
 
 protected:
 	// Called when the game starts or when spawned
@@ -68,7 +66,6 @@ protected:
 	virtual void UpdateDeath(bool bInIsDeath);
 
 public :
-	void SetEnableCapsuleCollision(bool bIsEnable);
 	void SetAnimationType(EAnimationType AnimationType, UAnimMontage* AnimMontage = nullptr);
 	bool CanUpdateAnimationType(EAnimationType InAnimationType) const;
 	bool CanMove() const;

@@ -9,6 +9,15 @@
 /**
  * 
  */
+
+USTRUCT()
+struct FSuckingInteractiveCertificate
+{
+	GENERATED_BODY()
+	
+	TArray<TSoftObjectPtr<UPrimitiveComponent>>	OtherComponents;
+};
+
 UCLASS()
 class BODYCLEANUP_API AMorse : public ABasePlayerCharacter
 {
@@ -58,7 +67,7 @@ protected:
 	class UPhysicsConstraintComponent*	GrabConstraintComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	TSet<class UInteractiveSuckingComponent*>		OverlapInteractiveSuckingComponents;
+	TMap<class UInteractiveSuckingComponent*, FSuckingInteractiveCertificate>		OverlapInteractiveSuckingComponents;
 	
 	UPROPERTY(VisibleAnywhere)
 	TSoftObjectPtr<class UVacuumEntranceComponent>	VacuumEntranceComponent;
