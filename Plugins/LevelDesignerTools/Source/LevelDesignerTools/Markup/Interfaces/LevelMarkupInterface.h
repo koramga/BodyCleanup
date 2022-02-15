@@ -11,6 +11,7 @@ enum class ELevelMarkupType : uint8
 {
 	Point,
 	Velocity,
+	Camera,
 };
 
 // This class does not need to be modified.
