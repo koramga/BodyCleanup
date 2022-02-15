@@ -4,6 +4,7 @@
 #include "LevelSupportFunctionLibrary.h"
 #include "../Trigger/Interfaces/LevelTriggerInterface.h"
 #include "../Markup/Interfaces/LevelMarkupInterface.h"
+#include "LevelDesignerTools/Markup/Classes/CameraMarkupComponent.h"
 
 void ULevelSupportFunctionLibrary::FindTriggerComponentFromLevelTriggerInput(TArray<TSoftObjectPtr<UActorComponent>>& TriggerComponents, const ILevelTriggerInterface* LevelTriggerInterface)
 {
@@ -328,6 +329,38 @@ void ULevelSupportFunctionLibrary::FindMarkupInterfacesByTags(TArray<TSoftObject
 				InputMarkupInterfaces.Add(TriggerComponent);
 				break;
 			}
+		}
+	}
+}
+
+ILevelMarkupInterface* ULevelSupportFunctionLibrary::FindCameraMarkupInterface(AActor* Actor)
+{
+	TArray<UActorComponent*> ActorComponents = Actor->GetComponentsByClass(UCameraMarkupComponent::StaticClass());
+	
+	for(UActorComponent* ActorComponent : ActorComponents)
+	{
+		UCameraMarkupComponent* CameraMarkupComponent = Cast<UCameraMarkupComponent>(ActorComponent);
+
+		if(IsValid(CameraMarkupComponent))
+		{
+			return CameraMarkupComponent;
+		}
+	}
+
+	return nullptr;
+}
+
+void ULevelSupportFunctionLibrary::SetActivateCameraMarkupComponents(AActor* Actor, bool bIsActivate)
+{
+	TArray<UActorComponent*> ActorComponents = Actor->GetComponentsByClass(UCameraMarkupComponent::StaticClass());
+
+	for(UActorComponent* ActorComponent : ActorComponents)
+	{
+		UCameraMarkupComponent* CameraMarkupComponent = Cast<UCameraMarkupComponent>(ActorComponent);
+
+		if(IsValid(CameraMarkupComponent))
+		{
+			CameraMarkupComponent->SetActive(bIsActivate);
 		}
 	}
 }

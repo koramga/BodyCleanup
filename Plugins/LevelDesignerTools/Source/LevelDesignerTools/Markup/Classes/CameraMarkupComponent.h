@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS( ClassGroup=(Markup), meta=(BlueprintSpawnableComponent) )
 class LEVELDESIGNERTOOLS_API UCameraMarkupComponent : public UCameraComponent, public ILevelMarkupInterface
 {
 	GENERATED_BODY()

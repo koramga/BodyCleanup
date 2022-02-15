@@ -41,4 +41,6 @@ public :
 	static void FindMarkupInterfacesByNames(TArray<TSoftObjectPtr<ILevelMarkupInterface>>& InputMarkupInterfaces, AActor* Actor, const TArray<FName>& Names);
 	static void FindMarkupInterfacesByTag(TArray<TSoftObjectPtr<ILevelMarkupInterface>>& InputMarkupInterfaces, AActor* Actor, const FName& Tag);
 	static void FindMarkupInterfacesByTags(TArray<TSoftObjectPtr<ILevelMarkupInterface>>& InputMarkupInterfaces, AActor* Actor, const TArray<FName>& Tags);
+	static ILevelMarkupInterface* FindCameraMarkupInterface(AActor* Actor);
+	static void SetActivateCameraMarkupComponents(AActor* Actor, bool bIsActivate);
 };

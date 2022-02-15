@@ -21,7 +21,7 @@ protected:
 	bool			bIsCreateTimer = false;
 	FTimerHandle	TimerHandle;
 
-	//ÁÖ±â¸¦ ¼³Á¤ÇÕ´Ï´Ù.
+	//Cycleì˜ ì‹œê°„ì„ ê²°ì •í•©ë‹ˆë‹¤.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|TimerTriggerComponent")
 	float			CycleTime = 1.f;
 

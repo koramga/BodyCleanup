@@ -128,7 +128,7 @@ void ABasePlayerController::__InputPressedMouseRightClick()
 }
 
 void ABasePlayerController::__InputReleasedMouseRightClick()
-{	
+{
 	if(bIsFocusOnCharacter)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
@@ -141,7 +141,7 @@ void ABasePlayerController::__InputReleasedMouseRightClick()
 }
 
 void ABasePlayerController::__InputPressedSwapCharacter()
-{	
+{
 	if(bIsFocusOnCharacter)
 	{
 		InputPressedSwapCharacter();
@@ -157,7 +157,7 @@ void ABasePlayerController::__InputPressedReturnToTank()
 }
 
 void ABasePlayerController::__InputPressedJump()
-{	
+{
 	if(bIsFocusOnCharacter)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
