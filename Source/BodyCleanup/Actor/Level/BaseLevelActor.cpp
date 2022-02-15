@@ -100,8 +100,6 @@ void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 	}
 }
 
-#endif
-
 void ABaseLevelActor::GetComponentByLinkConnect(TArray<FBatchedLine>& BatchLines)
 {
 	const TSet<UActorComponent*>& ActorComponents = GetComponents();
@@ -155,6 +153,8 @@ void ABaseLevelActor::GetComponentByLinkConnect(TArray<FBatchedLine>& BatchLines
 	}
 
 }
+
+#endif
 
 void ABaseLevelActor::BeginPlay()
 {

@@ -48,7 +48,10 @@ protected :
 #endif
 
 protected :
+
+#if WITH_EDITOR
 	void GetComponentByLinkConnect(TArray<FBatchedLine>& BatchLines);
+#endif
 
 protected:
 	// Called when the game starts or when spawned

@@ -2,8 +2,6 @@
 
 
 #include "BasePatrolActor.h"
-
-#include "DetailLayoutBuilder.h"
 #include "Components/BoxComponent.h"
 #include "../../../Components/Actor/LevelComponent.h"
 
