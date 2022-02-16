@@ -394,7 +394,12 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-		PlayerController->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+		//EObjectTypeQuery ObjectTypeQuery = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
+
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+
+		PlayerController->GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit);
 		FVector ArcShootingEndLocation = Hit.Location;
 
 		float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
@@ -459,10 +464,11 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 		TArray<AActor*> actorArr;
 		FVector NullVector;
 
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+		TArray<TEnumAsByte<EObjectTypeQuery>> PredictObjectTypes;
 		TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
-		TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
-		TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
+		PredictObjectTypes.Add(WorldStatic);
+		//TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
+		//TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
 		//ObjectTypes.Add(WorldStatic);
 		//ObjectTypes.Add(WorldDynamic);
 		//ObjectTypes.Add(WorldPhysicsBody);
@@ -480,7 +486,7 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 				ArcShootingVelocity,
 				true,
 				5.f,
-				ObjectTypes,
+				PredictObjectTypes,
 				false,
 				actorArr,
 				EDrawDebugTrace::ForOneFrame,
