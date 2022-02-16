@@ -81,8 +81,21 @@ void AMorse::Tick(float DeltaTime)
 			{
 				if (BaseController->IsA(APlayerController::StaticClass()))
 				{
+					//https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982/4
+					//ECollisionChannel CollisionChannel;
+					//FCollisionResponseParams ResponseParams;
+					//
+					//UCollisionProfile::GetChannelAndResponseParams(TEXT("UnderFloor"), CollisionChannel, ResponseParams);
+
+					//https://forums.unrealengine.com/t/custom-trace-channel-in-c/332130/2
+					EObjectTypeQuery ObjectTypeQuery = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel3);
+
+					TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+					ObjectTypes.Add(ObjectTypeQuery);
+
 					FHitResult Hit;
-					UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
+					UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit);
+					//UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
 
 					if (Hit.bBlockingHit)
 					{
