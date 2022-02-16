@@ -40,12 +40,7 @@ void UJunkValueViewerUserWidget::SetJunkValue(int32 InJunkValue)
 	
 		if(IsValid(BorderJunkValue))
 		{
-			float Percent = InJunkValue / 4.f;
-
-			if(Percent > 3.f)
-			{
-				Percent = 3.f;
-			}
+			float Percent = (InJunkValue % 4) / 4.f;
 
 			UMaterialInstanceDynamic* MaterialInstanceDynamic = BorderJunkValue->GetDynamicMaterial();
 
@@ -57,7 +52,7 @@ void UJunkValueViewerUserWidget::SetJunkValue(int32 InJunkValue)
 
 		if(IsValid(TextBlockJunkValue))
 		{
-			int32 UIJunkValue = InJunkValue;
+			int32 UIJunkValue = InJunkValue / 4.f;
 		
 			if(InJunkValue >= 10000)
 			{
