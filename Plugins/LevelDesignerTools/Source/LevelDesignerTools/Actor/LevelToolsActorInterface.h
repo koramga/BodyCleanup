@@ -24,4 +24,5 @@ class LEVELDESIGNERTOOLS_API ILevelToolsActorInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual class ULevelTriggerActorAssist* GetLevelTriggerActorAssist() const = 0;
+	virtual void SetDestroyFromTrigger() = 0;
 };

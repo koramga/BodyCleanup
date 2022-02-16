@@ -50,6 +50,9 @@ private :
 	void __SetEnabledCollisions(USceneComponent* SceneComponent, ECollisionEnabled::Type CollisionEnabledType);
 	void __SetCollisionProfileNames(USceneComponent* SceneComponent, const FName& ProfileName);
 	void __OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data);
+	
+protected :
+	virtual void UpdateDeath(bool bInIsDeath);
 
 public :
 	void SetEnabledCollisions(bool bIsEnableCollision);
@@ -57,6 +60,7 @@ public :
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;
 	virtual void AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
 	virtual bool IsDeath() const override;
+	virtual void SetDestroyFromTrigger() override;
 	//virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	//virtual void AddAttributeSet(const TSubclassOf<class UBaseAttributeSet>& AttributeSet) override;
 	 

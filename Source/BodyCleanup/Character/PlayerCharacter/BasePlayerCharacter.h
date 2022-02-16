@@ -47,6 +47,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	virtual void UpdateDeath(bool bInIsDeath) override;
+
 public :
 	bool	IsPressedLeftMouse() const;
 	bool	IsPressedRightMouse() const;

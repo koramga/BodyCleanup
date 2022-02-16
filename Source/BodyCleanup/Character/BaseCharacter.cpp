@@ -275,6 +275,11 @@ bool ABaseCharacter::IsDeath() const
 	return bIsDeath;
 }
 
+void ABaseCharacter::SetDestroyFromTrigger()
+{
+	UpdateDeath(true);
+}
+
 void ABaseCharacter::SetTextToSpeechBubble(const FString& Text)
 {
 	UBubbleScriptUserWidget* BubbleScriptUserWidget = Cast<UBubbleScriptUserWidget>(SpeechBubbleWidgetComponent->GetWidget());

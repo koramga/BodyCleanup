@@ -76,6 +76,16 @@ void ABasePlayerCharacter::Tick(float DeltaTime)
 
 }
 
+void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
+{
+	Super::UpdateDeath(bInIsDeath);
+
+	if (true == bInIsDeath)
+	{
+		
+	}
+}
+
 bool ABasePlayerCharacter::IsPressedLeftMouse() const
 {
 	return bIsPressedLeftMouse;

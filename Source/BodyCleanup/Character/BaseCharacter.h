@@ -77,6 +77,7 @@ public :
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;
 	virtual void AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
 	virtual bool IsDeath() const override;
+	virtual void SetDestroyFromTrigger() override;
 	
 public :
 	virtual void SetTextToSpeechBubble(const FString& Text);

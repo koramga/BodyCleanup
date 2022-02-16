@@ -91,12 +91,19 @@ void ABaseActor::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Data)
 		{
 			if(Data.NewValue <= 0.f)
 			{
-				LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
-				bIsDeath = true;
+				UpdateDeath(true);
 			}
 		}
 	}
-	
+}
+
+void ABaseActor::UpdateDeath(bool bInIsDeath)
+{
+	if (bInIsDeath != bIsDeath)
+	{
+		LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, bInIsDeath);
+		bIsDeath = bInIsDeath;
+	}
 }
 
 //void ABaseActor::__OnGASAttributeChanged(const FOnAttributeChangeData& Data)
@@ -164,6 +171,11 @@ void ABaseActor::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 bool ABaseActor::IsDeath() const
 {
 	return bIsDeath;
+}
+
+void ABaseActor::SetDestroyFromTrigger()
+{
+	UpdateDeath(true);
 }
 
 UCapabilitySystemComponent* ABaseActor::GetCapabilitySystemComponent() const
