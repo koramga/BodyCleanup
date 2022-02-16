@@ -28,7 +28,6 @@ void UKillZoneTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& In
 
 	if (InputLevelTriggerUpdateParam.bIsOnTrigger)
 	{
-		//¹ÝÀÀÇÏ¸é µË´Ï´Ù.
 		TArray<TSoftObjectPtr<AActor>> Actors;
 
 		if (GetWorld()->GetAuthGameMode()->GetClass()->ImplementsInterface(ULevelToolsGameModeBase::StaticClass()))
@@ -47,6 +46,31 @@ void UKillZoneTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& In
 
 			for (const TSoftObjectPtr<AActor>& Actor : Actors)
 			{
+				bool bExcept = false;
+				
+				if(ExceptActors.Contains(Actor))
+				{
+					//Skipí•œë‹¤.
+					bExcept = true;
+				}
+
+				if(false == bExcept)
+				{
+					for(TSubclassOf<AActor>& ExceptActorClass : ExceptActorClasses)
+					{
+						if(Actor->IsA(ExceptActorClass))
+						{
+							bExcept = true;
+							break;
+						}
+					}					
+				}
+
+				if(bExcept)
+				{
+					continue;
+				}
+			
 				if (Actor->GetClass()->ImplementsInterface(ULevelToolsActorInterface::StaticClass()))
 				{
 					Cast<ILevelToolsActorInterface>(Actor.Get())->SetDestroyFromTrigger();

@@ -18,6 +18,13 @@ public :
 	UKillZoneTriggerComponent();
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|KillZoneTriggerComponent")
+	TArray<TSoftObjectPtr<AActor>>	ExceptActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|KillZoneTriggerComponent")
+	TArray<TSubclassOf<AActor>>		ExceptActorClasses;
+
+protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void SetupTrigger() override;
