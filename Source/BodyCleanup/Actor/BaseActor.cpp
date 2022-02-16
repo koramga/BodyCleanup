@@ -176,6 +176,7 @@ bool ABaseActor::IsDeath() const
 void ABaseActor::SetDestroyFromTrigger()
 {
 	UpdateDeath(true);
+	Destroy(true);
 }
 
 UCapabilitySystemComponent* ABaseActor::GetCapabilitySystemComponent() const

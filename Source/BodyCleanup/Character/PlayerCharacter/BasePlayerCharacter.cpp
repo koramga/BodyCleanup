@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 ABasePlayerCharacter::ABasePlayerCharacter()
@@ -82,7 +83,13 @@ void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
 
 	if (true == bInIsDeath)
 	{
-		
+		AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
+
+		if(IsValid(GameModeBase))
+		{
+			FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+			UGameplayStatics::OpenLevel(GetWorld(), *LevelName);			
+		}
 	}
 }
 
