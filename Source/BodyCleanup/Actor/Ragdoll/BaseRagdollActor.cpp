@@ -6,7 +6,7 @@
 ABaseRagdollActor::ABaseRagdollActor()
 {
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
-
+	
 	SkeletalMeshComponent->SetupAttachment(GetRootComponent());
 }
 

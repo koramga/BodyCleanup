@@ -2,7 +2,6 @@
 
 
 #include "MainMenuGameModeBase.h"
-
 #include "BodyCleanup/UI/Screen/MainMenuScreenWidget.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"

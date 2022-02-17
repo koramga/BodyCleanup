@@ -10,6 +10,7 @@
 #include "../../Game/GameMode/MainGameModeBase.h"
 #include "../../UI/Screen/MainScreenWidget.h"
 #include "../../Game/GameMode/BaseGameModeBase.h"
+#include "BodyCleanup/UI/Screen/PauseMenuScreenWidget.h"
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -39,6 +40,10 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputUIUp", IE_Pressed, this, &ABasePlayerController::__InputPressedUIUp);
 	InputComponent->BindAction("InputUIDown", IE_Pressed, this, &ABasePlayerController::__InputPressedUIDown);
 	InputComponent->BindAction("InputEnter", IE_Pressed, this, &ABasePlayerController::__InputPressedEnter);
+	
+	FInputActionBinding& PauseActionBinding = InputComponent->BindAction("InputPauseMenu", IE_Pressed, this, &ABasePlayerController::__InputPressedPauseMenu);
+
+	PauseActionBinding.bExecuteWhenPaused = true;
 }
 
 void ABasePlayerController::InputPressedSwapCharacter()
@@ -310,6 +315,16 @@ void ABasePlayerController::__InputPressedEnter()
 				BaseScreenWidget->InputEnter();
 			}
 		}		
+	}
+}
+
+void ABasePlayerController::__InputPressedPauseMenu()
+{
+	AMainGameModeBase* MainGameModeBase = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+
+	if(IsValid(MainGameModeBase))
+	{
+		MainGameModeBase->TogglePauseMenu();
 	}
 }
 
