@@ -20,10 +20,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UDataTable*	StatNameDataTable;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UDataTable* KeyboardControlDataTable;
+
+	UPROPERTY()
 	TMap<EGameStatType, FName>	StatTypeNames;
 
 public :
 	virtual void Init() override;
 	FName GetStatTypeToName(EGameStatType StatType);
+	void GetKeyboardControlElements(TArray<struct FKeyboardControlTableRow>& KeyboardControlTableRows) const;
 };

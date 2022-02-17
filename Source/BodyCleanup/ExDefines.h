@@ -154,8 +154,8 @@ enum class EActionComponentActionType : uint8
 UENUM(BlueprintType)
 enum class EKeyboardControlType : uint8
 {
-	DefaultTankControl,
-	DefaultMorseControl,
+	TankDefault,
+	MorseDefault,
 };
 
 template <typename Enumeration>

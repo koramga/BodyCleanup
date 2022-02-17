@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../ExDefines.h"
 #include "BaseUserWidget.generated.h"
 
 /**

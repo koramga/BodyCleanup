@@ -9,12 +9,22 @@
 /**
  * 
  */
+
+USTRUCT()
+struct FKeyboardElementGroup
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<class UKeyboardElementWidget*>	KeyboardElementWidgets;
+};
+
 UCLASS()
 class BODYCLEANUP_API UMainScreenWidget : public UBaseScreenWidget
 {
 	GENERATED_BODY()
 
-protected:
+protected:	
 	UPROPERTY()
 	class UScreenScriptUserWidget* ScreenScriptUserWidget;
 	
@@ -26,6 +36,13 @@ protected:
 	
 	UPROPERTY()
 	FVector2D	ScreenSelectScriptPosition;
+
+	UPROPERTY()
+	TMap<EKeyboardControlType, FKeyboardElementGroup>	KeyboardControlMap;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class UKeyboardElementWidget>	KeyboardElementWidgetClass;
 	
 protected:
 	virtual void NativePreConstruct() override;

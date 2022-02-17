@@ -4,6 +4,10 @@
 #include "MainScreenWidget.h"
 #include "../Script/ScreenScriptUserWidget.h"
 #include "../Script/ScreenSelectScriptUserWidget.h"
+#include "../../Game/GameInstance/BaseGameInstance.h"
+#include "../../Game/GameMode/MainGameModeBase.h"
+#include "../../Data/TableRow/TableRows.h"
+#include "../Element/KeyboardElementWidget.h"
 #include "Components/CanvasPanelSlot.h"
 
 void UMainScreenWidget::NativePreConstruct()
@@ -60,6 +64,41 @@ void UMainScreenWidget::NativeConstruct()
 		SetScreenSelectScriptBottom(true);
 		ScreenSelectScriptUserWidget->SetCallbackSelectScreenScriptTimeOver(this, &UMainScreenWidget::__CallbackTimeOverSelectScreenScript);
 	}
+
+	if(IsValid(KeyboardElementWidgetClass))
+	{
+		UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+		if(IsValid(BaseGameInstance))
+		{
+			TArray<FKeyboardControlTableRow> KeyboardControlTableRows;
+		
+			BaseGameInstance->GetKeyboardControlElements(KeyboardControlTableRows);
+
+			for(const FKeyboardControlTableRow& KeyboardControlTableRow : KeyboardControlTableRows)
+			{
+				UKeyboardElementWidget* KeyboardElementWidget = Cast<UKeyboardElementWidget>(CreateWidget(this, KeyboardElementWidgetClass));
+
+				if(IsValid(KeyboardElementWidget))
+				{
+					FKeyboardElementGroup* KeyboardElementGroup = KeyboardControlMap.Find(KeyboardControlTableRow.Type);
+
+					if(nullptr == KeyboardElementGroup)
+					{
+						KeyboardControlMap.Add(KeyboardControlTableRow.Type);
+
+						KeyboardElementGroup = KeyboardControlMap.Find(KeyboardControlTableRow.Type);
+					}
+
+					if(nullptr != KeyboardElementGroup)
+					{
+						KeyboardElementGroup->KeyboardElementWidgets.Add(KeyboardElementWidget);
+					}
+				}
+			}
+		}		
+	}
+
 }
 
 void UMainScreenWidget::NativeDestruct()

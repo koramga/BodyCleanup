@@ -35,3 +35,19 @@ FName UBaseGameInstance::GetStatTypeToName(EGameStatType StatType)
 
 	return *Name;
 }
+
+void UBaseGameInstance::GetKeyboardControlElements(TArray<FKeyboardControlTableRow>& KeyboardControlTableRows) const
+{
+	if(IsValid(KeyboardControlDataTable))
+	{
+		for(const auto iter : KeyboardControlDataTable->GetRowMap())
+		{
+			FKeyboardControlTableRow* TableRow =  (FKeyboardControlTableRow*)(iter.Value);
+
+			if(nullptr != TableRow)
+			{
+				KeyboardControlTableRows.Add(*TableRow);
+			}
+		}
+	}
+}
