@@ -151,6 +151,13 @@ enum class EActionComponentActionType : uint8
 	OnOff,					
 };
 
+UENUM(BlueprintType)
+enum class EKeyboardControlType : uint8
+{
+	DefaultTankControl,
+	DefaultMorseControl,
+};
+
 template <typename Enumeration>
 static FORCEINLINE FString GetEnumerationToString(const Enumeration InValue)
 {

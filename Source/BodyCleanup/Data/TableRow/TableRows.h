@@ -23,3 +23,19 @@ struct FGameStatNameTableRow
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName			Name;
 };
+
+USTRUCT()
+struct FKeyboardControlTableRow
+	: public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EKeyboardControlType	Type;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString					Text;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString					ImagePath;
+};
