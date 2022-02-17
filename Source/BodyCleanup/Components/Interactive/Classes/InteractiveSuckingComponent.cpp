@@ -53,7 +53,8 @@ void UInteractiveSuckingComponent::BeginPlay()
 		
 		for(TSoftObjectPtr<UPrimitiveComponent>& PrimitiveComponent : PrimitiveComponents)
 		{
-			if(PrimitiveComponent.IsValid())
+			if(PrimitiveComponent.IsValid()
+				&& PrimitiveComponent->IsA(UStaticMeshComponent::StaticClass()))
 			{
 				PrimitiveComponent->SetSimulatePhysics(true);
 			}
