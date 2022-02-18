@@ -54,10 +54,10 @@ public :
 	UInteractiveScriptComponent();
 	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|InteractiveScriptComponent")
 	FName						SceneName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|InteractiveScriptComponent")
 	TArray<FActorDescription>	ActorDescriptions;
 	
 protected:
