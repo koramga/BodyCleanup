@@ -13,5 +13,9 @@ UCLASS()
 class BODYCLEANUP_API UInteractiveScriptComponent : public UInteractiveTriggerComponent
 {
 	GENERATED_BODY()
-	
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+	virtual void UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam) override;
 };

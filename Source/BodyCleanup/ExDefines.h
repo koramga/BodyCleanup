@@ -74,6 +74,13 @@ enum class EInteractiveSuckingType : uint8
 };
 
 UENUM(BlueprintType)
+enum class ELevelType : uint8
+{
+	MainMenu,
+	Tutorial,
+};
+
+UENUM(BlueprintType)
 enum class EInteractiveType : uint8
 {
 	//어떤 동작도 되지 않습니다.

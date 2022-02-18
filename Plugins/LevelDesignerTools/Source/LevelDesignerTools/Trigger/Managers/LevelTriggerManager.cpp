@@ -22,7 +22,15 @@ void ULevelTriggerInterfaceSpace::SetupRelationship()
 				PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapBegin);
 				PrimitiveComponent->OnComponentEndOverlap.AddDynamic(this, &ULevelTriggerInterfaceSpace::__OnTriggerComponentOverlapEnd);
 
-				const TArray<FOverlapInfo>& OverlapInfos = PrimitiveComponent->GetOverlapInfos();
+				const TArray<FOverlapInfo>& InputOverlapInfos = PrimitiveComponent->GetOverlapInfos();
+
+				//We must be copy that. because of overlapinfo could be delete.
+				TArray<FOverlapInfo> OverlapInfos;
+
+				for (const FOverlapInfo& InputOverlapInfo : InputOverlapInfos)
+				{
+					OverlapInfos.Add(InputOverlapInfo);
+				}
 
 				for(const FOverlapInfo& OverlapInfo : OverlapInfos)
 				{

@@ -39,3 +39,16 @@ struct FKeyboardControlTableRow
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString					ImagePath;
 };
+
+USTRUCT()
+struct FScriptTableRow
+	: public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName					Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString					Script;
+};
