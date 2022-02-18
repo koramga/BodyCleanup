@@ -338,7 +338,7 @@ void ABasePlayerController::SetFocusOnCharacter(bool bInIsFocusOnCharacter)
 
 		if(IsValid(PlayerCharacter))
 		{
-			PlayerCharacter->SetActorTickEnabled(true);		
+			PlayerCharacter->SetFocusOn(true);		
 		}
 	}
 	else
@@ -347,7 +347,7 @@ void ABasePlayerController::SetFocusOnCharacter(bool bInIsFocusOnCharacter)
 
 		if(IsValid(PlayerCharacter))
 		{
-			PlayerCharacter->SetActorTickEnabled(false);		
+			PlayerCharacter->SetFocusOn(false);		
 		}
 	}
 }

@@ -374,3 +374,18 @@ FBTPatrolInfo ABaseCharacter::GetPatrolInfo() const
 void ABaseCharacter::SetNextPatrol()
 {
 }
+
+void ABaseCharacter::SetFocusOn(bool bIsFocusOn)
+{
+	if(true == bIsFocusOn)
+	{
+		SetActorTickEnabled(true);
+	}
+	else
+	{
+		SetActorTickEnabled(false);
+
+		//이동했을 경우, 이동을 멈추게 만든다.
+		BaseAnimInstance->SetMoveBlendSpeed(0.f);
+	}
+}

@@ -93,4 +93,5 @@ public:
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
 	virtual FBTPatrolInfo GetPatrolInfo() const override;
 	virtual void SetNextPatrol() override;
+	virtual void SetFocusOn(bool bIsFocusOn);
 };
