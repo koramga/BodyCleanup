@@ -9,6 +9,7 @@
 #include "../../Data/TableRow/TableRows.h"
 #include "../Element/KeyboardElementWidget.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/VerticalBox.h"
 
 void UMainScreenWidget::NativePreConstruct()
 {
@@ -16,6 +17,7 @@ void UMainScreenWidget::NativePreConstruct()
 	
 	ScreenScriptUserWidget = Cast<UScreenScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenScript")));
 	ScreenSelectScriptUserWidget = Cast<UScreenSelectScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenSelectScript")));
+	VerticalBoxKeyboardElement = Cast<UVerticalBox>(GetWidgetFromName(TEXT("VerticalBoxKeyboardElement")));
 }
 
 void UMainScreenWidget::NativeConstruct()
@@ -81,6 +83,9 @@ void UMainScreenWidget::NativeConstruct()
 
 				if(IsValid(KeyboardElementWidget))
 				{
+					KeyboardElementWidget->SetText(KeyboardControlTableRow.Text);
+					KeyboardElementWidget->SetImagePath(KeyboardControlTableRow.ImagePath);
+					
 					FKeyboardElementGroup* KeyboardElementGroup = KeyboardControlMap.Find(KeyboardControlTableRow.Type);
 
 					if(nullptr == KeyboardElementGroup)
@@ -231,6 +236,31 @@ void UMainScreenWidget::SetScreenSelectScriptBottom(bool bIsBottom)
 				CanvasPanelSlot->SetPosition(FVector2D(0.f, -ScreenSelectScriptPosition.Y));
 				CanvasPanelSlot->SetAlignment(FVector2D(0.5f, 0.f));				
 			}
+		}		
+	}
+}
+
+void UMainScreenWidget::SetKeyboardControlType(EKeyboardControlType InKeyboardControlType)
+{
+	if(0 == VerticalBoxKeyboardElement->GetChildrenCount()
+		|| KeyboardControlType != InKeyboardControlType)
+	{
+		KeyboardControlType = InKeyboardControlType;
+	}
+	else
+	{
+		return;
+	}
+
+	VerticalBoxKeyboardElement->ClearChildren();
+
+	FKeyboardElementGroup* KeyboardElementGroup = KeyboardControlMap.Find(InKeyboardControlType);
+
+	if(nullptr != KeyboardElementGroup)
+	{
+		for(UKeyboardElementWidget* KeyboardElementWidget : KeyboardElementGroup->KeyboardElementWidgets)
+		{
+			VerticalBoxKeyboardElement->AddChildToVerticalBox(KeyboardElementWidget);			
 		}		
 	}
 }

@@ -16,6 +16,7 @@
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 #include "../../../Components/Interactive/Classes/InteractiveSuckingComponent.h"
 #include "../../../UI/Viewer/JunkValueViewerUserWidget.h"
+#include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "Components/WidgetComponent.h"
 
 AMorse::AMorse()
@@ -65,6 +66,21 @@ void AMorse::BeginPlay()
 	SetHiddenInGameSpeechBubble(true);
 
 	SetJunkValue(JunkValue);
+}
+
+void AMorse::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if(NewController->IsA(ABasePlayerController::StaticClass()))
+	{
+		SetKeyboardControlType(EKeyboardControlType::MorseDefault);
+	}
+}
+
+void AMorse::UnPossessed()
+{
+	Super::UnPossessed();
 }
 
 void AMorse::Tick(float DeltaTime)

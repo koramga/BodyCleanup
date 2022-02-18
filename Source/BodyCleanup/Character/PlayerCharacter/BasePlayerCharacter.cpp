@@ -7,6 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
+#include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
+#include "BodyCleanup/UI/Screen/MainScreenWidget.h"
 #include "GameFramework/GameModeBase.h"
 
 // Sets default values
@@ -89,6 +91,22 @@ void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
 		{
 			FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 			UGameplayStatics::OpenLevel(GetWorld(), *LevelName);			
+		}
+	}
+}
+
+void ABasePlayerCharacter::SetKeyboardControlType(EKeyboardControlType KeyboardControlType)
+{
+	AMainGameModeBase* MainGameModeBase = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+	TSoftObjectPtr<UMainScreenWidget> MainScreenWidget;
+	
+	if(nullptr != MainGameModeBase)
+	{
+		MainScreenWidget = MainGameModeBase->GetMainScreenWidget();
+
+		if(MainScreenWidget.IsValid())
+		{
+			MainScreenWidget->SetKeyboardControlType(KeyboardControlType);
 		}
 	}
 }

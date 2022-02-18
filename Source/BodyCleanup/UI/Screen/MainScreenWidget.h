@@ -40,6 +40,11 @@ protected:
 	UPROPERTY()
 	TMap<EKeyboardControlType, FKeyboardElementGroup>	KeyboardControlMap;
 
+	UPROPERTY()
+	class UVerticalBox*	VerticalBoxKeyboardElement;
+
+	EKeyboardControlType KeyboardControlType;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class UKeyboardElementWidget>	KeyboardElementWidgetClass;
@@ -65,4 +70,5 @@ public :
 	void SetScreenSelectScriptTexts(float InLimitTime, const TArray<FString>& Texts);
 	void SetScreenScriptBottom(bool bIsBottom);
 	void SetScreenSelectScriptBottom(bool bIsBottom);
+	void SetKeyboardControlType(EKeyboardControlType InKeyboardControlType);
 };

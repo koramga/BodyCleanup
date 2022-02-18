@@ -49,6 +49,7 @@ public:
 
 protected:
 	virtual void UpdateDeath(bool bInIsDeath) override;
+	void SetKeyboardControlType(EKeyboardControlType KeyboardControlType);
 
 public :
 	bool	IsPressedLeftMouse() const;

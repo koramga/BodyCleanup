@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../AI/Player/BasePlayerAIController.h"
+#include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
+#include "BodyCleanup/UI/Screen/MainScreenWidget.h"
 
 AGroupPlayerController::AGroupPlayerController()
 {
@@ -77,7 +79,7 @@ void AGroupPlayerController::PlayerTick(float DeltaTime)
 void AGroupPlayerController::InputPressedSwapCharacter()
 {
 	ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
-
+	
 	if (IsValid(PlayerCharacter))
 	{
 		if (Morse == PlayerCharacter)

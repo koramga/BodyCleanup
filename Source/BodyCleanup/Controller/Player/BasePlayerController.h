@@ -53,7 +53,7 @@ private :
 	void __InputPressedUIDown();
 	void __InputPressedEnter();
 	void __InputPressedPauseMenu();
-
+	
 public :
 	virtual void SetFocusOnCharacter(bool bInIsFocusOnCharacter);
 	virtual bool IsFocusOnCharacter() const;

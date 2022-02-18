@@ -4,6 +4,7 @@
 #include "Tank.h"
 #include "Components/CapsuleComponent.h"
 #include "../../../Animation/PlayerCharacter/Tank/TankAnimInstance.h"
+#include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ATank::ATank()
@@ -16,6 +17,21 @@ void ATank::BeginPlay()
 	Super::BeginPlay();
 
 	SetActorScale3D(FVector(0.3f, 0.3f, 0.3f));
+}
+
+void ATank::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if(NewController->IsA(ABasePlayerController::StaticClass()))
+	{
+		SetKeyboardControlType(EKeyboardControlType::TankDefault);
+	}
+}
+
+void ATank::UnPossessed()
+{
+	Super::UnPossessed();
 }
 
 void ATank::Tick(float DeltaTime)
