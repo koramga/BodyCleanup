@@ -11,6 +11,16 @@
 /**
  * 
  */
+
+USTRUCT()
+struct FLevelDescriptionDataAssetGroup
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	TArray<class ULevelDescriptionDataAsset*>	LevelDescriptionDataAssets;
+};
+
 UCLASS()
 class BODYCLEANUP_API UBaseGameInstance : public UGameInstance
 {
@@ -22,15 +32,20 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UDataTable* KeyboardControlDataTable;
-
-	UPROPERTY()
-	TMap<EGameStatType, FName>	StatTypeNames;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<class ULevelDescriptionDataAsset*>	LevelDescriptionDataAssets;
 
+protected:
+	UPROPERTY()
+	TMap<EGameStatType, FName>	StatTypeNames;
+
+	UPROPERTY()
+	TMap<ELevelRoleType, FLevelDescriptionDataAssetGroup> LevelDescriptionDataAssetGroupMap;
+	
 public :
 	virtual void Init() override;
 	FName GetStatTypeToName(EGameStatType StatType);
 	void GetKeyboardControlElements(TArray<struct FKeyboardControlTableRow>& KeyboardControlTableRows) const;
+	const FLevelDescriptionDataAssetGroup* GetLevelDescriptionDataAssetGroup(ELevelRoleType LevelRoleType) const;
 };

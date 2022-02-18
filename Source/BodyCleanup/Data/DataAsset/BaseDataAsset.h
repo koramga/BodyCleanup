@@ -10,6 +10,7 @@
 /**
  * 
  */
+
 UCLASS()
 class BODYCLEANUP_API UBaseDataAsset : public UDataAsset
 {

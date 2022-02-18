@@ -78,6 +78,8 @@ enum class ELevelRoleType : uint8
 {
 	MainMenu,
 	Tutorial,
+	Narrative,
+	Play,
 };
 
 UENUM(BlueprintType)

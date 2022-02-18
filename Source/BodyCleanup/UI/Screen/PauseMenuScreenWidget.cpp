@@ -2,10 +2,11 @@
 
 
 #include "PauseMenuScreenWidget.h"
-
 #include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../Game/GameInstance/BaseGameInstance.h"
+#include "BodyCleanup/Data/DataAsset/Description/LevelDescriptionDataAsset.h"
 
 void UPauseMenuScreenWidget::NativePreConstruct()
 {
@@ -62,5 +63,15 @@ void UPauseMenuScreenWidget::__OnClickedGameSetting()
 
 void UPauseMenuScreenWidget::__OnClickedBackToTitle()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("LV_MainMenu"));
+	UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+	if(IsValid(BaseGameInstance))
+	{
+		const FLevelDescriptionDataAssetGroup* LevelDescriptionDataAssetGroup = BaseGameInstance->GetLevelDescriptionDataAssetGroup(ELevelRoleType::MainMenu);
+
+		if(nullptr != LevelDescriptionDataAssetGroup)
+		{
+			UGameplayStatics::OpenLevel(GetWorld(), LevelDescriptionDataAssetGroup->LevelDescriptionDataAssets[0]->GetUELevelName());			
+		}
+	}	
 }

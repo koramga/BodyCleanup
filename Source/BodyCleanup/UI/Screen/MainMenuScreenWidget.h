@@ -21,10 +21,6 @@ protected:
 	class UButton* ButtonGameExit;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName	GameStartLevelName;
-
-protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;

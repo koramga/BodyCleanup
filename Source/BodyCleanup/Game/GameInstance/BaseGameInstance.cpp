@@ -3,6 +3,7 @@
 
 #include "BaseGameInstance.h"
 #include "../../Data/TableRow/TableRows.h"
+#include "BodyCleanup/Data/DataAsset/Description/LevelDescriptionDataAsset.h"
 
 void UBaseGameInstance::Init()
 {
@@ -20,6 +21,25 @@ void UBaseGameInstance::Init()
 			{
 				StatTypeNames.Add(TableRow->GameStatType, TableRow->Name);
 			}
+		}
+	}
+
+	for(ULevelDescriptionDataAsset* LevelDescriptionDataAsset : LevelDescriptionDataAssets)
+	{
+		ELevelRoleType LevelRoleType = LevelDescriptionDataAsset->GetLevelRoleType();
+
+		FLevelDescriptionDataAssetGroup* LevelDescriptionDataAssetGroup = LevelDescriptionDataAssetGroupMap.Find(LevelRoleType);
+
+		if(nullptr == LevelDescriptionDataAssetGroup)
+		{
+			LevelDescriptionDataAssetGroupMap.Add(LevelRoleType);
+
+			LevelDescriptionDataAssetGroup = LevelDescriptionDataAssetGroupMap.Find(LevelRoleType);
+		}
+
+		if(nullptr != LevelDescriptionDataAssetGroup)
+		{
+			LevelDescriptionDataAssetGroup->LevelDescriptionDataAssets.Add(LevelDescriptionDataAsset);
 		}
 	}
 }
@@ -50,4 +70,9 @@ void UBaseGameInstance::GetKeyboardControlElements(TArray<FKeyboardControlTableR
 			}
 		}
 	}
+}
+
+const FLevelDescriptionDataAssetGroup* UBaseGameInstance::GetLevelDescriptionDataAssetGroup(ELevelRoleType LevelRoleType) const
+{
+	return LevelDescriptionDataAssetGroupMap.Find(LevelRoleType);
 }

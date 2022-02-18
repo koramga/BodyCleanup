@@ -2,6 +2,9 @@
 
 
 #include "MainMenuScreenWidget.h"
+#include "../../Game/GameMode/MainGameModeBase.h"
+#include "../../Game/GameInstance/BaseGameInstance.h"
+#include "../../Data/DataAsset/Description/LevelDescriptionDataAsset.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -41,7 +44,17 @@ void UMainMenuScreenWidget::NativeTick(const FGeometry& MyGeometry, float InDelt
 
 void UMainMenuScreenWidget::__OnGameStart()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), GameStartLevelName);
+	UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+	if(IsValid(BaseGameInstance))
+	{
+		const FLevelDescriptionDataAssetGroup* LevelDescriptionDataAssetGroup = BaseGameInstance->GetLevelDescriptionDataAssetGroup(ELevelRoleType::Tutorial);
+
+		if(nullptr != LevelDescriptionDataAssetGroup)
+		{
+			UGameplayStatics::OpenLevel(GetWorld(), LevelDescriptionDataAssetGroup->LevelDescriptionDataAssets[0]->GetUELevelName());			
+		}
+	}
 }
 
 void UMainMenuScreenWidget::__OnGameExit()

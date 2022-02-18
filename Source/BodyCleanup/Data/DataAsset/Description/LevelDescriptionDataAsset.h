@@ -25,5 +25,14 @@ protected:
 	FName				LevelName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString				Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UDataTable*	ScriptDataTable;
+
+public :
+	ELevelRoleType GetLevelRoleType() const;
+	FName GetUELevelName() const;
+	FName GetLevelName() const;
+	class UDataTable* GetScriptDataTable() const;
 };
