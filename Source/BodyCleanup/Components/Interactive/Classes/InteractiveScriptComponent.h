@@ -38,6 +38,13 @@ struct FActorDescription
 	FName					CameraName;
 };
 
+struct FScriptTableRowToMainScript
+{
+	TSoftObjectPtr<AActor>	Actor;
+	TSoftObjectPtr<class UCameraComponent>	CameraComponent;
+	
+};
+
 UCLASS(ClassGroup = (Interactive), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API UInteractiveScriptComponent : public UInteractiveTriggerComponent
 {

@@ -8,6 +8,8 @@
 #include "../../Game/GameMode/MainGameModeBase.h"
 #include "../../Data/TableRow/TableRows.h"
 #include "../Element/KeyboardElementWidget.h"
+#include "BodyCleanup/Components/Actor/GameActorSettingsComponent.h"
+#include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/VerticalBox.h"
 
@@ -150,16 +152,11 @@ void UMainScreenWidget::InputEnter()
 
 	if(false == IsFocusOnCharacter())
 	{
-		if(false == ScreenSelectScriptUserWidget->IsHiddenInGame())
+		if(MainScreenWidgetScriptIndex >= 0)
 		{
-			SetHiddenInGameScreenSelectScript(true);
+			SetNextScript();
 		}
-		else if(false == ScreenScriptUserWidget->IsHiddenInGame())
-		{
-			SetHiddenInGameScreenScript(true);
-		}
-	}
-	
+	}	
 }
 
 void UMainScreenWidget::SetHiddenInGameScreenScript(bool bIsHiddenInGame)
@@ -194,6 +191,101 @@ void UMainScreenWidget::SetScreenSelectScriptTexts(float InLimitTime, const TArr
 	{
 		ScreenSelectScriptUserWidget->SetText(InLimitTime, Texts);
 	}	
+}
+
+void UMainScreenWidget::SetScreenScriptScripts(const TArray<FMainScreenWidgetScript>& InScripts)
+{
+	MainScreenWidgetScripts.Empty();
+	
+	for(FMainScreenWidgetScript ScreenWidgetScript : InScripts)
+	{
+		MainScreenWidgetScripts.Add(ScreenWidgetScript);
+	}
+}
+
+void UMainScreenWidget::StartScript()
+{
+	if(MainScreenWidgetScripts.Num() > 0)
+	{
+		ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>( UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+		if(IsValid(BasePlayerController))
+		{
+			//권한을 뺏는다. 그리고 시작한다.
+			BasePlayerController->SetFocusOnCharacter(false);
+			SetHiddenInGameScreenScript(false);
+			
+			MainScreenWidgetScriptIndex = 0;
+		
+			SetNextScript();
+		}
+	}
+}
+
+void UMainScreenWidget::SetNextScript()
+{
+	//0번이 재생되게 한다.
+	if(MainScreenWidgetScripts.Num() <= MainScreenWidgetScriptIndex)
+	{
+		SetEndScript();
+	}
+	else
+	{
+		const FMainScreenWidgetScript* MainScreenWidgetScript = &MainScreenWidgetScripts[MainScreenWidgetScriptIndex];
+		
+		if(MainScreenWidgetScript->Actor.IsValid()
+			&& MainScreenWidgetScript->CameraComponent.IsValid())
+		{
+			UGameActorSettingsComponent* GameActorSettingsComponent = MainScreenWidgetScript->Actor->FindComponentByClass<UGameActorSettingsComponent>();
+
+			if(IsValid(GameActorSettingsComponent))
+			{
+				SetScreenScriptText(GameActorSettingsComponent->GetActorName().ToString(), MainScreenWidgetScript->Script);
+			}
+
+			if(0 == MainScreenWidgetScriptIndex
+				|| MainScreenWidgetScripts[MainScreenWidgetScriptIndex].CameraComponent != MainScreenWidgetScripts[MainScreenWidgetScriptIndex - 1].CameraComponent)
+			{
+				
+				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+				if(IsValid(PlayerController))
+				{
+					PlayerController->SetViewTargetWithBlend(MainScreenWidgetScripts[MainScreenWidgetScriptIndex].Actor.Get(), 0.f);
+				}
+			}
+
+			++MainScreenWidgetScriptIndex;
+		}
+		else
+		{
+			SetEndScript();
+		}
+	}
+}
+
+void UMainScreenWidget::SetEndScript()
+{
+	MainScreenWidgetScriptIndex = -1;
+	
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>( UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if(IsValid(BasePlayerController))
+	{
+		//권한을 뺏는다. 그리고 시작한다.
+		SetHiddenInGameScreenScript(true);
+		BasePlayerController->SetFocusOnCharacter(true);
+	}
+}
+
+bool UMainScreenWidget::IsEndScript() const
+{
+	if(MainScreenWidgetScriptIndex < 0)
+	{
+		return true;
+	}
+	
+	return false;
 }
 
 void UMainScreenWidget::SetScreenScriptBottom(bool bIsBottom)

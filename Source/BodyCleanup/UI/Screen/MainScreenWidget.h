@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "BaseScreenWidget.h"
+#include "../../Data/TableRow/TableRows.h"
+#include "Camera/CameraComponent.h"
 #include "MainScreenWidget.generated.h"
 
 /**
@@ -17,6 +19,21 @@ struct FKeyboardElementGroup
 
 	UPROPERTY()
 	TArray<class UKeyboardElementWidget*>	KeyboardElementWidgets;
+};
+
+USTRUCT()
+struct FMainScreenWidgetScript
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TSoftObjectPtr<AActor>	Actor;
+	
+	UPROPERTY()
+	FString					Script;
+
+	UPROPERTY()
+	TSoftObjectPtr<UCameraComponent> CameraComponent;
 };
 
 UCLASS()
@@ -46,6 +63,13 @@ protected:
 	EKeyboardControlType KeyboardControlType;
 
 protected:
+	UPROPERTY()
+	TArray<FMainScreenWidgetScript> MainScreenWidgetScripts;
+
+	int								MainScreenWidgetScriptIndex = -1;
+	
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class UKeyboardElementWidget>	KeyboardElementWidgetClass;
 	
@@ -68,7 +92,12 @@ public :
 	void SetHiddenInGameScreenSelectScript(bool bIsHiddenInGame);
 	void SetScreenScriptText(const FString& Speaker, const FString& Text);
 	void SetScreenSelectScriptTexts(float InLimitTime, const TArray<FString>& Texts);
+	void SetScreenScriptScripts(const TArray<FMainScreenWidgetScript>& InScripts);
+	void StartScript();
+	void SetNextScript();
+	void SetEndScript();
+	bool IsEndScript() const;
 	void SetScreenScriptBottom(bool bIsBottom);
 	void SetScreenSelectScriptBottom(bool bIsBottom);
-	void SetKeyboardControlType(EKeyboardControlType InKeyboardControlType);
+	void SetKeyboardControlType(EKeyboardControlType InKeyboardControlType);	
 };

@@ -57,7 +57,7 @@ EWeightType UGameActorSettingsComponent::GetWeightType() const
 	return WeightType;
 }
 
-FName UGameActorSettingsComponent::GetName() const
+FName UGameActorSettingsComponent::GetActorName() const
 {
 	return ActorName;
 }

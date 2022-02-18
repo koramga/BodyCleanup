@@ -39,7 +39,7 @@ public:
 
 public :
 	EWeightType GetWeightType() const;
-	FName GetName() const;
+	FName GetActorName() const;
 	
 public :
 	void SetWeightType(EWeightType InputWeightType);	
