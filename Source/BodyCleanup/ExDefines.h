@@ -74,7 +74,7 @@ enum class EInteractiveSuckingType : uint8
 };
 
 UENUM(BlueprintType)
-enum class ELevelType : uint8
+enum class ELevelRoleType : uint8
 {
 	MainMenu,
 	Tutorial,

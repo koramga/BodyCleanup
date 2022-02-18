@@ -26,6 +26,9 @@ protected:
 	UPROPERTY()
 	TMap<EGameStatType, FName>	StatTypeNames;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<class ULevelDescriptionDataAsset*>	LevelDescriptionDataAssets;
+
 public :
 	virtual void Init() override;
 	FName GetStatTypeToName(EGameStatType StatType);

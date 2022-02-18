@@ -3,15 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../ExDefines.h"
-#include "Engine/DataAsset.h"
-#include "BaseDataAsset.generated.h"
+#include "../BaseDataAsset.h"
+#include "BaseDescriptionDataAsset.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BODYCLEANUP_API UBaseDataAsset : public UDataAsset
+class BODYCLEANUP_API UBaseDescriptionDataAsset : public UBaseDataAsset
 {
 	GENERATED_BODY()
 	
