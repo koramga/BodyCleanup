@@ -57,6 +57,11 @@ EWeightType UGameActorSettingsComponent::GetWeightType() const
 	return WeightType;
 }
 
+FName UGameActorSettingsComponent::GetName() const
+{
+	return ActorName;
+}
+
 void UGameActorSettingsComponent::SetWeightType(EWeightType InputWeightType)
 {
 	WeightType = InputWeightType;

@@ -48,4 +48,5 @@ public :
 	FName GetStatTypeToName(EGameStatType StatType);
 	void GetKeyboardControlElements(TArray<struct FKeyboardControlTableRow>& KeyboardControlTableRows) const;
 	const FLevelDescriptionDataAssetGroup* GetLevelDescriptionDataAssetGroup(ELevelRoleType LevelRoleType) const;
+	void GetScripts(TArray<struct FScriptTableRow>& ScriptTableRows, const FName& InSceneName);
 };

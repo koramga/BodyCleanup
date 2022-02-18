@@ -76,3 +76,40 @@ const FLevelDescriptionDataAssetGroup* UBaseGameInstance::GetLevelDescriptionDat
 {
 	return LevelDescriptionDataAssetGroupMap.Find(LevelRoleType);
 }
+
+void UBaseGameInstance::GetScripts(TArray<struct FScriptTableRow>& ScriptTableRows, const FName& InSceneName)
+{
+	FName UELevelName = *UGameplayStatics::GetCurrentLevelName(GetWorld());
+
+	ULevelDescriptionDataAsset* LevelDescriptionDataAsset = nullptr;
+	
+	for(ULevelDescriptionDataAsset* ForLevelDescriptionDataAsset : LevelDescriptionDataAssets)
+	{
+		if(UELevelName == ForLevelDescriptionDataAsset->GetUELevelName())
+		{
+			LevelDescriptionDataAsset = ForLevelDescriptionDataAsset;
+			break;
+		}
+	}
+
+	if(nullptr != LevelDescriptionDataAsset)
+	{
+		UDataTable* ScriptDataTable = LevelDescriptionDataAsset->GetScriptDataTable();
+		
+		if(IsValid(ScriptDataTable))
+		{
+			for(auto iter : ScriptDataTable->GetRowMap())
+			{
+				FScriptTableRow* ScriptTableRow =  (FScriptTableRow*)(iter.Value);
+
+				if(nullptr != ScriptTableRow)
+				{
+					if(InSceneName == ScriptTableRow->SceneName)
+					{
+						ScriptTableRows.Add(*ScriptTableRow);
+					}
+				}
+			}
+		}
+	}
+}

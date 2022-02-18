@@ -47,7 +47,10 @@ struct FScriptTableRow
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName					Name;
+	FName					SceneName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName					ActorName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString					Script;

@@ -9,11 +9,50 @@
 /**
  * 
  */
-UCLASS()
+
+UENUM(BlueprintType)
+enum class EScriptActorInputType : uint8
+{
+	Actor,
+	Name,
+};
+
+USTRUCT(BlueprintType)
+struct FActorDescription
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName					ActorName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EScriptActorInputType	ScriptActorInputType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ScriptActorInputType == EScriptActorInputType::Actor", EditConditionHides))
+	TSoftObjectPtr<AActor>	Actor;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ScriptActorInputType == EScriptActorInputType::Name", EditConditionHides))
+	FName					Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName					CameraName;
+};
+
+UCLASS(ClassGroup = (Interactive), meta = (BlueprintSpawnableComponent))
 class BODYCLEANUP_API UInteractiveScriptComponent : public UInteractiveTriggerComponent
 {
 	GENERATED_BODY()
 
+public :
+	UInteractiveScriptComponent();
+	
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName						SceneName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FActorDescription>	ActorDescriptions;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

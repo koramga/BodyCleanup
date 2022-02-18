@@ -24,7 +24,10 @@ protected :
 	TArray<TSubclassOf<class UCAPAttributeSet>>	BaseAttributeSetClasses;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<TSubclassOf<class UCAPAbility>>		BaseAbilityClasses;		
+	TArray<TSubclassOf<class UCAPAbility>>		BaseAbilityClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName										ActorName;
 
 protected:
 	// Called when the game starts
@@ -36,6 +39,7 @@ public:
 
 public :
 	EWeightType GetWeightType() const;
+	FName GetName() const;
 	
 public :
 	void SetWeightType(EWeightType InputWeightType);	

@@ -3,6 +3,11 @@
 
 #include "InteractiveScriptComponent.h"
 
+UInteractiveScriptComponent::UInteractiveScriptComponent()
+{
+	
+}
+
 void UInteractiveScriptComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -15,7 +20,9 @@ void UInteractiveScriptComponent::UpdateTrigger(const FLevelTriggerUpdateParam& 
 
 	if (InputLevelTriggerUpdateParam.bIsOnTrigger)
 	{
-		//·¹º§¿¡ ´ëÇÑ Á¤º¸°¡ ÇÊ¿äÇÏ´Ù.
-		//TMap..
+		//ì—¬ê¸°ì„œë¶€í„° ì‹œì‘í•©ë‹ˆë‹¤.
+		//ì¼ë‹¨ ì—¬ê¸°ê°€ ì œëŒ€ë¡œ ë“¤ì–´ì˜¤ëŠ”ì§€ ë´…ì‹œë‹¤.
+
+		
 	}
 }
