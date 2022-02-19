@@ -13,7 +13,6 @@
 #include "BodyCleanup/Components/Actor/LevelComponent.h"
 #include "BodyCleanup/UI/Screen/PauseMenuScreenWidget.h"
 #include "GameFramework/HUD.h"
-//#include "DrawDebugHelpers.h"
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -375,14 +374,14 @@ bool ABasePlayerController::GetHitResultsAtScreenPosition(TArray<FHitResult>& Hi
 	if (UGameplayStatics::DeprojectScreenToWorld(this, ScreenPosition, WorldOrigin, WorldDirection) == true)
 	{
 		
-#ifdef ENABLE_DRAW_DEBUG
-
-		//FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
-		DrawDebugSphere(GetWorld(), WorldOrigin, 20.f, 20, FColor::Yellow, false, 0.5f);
-
-		DrawDebugLine(GetWorld(), WorldOrigin, WorldOrigin + WorldDirection * HitResultTraceDistance, FColor::Green, false, 0.5f);
-	
-#endif 
+//#ifdef ENABLE_DRAW_DEBUG
+//
+//		//FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
+//		DrawDebugSphere(GetWorld(), WorldOrigin, 20.f, 20, FColor::Yellow, false, 0.5f);
+//
+//		DrawDebugLine(GetWorld(), WorldOrigin, WorldOrigin + WorldDirection * HitResultTraceDistance, FColor::Green, false, 0.5f);
+//	
+//#endif 
 	
 		return GetWorld()->LineTraceMultiByChannel(HitResults, WorldOrigin, WorldOrigin + WorldDirection * HitResultTraceDistance, TraceChannel);
 	}
@@ -421,21 +420,21 @@ bool ABasePlayerController::GetLevelHitResultAtMousePosition(FHitResult& OutHitR
 					
 	GetHitResultsAtMousePosition(HitResults, UEngineTypes::ConvertToTraceType( ECC_GameTraceChannel4 ), true);
 	
-#ifdef ENABLE_DRAW_DEBUG
-	
-	UE_LOG(LogTemp, Display, TEXT("<%d>"), HitResults.Num());
-	
-	for(const FHitResult& HitResult : HitResults)
-	{
-		UE_LOG(LogTemp, Display, TEXT("HitResult : <%s>"), *HitResult.Actor->GetName());
-		//FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 20, FColor::Red, false, 0.5f);
-
-		DrawDebugLine(GetWorld(), HitResult.ImpactPoint - HitResult.ImpactNormal * 200, HitResult.ImpactPoint + HitResult.ImpactNormal * 200, FColor::Blue, false, 0.5f);
-	
-	}
-	
-#endif
+//#ifdef ENABLE_DRAW_DEBUG
+//	
+//	UE_LOG(LogTemp, Display, TEXT("<%d>"), HitResults.Num());
+//	
+//	for(const FHitResult& HitResult : HitResults)
+//	{
+//		UE_LOG(LogTemp, Display, TEXT("HitResult : <%s>"), *HitResult.Actor->GetName());
+//		//FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
+//		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 20, FColor::Red, false, 0.5f);
+//
+//		DrawDebugLine(GetWorld(), HitResult.ImpactPoint - HitResult.ImpactNormal * 200, HitResult.ImpactPoint + HitResult.ImpactNormal * 200, FColor::Blue, false, 0.5f);
+//	
+//	}
+//	
+//#endif
 	
 	for(const FHitResult& HitResult : HitResults)
 	{
