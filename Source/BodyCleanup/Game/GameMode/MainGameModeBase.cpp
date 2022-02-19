@@ -105,4 +105,4 @@ void AMainGameModeBase::SetRobotCorpse(const TArray<TSoftObjectPtr<ARobotCorpseA
 		MainScreenWidget->SetMaxCorpseCount(RobotCorpseActors.Num());
 		MainScreenWidget->ResetCorpseCount();
 	}
-w}
+}
