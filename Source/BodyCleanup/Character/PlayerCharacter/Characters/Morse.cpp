@@ -18,6 +18,8 @@
 #include "../../../UI/Viewer/JunkValueViewerUserWidget.h"
 #include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "Components/WidgetComponent.h"
+#include "DrawDebugHelpers.h"
+#include "BodyCleanup/Components/Actor/LevelComponent.h"
 
 AMorse::AMorse()
 {
@@ -95,48 +97,34 @@ void AMorse::Tick(float DeltaTime)
 		{
 			if (IsValid(BaseController))
 			{
-				if (BaseController->IsA(APlayerController::StaticClass()))
-				{
-					//https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982/4
-					//ECollisionChannel CollisionChannel;
-					//FCollisionResponseParams ResponseParams;
-					//
-					//UCollisionProfile::GetChannelAndResponseParams(TEXT("UnderFloor"), CollisionChannel, ResponseParams);
+				if (BaseController->IsA(ABasePlayerController::StaticClass()))
+				{					
+					ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(BaseController);
 
-					//https://forums.unrealengine.com/t/custom-trace-channel-in-c/332130/2
-					EObjectTypeQuery ObjectTypeQuery = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel3);
-
-					TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-					ObjectTypes.Add(ObjectTypeQuery);
-
-					FHitResult Hit;
-					UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit);
-					//UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECC_WorldStatic, false, Hit);
-
-					if (Hit.bBlockingHit)
+					FHitResult HitResult;
+					
+					if(BasePlayerController->GetLevelHitResultAtMousePosition(HitResult))
 					{
-						if (Hit.Actor != this)
+						FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.ImpactPoint);
+						tempRot.Pitch = 0;
+						tempRot.Roll = 0;
+
+						if (ActorRotationInterpValue <= 0.f)
 						{
-							FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Hit.ImpactPoint);
-							tempRot.Pitch = 0;
-							tempRot.Roll = 0;
-
-							if (ActorRotationInterpValue <= 0.f)
-							{
-								SetActorRotation(tempRot);
-							}
-							else
-							{
-								FRotator ActorRotator = GetActorRotation();
-								ActorRotator.Pitch = 0.f;
-								ActorRotator.Roll = 0.f;
-
-								FRotator Rotator = FMath::RInterpTo(ActorRotator, tempRot, DeltaTime, ActorRotationInterpValue);
-
-								SetActorRotation(Rotator);
-							}
+							SetActorRotation(tempRot);
 						}
-					}
+						else
+						{
+							FRotator ActorRotator = GetActorRotation();
+							ActorRotator.Pitch = 0.f;
+							ActorRotator.Roll = 0.f;
+
+							FRotator Rotator = FMath::RInterpTo(ActorRotator, tempRot, DeltaTime, ActorRotationInterpValue);
+
+							SetActorRotation(Rotator);
+						}
+						
+					}			
 				}
 			}
 		}
@@ -405,108 +393,72 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 	{
 		FVector ArcShootingStartLocation = GetActorLocation();
 		ArcShootingStartLocation += GetActorForwardVector() * CreateArcShootingSpawnActorOffset;
-
+		ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(BaseController);
+		
 		FHitResult Hit;
 
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-		//EObjectTypeQuery ObjectTypeQuery = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
-
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
-
-		PlayerController->GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit);
-		FVector ArcShootingEndLocation = Hit.Location;
-
-		float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
-
-		if (Distance < MinArcShootingRange)
+		if(BasePlayerController->GetLevelHitResultAtMousePosition(Hit))
 		{
-			bIsCanArcShooting = false;
-			return;
-		}
-		else if (Distance > MaxArcShootingRange)
-		{
-			
-			//최적의 거리를 계산해야한다.
-			//bIsCanArcShooting = false;
-			//return;
+			FVector ArcShootingEndLocation = Hit.Location;
 
-			ArcShootingEndLocation = __ProcessMaxDistnace(ArcShootingStartLocation, ArcShootingEndLocation);
-			
-			/*
-			ArcShootingEndLocation = ArcShootingStartLocation + GetActorForwardVector() * MaxArcShootingRange;
+			float Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
 
-			FHitResult HitResult;
-			
-			GetWorld()->LineTraceSingleByChannel(HitResult, ArcShootingEndLocation + FVector(0.f, 0.f, 10000.f), ArcShootingEndLocation - FVector(0.f, 0.f, 20000.f)
-				, ECC_WorldStatic);
-
-			if(IsValid(Hit.GetActor()))
+			if (Distance < MinArcShootingRange)
 			{
-				Distance = FVector::Distance(ArcShootingStartLocation, Hit.ImpactPoint);
+				bIsCanArcShooting = false;
+				return;
+			}
+			else if (Distance > MaxArcShootingRange)
+			{
+				ArcShootingEndLocation = __ProcessMaxDistnace(ArcShootingStartLocation, ArcShootingEndLocation);
+			}
 
-				if(Distance < MaxArcShootingRange)
+			if(FMath::Abs(ArcShootingEndLocation.Z - ArcShootingStartLocation.Z) >= MaxArcShootingZ)
+			{
+				if(ArcShootingEndLocation.Z > ArcShootingStartLocation.Z)
 				{
-					
+					ArcShootingEndLocation.Z = ArcShootingStartLocation.Z + MaxArcShootingZ;
 				}
-				else if(Distance > MaxArcShootingRange)
+				else
 				{
-					
+					ArcShootingEndLocation.Z = ArcShootingStartLocation.Z - MaxArcShootingZ;
 				}
 			}
-			*/
-		}
 
-		if(FMath::Abs(ArcShootingEndLocation.Z - ArcShootingStartLocation.Z) >= MaxArcShootingZ)
-		{
-			if(ArcShootingEndLocation.Z > ArcShootingStartLocation.Z)
+			bIsCanArcShooting = true;
+			Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
+
+			FVector startLoc = ArcShootingStartLocation;
+			FVector targetLoc = ArcShootingEndLocation;
+			FVector outVelocity = FVector::ZeroVector;
+			FOccluderVertexArray arr;
+			TArray<AActor*> actorArr;
+			FVector NullVector;
+
+			TArray<TEnumAsByte<EObjectTypeQuery>> PredictObjectTypes;
+			TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
+			PredictObjectTypes.Add(WorldStatic);
+
+			if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ArcShootingArcValue))
 			{
-				ArcShootingEndLocation.Z = ArcShootingStartLocation.Z + MaxArcShootingZ;
+				ArcShootingVelocity = outVelocity;
+
+				UGameplayStatics::PredictProjectilePath(
+					GetWorld(),
+					Hit,
+					arr,
+					NullVector,
+					ArcShootingStartLocation,
+					ArcShootingVelocity,
+					true,
+					5.f,
+					PredictObjectTypes,
+					true,
+					actorArr,
+					EDrawDebugTrace::ForDuration,
+					0);
 			}
-			else
-			{
-				ArcShootingEndLocation.Z = ArcShootingStartLocation.Z - MaxArcShootingZ;
-			}
-		}
-
-		bIsCanArcShooting = true;
-		Distance = FVector::Distance(ArcShootingEndLocation, ArcShootingStartLocation);
-
-		FVector startLoc = ArcShootingStartLocation;
-		FVector targetLoc = ArcShootingEndLocation;
-		FVector outVelocity = FVector::ZeroVector;
-		FOccluderVertexArray arr;
-		TArray<AActor*> actorArr;
-		FVector NullVector;
-
-		TArray<TEnumAsByte<EObjectTypeQuery>> PredictObjectTypes;
-		TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
-		PredictObjectTypes.Add(WorldStatic);
-		//TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
-		//TEnumAsByte<EObjectTypeQuery> WorldPhysicsBody = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody);
-		//ObjectTypes.Add(WorldStatic);
-		//ObjectTypes.Add(WorldDynamic);
-		//ObjectTypes.Add(WorldPhysicsBody);
-
-		if (UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, GetWorld()->GetGravityZ(), ArcShootingArcValue))
-		{
-			ArcShootingVelocity = outVelocity;
-
-			UGameplayStatics::PredictProjectilePath(
-				GetWorld(),
-				Hit,
-				arr,
-				NullVector,
-				ArcShootingStartLocation,
-				ArcShootingVelocity,
-				true,
-				5.f,
-				PredictObjectTypes,
-				false,
-				actorArr,
-				EDrawDebugTrace::ForOneFrame,
-				0);
+			
 		}
 	}
 	else

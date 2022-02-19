@@ -10,7 +10,10 @@
 #include "../../Game/GameMode/MainGameModeBase.h"
 #include "../../UI/Screen/MainScreenWidget.h"
 #include "../../Game/GameMode/BaseGameModeBase.h"
+#include "BodyCleanup/Components/Actor/LevelComponent.h"
 #include "BodyCleanup/UI/Screen/PauseMenuScreenWidget.h"
+#include "GameFramework/HUD.h"
+#include "DrawDebugHelpers.h"
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -355,6 +358,101 @@ void ABasePlayerController::SetFocusOnCharacter(bool bInIsFocusOnCharacter)
 bool ABasePlayerController::IsFocusOnCharacter() const
 {
 	return bIsFocusOnCharacter;
+}
+
+bool ABasePlayerController::GetHitResultsAtScreenPosition(TArray<FHitResult>& HitResults,
+	const FVector2D ScreenPosition, const ECollisionChannel TraceChannel,
+	const FCollisionQueryParams& CollisionQueryParams) const
+{
+	// Early out if we clicked on a HUD hitbox
+	if (GetHUD() != NULL && GetHUD()->GetHitBoxAtCoordinates(ScreenPosition, true))
+	{
+		return false;
+	}
+
+	FVector WorldOrigin;
+	FVector WorldDirection;
+	if (UGameplayStatics::DeprojectScreenToWorld(this, ScreenPosition, WorldOrigin, WorldDirection) == true)
+	{
+		
+#ifdef ENABLE_DRAW_DEBUG
+
+		//FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
+		DrawDebugSphere(GetWorld(), WorldOrigin, 20.f, 20, FColor::Yellow, false, 0.5f);
+
+		DrawDebugLine(GetWorld(), WorldOrigin, WorldOrigin + WorldDirection * HitResultTraceDistance, FColor::Green, false, 0.5f);
+	
+#endif 
+	
+		return GetWorld()->LineTraceMultiByChannel(HitResults, WorldOrigin, WorldOrigin + WorldDirection * HitResultTraceDistance, TraceChannel);
+	}
+
+	return false;
+}
+
+bool ABasePlayerController::GetHitResultsAtScreenPosition(TArray<FHitResult>& HitResults, FVector2D ScreenPosition,
+                                                          ECollisionChannel CollisionChannel, bool bTraceComplex)
+{
+	FCollisionQueryParams CollisionQueryParams(SCENE_QUERY_STAT(ClickableTrace), bTraceComplex );
+	
+	return GetHitResultsAtScreenPosition( HitResults, ScreenPosition, CollisionChannel, CollisionQueryParams );
+}
+
+bool ABasePlayerController::GetHitResultsAtMousePosition(TArray<FHitResult>& HitResults, ETraceTypeQuery TraceChannel,
+                                                         bool bTraceComplex)
+{
+	ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(Player);
+	bool bHit = false;
+	if (LocalPlayer && LocalPlayer->ViewportClient)
+	{
+		FVector2D MousePosition;
+		if (LocalPlayer->ViewportClient->GetMousePosition(MousePosition))
+		{
+			return GetHitResultsAtScreenPosition( HitResults, MousePosition, UEngineTypes::ConvertToCollisionChannel( TraceChannel ), bTraceComplex);
+		}
+	}
+
+	return false;
+}
+
+bool ABasePlayerController::GetLevelHitResultAtMousePosition(FHitResult& OutHitResult)
+{
+	TArray<FHitResult> HitResults;
+					
+	GetHitResultsAtMousePosition(HitResults, UEngineTypes::ConvertToTraceType( ECC_GameTraceChannel4 ), true);
+	
+#ifdef ENABLE_DRAW_DEBUG
+	
+	UE_LOG(LogTemp, Display, TEXT("<%d>"), HitResults.Num());
+	
+	for(const FHitResult& HitResult : HitResults)
+	{
+		UE_LOG(LogTemp, Display, TEXT("HitResult : <%s>"), *HitResult.Actor->GetName());
+		//FColor DrawColor = bIsGoal ? FColor::Red : FColor::Green;
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 20, FColor::Red, false, 0.5f);
+
+		DrawDebugLine(GetWorld(), HitResult.ImpactPoint - HitResult.ImpactNormal * 200, HitResult.ImpactPoint + HitResult.ImpactNormal * 200, FColor::Blue, false, 0.5f);
+	
+	}
+	
+#endif
+	
+	for(const FHitResult& HitResult : HitResults)
+	{
+		if(HitResult.Actor.IsValid()
+			&& HitResult.Actor != this)
+		{
+			ULevelComponent* LevelComponent = HitResult.Actor->FindComponentByClass<ULevelComponent>();
+
+			if(IsValid(LevelComponent))
+			{
+				OutHitResult = HitResult;
+				return true;
+			}
+		}
+	}
+	
+	return false;
 }
 
 ETeamType ABasePlayerController::GetTeamType() const

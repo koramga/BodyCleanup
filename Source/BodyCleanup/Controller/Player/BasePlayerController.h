@@ -57,7 +57,12 @@ private :
 public :
 	virtual void SetFocusOnCharacter(bool bInIsFocusOnCharacter);
 	virtual bool IsFocusOnCharacter() const;
-	
+
+public :
+	bool GetHitResultsAtScreenPosition(TArray<FHitResult>& HitResults, const FVector2D ScreenPosition, const ECollisionChannel TraceChannel, const FCollisionQueryParams& CollisionQueryParams) const;
+	bool GetHitResultsAtScreenPosition(TArray<FHitResult>& HitResults, FVector2D ScreenPosition, ECollisionChannel CollisionChannel, bool bTraceComplex);
+	bool GetHitResultsAtMousePosition(TArray<FHitResult>& HitResults, ETraceTypeQuery TraceChannel, bool bTraceComplex);
+	bool GetLevelHitResultAtMousePosition(FHitResult& OutHitResult);
 public :
 	virtual ETeamType GetTeamType() const override;
 	virtual TBlackboardVariable GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const override;
