@@ -18,8 +18,20 @@ protected:
 	UPROPERTY()
 	class UTextBlock*	TextCorpseCount;
 
+	UPROPERTY()
+	class UBorder*		BorderBackground;
+
 	int32				MaxCorpseCount;
 	int32				CurrentCorpseCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FLinearColor		SuccessBackgroundColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundWave*			SuccessSoundWave;
+
+	UPROPERTY()
+	FLinearColor		DefaultBackgroundColor;
 	
 protected:
 	virtual void NativePreConstruct() override;
