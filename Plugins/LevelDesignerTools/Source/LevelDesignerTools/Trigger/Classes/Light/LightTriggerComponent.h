@@ -45,7 +45,7 @@ struct FLightTriggerIntensityParam
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float							Intensity = 5000.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "BrightnessSignType == ELightTriggerBrightnessSignType::Curve", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "IntensitySignType == ELightTriggerIntensitySignType::Curve", EditConditionHides))
 	UCurveFloat*					CurveFloat;
 };
 
@@ -67,17 +67,17 @@ public :
 	ULightTriggerComponent();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|PointTriggerComponent")
-	FLevelTriggerInputTo	LevelTriggerInputTo;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LightTriggerComponent")
+	FLevelTriggerInputTo			LevelTriggerInputTo;
 	
 	//시간의 속도를 결정합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LightTriggerComponent")
 	float							TimeSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LightTriggerComponent")
 	bool							bIsUpdateIntensity;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LightTriggerComponent", meta = (EditCondition = "bIsUpdateBrightness", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LightTriggerComponent", meta = (EditCondition = "bIsUpdateIntensity", EditConditionHides))
 	FLightTriggerIntensityParam		LightTriggerIntensityParam;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|LightTriggerComponent")
