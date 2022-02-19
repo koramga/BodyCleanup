@@ -13,5 +13,25 @@ UCLASS()
 class BODYCLEANUP_API UCorpseElementWidget : public UBaseElementWidget
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY()
+	class UTextBlock*	TextCorpseCount;
+
+	int32				MaxCorpseCount;
+	int32				CurrentCorpseCount;
 	
+protected:
+	virtual void NativePreConstruct() override;
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+private:
+	void __SetCorpseText();
+
+public :
+	void SetMaxCorpseCount(int32 CorpseCount);
+	void AddCorpseCount();
+	void ResetCorpseCount();
 };

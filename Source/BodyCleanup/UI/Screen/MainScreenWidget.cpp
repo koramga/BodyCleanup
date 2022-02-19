@@ -10,6 +10,7 @@
 #include "../Element/KeyboardElementWidget.h"
 #include "BodyCleanup/Components/Actor/GameActorSettingsComponent.h"
 #include "BodyCleanup/Controller/Player/BasePlayerController.h"
+#include "BodyCleanup/UI/Element/CorpseElementWidget.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/VerticalBox.h"
 
@@ -20,6 +21,7 @@ void UMainScreenWidget::NativePreConstruct()
 	ScreenScriptUserWidget = Cast<UScreenScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenScript")));
 	ScreenSelectScriptUserWidget = Cast<UScreenSelectScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenSelectScript")));
 	VerticalBoxKeyboardElement = Cast<UVerticalBox>(GetWidgetFromName(TEXT("VerticalBoxKeyboardElement")));
+	CorpseElementWidget = Cast<UCorpseElementWidget>(GetWidgetFromName(TEXT("UI_CorpseElement")));
 }
 
 void UMainScreenWidget::NativeConstruct()
@@ -355,4 +357,19 @@ void UMainScreenWidget::SetKeyboardControlType(EKeyboardControlType InKeyboardCo
 			VerticalBoxKeyboardElement->AddChildToVerticalBox(KeyboardElementWidget);			
 		}		
 	}
+}
+
+void UMainScreenWidget::AddCorpseCount()
+{
+	CorpseElementWidget->AddCorpseCount();
+}
+
+void UMainScreenWidget::SetMaxCorpseCount(int32 MaxCorpseCount)
+{
+	CorpseElementWidget->SetMaxCorpseCount(MaxCorpseCount);
+}
+
+void UMainScreenWidget::ResetCorpseCount()
+{
+	CorpseElementWidget->ResetCorpseCount();
 }

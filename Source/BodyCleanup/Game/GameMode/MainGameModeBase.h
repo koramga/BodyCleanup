@@ -22,10 +22,17 @@ protected:
 	TSubclassOf<class UPauseMenuScreenWidget>	PauseMenuScreenWidgetClass;
 
 	class UPauseMenuScreenWidget*	PauseMenuScreenWidget;
+
+	UPROPERTY()
+	TArray<TSoftObjectPtr<class ARobotCorpseActor>> RobotCorpseActors;
 	
 protected :
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
+
+private:
+	UFUNCTION()
+	void __OnRobotCorpseActorDestroyed(AActor* Actor, EEndPlayReason::Type EndPlayReason);
 
 public :
 	TSoftObjectPtr<class UMainScreenWidget>	GetMainScreenWidget() const;
@@ -35,4 +42,5 @@ public :
 	void TogglePauseMenu();
 	bool IsEnablePauseMenu();
 	void SetEnablePauseMenu(bool bIsEnable);
+	void SetRobotCorpse(const TArray<TSoftObjectPtr<class ARobotCorpseActor>>& InRobotCorpseActors);
 };

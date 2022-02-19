@@ -49,6 +49,9 @@ protected:
 	class UScreenSelectScriptUserWidget* ScreenSelectScriptUserWidget;
 
 	UPROPERTY()
+	class UCorpseElementWidget*	CorpseElementWidget;
+
+	UPROPERTY()
 	FVector2D	ScreenScriptPosition;
 	
 	UPROPERTY()
@@ -99,5 +102,8 @@ public :
 	bool IsEndScript() const;
 	void SetScreenScriptBottom(bool bIsBottom);
 	void SetScreenSelectScriptBottom(bool bIsBottom);
-	void SetKeyboardControlType(EKeyboardControlType InKeyboardControlType);	
+	void SetKeyboardControlType(EKeyboardControlType InKeyboardControlType);
+	void AddCorpseCount();
+	void SetMaxCorpseCount(int32 MaxCorpseCount);
+	void ResetCorpseCount();
 };
