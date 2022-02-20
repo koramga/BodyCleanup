@@ -6,6 +6,7 @@
 #include "BaseScreenWidget.h"
 #include "../../Data/TableRow/TableRows.h"
 #include "Camera/CameraComponent.h"
+#include "Layout/Margin.h"
 #include "MainScreenWidget.generated.h"
 
 /**
@@ -40,7 +41,15 @@ UCLASS()
 class BODYCLEANUP_API UMainScreenWidget : public UBaseScreenWidget
 {
 	GENERATED_BODY()
+	
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|MainScreenWidget")
+	TSubclassOf<class UKeyboardElementWidget>	KeyboardElementWidgetClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|MainScreenWidget")
+	FMargin KeyboardControlPadding;
+	
 protected:	
 	UPROPERTY()
 	class UScreenScriptUserWidget* ScreenScriptUserWidget;
@@ -70,11 +79,6 @@ protected:
 	TArray<FMainScreenWidgetScript> MainScreenWidgetScripts;
 
 	int								MainScreenWidgetScriptIndex = -1;
-	
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<class UKeyboardElementWidget>	KeyboardElementWidgetClass;
 	
 protected:
 	virtual void NativePreConstruct() override;

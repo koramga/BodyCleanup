@@ -13,6 +13,7 @@
 #include "BodyCleanup/UI/Element/CorpseElementWidget.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/VerticalBox.h"
+#include "Components/VerticalBoxSlot.h"
 
 void UMainScreenWidget::NativePreConstruct()
 {
@@ -354,7 +355,9 @@ void UMainScreenWidget::SetKeyboardControlType(EKeyboardControlType InKeyboardCo
 	{
 		for(UKeyboardElementWidget* KeyboardElementWidget : KeyboardElementGroup->KeyboardElementWidgets)
 		{
-			VerticalBoxKeyboardElement->AddChildToVerticalBox(KeyboardElementWidget);			
+			UVerticalBoxSlot* VerticalBoxSlot = VerticalBoxKeyboardElement->AddChildToVerticalBox(KeyboardElementWidget);
+
+			VerticalBoxSlot->SetPadding(KeyboardControlPadding);
 		}		
 	}
 }
