@@ -48,11 +48,11 @@ void UCorpseElementWidget::__SetCorpseText()
 			SetHiddenInGame(false);
 		}
 		
-		TextCorpseCount->SetText(FText::FromString(FString::Printf(TEXT("%d : %d"), CurrentCorpseCount, MaxCorpseCount)));		
+		TextCorpseCount->SetText(FText::FromString(FString::Printf(TEXT("%d / %d"), CurrentCorpseCount, MaxCorpseCount)));		
 	}
 	else
 	{
-		TextCorpseCount->SetText(FText::FromString(FString::Printf(TEXT("-- : --"))));
+		TextCorpseCount->SetText(FText::FromString(FString::Printf(TEXT("-- / --"))));
 	}	
 }
 
