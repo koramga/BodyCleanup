@@ -21,8 +21,26 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName>						SoundWaveTurnOffNames;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool								bIsApplyPhysicalMaterial = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName="LineTraceDraw", EditCondition = "bIsApplyPhysicalMaterial", EditConditionHides))
+	bool								bIsPMDrawDebug = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(DisplayName="SocketName", EditCondition = "bIsApplyPhysicalMaterial", EditConditionHides))
+	FName								PMSocketName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(DisplayName="TraceForwardVector", EditCondition = "bIsApplyPhysicalMaterial", EditConditionHides))
+	FVector								PMTraceForwardVector;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(DisplayName="LocationOffset", EditCondition = "bIsApplyPhysicalMaterial", EditConditionHides))
+	float								PMLocationOffset = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(DisplayName="TraceDistance", EditCondition = "bIsApplyPhysicalMaterial", EditConditionHides))
+	float								PMTraceDistance = 2000.f;
+
 protected:
-	virtual int32 GetPhysicalMaterialIndex() const;
+	virtual int32 GetPhysicalMaterialIndex(USkeletalMeshComponent* MeshComponent) const;
 	
 public :
 	virtual FString GetNotifyName_Implementation() const override;

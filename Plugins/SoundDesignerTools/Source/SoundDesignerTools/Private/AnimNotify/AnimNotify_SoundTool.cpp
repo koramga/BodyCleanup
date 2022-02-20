@@ -9,9 +9,56 @@
 #include "GameMode/SoundToolsGameModeBaseInterface.h"
 #include "SoundTool/SoundWaveSourceDataAsset.h"
 #include "Manager/SoundToolsManager.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "DrawDebugHelpers.h"
 
-int32 UAnimNotify_SoundTool::GetPhysicalMaterialIndex() const
+int32 UAnimNotify_SoundTool::GetPhysicalMaterialIndex(USkeletalMeshComponent* MeshComponent) const
 {
+	if(false == PMSocketName.IsNone())
+	{
+		int32 BoneIndex = MeshComponent->GetBoneIndex(PMSocketName);
+		if(BoneIndex >= 0)
+		{
+			FTransform BoneTransform = MeshComponent->GetBoneTransform(BoneIndex);
+			FVector PMBoneForwardVector = BoneTransform.GetRotation().RotateVector(PMTraceForwardVector);
+			FVector StartVector = BoneTransform.GetLocation() + PMBoneForwardVector * PMLocationOffset;
+			FVector EndVector = StartVector + PMBoneForwardVector * PMTraceDistance;
+			bool bTraceComplex = true;
+			ETraceTypeQuery TraceTypeQuery = UEngineTypes::ConvertToTraceType(ECC_Visibility);
+			ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceTypeQuery);
+			
+			FHitResult HitResult;
+			FCollisionQueryParams CollisionQueryParams;
+			CollisionQueryParams.AddIgnoredActor(MeshComponent->GetOwner());
+			CollisionQueryParams.bReturnPhysicalMaterial = true;
+			CollisionQueryParams.bTraceComplex = bTraceComplex;
+			
+			bool bIsCollision = MeshComponent->GetWorld()->LineTraceSingleByChannel(HitResult, StartVector, EndVector, CollisionChannel, CollisionQueryParams);
+
+
+#ifdef ENABLE_DRAW_DEBUG
+			if(true == bIsPMDrawDebug)
+			{
+				FColor DrawColor = bIsCollision ? FColor::Red : FColor::Green;
+
+				DrawDebugLine(MeshComponent->GetWorld(), StartVector, EndVector, DrawColor, false, 2.f);
+				DrawDebugBox(MeshComponent->GetWorld(), StartVector, FVector(12.f, 12.f, 12.f), FColor::Black, false, 2.f);
+				DrawDebugBox(MeshComponent->GetWorld(), EndVector, FVector(12.f, 12.f, 12.f), FColor::White, false, 2.f);
+			}
+#endif
+
+			if(bIsCollision)
+			{
+				if(HitResult.PhysMaterial.IsValid())
+				{
+					EPhysicalSurface PhysicalSurface = HitResult.PhysMaterial->SurfaceType;
+
+					return static_cast<int32>(PhysicalSurface);
+				}
+			}			
+		}		
+	}
+	
 	return 0;
 }
 
@@ -24,7 +71,7 @@ void UAnimNotify_SoundTool::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation);
 
-	int32 PhysicalMaterialIndex = GetPhysicalMaterialIndex();
+	int32 PhysicalMaterialIndex = GetPhysicalMaterialIndex(MeshComp);
 	AGameModeBase* GameModeBase = MeshComp->GetWorld()->GetAuthGameMode();
 	TSoftObjectPtr<USoundToolsManager> SoundToolsManager;
 	
