@@ -252,8 +252,11 @@ void ULevelTriggerInterfaceSpace::Release()
 			if (LevelTriggerManager.IsValid())
 			{
 				ULevelTriggerInterfaceSpace* LevelTriggerInterfaceSpace = LevelTriggerManager->GetLevelTriggerInterfaceSpace(Cast<ILevelTriggerInterface>(TriggerComponent.Get()));
-	
-				LevelTriggerInterfaceSpace->__RemoveTriggerObserver(this);
+
+				if(nullptr != LevelTriggerInterfaceSpace)
+				{
+					LevelTriggerInterfaceSpace->__RemoveTriggerObserver(this);
+				}				
 			}
 		}
 	}

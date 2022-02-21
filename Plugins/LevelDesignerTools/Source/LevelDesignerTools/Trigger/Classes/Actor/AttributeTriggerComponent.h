@@ -16,6 +16,8 @@ enum class ELevelAttributeTriggerActionType : uint8
 {
 	Visible,
 	InVisible,
+	EnableOverlap,
+	DisableOverlap,
 };
 
 USTRUCT(BlueprintType, Blueprintable)

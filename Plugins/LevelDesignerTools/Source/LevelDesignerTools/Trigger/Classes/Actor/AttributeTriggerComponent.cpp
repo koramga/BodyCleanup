@@ -3,6 +3,7 @@
 
 #include "AttributeTriggerComponent.h"
 #include "../../../Utility/LevelSupportFunctionLibrary.h"
+#include "Particles/ParticleSystemComponent.h"
 
 UAttributeTriggerComponent::UAttributeTriggerComponent()
 {
@@ -32,7 +33,14 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 
 				if(IsValid(SceneComponent))
 				{
-					SceneComponent->SetHiddenInGame(false);
+					if(SceneComponent->IsA(UParticleSystemComponent::StaticClass()))
+					{
+						SceneComponent->SetVisibility(true);
+					}
+					else
+					{
+						SceneComponent->SetHiddenInGame(false);	
+					}
 
 					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
 					{
@@ -46,15 +54,47 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 
 				if(IsValid(SceneComponent))
 				{
-					SceneComponent->SetHiddenInGame(true);
+					if(SceneComponent->IsA(UParticleSystemComponent::StaticClass()))
+					{
+						SceneComponent->SetVisibility(false);
+					}
+					else
+					{
+						SceneComponent->SetHiddenInGame(true);						
+					}			
 
 					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
 					{
 						//ECollisionEnabled가 None이 되면 (Invisible상태가 되면) SimulationPhysics가 False여야 Warning이 안뜨는데 문제는 내가 수정했다면, 다시 복귀시킬 때도 복구가 되어야 하는데..
-						Cast<UPrimitiveComponent>(SceneComponent)->SetSimulatePhysics(false);
+						Cast<UPrimitiveComponent>(SceneComponent)->SetSimulatePhysics(false); 
 						Cast<UPrimitiveComponent>(SceneComponent)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 					}
 				}				
+			}
+			else if(ELevelAttributeTriggerActionType::EnableOverlap == ExecuteAction.ActionType)
+			{
+				USceneComponent* SceneComponent = Cast<USceneComponent>(Component.Get());
+
+				if(IsValid(SceneComponent))
+				{
+					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+					{
+						Cast<UPrimitiveComponent>(SceneComponent)->SetGenerateOverlapEvents(true);
+					}
+				}
+			}
+			else if(ELevelAttributeTriggerActionType::DisableOverlap == ExecuteAction.ActionType)
+			{
+				USceneComponent* SceneComponent = Cast<USceneComponent>(Component.Get());
+
+				if(IsValid(SceneComponent))
+				{
+					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+					{
+						Cast<UPrimitiveComponent>(SceneComponent)->SetGenerateOverlapEvents(false);
+					}
+				}				
+				
 			}
 		}
 	}
