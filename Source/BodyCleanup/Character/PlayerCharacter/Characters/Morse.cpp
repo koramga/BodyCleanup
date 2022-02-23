@@ -28,6 +28,8 @@ AMorse::AMorse()
 	JunkValueViewerWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("JunkValueViewer");
 	JunkValueViewerWidgetComponent->SetupAttachment(GetMesh());
 	JunkValueViewerWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+	//LineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>("LineBatchComponent");
 }
 
 void AMorse::BeginPlay()
@@ -88,6 +90,13 @@ void AMorse::UnPossessed()
 void AMorse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	ProjectilePathActorIndex = 0;
+
+	for(AActor* ProjectilePathActor : ProjectilePathActors)
+	{
+		ProjectilePathActor->SetActorHiddenInGame(true);
+	}
 
 	//마우스의 움직임을 감시하여 캐릭터가 회전할 수 있도록 한다.
 	
@@ -682,7 +691,6 @@ bool AMorse::__PredictProjectilePath(const UObject* WorldContextObject, const FP
 		}
 
 		// Draw debug path
-#if ENABLE_DRAW_DEBUG
 		if (PredictParams.DrawDebugType != EDrawDebugTrace::None)
 		{
 			const bool bPersistent = PredictParams.DrawDebugType == EDrawDebugTrace::Persistent;
@@ -692,15 +700,14 @@ bool AMorse::__PredictProjectilePath(const UObject* WorldContextObject, const FP
 			// draw the path
 			for (const FPredictProjectilePathPointData& PathPt : PredictResult.PathData)
 			{
-				::DrawDebugSphere(World, PathPt.Location, DrawRadius, 12, FColor::Green, bPersistent, LifeTime);
+				__DrawDebugSphere(World, PathPt.Location, DrawRadius, 12, FColor::Green, bPersistent, LifeTime);
 			}
 			// draw the impact point
 			if (bBlockingHit)
 			{
-				::DrawDebugSphere(World, PredictResult.HitResult.Location, DrawRadius + 1.0f, 12, FColor::Red, bPersistent, LifeTime);
+				__DrawDebugSphere(World, PredictResult.HitResult.Location, DrawRadius + 1.0f, 12, FColor::Red, bPersistent, LifeTime);
 			}
 		}
-#endif //ENABLE_DRAW_DEBUG
 	}
 
 	return bBlockingHit;
@@ -732,6 +739,44 @@ bool AMorse::__PredictProjectilePath_ByObjectType(const UObject* WorldContextObj
 		OutPathPositions.Add(PathPoint.Location);
 	}
 	return bHit;
+}
+
+void AMorse::__DrawDebugSphere(const UWorld* InWorld, FVector const& Center, float Radius, int32 Segments,
+	FColor const& Color, bool bPersistentLines, float LifeTime, uint8 DepthPriority, float Thickness)
+{
+	if(ProjectilePathActorIndex < ProjectilePathActors.Num())
+	{
+		ProjectilePathActors[ProjectilePathActorIndex]->SetActorLocation(Center);
+		ProjectilePathActors[ProjectilePathActorIndex]->SetActorHiddenInGame(false);
+	}
+	else
+	{	
+		FActorSpawnParameters ActorSpawnParam;
+
+		ActorSpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		ActorSpawnParam.Owner = this;
+
+		AActor* ProjectilePathActor = GetWorld()->SpawnActor<AActor>(ProjectilePathClassActor, Center, FRotator(0.f, 0.f, 0.f), ActorSpawnParam);
+
+		if(IsValid(ProjectilePathActor))
+		{
+			ProjectilePathActors.Add(ProjectilePathActor);
+		}		
+	}
+
+	UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(ProjectilePathActors[ProjectilePathActorIndex]->GetRootComponent());
+	
+	if(IsValid(StaticMeshComponent))
+	{		
+		UMaterialInstanceDynamic* MaterialInstanceDynamic = StaticMeshComponent->CreateDynamicMaterialInstance(0);
+		
+		if(IsValid(MaterialInstanceDynamic))
+		{
+			MaterialInstanceDynamic->SetVectorParameterValue("Color", Color);
+		}
+	}
+
+	ProjectilePathActorIndex++;
 }
 
 void AMorse::SetJunkValue(int32 InJunkValue)

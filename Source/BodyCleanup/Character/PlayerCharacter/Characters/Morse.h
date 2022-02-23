@@ -78,6 +78,13 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UWidgetComponent*							JunkValueViewerWidgetComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AActor>								ProjectilePathClassActor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AActor*>									ProjectilePathActors;
+
+	int32											ProjectilePathActorIndex;
 
 protected :
 	FVector					ArcShootingVelocity;
@@ -117,7 +124,7 @@ private :
 
 	bool __PredictProjectilePath(const UObject* WorldContextObject, const FPredictProjectilePathParams& PredictParams, FPredictProjectilePathResult& PredictResult);
 	bool __PredictProjectilePath_ByObjectType(const UObject* WorldContextObject, FHitResult& OutHit, TArray<FVector>& OutPathPositions, FVector& OutLastTraceDestination, FVector StartPos, FVector LaunchVelocity, bool bTracePath, float ProjectileRadius, const TArray<TEnumAsByte<EObjectTypeQuery> >& ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, float DrawDebugTime, float SimFrequency = 15.f, float MaxSimTime = 2.f, float OverrideGravityZ = 0);
-
+	void __DrawDebugSphere(const UWorld* InWorld, FVector const& Center, float Radius, int32 Segments, FColor const& Color, bool bPersistentLines = false, float LifeTime = -1.f, uint8 DepthPriority = 0, float Thickness = 0.f);
 public :
 	void SetJunkValue(int32 InJunkValue);
 	void AddJunkValue(int32 DeltaJunkValue);
