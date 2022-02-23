@@ -443,7 +443,7 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 			{
 				ArcShootingVelocity = outVelocity;
 
-				UGameplayStatics::PredictProjectilePath(
+				__PredictProjectilePath_ByObjectType(
 					GetWorld(),
 					Hit,
 					arr,
@@ -457,6 +457,22 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 					actorArr,
 					EDrawDebugTrace::ForDuration,
 					0);
+
+				
+				//UGameplayStatics::PredictProjectilePath(
+				//	GetWorld(),
+				//	Hit,
+				//	arr,
+				//	NullVector,
+				//	ArcShootingStartLocation,
+				//	ArcShootingVelocity,
+				//	true,
+				//	5.f,
+				//	PredictObjectTypes,
+				//	true,
+				//	actorArr,
+				//	EDrawDebugTrace::ForDuration,
+				//	0);
 			}
 			
 		}
@@ -577,6 +593,145 @@ void AMorse::__SetSucking(UInteractiveSuckingComponent* InteractiveSuckingCompon
 	{
 		InteractiveSuckingComponent->SetSucking(VacuumEntranceComponent.Get());
 	}
+}
+
+bool AMorse::__PredictProjectilePath(const UObject* WorldContextObject, const FPredictProjectilePathParams& PredictParams, FPredictProjectilePathResult& PredictResult)
+{
+	PredictResult.Reset();
+	bool bBlockingHit = false;
+
+	UWorld const* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (World && PredictParams.SimFrequency > KINDA_SMALL_NUMBER)
+	{
+		const float SubstepDeltaTime = 1.f / PredictParams.SimFrequency;
+		const float GravityZ = FMath::IsNearlyEqual(PredictParams.OverrideGravityZ, 0.0f) ? World->GetGravityZ() : PredictParams.OverrideGravityZ;
+		const float ProjectileRadius = PredictParams.ProjectileRadius;
+
+		FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(PredictProjectilePath), PredictParams.bTraceComplex);
+		FCollisionObjectQueryParams ObjQueryParams;
+		const bool bTraceWithObjectType = (PredictParams.ObjectTypes.Num() > 0);
+		const bool bTracePath = PredictParams.bTraceWithCollision && (PredictParams.bTraceWithChannel || bTraceWithObjectType);
+		if (bTracePath)
+		{
+			QueryParams.AddIgnoredActors(PredictParams.ActorsToIgnore);
+			if (bTraceWithObjectType)
+			{
+				for (auto Iter = PredictParams.ObjectTypes.CreateConstIterator(); Iter; ++Iter)
+				{
+					const ECollisionChannel& Channel = UCollisionProfile::Get()->ConvertToCollisionChannel(false, *Iter);
+					ObjQueryParams.AddObjectTypesToQuery(Channel);
+				}
+			}
+		}
+
+		FVector CurrentVel = PredictParams.LaunchVelocity;
+		FVector TraceStart = PredictParams.StartLocation;
+		FVector TraceEnd = TraceStart;
+		float CurrentTime = 0.f;
+		PredictResult.PathData.Reserve(FMath::Min(128, FMath::CeilToInt(PredictParams.MaxSimTime * PredictParams.SimFrequency)));
+		PredictResult.AddPoint(TraceStart, CurrentVel, CurrentTime);
+
+		FHitResult ObjectTraceHit(NoInit);
+		FHitResult ChannelTraceHit(NoInit);
+		ObjectTraceHit.Time = 1.f;
+		ChannelTraceHit.Time = 1.f;
+
+		const float MaxSimTime = PredictParams.MaxSimTime;
+		while (CurrentTime < MaxSimTime)
+		{
+			// Limit step to not go further than total time.
+			const float PreviousTime = CurrentTime;
+			const float ActualStepDeltaTime = FMath::Min(MaxSimTime - CurrentTime, SubstepDeltaTime);
+			CurrentTime += ActualStepDeltaTime;
+
+			// Integrate (Velocity Verlet method)
+			TraceStart = TraceEnd;
+			FVector OldVelocity = CurrentVel;
+			CurrentVel = OldVelocity + FVector(0.f, 0.f, GravityZ * ActualStepDeltaTime);
+			TraceEnd = TraceStart + (OldVelocity + CurrentVel) * (0.5f * ActualStepDeltaTime);
+			PredictResult.LastTraceDestination.Set(TraceEnd, CurrentVel, CurrentTime);
+
+			if (bTracePath)
+			{
+				bool bObjectHit = false;
+				bool bChannelHit = false;
+				if (bTraceWithObjectType)
+				{
+					bObjectHit = World->SweepSingleByObjectType(ObjectTraceHit, TraceStart, TraceEnd, FQuat::Identity, ObjQueryParams, FCollisionShape::MakeSphere(ProjectileRadius), QueryParams);
+				}
+				if (PredictParams.bTraceWithChannel)
+				{
+					bChannelHit = World->SweepSingleByChannel(ChannelTraceHit, TraceStart, TraceEnd, FQuat::Identity, PredictParams.TraceChannel, FCollisionShape::MakeSphere(ProjectileRadius), QueryParams);
+				}
+
+				// See if there were any hits.
+				if (bObjectHit || bChannelHit)
+				{
+					// Hit! We are done. Choose trace with earliest hit time.
+					PredictResult.HitResult = (ObjectTraceHit.Time < ChannelTraceHit.Time) ? ObjectTraceHit : ChannelTraceHit;
+					const float HitTimeDelta = ActualStepDeltaTime * PredictResult.HitResult.Time;
+					const float TotalTimeAtHit = PreviousTime + HitTimeDelta;
+					const FVector VelocityAtHit = OldVelocity + FVector(0.f, 0.f, GravityZ * HitTimeDelta);
+					PredictResult.AddPoint(PredictResult.HitResult.Location, VelocityAtHit, TotalTimeAtHit);
+					bBlockingHit = true;
+					break;
+				}
+			}
+
+			PredictResult.AddPoint(TraceEnd, CurrentVel, CurrentTime);
+		}
+
+		// Draw debug path
+#if ENABLE_DRAW_DEBUG
+		if (PredictParams.DrawDebugType != EDrawDebugTrace::None)
+		{
+			const bool bPersistent = PredictParams.DrawDebugType == EDrawDebugTrace::Persistent;
+			const float LifeTime = (PredictParams.DrawDebugType == EDrawDebugTrace::ForDuration) ? PredictParams.DrawDebugTime : 0.f;
+			const float DrawRadius = (ProjectileRadius > 0.f) ? ProjectileRadius : 5.f;
+
+			// draw the path
+			for (const FPredictProjectilePathPointData& PathPt : PredictResult.PathData)
+			{
+				::DrawDebugSphere(World, PathPt.Location, DrawRadius, 12, FColor::Green, bPersistent, LifeTime);
+			}
+			// draw the impact point
+			if (bBlockingHit)
+			{
+				::DrawDebugSphere(World, PredictResult.HitResult.Location, DrawRadius + 1.0f, 12, FColor::Red, bPersistent, LifeTime);
+			}
+		}
+#endif //ENABLE_DRAW_DEBUG
+	}
+
+	return bBlockingHit;
+}
+
+bool AMorse::__PredictProjectilePath_ByObjectType(const UObject* WorldContextObject, FHitResult& OutHit, TArray<FVector>& OutPathPositions, FVector& OutLastTraceDestination, FVector StartPos, FVector LaunchVelocity, bool bTracePath, float ProjectileRadius, const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, float DrawDebugTime, float SimFrequency, float MaxSimTime, float OverrideGravityZ)
+{
+	FPredictProjectilePathParams Params = FPredictProjectilePathParams(ProjectileRadius, StartPos, LaunchVelocity, MaxSimTime);
+	Params.bTraceWithCollision = bTracePath;
+	Params.bTraceComplex = bTraceComplex;
+	Params.ActorsToIgnore = ActorsToIgnore;
+	Params.DrawDebugType = DrawDebugType;
+	Params.DrawDebugTime = DrawDebugTime;
+	Params.SimFrequency = SimFrequency;
+	Params.OverrideGravityZ = OverrideGravityZ;
+	Params.ObjectTypes = ObjectTypes; // Object trace
+	Params.bTraceWithChannel = false;
+
+	// Do the trace
+	FPredictProjectilePathResult PredictResult;
+	bool bHit = __PredictProjectilePath(WorldContextObject, Params, PredictResult);
+
+	// Fill in results.
+	OutHit = PredictResult.HitResult;
+	OutLastTraceDestination = PredictResult.LastTraceDestination.Location;
+	OutPathPositions.Empty(PredictResult.PathData.Num());
+	for (const FPredictProjectilePathPointData& PathPoint : PredictResult.PathData)
+	{
+		OutPathPositions.Add(PathPoint.Location);
+	}
+	return bHit;
 }
 
 void AMorse::SetJunkValue(int32 InJunkValue)
