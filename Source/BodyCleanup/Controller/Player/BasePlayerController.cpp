@@ -132,6 +132,20 @@ void ABasePlayerController::__InputPressedMouseRightClick()
 			PlayerCharacter->InputPressedMouseRightClick();
 		}
 	}
+	else
+	{
+		ABaseGameModeBase* BaseGameModeBase = Cast<ABaseGameModeBase>(GetWorld()->GetAuthGameMode());
+
+		if(IsValid(BaseGameModeBase))
+		{
+			TSoftObjectPtr<UBaseScreenWidget> BaseScreenWidget = BaseGameModeBase->GetBaseScreenWidget();
+
+			if(BaseScreenWidget.IsValid())
+			{
+				BaseScreenWidget->InputEnter();
+			}
+		}		
+	}
 }
 
 void ABasePlayerController::__InputReleasedMouseRightClick()
