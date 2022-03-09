@@ -31,6 +31,7 @@ protected:
 
 public :
 	void SetEdge(UScriptGraphEdge* Edge);
+	UScriptGraphEdge* GetEdge() const;
 	virtual void AllocateDefaultPins() override;
 	virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
 	virtual void PinConnectionListChanged(UEdGraphPin* Pin) override;

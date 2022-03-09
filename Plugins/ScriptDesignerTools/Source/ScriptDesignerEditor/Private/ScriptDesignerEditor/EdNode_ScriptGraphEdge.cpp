@@ -15,6 +15,11 @@ void UEdNode_ScriptGraphEdge::SetEdge(UScriptGraphEdge* Edge)
 	ScriptGraphEdge = Edge;
 }
 
+UScriptGraphEdge* UEdNode_ScriptGraphEdge::GetEdge() const
+{
+	return ScriptGraphEdge;
+}
+
 void UEdNode_ScriptGraphEdge::AllocateDefaultPins()
 {
 	UEdGraphPin* Inputs = CreatePin(EGPD_Input, TEXT("Edge"), FName(), TEXT("In"));
