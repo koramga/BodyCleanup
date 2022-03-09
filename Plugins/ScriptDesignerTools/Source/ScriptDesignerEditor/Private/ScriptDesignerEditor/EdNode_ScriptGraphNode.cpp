@@ -3,3 +3,10 @@
 
 #include "ScriptDesignerEditor/EdNode_ScriptGraphNode.h"
 
+UEdNode_ScriptGraphNode::UEdNode_ScriptGraphNode()
+{
+}
+
+UEdNode_ScriptGraphNode::~UEdNode_ScriptGraphNode()
+{
+}

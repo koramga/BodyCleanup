@@ -11,12 +11,11 @@
 #include "ScriptDesignerEditor/EdNode_ScriptGraphNode.h"
 #include "ScriptDesignerEditor/EdNode_ScriptGraphEdge.h"
 
-TSharedRef<FScriptGraphDragConnection> FScriptGraphDragConnection::New(const TSharedRef<SGraphPanel>& InGraphPanel,
-	const FDraggedPinTable& InStartingPins)
+TSharedRef<FScriptGraphDragConnection> FScriptGraphDragConnection::New(const TSharedRef<SGraphPanel>& GraphPanel, const FDraggedPinTable& DraggedPins)
 {
-	TSharedRef<FScriptGraphDragConnection> Operation = MakeShareable(new FScriptGraphDragConnection(InGraphPanel, InStartingPins));
+	TSharedRef<FScriptGraphDragConnection> Operation = MakeShareable(new FScriptGraphDragConnection(GraphPanel, DraggedPins));
 	Operation->Construct();
-	
+
 	return Operation;
 }
 
