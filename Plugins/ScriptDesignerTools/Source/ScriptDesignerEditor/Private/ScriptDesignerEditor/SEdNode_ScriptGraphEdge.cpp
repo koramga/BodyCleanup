@@ -196,3 +196,5 @@ EVisibility SEdNode_ScriptGraphEdge::GetEdgeTitleVisibility() const
 
 	return EVisibility::Collapsed;
 }
+
+#undef LOCTEXT_NAMESPACE
