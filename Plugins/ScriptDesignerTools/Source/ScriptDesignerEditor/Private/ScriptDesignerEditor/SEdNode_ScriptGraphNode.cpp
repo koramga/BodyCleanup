@@ -75,7 +75,7 @@ void SEdNode_ScriptGraphNode::Construct(const FArguments& InArgs, UEdNode_Script
 	//작업 필요
 	GraphNode = InNode;
 	UpdateGraphNode();
-	//InNode->
+	InNode->SetEdNode(this);
 }
 
 void SEdNode_ScriptGraphNode::UpdateGraphNode()
