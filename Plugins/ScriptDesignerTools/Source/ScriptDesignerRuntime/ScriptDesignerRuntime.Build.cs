@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class ScriptDesingerTools : ModuleRules
+public class ScriptDesignerRuntime : ModuleRules
 {
-	public ScriptDesingerTools(ReadOnlyTargetRules Target) : base(Target)
+	public ScriptDesignerRuntime(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -27,11 +27,6 @@ public class ScriptDesingerTools : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
-				"UMGEditor", 
-				"UMG",
-				"Json", 
-				"JsonUtilities",
-				"Blutility",
 			}
 			);
 			
@@ -44,7 +39,6 @@ public class ScriptDesingerTools : ModuleRules
 				"Slate",
 				"SlateCore",
 				// ... add private dependencies that you statically link with here ...	
-
 			}
 			);
 		

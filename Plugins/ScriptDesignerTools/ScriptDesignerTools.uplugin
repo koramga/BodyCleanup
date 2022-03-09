@@ -2,10 +2,10 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "ScriptDesingerTools",
+	"FriendlyName": "ScriptDesignerTools",
 	"Description": "",
 	"Category": "Other",
-	"CreatedBy": "koramga",
+	"CreatedBy": "",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
@@ -16,8 +16,13 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "ScriptDesingerTools",
+			"Name": "ScriptDesignerRuntime",
 			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "ScriptDesignerEditor",
+			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
 	]

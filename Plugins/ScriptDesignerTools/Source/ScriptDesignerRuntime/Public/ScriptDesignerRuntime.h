@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FScriptDesingerToolsModule : public IModuleInterface
+class FScriptDesignerRuntimeModule : public IModuleInterface
 {
 public:
 

@@ -1,15 +1,15 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "ScriptDesingerTools.h"
+#include "ScriptDesignerEditor.h"
 
-#define LOCTEXT_NAMESPACE "FScriptDesingerToolsModule"
+#define LOCTEXT_NAMESPACE "FScriptDesignerEditorModule"
 
-void FScriptDesingerToolsModule::StartupModule()
+void FScriptDesignerEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 }
 
-void FScriptDesingerToolsModule::ShutdownModule()
+void FScriptDesignerEditorModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -17,4 +17,4 @@ void FScriptDesingerToolsModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FScriptDesingerToolsModule, ScriptDesingerTools)
+IMPLEMENT_MODULE(FScriptDesignerEditorModule, ScriptDesignerEditor)
