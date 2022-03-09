@@ -1,5 +1,5 @@
-#include "ScriptDesignerEditor/EdNode_ScriptGraphNode.h"
 #include "ScriptDesignerEditor/EdGraph_ScriptGraph.h"
+#include "ScriptDesignerEditor/EdNode_ScriptGraphNode.h"
 #include "ScriptGraphEditorPCH.h"
 
 UEdGraph_ScriptGraph::UEdGraph_ScriptGraph()
