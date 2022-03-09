@@ -3,9 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EdGraph_ScriptGraph.h"
 #include "ScriptGraphNode.h"
 #include "EdGraph/EdGraphNode.h"
 #include "EdNode_ScriptGraphNode.generated.h"
+
+class UEdNode_ScriptGraphEdge;
+class UEdNode_ScriptGraphNode;
+class SEdNode_ScriptGraphNode;
 
 /**
  * 
@@ -19,10 +24,31 @@ public :
 	UEdNode_ScriptGraphNode();
 	virtual ~UEdNode_ScriptGraphNode();
 
+protected:
 	UPROPERTY(VisibleAnywhere, Instanced, Category="ScriptGraph")
 	UScriptGraphNode* ScriptGraphNode;
+	
+	SEdNode_ScriptGraphNode* SEdNode;
 
-	//void SetScriptGraphNode(UScriptGraphNode* InNode);
+public:
+	void SetScriptGraphNode(UScriptGraphNode* InNode);
+	UScriptGraphNode* GetScriptGraphNode() const;
+
+	void SetEdNode(SEdNode_ScriptGraphNode* InNode);
+	SEdNode_ScriptGraphNode* GetEdNode() const;
 	
-	
+	UEdGraph_ScriptGraph* GetScriptGraphEdGraph() const;
+
+	virtual void AllocateDefaultPins() override;
+	virtual FText GetNodeTitle(ENodeTitleType::Type TitleType) const override;
+	virtual void PrepareForCopying() override;
+	virtual void AutowireNewNode(UEdGraphPin* FromPin) override;
+
+	virtual FLinearColor GetBackgroundColor() const;
+	virtual UEdGraphPin* GetInputPin() const;
+	virtual UEdGraphPin* GetOutputPin() const;
+
+#if WITH_EDITOR
+	virtual void PostEditUndo() override;
+#endif	
 };
