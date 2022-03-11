@@ -8,10 +8,10 @@
 /**
  * 
  */
-class SCRIPTDESIGNEREDITOR_API FAssertTypeAction_ScriptGraph : public FAssetTypeActions_Base
+class SCRIPTDESIGNEREDITOR_API FAssetTypeActions_ScriptGraph : public FAssetTypeActions_Base
 {
 public:
-	FAssertTypeAction_ScriptGraph(EAssetTypeCategories::Type InAssetCategory);
+	FAssetTypeActions_ScriptGraph(EAssetTypeCategories::Type InAssetCategory);
 
 	virtual FText GetName() const override;
 	virtual FColor GetTypeColor() const override;
