@@ -20,7 +20,7 @@ void FScriptDesignerEditorModule::StartupModule()
 
 	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
 
-	ScriptGraphAssetCategoryBit = AssetTools.RegisterAdvancedAssetCategory(FName(TEXT("ScriptGraph")), LOCTEXT("ScriptGraphAssetCategory", "ScriptGraph"));
+	ScriptGraphAssetCategoryBit = AssetTools.RegisterAdvancedAssetCategory(FName(TEXT("ScriptGraph")), LOCTEXT("ScriptGraphAssetCategory", "Script"));
 	
 	RegisterAssetTypeAction(AssetTools, MakeShareable(new FAssetTypeActions_ScriptGraph(ScriptGraphAssetCategoryBit)));
 }
