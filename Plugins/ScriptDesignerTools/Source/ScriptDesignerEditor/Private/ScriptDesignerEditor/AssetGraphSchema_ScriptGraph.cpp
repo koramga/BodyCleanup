@@ -2,6 +2,15 @@
 
 
 #include "ScriptDesignerEditor/AssetGraphSchema_ScriptGraph.h"
+#include "ToolMenus.h"
+#include "ScriptGraphEditorPCH.h"
+#include "ScriptDesignerEditor/EdNode_ScriptGraphNode.h"
+#include "ScriptDesignerEditor/EdNode_ScriptGraphEdge.h"
+#include "ScriptDesignerEditor/ConnectionDrawingPolicy_ScriptGraph.h"
+#include "GraphEditorActions.h"
+#include "Framework/Commands/GenericCommands.h"
+//#include "AutoLayout/ForceDirectedLayoutStrategy.h"
+//#include "AutoLayout/TreeLayoutStrategy.h"
 
 UEdGraphNode* FAssetSchemaAction_ScriptGraph_NewNode::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin,
 	const FVector2D Location, bool bSelectNewNode)
