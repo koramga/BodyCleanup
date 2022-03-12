@@ -199,7 +199,7 @@ void UAssetGraphSchema_ScriptGraph::GetGraphContextActions(FGraphContextMenuBuil
 {
 	UScriptGraph* Graph = CastChecked<UScriptGraph>(ContextMenuBuilder.CurrentGraph->GetOuter());
 
-	if(Graph->IsValidNodeTypeClass())
+	if(false == Graph->IsValidNodeTypeClass())
 	{
 		return;
 	}
@@ -418,8 +418,11 @@ FConnectionDrawingPolicy* UAssetGraphSchema_ScriptGraph::CreateConnectionDrawing
 	int32 InFrontLayerID, float InZoomFactor, const FSlateRect& InClippingRect, FSlateWindowElementList& InDrawElements,
 	UEdGraph* InGraphObj) const
 {
-	return Super::CreateConnectionDrawingPolicy(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect,
-	                                            InDrawElements, InGraphObj);
+	//Line을 그리는 아주 중요한 역할을 수행하는 Policy를 여기서 생성한다.
+	return new FConnectionDrawingPolicy_ScriptGraph(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
+	
+	//return Super::CreateConnectionDrawingPolicy(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect,
+	//                                            InDrawElements, InGraphObj);
 }
 
 FLinearColor UAssetGraphSchema_ScriptGraph::GetPinTypeColor(const FEdGraphPinType& PinType) const
