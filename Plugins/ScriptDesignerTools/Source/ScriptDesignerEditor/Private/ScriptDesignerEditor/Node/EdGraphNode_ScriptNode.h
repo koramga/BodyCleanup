@@ -16,5 +16,8 @@ UCLASS()
 class SCRIPTDESIGNEREDITOR_API UEdGraphNode_ScriptNode : public UEdGraphNode_BaseScriptNode
 {
 	GENERATED_BODY()
-	
+
+public :
+	UEdGraphNode_ScriptNode();
+	virtual ~UEdGraphNode_ScriptNode();	
 };

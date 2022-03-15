@@ -7,10 +7,13 @@
 #include "ScriptDesignerEditor/Node/EdNode_ScriptGraphNode.h"
 #include "ScriptDesignerEditor/Edge/EdNode_ScriptGraphEdge.h"
 #include "ScriptDesignerEditor/ConnectionDrawingPolicy_ScriptGraph.h"
+#include "ScriptDesignerEditor/Node/EdGraphNode_BaseScriptNode.h"
 #include "GraphEditorActions.h"
 #include "Framework/Commands/GenericCommands.h"
 #include "AutoLayout/ForceDirectedLayoutStrategy.h"
 #include "AutoLayout/TreeLayoutStrategy.h"
+#include "Node/EdGraphNode_ScriptNode.h"
+#include "Node/EdGraphNode_SelectScriptNode.h"
 
 #define LOCTEXT_NAMESPACE "AssetSchema_ScriptGraph"
 
@@ -106,8 +109,49 @@ void FAssetSchemaAction_ScriptGraph_NewNode::AddReferencedObjects(FReferenceColl
 	Collector.AddReferencedObject(NodeTemplate);
 }
 
-UEdGraphNode* FAssetSchemaAction_ScriptGraph_NewEdge::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin,
+UEdGraphNode* FAssetSchemaAction_ScriptGraph_NewExtraNode::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin,
 	const FVector2D Location, bool bSelectNewNode)
+{
+	UEdGraphNode* ResultNode = nullptr;
+
+	if(NodeTemplate != nullptr)
+	{
+		const FScopedTransaction Transaction(LOCTEXT("ScriptGraphEditorNewNode", "Script Graph Editor : New Node"));
+		ParentGraph->Modify();
+
+		if(FromPin != nullptr)
+		{
+			FromPin->Modify();
+		}
+
+		NodeTemplate->Rename(nullptr, ParentGraph);
+		ParentGraph->AddNode(NodeTemplate, true, bSelectNewNode);
+
+		NodeTemplate->CreateNewGuid();
+		NodeTemplate->PostPlacedNewNode();
+		NodeTemplate->AllocateDefaultPins();
+		NodeTemplate->AutowireNewNode(FromPin);
+
+		NodeTemplate->NodePosX = Location.X;
+		NodeTemplate->NodePosY = Location.Y;
+
+		NodeTemplate->GetScriptGraphNode()->SetFlags(RF_Transactional);
+		NodeTemplate->SetFlags(RF_Transactional);
+
+		ResultNode = NodeTemplate;
+	}
+
+	return ResultNode;
+}
+
+void FAssetSchemaAction_ScriptGraph_NewExtraNode::AddReferencedObjects(FReferenceCollector& Collector)
+{
+	FEdGraphSchemaAction::AddReferencedObjects(Collector);
+	Collector.AddReferencedObject(NodeTemplate);
+}
+
+UEdGraphNode* FAssetSchemaAction_ScriptGraph_NewEdge::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin,
+                                                                    const FVector2D Location, bool bSelectNewNode)
 {
 	UEdGraphNode* ResultNode = nullptr;
 
@@ -221,12 +265,31 @@ void UAssetGraphSchema_ScriptGraph::GetGraphContextActions(FGraphContextMenuBuil
 
 	if(!Graph->GetNodeTypeClass()->HasAnyClassFlags(CLASS_Abstract))
 	{
-		TSharedPtr<FAssetSchemaAction_ScriptGraph_NewNode> NewNodeAction(new FAssetSchemaAction_ScriptGraph_NewNode(LOCTEXT("ScriptGraphNodeAction", "Script Graph Node"), Desc, AddToolTip, 0));
-		NewNodeAction->NodeTemplate = NewObject<UEdNode_ScriptGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
-		NewNodeAction->NodeTemplate->NewScriptGraphNode(NewNodeAction->NodeTemplate, Graph->GetNodeTypeClass());
-		NewNodeAction->NodeTemplate->GetScriptGraphNode()->SetGraph(Graph);
-		ContextMenuBuilder.AddAction(NewNodeAction);
+		{
+			TSharedPtr<FAssetSchemaAction_ScriptGraph_NewNode> NewNodeAction(new FAssetSchemaAction_ScriptGraph_NewNode(LOCTEXT("ScriptGraphNodeAction", "Script Graph Node"), Desc, AddToolTip, 0));
+			NewNodeAction->NodeTemplate = NewObject<UEdNode_ScriptGraphNode>(ContextMenuBuilder.OwnerOfTemporaries);
+			NewNodeAction->NodeTemplate->NewScriptGraphNode(NewNodeAction->NodeTemplate, Graph->GetNodeTypeClass());
+			NewNodeAction->NodeTemplate->GetScriptGraphNode()->SetGraph(Graph);
+			ContextMenuBuilder.AddAction(NewNodeAction);			
+		}
 
+		
+		{
+			TSharedPtr<FAssetSchemaAction_ScriptGraph_NewExtraNode> ExtraScriptNodeAction(new FAssetSchemaAction_ScriptGraph_NewExtraNode(LOCTEXT("ScriptGraphNodeAction", "Extra Script Graph Node"), Desc, AddToolTip, 0));
+			ExtraScriptNodeAction->NodeTemplate = NewObject<UEdGraphNode_ScriptNode>(ContextMenuBuilder.OwnerOfTemporaries);
+			ExtraScriptNodeAction->NodeTemplate->NewScriptGraphNode(ExtraScriptNodeAction->NodeTemplate, Graph->GetNodeTypeClass());
+			ExtraScriptNodeAction->NodeTemplate->GetScriptGraphNode()->SetGraph(Graph);
+			ContextMenuBuilder.AddAction(ExtraScriptNodeAction);			
+		}
+
+		{
+			TSharedPtr<FAssetSchemaAction_ScriptGraph_NewExtraNode> ExtraSelectScriptNodeAction(new FAssetSchemaAction_ScriptGraph_NewExtraNode(LOCTEXT("ScriptGraphNodeAction", "Extra Select Script Graph Node"), Desc, AddToolTip, 0));
+			ExtraSelectScriptNodeAction->NodeTemplate = NewObject<UEdGraphNode_SelectScriptNode>(ContextMenuBuilder.OwnerOfTemporaries);
+			ExtraSelectScriptNodeAction->NodeTemplate->NewScriptGraphNode(ExtraSelectScriptNodeAction->NodeTemplate, Graph->GetNodeTypeClass());
+			ExtraSelectScriptNodeAction->NodeTemplate->GetScriptGraphNode()->SetGraph(Graph);
+			ContextMenuBuilder.AddAction(ExtraSelectScriptNodeAction);			
+		}
+		
 		Visited.Add(Graph->GetNodeTypeClass());
 	}
 
