@@ -174,7 +174,7 @@ void SGraphNode_ScriptNode::UpdateGraphNode()
 
 void SGraphNode_ScriptNode::CreatePinWidgets()
 {
-	UEdNode_ScriptGraphNode* StateNode = CastChecked<UEdNode_ScriptGraphNode>(GraphNode);
+	UEdGraphNode_BaseScriptNode* StateNode = CastChecked<UEdGraphNode_BaseScriptNode>(GraphNode);
 
 	for(int32 PinIdx = 0; PinIdx < StateNode->Pins.Num(); ++PinIdx)
 	{

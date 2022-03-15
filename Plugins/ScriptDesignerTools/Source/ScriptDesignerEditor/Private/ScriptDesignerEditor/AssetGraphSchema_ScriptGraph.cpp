@@ -425,6 +425,12 @@ bool UAssetGraphSchema_ScriptGraph::TryCreateConnection(UEdGraphPin* A, UEdGraph
 	UEdNode_ScriptGraphNode* NodeA = Cast<UEdNode_ScriptGraphNode>(A->GetOwningNode());
 	UEdNode_ScriptGraphNode* NodeB = Cast<UEdNode_ScriptGraphNode>(B->GetOwningNode());
 
+	if(nullptr == NodeA
+		|| nullptr == NodeB)
+	{
+		return false;
+	}
+
 	//check that this edge doesn't already exist
 	for(UEdGraphPin* TestPin : NodeA->GetOutputPin()->LinkedTo)
 	{
