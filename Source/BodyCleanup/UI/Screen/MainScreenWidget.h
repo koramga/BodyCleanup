@@ -60,6 +60,8 @@ protected:
 	UPROPERTY()
 	class UCorpseElementWidget*	CorpseElementWidget;
 
+	class UTimerScreenWidget* TimeScreenWidget;
+
 	UPROPERTY()
 	FVector2D	ScreenScriptPosition;
 	
@@ -110,4 +112,6 @@ public :
 	void AddCorpseCount();
 	void SetMaxCorpseCount(int32 MaxCorpseCount);
 	void ResetCorpseCount();
+	void StartTimer();
+	void TimeOutOfTime();
 };

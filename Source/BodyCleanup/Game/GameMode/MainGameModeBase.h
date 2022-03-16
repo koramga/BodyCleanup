@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE_OneParam(FOnLevelStart, UObject*);
+
 UCLASS()
 class BODYCLEANUP_API AMainGameModeBase : public ABaseGameModeBase
 {
@@ -37,6 +40,9 @@ private:
 public :
 	TSoftObjectPtr<class UMainScreenWidget>	GetMainScreenWidget() const;
 	TSoftObjectPtr<class UPauseMenuScreenWidget> GetPauseMenuScreenWidget() const;
+
+public:
+	FOnLevelStart OnLevelStartDelegate;
 
 public :
 	void TogglePauseMenu();

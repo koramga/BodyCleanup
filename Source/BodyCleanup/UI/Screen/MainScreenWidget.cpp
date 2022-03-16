@@ -2,6 +2,7 @@
 
 
 #include "MainScreenWidget.h"
+#include "TimerScreenWidget.h"
 #include "../Script/ScreenScriptUserWidget.h"
 #include "../Script/ScreenSelectScriptUserWidget.h"
 #include "../../Game/GameInstance/BaseGameInstance.h"
@@ -23,6 +24,7 @@ void UMainScreenWidget::NativePreConstruct()
 	ScreenSelectScriptUserWidget = Cast<UScreenSelectScriptUserWidget>(GetWidgetFromName(TEXT("UI_ScreenSelectScript")));
 	VerticalBoxKeyboardElement = Cast<UVerticalBox>(GetWidgetFromName(TEXT("VerticalBoxKeyboardElement")));
 	CorpseElementWidget = Cast<UCorpseElementWidget>(GetWidgetFromName(TEXT("UI_CorpseElement")));
+	TimeScreenWidget = Cast<UTimerScreenWidget>(GetWidgetFromName(TEXT("UI_TimerScreen")));
 }
 
 void UMainScreenWidget::NativeConstruct()
@@ -375,4 +377,13 @@ void UMainScreenWidget::SetMaxCorpseCount(int32 MaxCorpseCount)
 void UMainScreenWidget::ResetCorpseCount()
 {
 	CorpseElementWidget->ResetCorpseCount();
+}
+
+void UMainScreenWidget::StartTimer()
+{
+	TimeScreenWidget->StartTimer();
+}
+
+void UMainScreenWidget::TimeOutOfTime()
+{
 }
