@@ -17,4 +17,5 @@ public :
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs, UEdGraphNode_SelectScriptNode* InNode);
+	virtual void UpdateGraphNode() override;
 };
