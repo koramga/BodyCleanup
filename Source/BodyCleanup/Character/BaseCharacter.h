@@ -44,6 +44,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	bool bIsDeath = false;
 
+	float MoveBlendRatio;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
