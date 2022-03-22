@@ -42,6 +42,7 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputUIUp", IE_Pressed, this, &ABasePlayerController::__InputPressedUIUp);
 	InputComponent->BindAction("InputUIDown", IE_Pressed, this, &ABasePlayerController::__InputPressedUIDown);
 	InputComponent->BindAction("InputEnter", IE_Pressed, this, &ABasePlayerController::__InputPressedEnter);
+	InputComponent->BindAction("InputToggleMoving", IE_Pressed, this, &ABasePlayerController::__InputPressedToggleMoving);
 	
 	FInputActionBinding& PauseActionBinding = InputComponent->BindAction("InputPauseMenu", IE_Pressed, this, &ABasePlayerController::__InputPressedPauseMenu);
 
@@ -341,6 +342,19 @@ void ABasePlayerController::__InputPressedPauseMenu()
 	if(IsValid(MainGameModeBase))
 	{
 		MainGameModeBase->TogglePauseMenu();
+	}
+}
+
+void ABasePlayerController::__InputPressedToggleMoving()
+{
+	if(bIsFocusOnCharacter)
+	{
+		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+		if (IsValid(PlayerCharacter))
+		{
+			PlayerCharacter->InputPressedToggleMoving();
+		}
 	}
 }
 

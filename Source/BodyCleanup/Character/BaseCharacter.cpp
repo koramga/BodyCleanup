@@ -24,6 +24,8 @@ ABaseCharacter::ABaseCharacter()
 
 	SpeechBubbleWidgetComponent->SetupAttachment(GetMesh());
 	SpeechBubbleWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+	MoveBlendRatio = 0.5f;
 }
 
 // Called when the game starts or when spawned
@@ -111,8 +113,6 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 		if (IsValid(BaseAnimInstance))
 		{
-			float Ratio = 0.5f;
-
 			//if (EMoveType::Run == MoveType)
 			//{
 			//	Ratio = 1.f;
@@ -124,7 +124,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 			if (IsValid(BaseAnimInstance))
 			{
-				BaseAnimInstance->SetMoveBlendSpeed(Speed / GetCharacterMovement()->GetMaxSpeed() * Ratio);
+				BaseAnimInstance->SetMoveBlendSpeed(Speed / GetCharacterMovement()->GetMaxSpeed() * MoveBlendRatio);
 				BaseAnimInstance->SetMoveBlendAngle(Angle);
 			}
 		}

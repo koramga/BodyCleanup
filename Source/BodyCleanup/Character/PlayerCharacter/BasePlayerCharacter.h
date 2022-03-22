@@ -68,4 +68,5 @@ public :
 	virtual void InputReleasedMouseRightClick();
 	virtual void InputPressedInteractive();
 	virtual void InputReleasedInteractive();
+	virtual void InputPressedToggleMoving();
 };

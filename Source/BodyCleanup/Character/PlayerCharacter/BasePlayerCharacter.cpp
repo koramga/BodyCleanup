@@ -254,3 +254,15 @@ void ABasePlayerCharacter::InputReleasedInteractive()
 {
 	bIsPressedInteractive = false;
 }
+
+void ABasePlayerCharacter::InputPressedToggleMoving()
+{
+	if(FMath::IsNearlyEqual(MoveBlendRatio, 1.f))
+	{
+		MoveBlendRatio = 0.5f;
+	}
+	else
+	{
+		MoveBlendRatio = 1.f;
+	}
+}
