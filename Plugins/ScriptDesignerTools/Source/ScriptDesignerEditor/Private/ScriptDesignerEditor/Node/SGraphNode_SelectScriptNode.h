@@ -18,4 +18,7 @@ public :
 
 	void Construct(const FArguments& InArgs, UEdGraphNode_SelectScriptNode* InNode);
 	virtual void UpdateGraphNode() override;
+
+protected:
+	virtual void SetDefaultTitleAreaWidget(TSharedRef<SOverlay> DefaultTitleAreaWidget) override;
 };

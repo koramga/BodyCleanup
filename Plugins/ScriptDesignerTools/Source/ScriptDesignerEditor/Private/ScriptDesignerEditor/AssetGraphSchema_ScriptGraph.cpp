@@ -7,6 +7,7 @@
 #include "ScriptDesignerEditor/Node/EdNode_ScriptGraphNode.h"
 #include "ScriptDesignerEditor/Edge/EdNode_ScriptGraphEdge.h"
 #include "ScriptDesignerEditor/ConnectionDrawingPolicy_ScriptGraph.h"
+#include "ScriptDesignerEditor/ConnectionDrawingPolicy_BlueprintScriptGraph.h"
 #include "ScriptDesignerEditor/Node/EdGraphNode_BaseScriptNode.h"
 #include "GraphEditorActions.h"
 #include "Framework/Commands/GenericCommands.h"
@@ -488,7 +489,8 @@ FConnectionDrawingPolicy* UAssetGraphSchema_ScriptGraph::CreateConnectionDrawing
 	UEdGraph* InGraphObj) const
 {
 	//Line을 그리는 아주 중요한 역할을 수행하는 Policy를 여기서 생성한다.
-	return new FConnectionDrawingPolicy_ScriptGraph(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
+	//return new FConnectionDrawingPolicy_ScriptGraph(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
+	return new FConnectionDrawingPolicy_BlueprintScriptGraph(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect, InDrawElements, InGraphObj);
 	
 	//return Super::CreateConnectionDrawingPolicy(InBackLayerID, InFrontLayerID, InZoomFactor, InClippingRect,
 	//                                            InDrawElements, InGraphObj);

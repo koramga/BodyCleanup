@@ -2,7 +2,6 @@
 
 
 #include "ScriptDesignerEditor/Node/EdGraphNode_BaseScriptNode.h"
-
 #include "ScriptDesignerEditor/EdGraph_ScriptGraph.h"
 
 #define LOCTEXT_NAMESPACE "EdNode_ScriptGraph"

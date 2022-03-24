@@ -173,10 +173,9 @@ void SGraphNode_ScriptNode::UpdateGraphNode()
 }
 
 void SGraphNode_ScriptNode::CreatePinWidgets()
-{
+{	
+	//SGraphNode_BaseScriptNode::CreatePinWidgets();
 	
-	SGraphNode_BaseScriptNode::CreatePinWidgets();
-	/*
 	UEdGraphNode_BaseScriptNode* StateNode = CastChecked<UEdGraphNode_BaseScriptNode>(GraphNode);
 
 	for(int32 PinIdx = 0; PinIdx < StateNode->Pins.Num(); ++PinIdx)
@@ -189,7 +188,6 @@ void SGraphNode_ScriptNode::CreatePinWidgets()
 			AddPin(NewPin.ToSharedRef());
 		}
 	}
-	*/
 }
 
 void SGraphNode_ScriptNode::AddPin(const TSharedRef<SGraphPin>& PinToAdd)
