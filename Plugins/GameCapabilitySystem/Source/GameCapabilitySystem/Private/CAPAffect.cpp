@@ -38,10 +38,11 @@ bool UCAPAffect::ProcessDone()
 	return true;
 }
 
-void UCAPAffect::SetEffect(UCAPEffect* InCAPEffect, int32 InAbilityLevel)
+void UCAPAffect::SetEffect(UCAPEffect* InCAPEffect, int32 InAbilityLevel, float InWeight)
 {
 	CAPEffect = InCAPEffect;
 	AbilityLevel = InAbilityLevel;
+	Weight = InWeight;
 }
 
 void UCAPAffect::SetAdvantage(const TArray<FCAPEffectAdvantage>& InAdvantages)
@@ -84,8 +85,8 @@ void UCAPAffect::Tick(float DeltaTime)
 
 		for(const FCAPEffectModifierEvaluatedData& Magnitude : Magnitudes)
 		{
-			FFloatVariableMetaData MagnitudeMetaData = Magnitude.GetMagnitude(AbilityLevel);
-			float MagnitudeVariable = MagnitudeMetaData.GetMetaVariable().Get<float>();
+			const FCAPEffectWeightMagnitude& MagnitudeMetaData = Magnitude.GetWeightMagnitude(AbilityLevel);
+			float MagnitudeVariable = MagnitudeMetaData.GetMagnitudeVariable(Weight);
 
 			for(const FCAPEffectAdvantage& Advantage : Advantages)
 			{

@@ -24,6 +24,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32											AbilityLevel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float											Weight;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TSoftObjectPtr<class UCapabilitySystemComponent> SourceCapabilitySystemComponent;
@@ -47,7 +50,7 @@ protected:
 	bool ProcessDone();
 	
 public :
-	void SetEffect(class UCAPEffect* InCAPEffect, int32 InAbilityLevel);
+	void SetEffect(class UCAPEffect* InCAPEffect, int32 InAbilityLevel, float InWeight = 0.f);
 	void SetAdvantage(const TArray<FCAPEffectAdvantage>& InAdvantages);
 	void SetSourceCapabilitySystemComponent(class UCapabilitySystemComponent* InSourceCapabilitySystemComponent);
 	void SetTargetCapabilitySystemComponent(class UCapabilitySystemComponent* InTargetCapabilitySystemComponent);

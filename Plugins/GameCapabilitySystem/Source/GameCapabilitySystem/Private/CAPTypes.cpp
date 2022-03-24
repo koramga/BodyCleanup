@@ -3,17 +3,15 @@
 
 #include "CAPTypes.h"
 
-FFloatVariableMetaData FCAPEffectModifierEvaluatedData::GetMagnitude(int32 AbilityLevel) const
+const FCAPEffectWeightMagnitude& FCAPEffectModifierEvaluatedData::GetWeightMagnitude(int32 AbilityLevel) const
 {
-	FFloatVariableMetaData Magnitude = DefaultMagnitude;
-
 	if(ECAPEffectMagnitudeType::AbilityLevel == MagnitudeType)
 	{
 		if(AbilityLevelMagnitudes.Num() > AbilityLevel)
 		{
-			Magnitude = AbilityLevelMagnitudes[AbilityLevel];
+			return AbilityLevelMagnitudes[AbilityLevel];
 		}
 	}
 
-	return Magnitude;
+	return DefaultMagnitude;
 }

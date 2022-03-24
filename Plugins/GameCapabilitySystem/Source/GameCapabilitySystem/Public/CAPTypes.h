@@ -47,31 +47,53 @@ enum class ECAPEffectStackingPolicy : uint8
 };
 
 USTRUCT(BlueprintType)
+struct FCAPEffectWeightMagnitude
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FFloatVariableMetaData BaseMagnitude;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FFloatVariableMetaData WeightMagnitude;
+
+	float GetMagnitudeVariable(float Weight) const
+	{
+		float WeightMagnitudeValue = WeightMagnitude.GetMetaVariable().Get<float>();
+		float WeightMagnitudeResult = WeightMagnitudeValue * Weight;
+		float BaseMagnitudeResult =  BaseMagnitude.GetMetaVariable().Get<float>();
+
+		return BaseMagnitudeResult + WeightMagnitudeResult;
+	}
+};
+
+USTRUCT(BlueprintType)
 struct FCAPEffectModifierEvaluatedData
 {
 	GENERATED_USTRUCT_BODY()
 
 	//Attribute 이름 입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName					AttributeName;
+	FName						AttributeName;
 
 	//어떻게 데미지를 줄 것인지에 대한 연산 방식을 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ECAPModifierOp			ModifierOp;
+	ECAPModifierOp				ModifierOp;
 
 	//값을 전달할 방식에 대한 방법을 선택합니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ECAPEffectMagnitudeType	MagnitudeType;
+	ECAPEffectMagnitudeType		MagnitudeType;
 
 	//기본 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FFloatVariableMetaData	DefaultMagnitude;
+	FCAPEffectWeightMagnitude	DefaultMagnitude;
 
+	//Ability for Level
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MagnitudeType == ECAPEffectMagnitudeType::AbilityLevel", EditConditionHides))
-	TArray<FFloatVariableMetaData>	AbilityLevelMagnitudes;
+	TArray<FCAPEffectWeightMagnitude>	AbilityLevelMagnitudes;
 
 public :
-	FFloatVariableMetaData GetMagnitude(int32 AbilityLevel) const;
+	const FCAPEffectWeightMagnitude& GetWeightMagnitude(int32 AbilityLevel) const;
 };
 
 USTRUCT(BlueprintType)
