@@ -3,6 +3,7 @@
 
 #include "Mors.h"
 
+#include "BodyCleanup/Actor/Modular/WeaponModularActor.h"
 #include "BodyCleanup/Animation/BaseAnimInstance.h"
 #include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 
@@ -75,6 +76,16 @@ void AMors::InputReleasedMouseWheelClick()
 	if(CapabilitySystemComponent->IsActivateAbilityByTag(UGameGCSFunctionLibrary::ChargingAttackGameplayTag))
 	{
 		BaseAnimInstance->UpdateMontageFromKey(EInputEvent::IE_Released);
+	}
+}
+
+void AMors::SetEnableAttack(bool bIsEnableAttack)
+{
+	Super::SetEnableAttack(bIsEnableAttack);
+
+	if(IsValid(WeaponModularActor))
+	{
+		WeaponModularActor->SetEnableCollision(bIsEnableAttack);
 	}
 }
 

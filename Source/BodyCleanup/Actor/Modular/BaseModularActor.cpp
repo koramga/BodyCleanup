@@ -20,7 +20,11 @@ ABaseModularActor::ABaseModularActor()
 void ABaseModularActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if(IsValid(BoxComponent))
+	{
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseModularActor::ABaseModularActor::__OnOverlapBegin);
+	}
 }
 
 // Called every frame
@@ -29,3 +33,21 @@ void ABaseModularActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABaseModularActor::SetEnableCollision(bool bIsEnableCollision)
+{
+	if(bIsEnableCollision)
+	{
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+
+void ABaseModularActor::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+										   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
+}

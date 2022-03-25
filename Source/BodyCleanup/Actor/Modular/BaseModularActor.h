@@ -23,6 +23,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public :
+	void SetEnableCollision(bool bIsEnableCollision);
+	void __OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                      int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UBoxComponent*	BoxComponent;

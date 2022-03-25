@@ -105,6 +105,26 @@ void UBaseAnimInstance::CompleteAnimationType(EAnimationType InputAnimationType)
 	UpdateCompleteAnimation(InputAnimationType);
 }
 
+void UBaseAnimInstance::AnimNotify_EnableAttack()
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
+
+	if (IsValid(BaseCharacter))
+	{
+		BaseCharacter->SetEnableAttack(true);
+	}	
+}
+
+void UBaseAnimInstance::AnimNotify_DisableAttack()
+{
+	ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
+
+	if (IsValid(BaseCharacter))
+	{
+		BaseCharacter->SetEnableAttack(false);
+	}	
+}
+
 void UBaseAnimInstance::SetMoveBlendSpeed(float InputMoveBlendSpeed)
 {
 	MoveBlendSpeed = InputMoveBlendSpeed;

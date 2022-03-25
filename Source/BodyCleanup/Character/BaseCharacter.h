@@ -81,6 +81,7 @@ public :
 	virtual void RemoveAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
 	virtual bool IsDeath() const override;
 	virtual void SetDestroyFromTrigger() override;
+	virtual void SetEnableAttack(bool bIsEnableAttack);
 	
 public :
 	virtual void SetTextToSpeechBubble(const FString& Text);

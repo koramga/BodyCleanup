@@ -16,6 +16,9 @@ public:
 	AMors();
 
 protected:
+	class AWeaponModularActor*	WeaponModularActor;
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -25,7 +28,8 @@ protected:
 	virtual void InputPressedMouseRightClick() override;
 	virtual void InputReleasedMouseRightClick() override;
 	virtual void InputPressedMouseWheelClick() override;
-	virtual void InputReleasedMouseWheelClick() override;	
+	virtual void InputReleasedMouseWheelClick() override;
+	virtual void SetEnableAttack(bool bIsEnableAttack) override;
 
 public:
 	// Called every frame

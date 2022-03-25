@@ -86,6 +86,10 @@ protected:
 	void LeftAnimationType(EAnimationType InputAnimationType);
 	UFUNCTION(BlueprintCallable)
 	void CompleteAnimationType(EAnimationType InputAnimationType);
+	UFUNCTION()
+	void AnimNotify_EnableAttack();
+	UFUNCTION()
+	void AnimNotify_DisableAttack();
 
 public :
 	void SetMoveBlendSpeed(float InputMoveBlendSpeed);

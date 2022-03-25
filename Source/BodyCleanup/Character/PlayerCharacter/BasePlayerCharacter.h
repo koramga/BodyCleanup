@@ -51,6 +51,7 @@ public:
 protected:
 	virtual void UpdateDeath(bool bInIsDeath) override;
 	void SetKeyboardControlType(EKeyboardControlType KeyboardControlType);
+	virtual void SetEnableAttack(bool bIsEnableAttack) override;
 
 public :
 	bool	IsPressedLeftMouse() const;

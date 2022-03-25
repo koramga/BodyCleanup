@@ -111,6 +111,11 @@ void ABasePlayerCharacter::SetKeyboardControlType(EKeyboardControlType KeyboardC
 	}
 }
 
+void ABasePlayerCharacter::SetEnableAttack(bool bIsEnableAttack)
+{
+	Super::SetEnableAttack(bIsEnableAttack);
+}
+
 bool ABasePlayerCharacter::IsPressedLeftMouse() const
 {
 	return bIsPressedLeftMouse;

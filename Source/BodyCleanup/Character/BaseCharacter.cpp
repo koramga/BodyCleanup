@@ -288,6 +288,10 @@ void ABaseCharacter::SetDestroyFromTrigger()
 	UpdateDeath(true);
 }
 
+void ABaseCharacter::SetEnableAttack(bool bIsEnableAttack)
+{
+}
+
 void ABaseCharacter::SetTextToSpeechBubble(const FString& Text)
 {
 	UBubbleScriptUserWidget* BubbleScriptUserWidget = Cast<UBubbleScriptUserWidget>(SpeechBubbleWidgetComponent->GetWidget());
