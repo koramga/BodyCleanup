@@ -3,6 +3,7 @@
 
 #include "Mors.h"
 
+#include "BodyCleanup/Animation/BaseAnimInstance.h"
 #include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 
 
@@ -22,13 +23,20 @@ void AMors::InputPressedMouseLeftClick()
 {
 	Super::InputPressedMouseLeftClick();
 
-	if(CapabilitySystemComponent->CanActivateAbilityByTag(UGameGCSFunctionLibrary::GeneralAttackGameplayTag))
+	if(CapabilitySystemComponent->IsActivateAbilityByTag(UGameGCSFunctionLibrary::GeneralAttackGameplayTag))
 	{
-		//활성화 시킨다.
-		if(false == CapabilitySystemComponent->TryActivateAbilityByTag(UGameGCSFunctionLibrary::GeneralAttackGameplayTag))
+		BaseAnimInstance->UpdateMontageFromKey(EInputEvent::IE_Pressed);
+	}
+	else
+	{
+		if(CapabilitySystemComponent->CanActivateAbilityByTag(UGameGCSFunctionLibrary::GeneralAttackGameplayTag))
 		{
+			//활성화 시킨다.
+			if(false == CapabilitySystemComponent->TryActivateAbilityByTag(UGameGCSFunctionLibrary::GeneralAttackGameplayTag))
+			{
 			
-		}
+			}
+		}		
 	}
 }
 
@@ -56,7 +64,6 @@ void AMors::InputPressedMouseWheelClick()
 		//활성화 시킨다.
 		if(false == CapabilitySystemComponent->TryActivateAbilityByTag(UGameGCSFunctionLibrary::ChargingAttackGameplayTag))
 		{
-			
 		}
 	}
 }
@@ -64,6 +71,11 @@ void AMors::InputPressedMouseWheelClick()
 void AMors::InputReleasedMouseWheelClick()
 {
 	Super::InputReleasedMouseWheelClick();
+
+	if(CapabilitySystemComponent->IsActivateAbilityByTag(UGameGCSFunctionLibrary::ChargingAttackGameplayTag))
+	{
+		BaseAnimInstance->UpdateMontageFromKey(EInputEvent::IE_Released);
+	}
 }
 
 // Called every frame

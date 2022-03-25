@@ -76,7 +76,8 @@ protected :
 	virtual void UpdateCompleteAnimation(EAnimationType InputAnimationType);
 	virtual void UpdateAnimationType(EAnimationType NextAnimationType, EAnimationType BeforeAnimationType);
 	virtual void OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterrupt);
-	
+	virtual void OnMontagePlay(UAnimMontage* AnimMontage);
+	virtual void OnMontageUpdateFromKey(EInputEvent InputEvent);
 
 protected:
 	UFUNCTION(BlueprintCallable)
@@ -96,6 +97,7 @@ public :
 	bool IsPlayingMontage(UAnimMontage* AnimMontage);
 	bool IsActivateMontage(UAnimMontage* AnimMontage);
 	void SetStopAnimationMontage(UAnimMontage* AnimMontage);
+	void UpdateMontageFromKey(EInputEvent InputEvent);
 	void SetAnimationDruationTime(EAnimationType InAnimationType, float InAnimationDurationTime);
 
 public :

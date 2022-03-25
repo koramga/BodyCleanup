@@ -62,6 +62,14 @@ void UBaseAnimInstance::OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterru
 	
 }
 
+void UBaseAnimInstance::OnMontagePlay(UAnimMontage* AnimMontage)
+{
+}
+
+void UBaseAnimInstance::OnMontageUpdateFromKey(EInputEvent InputEvent)
+{
+}
+
 void UBaseAnimInstance::EnterAnimationType(EAnimationType InputAnimationType)
 {
 	AnimationStateInfos[static_cast<int32>(InputAnimationType)].AnimationState = EAnimationState::Enter;
@@ -134,6 +142,8 @@ void UBaseAnimInstance::SetAnimationMontage(UAnimMontage* AnimMontage)
 		BlendEnded.BindUObject(this, &UBaseAnimInstance::__OnMontageLeft);
 
 		Montage_SetEndDelegate(BlendEnded, AnimMontage);
+
+		OnMontagePlay(AnimMontage);
 	}	
 }
 
@@ -153,6 +163,11 @@ void UBaseAnimInstance::SetStopAnimationMontage(UAnimMontage* AnimMontage)
 	{
 		Montage_Stop(0.1f, AnimMontage);
 	}	
+}
+
+void UBaseAnimInstance::UpdateMontageFromKey(EInputEvent InputEvent)
+{
+	OnMontageUpdateFromKey(InputEvent);
 }
 
 void UBaseAnimInstance::SetAnimationDruationTime(EAnimationType InAnimationType, float InAnimationDurationTime)
