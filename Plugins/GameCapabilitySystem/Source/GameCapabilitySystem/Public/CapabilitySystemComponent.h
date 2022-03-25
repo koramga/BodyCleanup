@@ -52,6 +52,7 @@ public :
 
 public :
 	TSoftObjectPtr<UCAPAbility> AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass, int32 AbilityLevel);
+	bool RemoveAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass);
 
 public :
 	bool TryActivateAbilityByClass(TSubclassOf<UCAPAbility> AbilityClass);

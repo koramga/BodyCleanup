@@ -168,6 +168,10 @@ void ABaseActor::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 {
 }
 
+void ABaseActor::RemoveAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+{
+}
+
 bool ABaseActor::IsDeath() const
 {
 	return bIsDeath;

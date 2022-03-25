@@ -183,6 +183,24 @@ TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::AddAbility(TSubclassOf<U
 	return CAPAbility;
 }
 
+bool UCapabilitySystemComponent::RemoveAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->GetClass() == CAPAbilityClass)
+		{
+			if(CAPAbilities.Remove(CAPAbility) != INDEX_NONE)
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
+
+	return false;
+}
+
 bool UCapabilitySystemComponent::TryActivateAbilityByClass(TSubclassOf<UCAPAbility> AbilityClass)
 {
 	for(UCAPAbility* CAPAbility : CAPAbilities)

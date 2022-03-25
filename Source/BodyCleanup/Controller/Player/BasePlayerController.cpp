@@ -43,6 +43,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputUIDown", IE_Pressed, this, &ABasePlayerController::__InputPressedUIDown);
 	InputComponent->BindAction("InputEnter", IE_Pressed, this, &ABasePlayerController::__InputPressedEnter);
 	InputComponent->BindAction("InputToggleMoving", IE_Pressed, this, &ABasePlayerController::__InputPressedToggleMoving);
+	InputComponent->BindAction("InputMouseWheelClick", IE_Pressed, this, &ABasePlayerController::__InputPressedMouseWheelClick);
+	InputComponent->BindAction("InputMouseWheelClick", IE_Released, this, &ABasePlayerController::__InputReleasedMouseWheelClick);
 	
 	FInputActionBinding& PauseActionBinding = InputComponent->BindAction("InputPauseMenu", IE_Pressed, this, &ABasePlayerController::__InputPressedPauseMenu);
 
@@ -158,6 +160,32 @@ void ABasePlayerController::__InputReleasedMouseRightClick()
 		if (IsValid(PlayerCharacter))
 		{
 			PlayerCharacter->InputReleasedMouseRightClick();
+		}
+	}
+}
+
+void ABasePlayerController::__InputPressedMouseWheelClick()
+{
+	if(bIsFocusOnCharacter)
+	{
+		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+		if (IsValid(PlayerCharacter))
+		{
+			PlayerCharacter->InputPressedMouseWheelClick();
+		}
+	}
+}
+
+void ABasePlayerController::__InputReleasedMouseWheelClick()
+{
+	if(bIsFocusOnCharacter)
+	{
+		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+		if (IsValid(PlayerCharacter))
+		{
+			PlayerCharacter->InputReleasedMouseWheelClick();
 		}
 	}
 }

@@ -121,6 +121,11 @@ bool ABasePlayerCharacter::IsPressedRightMouse() const
 	return bIsPressedRightMouse;
 }
 
+bool ABasePlayerCharacter::IsPressedWheelMouse() const
+{
+	return bIsPressedWheelMouse;
+}
+
 bool ABasePlayerCharacter::IsPressedInteractive() const
 {
 	return bIsPressedInteractive;
@@ -243,6 +248,16 @@ void ABasePlayerCharacter::InputPressedMouseRightClick()
 void ABasePlayerCharacter::InputReleasedMouseRightClick()
 {
 	bIsPressedRightMouse = false;
+}
+
+void ABasePlayerCharacter::InputPressedMouseWheelClick()
+{
+	bIsPressedWheelMouse = true;
+}
+
+void ABasePlayerCharacter::InputReleasedMouseWheelClick()
+{
+	bIsPressedWheelMouse = false;
 }
 
 void ABasePlayerCharacter::InputPressedInteractive()

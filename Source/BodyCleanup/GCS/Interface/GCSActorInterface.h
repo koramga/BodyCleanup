@@ -24,5 +24,6 @@ class BODYCLEANUP_API IGCSActorInterface
 public:
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) = 0;
 	virtual void AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) = 0;
+	virtual void RemoveAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) = 0;
 	virtual bool IsDeath() const = 0;
 };

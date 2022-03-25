@@ -42,6 +42,8 @@ private :
 	void __InputReleasedMouseLeftClick();
 	void __InputPressedMouseRightClick();
 	void __InputReleasedMouseRightClick();
+	void __InputPressedMouseWheelClick();
+	void __InputReleasedMouseWheelClick();
 	void __InputPressedSwapCharacter();
 	void __InputPressedReturnToTank();
 	void __InputPressedJump();

@@ -270,6 +270,14 @@ void ABaseCharacter::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 	}
 }
 
+void ABaseCharacter::RemoveAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		CapabilitySystemComponent->RemoveAbility(CAPAbilityClass);
+	}	
+}
+
 bool ABaseCharacter::IsDeath() const
 {
 	return bIsDeath;

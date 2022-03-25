@@ -18,6 +18,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	// Called every frame
@@ -25,8 +26,8 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|WeaponModularActor")
-	TSubclassOf<class UMontageCAPAbility>		GeneralAttackCAPAbilityClass;
+	TSubclassOf<class UCAPAbility>		GeneralAttackCAPAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|WeaponModularActor")
-	TSubclassOf<class UMontageCAPAbility>		ChargeAttackCAPAbilityClass;
+	TSubclassOf<class UCAPAbility>		ChargeAttackCAPAbilityClass;
 };

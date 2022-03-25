@@ -19,7 +19,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+protected:
+	virtual void InputPressedMouseLeftClick() override;
+	virtual void InputReleasedMouseLeftClick() override;
+	virtual void InputPressedMouseRightClick() override;
+	virtual void InputReleasedMouseRightClick() override;
+	virtual void InputPressedMouseWheelClick() override;
+	virtual void InputReleasedMouseWheelClick() override;	
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 };

@@ -78,6 +78,7 @@ public :
 	//virtual void AddAbility(const FGameplayAbilitySpec& GameplayAbilitySpec) override;
 	virtual void AddAttributeSet(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass) override;
 	virtual void AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
+	virtual void RemoveAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
 	virtual bool IsDeath() const override;
 	virtual void SetDestroyFromTrigger() override;
 	
