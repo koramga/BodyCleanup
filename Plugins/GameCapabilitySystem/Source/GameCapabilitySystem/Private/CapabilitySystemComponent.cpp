@@ -61,7 +61,7 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	}
 }
 
-bool UCapabilitySystemComponent::IsBlockEffect(UCAPEffect* CAPEffect)
+bool UCapabilitySystemComponent::IsBlockEffect(TSoftObjectPtr<UCAPEffect> CAPEffect)
 {
 	const FGameplayTagContainer& EffectAssetTag = CAPEffect->GetEffectAssetTags();
 	
@@ -96,7 +96,7 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 	return CAPAttributeSet;
 }
 
-bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, const TArray<FCAPEffectAdvantage>* Advantages)
+bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, float Weight,  const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
 	if(IsBlockEffect(CAPEffect))
@@ -110,7 +110,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(class UCAPEffect* C
 	{
 		CAPAffect->SetSourceCapabilitySystemComponent(this);
 		CAPAffect->SetTargetCapabilitySystemComponent(Target);
-		CAPAffect->SetEffect(CAPEffect, AbilityLevel);
+		CAPAffect->SetEffect(CAPEffect, AbilityLevel, Weight);
 		if(nullptr != Advantages)
 		{
 			CAPAffect->SetAdvantage(*Advantages);
@@ -121,7 +121,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(class UCAPEffect* C
 	return true;
 }
 
-bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(UCAPEffect* CAPEffect, int32 AbilityLevel,
+bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(TSoftObjectPtr<UCAPEffect> CAPEffect, int32 AbilityLevel,
 	const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	if(IsBlockEffect(CAPEffect))
@@ -183,11 +183,37 @@ TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::AddAbility(TSubclassOf<U
 	return CAPAbility;
 }
 
+TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::GetAbility(TSubclassOf<UCAPAbility> CAPAbilityClass) const
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsA(CAPAbilityClass))
+		{
+			return CAPAbility;
+		}
+	}
+
+	return nullptr;	
+}
+
+TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::GetActivateAbility() const
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsActivate())
+		{
+			return CAPAbility;
+		}
+	}
+
+	return nullptr;
+}
+
 bool UCapabilitySystemComponent::RemoveAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 {
 	for(UCAPAbility* CAPAbility : CAPAbilities)
 	{
-		if(CAPAbility->GetClass() == CAPAbilityClass)
+		if(CAPAbility->IsA(CAPAbilityClass))
 		{
 			if(CAPAbilities.Remove(CAPAbility) != INDEX_NONE)
 			{
@@ -264,4 +290,17 @@ bool UCapabilitySystemComponent::IsActivateAbilityByTag(const FGameplayTag& Tag)
 	}
 	
 	return false;
+}
+
+bool UCapabilitySystemComponent::IsActivateAbilityByClass(const TSubclassOf<UCAPAbility>& Class)
+{
+	for(UCAPAbility* CAPAbility : CAPAbilities)
+	{
+		if(CAPAbility->IsA(Class))
+		{
+			return CAPAbility->IsActivate();
+		}
+	}
+	
+	return false;	
 }

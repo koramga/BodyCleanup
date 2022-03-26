@@ -18,6 +18,29 @@ AMors::AMors()
 void AMors::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<UActorComponent*> ActorComponents;
+	
+	GetComponents(UChildActorComponent::StaticClass(), ActorComponents);
+
+	for(UActorComponent* ActorComponent : ActorComponents)
+	{
+		UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(ActorComponent);
+
+		if(IsValid(ChildActorComponent))
+		{
+			AActor* ChildActor = ChildActorComponent->GetChildActor();
+
+			if(IsValid(ChildActor))
+			{
+				if(ChildActor->IsA(AWeaponModularActor::StaticClass()))
+				{
+					WeaponModularActor = Cast<AWeaponModularActor>(ChildActor);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void AMors::InputPressedMouseLeftClick()

@@ -8,7 +8,7 @@
 
 void UCAPAbility::OnActivateAbility()
 {
-	
+	Weight = 0.f;
 }
 
 void UCAPAbility::OnEndAbility()
@@ -25,10 +25,23 @@ void UCAPAbility::CommitAbility()
 {
 	if(OwnerCapabilitySystemComponent.IsValid())
 	{
-		if(IsValid(CostCAPEffect))
+		if(CostCAPEffect.IsValid())
 		{
 			OwnerCapabilitySystemComponent->ApplyGameplayEffectToSelf(CostCAPEffect, AbilityLevel);
 		}		
+	}
+}
+
+void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target)
+{
+	if(OwnerCapabilitySystemComponent.IsValid())
+	{
+		if(AbilityCAPEffect.IsValid())
+		{
+			UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
+			
+			OwnerCapabilitySystemComponent->ApplyGameplayEffectToTarget(AbilityCAPEffect, Target, AbilityLevel, Weight);
+		}
 	}
 }
 
@@ -39,6 +52,11 @@ void UCAPAbility::Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> In
 	if(IsValid(CostCAPEffectClass))
 	{
 		CostCAPEffect = NewObject<UCAPEffect>(this, CostCAPEffectClass);
+	}
+
+	if(IsValid(AbilityCAPEffectClass))
+	{
+		AbilityCAPEffect = NewObject<UCAPEffect>(this, AbilityCAPEffectClass);
 	}
 
 	CurrentCooldown = InitCooldown;
@@ -101,6 +119,16 @@ bool UCAPAbility::DeActivate()
 void UCAPAbility::SetAbilityLevel(int32 InAbilityLevel)
 {
 	AbilityLevel = InAbilityLevel;
+}
+
+void UCAPAbility::SetWeight(float InWeight)
+{
+	Weight = InWeight;
+}
+
+void UCAPAbility::AddWeight(float InAddWeight)
+{
+	Weight += InAddWeight;
 }
 
 int32 UCAPAbility::GetAbilityLevel() const

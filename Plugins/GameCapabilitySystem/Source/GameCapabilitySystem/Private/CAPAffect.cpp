@@ -38,7 +38,7 @@ bool UCAPAffect::ProcessDone()
 	return true;
 }
 
-void UCAPAffect::SetEffect(UCAPEffect* InCAPEffect, int32 InAbilityLevel, float InWeight)
+void UCAPAffect::SetEffect(TSoftObjectPtr<UCAPEffect> InCAPEffect, int32 InAbilityLevel, float InWeight)
 {
 	CAPEffect = InCAPEffect;
 	AbilityLevel = InAbilityLevel;

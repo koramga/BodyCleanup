@@ -2,7 +2,8 @@
 
 
 #include "PlayerCharacterAnimInstance.h"
-#include "BodyCleanup/Animation/Montage/MontageFeatures.h"
+
+#include "BodyCleanup/Character/PlayerCharacter/BasePlayerCharacter.h"
 
 void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 {
@@ -10,17 +11,6 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 
 	if (IsValid(CurrentActivateMontage))
 	{
-		//if(EMontageSectionType::Charge == MontageSectionType)
-		//{
-		//	if(EnergyHoldingTime <= 0.f)
-		//	{
-		//		if(NextSectionName != MontageNextSectionName)
-		//		{
-		//			ChangeMontageSection(NextSectionName, false);
-		//		}
-		//	}
-		//}
-
 		FName CurrentMontageSectionName = Montage_GetCurrentSection(CurrentActivateMontage);
 
 		if(MontageCurrentSectionName == NAME_None
@@ -31,6 +21,7 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 			NextSectionName = NAME_None;
 			PressedSectionName = NAME_None;
 			ReleasedSectionName = NAME_None;
+			MontageSectionType = EMontageSectionType::Normal;
 			
 			const TArray<UAnimMetaData*> MetaDatas = CurrentActivateMontage->GetSectionMetaData(MontageCurrentSectionName);
 
@@ -43,6 +34,7 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 					NextSectionName = MontageSectionFlow->GetNextSectionName();
 					PressedSectionName = MontageSectionFlow->GetPressedSectionName();
 					ReleasedSectionName = MontageSectionFlow->GetReleasedSectionName();
+					MontageSectionType = MontageSectionFlow->GetSectionType();
 
 					switch (MontageSectionFlow->GetNextSectionType())
 					{
@@ -66,6 +58,26 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 					Montage_SetNextSection(MontageCurrentSectionName, MontageNextSectionName);
 
 					break;
+				}
+			}
+		}
+		else
+		{
+			if(MontageSectionType == EMontageSectionType::Energy)
+			{
+				if(BasePlayerCharacter.IsValid())
+				{
+					UCapabilitySystemComponent* CapabilitySystemComponent = BasePlayerCharacter->GetCapabilitySystemComponent();
+
+					if(IsValid(CapabilitySystemComponent))
+					{
+						TSoftObjectPtr<UCAPAbility> CAPActivateAbility = CapabilitySystemComponent->GetActivateAbility();
+
+						if(CAPActivateAbility.IsValid())
+						{
+							CAPActivateAbility->AddWeight(DeltaSeconds);
+						}
+					}
 				}
 			}
 		}
@@ -124,6 +136,8 @@ bool UPlayerCharacterAnimInstance::CanChangeMontageSection() const
 void UPlayerCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
+
+	BasePlayerCharacter = Cast<ABasePlayerCharacter>(TryGetPawnOwner());
 }
 
 void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)

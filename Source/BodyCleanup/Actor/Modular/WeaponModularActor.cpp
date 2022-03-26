@@ -4,6 +4,7 @@
 #include "WeaponModularActor.h"
 
 #include "BodyCleanup/Character/PlayerCharacter/BasePlayerCharacter.h"
+#include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 
 
 // Sets default values
@@ -17,19 +18,7 @@ void AWeaponModularActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ABasePlayerCharacter* BasePlayerCharacter = Cast<ABasePlayerCharacter>(GetOwner());
-
-	if(false == IsValid(BasePlayerCharacter))
-	{		
-		BasePlayerCharacter = Cast<ABasePlayerCharacter>(GetAttachParentActor());
-
-		//if(IsValid(ChildActorComponent))
-		//{
-		//	BasePlayerCharacter = Cast<ABasePlayerCharacter>(ChildActorComponent->GetOwner());
-		//}
-	}
-
-	if(IsValid(BasePlayerCharacter))
+	if(BasePlayerCharacter.IsValid())
 	{
 		if(IsValid(GeneralAttackCAPAbilityClass))
 		{
@@ -46,10 +35,8 @@ void AWeaponModularActor::BeginPlay()
 void AWeaponModularActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-
-	ABasePlayerCharacter* BasePlayerCharacter = Cast<ABasePlayerCharacter>(GetOwner());
-
-	if(IsValid(BasePlayerCharacter))
+	
+	if(BasePlayerCharacter.IsValid())
 	{
 		if(IsValid(GeneralAttackCAPAbilityClass))
 		{
@@ -67,5 +54,41 @@ void AWeaponModularActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AWeaponModularActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AWeaponModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+	if(BasePlayerCharacter.IsValid())
+	{
+		ICapabilitySystemInterface* CapabilitySystemInterface = Cast<ICapabilitySystemInterface>(OtherActor);
+
+		if(CapabilitySystemInterface != nullptr)
+		{		
+			UCapabilitySystemComponent* TargetCapabilitySystemComponent = CapabilitySystemInterface->GetCapabilitySystemComponent();			
+
+			if(IsValid(TargetCapabilitySystemComponent))
+			{				
+				UCapabilitySystemComponent* SelfCAPComponent = BasePlayerCharacter->GetCapabilitySystemComponent();
+				TSoftObjectPtr<UCAPAbility> CAPAbility;
+
+				if(SelfCAPComponent->IsActivateAbilityByClass(GeneralAttackCAPAbilityClass))
+				{
+					CAPAbility = SelfCAPComponent->GetAbility(GeneralAttackCAPAbilityClass);
+				}
+				else if(SelfCAPComponent->IsActivateAbilityByClass(ChargeAttackCAPAbilityClass))
+				{
+					CAPAbility = SelfCAPComponent->GetAbility(ChargeAttackCAPAbilityClass);					
+				}
+				
+				if(CAPAbility.IsValid())
+				{
+					CAPAbility->AffectAbility(TargetCapabilitySystemComponent);
+				}
+			}			
+		}
+	}
 }
 

@@ -8,8 +8,8 @@
 #include "../../Game/GameMode/BaseGameModeBase.h"
 #include "BodyCleanup/GCS/Ability/BaseCAPAbility.h"
 
-bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UCAPEffect* CAPEffect,
-                                                                              UCapabilitySystemComponent* Target, int32 AbilityLevel)
+bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(TSoftObjectPtr<UCAPEffect> CAPEffect,
+                                                                              UCapabilitySystemComponent* Target, int32 AbilityLevel, int32 Weight)
 {
 	AActor* Owner = GetOwner();
 	AActor* TargetOwner = Target->GetOwner();
@@ -104,7 +104,7 @@ bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(UC
 		Advantages.Add(FCAPEffectAdvantage(StatTypeName, Advantage));
 	}
 
-	if(Super::ApplyGameplayEffectToTarget(CAPEffect, Target, AbilityLevel, &Advantages))
+	if(Super::ApplyGameplayEffectToTarget(CAPEffect, Target, AbilityLevel, Weight, &Advantages))
 	{
 	 	int32 WeightTypeIndex = static_cast<int32>(WeightType);
 		int32 TargetWeightTypeIndex = static_cast<int32>(TargetWeightType);

@@ -83,16 +83,25 @@ void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
 {
 	Super::UpdateDeath(bInIsDeath);
 
-	if (true == bInIsDeath)
+	if(true == bInIsDeath)
 	{
-		AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
-
-		if(IsValid(GameModeBase))
-		{
-			FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
-			UGameplayStatics::OpenLevel(GetWorld(), *LevelName);			
-		}
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
 	}
+
+	//if (true == bInIsDeath)
+	//{
+	//	AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
+	//
+	//	if(IsValid(GameModeBase))
+	//	{
+	//		FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+	//		UGameplayStatics::OpenLevel(GetWorld(), *LevelName);			
+	//	}
+	//}
 }
 
 void ABasePlayerCharacter::SetKeyboardControlType(EKeyboardControlType KeyboardControlType)

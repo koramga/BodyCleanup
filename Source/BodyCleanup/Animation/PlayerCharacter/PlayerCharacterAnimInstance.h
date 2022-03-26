@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../BaseAnimInstance.h"
+#include "BodyCleanup/Animation/Montage/MontageFeatures.h"
 #include "PlayerCharacterAnimInstance.generated.h"
 
 /**
@@ -17,6 +18,8 @@ private :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32	MoveOffset;
 
+	TWeakObjectPtr<class ABasePlayerCharacter> BasePlayerCharacter;
+
 protected:
 	
 protected:
@@ -28,6 +31,7 @@ protected:
 	FName				ReleasedSectionName;
 	FName				ExecuteSectionName;
 	FVector				ExecutionLocation;
+	EMontageSectionType MontageSectionType;
 
 protected:
 	void UpdateMontage(float DeltaSeconds);

@@ -20,8 +20,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer				AbilityTags;
 
-	//비용으로 사용되는 이펙트입니다. 마나를 소모한다거나 등등에 활용합니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Costs")
+	//Ability가 소유한 Effect입니다. 상대방에게 어떠한 Effect를 적용할 떄 많이 사용합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect")
+	TSubclassOf<class UCAPEffect>		AbilityCAPEffectClass;
+
+	//비용으로 사용되는 이펙트입니다. 자기자신의 마나를 소모한다거나 등등에 활용합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Effect")
 	TSubclassOf<class UCAPEffect>		CostCAPEffectClass;
 
 	//스킬을 사용하고 난 뒤 적용되는 쿨다운 시간입니다.
@@ -33,20 +37,13 @@ protected:
 	float								InitCooldown = 0.f;
 	
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Debug")
-	class UCAPEffect* CostCAPEffect;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Debug")
-	bool bIsActivate = false;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TSoftObjectPtr<class UCAPEffect>	CostCAPEffect;
+	TSoftObjectPtr<class UCAPEffect>	AbilityCAPEffect;
 	TSoftObjectPtr<class UCapabilitySystemComponent>	OwnerCapabilitySystemComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool	bIsActivate = false;
 	int32	AbilityLevel = 0;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float								CurrentCooldown;
+	float	CurrentCooldown;
+	float	Weight;
 	
 protected:
 	virtual void OnActivateAbility();
@@ -57,6 +54,7 @@ protected:
 
 public :
 	virtual void CommitAbility();
+	virtual void AffectAbility(class UCapabilitySystemComponent* Target);	
 
 public :
 	void Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> InOwnerCapabilitySystemComponent);
@@ -68,7 +66,9 @@ public :
 
 public :
 	void SetAbilityLevel(int32 InAbilityLevel);
-
+	void SetWeight(float InWeight);
+	void AddWeight(float InAddWeight);
+	
 public :
 	int32 GetAbilityLevel() const;
 	bool IsAbilityTag(const FGameplayTag& GameplayTag);

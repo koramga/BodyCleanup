@@ -41,17 +41,19 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
-	bool IsBlockEffect(class UCAPEffect* CAPEffect);
+	bool IsBlockEffect(TSoftObjectPtr<class UCAPEffect> CAPEffect);
 	
 public :
 	TSoftObjectPtr<UCAPAttributeSet> AddAttribute(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass);
-	virtual bool ApplyGameplayEffectToTarget(class UCAPEffect* CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
-	virtual bool ApplyGameplayEffectToSelf(class UCAPEffect* CAPEffect, int32 AbilityLevel = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
+	virtual bool ApplyGameplayEffectToTarget(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, float Weight = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
+	virtual bool ApplyGameplayEffectToSelf(TSoftObjectPtr<class UCAPEffect> CAPEffect, int32 AbilityLevel = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
 	bool AffectFrom(TSoftObjectPtr<class UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
 	void AffectTo(TSoftObjectPtr<class UCAPAffect> Affect);
 
 public :
 	TSoftObjectPtr<UCAPAbility> AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass, int32 AbilityLevel);
+	TSoftObjectPtr<UCAPAbility> GetAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) const;
+	TSoftObjectPtr<UCAPAbility> GetActivateAbility() const;
 	bool RemoveAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass);
 
 public :
@@ -60,4 +62,5 @@ public :
 	bool TryDeActivateAbilityByTag(const FGameplayTag& Tag);
 	bool CanActivateAbilityByTag(const FGameplayTag& Tag);
 	bool IsActivateAbilityByTag(const FGameplayTag& Tag);
+	bool IsActivateAbilityByClass(const TSubclassOf<UCAPAbility>& Class);
 };
