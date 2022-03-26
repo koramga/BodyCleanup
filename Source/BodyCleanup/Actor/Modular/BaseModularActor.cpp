@@ -46,8 +46,6 @@ void ABaseModularActor::Tick(float DeltaTime)
 
 void ABaseModularActor::SetEnableCollision(bool bIsEnableCollision)
 {
-	UE_LOG(LogTemp, Display, TEXT("SetEnableCollision : <%d>"), bIsEnableCollision);
-
 	if(bIsEnableCollision)
 	{
 		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -68,7 +66,7 @@ void ABaseModularActor::SetDuplicateOverlap(bool bInIsDuplicateOverlap)
 void ABaseModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Display, TEXT("OnOverlapBegin : <%s>"), *OtherComp->GetName());
+	//UE_LOG(LogTemp, Display, TEXT("OnOverlapBegin : <%s>"), *OtherComp->GetName());
 }
 
 void ABaseModularActor::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

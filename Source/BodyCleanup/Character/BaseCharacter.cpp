@@ -159,6 +159,8 @@ void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Da
 		
 		if(StatTypeName == Data.AttributeName)
 		{
+			UE_LOG(LogTemp, Display, TEXT("<%s> HP : %.2f : %.2f"), *GetName(), Data.OldValue, Data.NewValue);
+			
 			if(Data.NewValue <= 0.f)
 			{
 				UpdateDeath(true);

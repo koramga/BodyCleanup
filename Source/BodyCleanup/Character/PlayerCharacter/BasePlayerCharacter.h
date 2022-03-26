@@ -58,6 +58,7 @@ public :
 	bool	IsPressedRightMouse() const;
 	bool	IsPressedWheelMouse() const;
 	bool	IsPressedInteractive() const;
+	void	SetLookAtMousePoint();
 
 public :
 	virtual void InputMoveForward(float InputAxis);

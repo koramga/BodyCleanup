@@ -19,6 +19,7 @@ enum class EMontageSectionType : uint8
 	Normal,
 	Energy,
 	Charge,
+	Ready,
 };
 
 UCLASS(BlueprintType, Blueprintable)

@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
+#include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
 #include "BodyCleanup/UI/Screen/MainScreenWidget.h"
 #include "GameFramework/GameModeBase.h"
@@ -143,6 +144,28 @@ bool ABasePlayerCharacter::IsPressedWheelMouse() const
 bool ABasePlayerCharacter::IsPressedInteractive() const
 {
 	return bIsPressedInteractive;
+}
+
+void ABasePlayerCharacter::SetLookAtMousePoint()
+{
+	if (IsValid(BaseController))
+	{
+		if (BaseController->IsA(ABasePlayerController::StaticClass()))
+		{					
+			ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(BaseController);
+
+			FHitResult HitResult;
+					
+			if(BasePlayerController->GetLevelHitResultAtMousePosition(HitResult))
+			{
+				FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitResult.ImpactPoint);
+				tempRot.Pitch = 0;
+				tempRot.Roll = 0;
+
+				SetActorRotation(tempRot);
+			}			
+		}
+	}
 }
 
 void ABasePlayerCharacter::InputMoveForward(float InputAxis)

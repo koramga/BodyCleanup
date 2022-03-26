@@ -36,6 +36,14 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 					ReleasedSectionName = MontageSectionFlow->GetReleasedSectionName();
 					MontageSectionType = MontageSectionFlow->GetSectionType();
 
+					if(EMontageSectionType::Normal == MontageSectionType)
+					{
+						if(BasePlayerCharacter.IsValid())
+						{
+							BasePlayerCharacter->SetLookAtMousePoint();				
+						}						
+					}
+
 					switch (MontageSectionFlow->GetNextSectionType())
 					{
 					case EMontageNextSectionType::Self :

@@ -38,7 +38,7 @@ void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target)
 	{
 		if(AbilityCAPEffect.IsValid())
 		{
-			UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
+			//UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
 			
 			OwnerCapabilitySystemComponent->ApplyGameplayEffectToTarget(AbilityCAPEffect, Target, AbilityLevel, Weight);
 		}
