@@ -9,7 +9,7 @@
 #include "BodyCleanup/GCS/Ability/BaseCAPAbility.h"
 
 bool UBaseCapabilitySystemComponent::ApplyGameplayEffectToTargetWithAdvantage(TSoftObjectPtr<UCAPEffect> CAPEffect,
-                                                                              UCapabilitySystemComponent* Target, int32 AbilityLevel, int32 Weight)
+                                                                              UCapabilitySystemComponent* Target, int32 AbilityLevel, float Weight)
 {
 	AActor* Owner = GetOwner();
 	AActor* TargetOwner = Target->GetOwner();
