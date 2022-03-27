@@ -217,6 +217,13 @@ bool UBaseAnimInstance::CanUpdateAnimationType(EAnimationType InAnimationType) c
 			return false;
 		}
 	}
+	else if(EAnimationType::Dash == InAnimationType)
+	{
+		if(EAnimationType::Idle != AnimationType)
+		{
+			return false;
+		}
+	}
 
 	return true;
 }

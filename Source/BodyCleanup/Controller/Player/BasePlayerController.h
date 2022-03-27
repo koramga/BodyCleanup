@@ -50,6 +50,8 @@ private :
 	void __InputReleasedJump();
 	void __InputPressedInteractive();
 	void __InputReleasedInteractive();
+	void __InputPressedSpacebar();
+	void __InputReleasedSpacebar();
 	void __InputPressedUITestKey();
 	void __InputPressedUIUp();
 	void __InputPressedUIDown();

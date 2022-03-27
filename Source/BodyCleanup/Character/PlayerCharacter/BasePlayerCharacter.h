@@ -75,5 +75,6 @@ public :
 	virtual void InputPressedInteractive();
 	virtual void InputReleasedInteractive();
 	virtual void InputPressedToggleMoving();
-	
+	virtual void InputPressedSpacebar();
+	virtual void InputReleasedSpacebar();
 };

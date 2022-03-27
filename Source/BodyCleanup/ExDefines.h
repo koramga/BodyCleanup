@@ -30,6 +30,8 @@ enum class EAnimationType : uint8
 	LookAround,
 	Stun,
 	Attack,					//공격
+	Dash,
+	Hit,
 };
 
 UENUM(BlueprintType)

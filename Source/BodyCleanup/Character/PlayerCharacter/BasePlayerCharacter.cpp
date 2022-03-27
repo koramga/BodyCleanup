@@ -318,3 +318,15 @@ void ABasePlayerCharacter::InputPressedToggleMoving()
 		MoveBlendRatio = 1.f;
 	}
 }
+
+void ABasePlayerCharacter::InputPressedSpacebar()
+{
+	if(PlayerCharacterAnimInstance->CanUpdateAnimationType(EAnimationType::Dash))
+	{
+		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Dash);
+	}
+}
+
+void ABasePlayerCharacter::InputReleasedSpacebar()
+{
+}

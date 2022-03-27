@@ -31,8 +31,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputMouseRightClick", IE_Released, this, &ABasePlayerController::__InputReleasedMouseRightClick);
 	InputComponent->BindAction("InputSwapCharacter", IE_Pressed, this, &ABasePlayerController::__InputPressedSwapCharacter);
 	InputComponent->BindAction("InputReturnToTank", IE_Pressed, this, &ABasePlayerController::__InputPressedReturnToTank);
-	InputComponent->BindAction("InputJump", IE_Pressed, this, &ABasePlayerController::__InputPressedJump);
-	InputComponent->BindAction("InputJump", IE_Released, this, &ABasePlayerController::__InputReleasedJump);
+	//InputComponent->BindAction("InputJump", IE_Pressed, this, &ABasePlayerController::__InputPressedJump);
+	//InputComponent->BindAction("InputJump", IE_Released, this, &ABasePlayerController::__InputReleasedJump);
 	InputComponent->BindAxis("InputMouseWheel", this, &ABasePlayerController::__InputMouseWheel);
 	InputComponent->BindAxis("InputMoveForward", this, &ABasePlayerController::__InputMoveForward);
 	InputComponent->BindAxis("InputMoveRight", this, &ABasePlayerController::__InputMoveRight);
@@ -45,6 +45,8 @@ void ABasePlayerController::SetupInputComponent()
 	InputComponent->BindAction("InputToggleMoving", IE_Pressed, this, &ABasePlayerController::__InputPressedToggleMoving);
 	InputComponent->BindAction("InputMouseWheelClick", IE_Pressed, this, &ABasePlayerController::__InputPressedMouseWheelClick);
 	InputComponent->BindAction("InputMouseWheelClick", IE_Released, this, &ABasePlayerController::__InputReleasedMouseWheelClick);
+	InputComponent->BindAction("InputSpacebar", IE_Pressed, this, &ABasePlayerController::__InputPressedSpacebar);
+	InputComponent->BindAction("InputSpacebar", IE_Released, this, &ABasePlayerController::__InputReleasedSpacebar);
 	
 	FInputActionBinding& PauseActionBinding = InputComponent->BindAction("InputPauseMenu", IE_Pressed, this, &ABasePlayerController::__InputPressedPauseMenu);
 
@@ -254,6 +256,32 @@ void ABasePlayerController::__InputReleasedInteractive()
 		if (IsValid(PlayerCharacter))
 		{
 			PlayerCharacter->InputReleasedInteractive();
+		}
+	}
+}
+
+void ABasePlayerController::__InputPressedSpacebar()
+{
+	if(bIsFocusOnCharacter)
+	{
+		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+		if (IsValid(PlayerCharacter))
+		{
+			PlayerCharacter->InputPressedSpacebar();
+		}
+	}
+}
+
+void ABasePlayerController::__InputReleasedSpacebar()
+{
+	if(bIsFocusOnCharacter)
+	{
+		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
+
+		if (IsValid(PlayerCharacter))
+		{
+			PlayerCharacter->InputReleasedSpacebar();
 		}
 	}
 }
