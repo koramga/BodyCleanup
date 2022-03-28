@@ -9,6 +9,7 @@
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
 #include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
+#include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 #include "BodyCleanup/UI/Screen/MainScreenWidget.h"
 #include "GameFramework/GameModeBase.h"
 

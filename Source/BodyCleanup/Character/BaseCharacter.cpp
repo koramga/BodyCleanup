@@ -12,6 +12,7 @@
 #include "BodyCleanup/Actor/Modular/WeaponModularActor.h"
 #include "BodyCleanup/Game/GameInstance/BaseGameInstance.h"
 #include "BodyCleanup/Game/GameMode/BaseGameModeBase.h"
+#include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -429,7 +430,21 @@ void ABaseCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& 
 	}
 	else if(EAnimNotify_ChangeOfStateType::EnableBeDamaged == InNotifyStruct.Type)
 	{
-		
+		if(IsValid(CapabilitySystemComponent))
+		{
+			if(InNotifyStruct.bIsEnabled)
+			{
+				UE_LOG(LogTemp, Display, TEXT("상태면역 해제"));
+				
+				CapabilitySystemComponent->RemoveBlockGameplayTag(UGameGCSFunctionLibrary::DamageRootTag);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("상태면역"));
+				
+				CapabilitySystemComponent->AddBlockGameplayTag(UGameGCSFunctionLibrary::DamageRootTag);
+			}
+		}
 	}
 }
 

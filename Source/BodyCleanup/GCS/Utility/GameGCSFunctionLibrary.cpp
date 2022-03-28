@@ -7,3 +7,5 @@ const FGameplayTag UGameGCSFunctionLibrary::GeneralAttackGameplayTag = FGameplay
 const FGameplayTag UGameGCSFunctionLibrary::ChargingAttackGameplayTag = FGameplayTag::RequestGameplayTag("Player.Attack.Charge");
 const FGameplayTag UGameGCSFunctionLibrary::SpecialAttackGameplayTag = FGameplayTag::RequestGameplayTag("Player.Attack.Special");
 const FGameplayTag UGameGCSFunctionLibrary::PlayerAttackGameplayTag = FGameplayTag::RequestGameplayTag("Player.Attack");
+const FGameplayTag UGameGCSFunctionLibrary::DamageRootTag = FGameplayTag::RequestGameplayTag("Damage");
+const FGameplayTag UGameGCSFunctionLibrary::MeleeDamageTag = FGameplayTag::RequestGameplayTag("Damage.Melee");

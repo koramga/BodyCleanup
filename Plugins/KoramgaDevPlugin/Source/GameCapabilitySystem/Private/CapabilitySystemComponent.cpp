@@ -64,6 +64,12 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 bool UCapabilitySystemComponent::IsBlockEffect(TSoftObjectPtr<UCAPEffect> CAPEffect)
 {
 	const FGameplayTagContainer& EffectAssetTag = CAPEffect->GetEffectAssetTags();
+
+	if(BlockGameplayTagContainer.DoesTagContainerMatch(EffectAssetTag, EGameplayTagMatchType::IncludeParentTags, EGameplayTagMatchType::IncludeParentTags, EGameplayContainerMatchType::Any))
+	{
+		//UE_LOG(LogTemp, Display, TEXT("koramga Block"));
+		return true;
+	}
 	
 	for(UCAPAffect* CAPAffect : OwnCAPAffects)
 	{
@@ -99,7 +105,7 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, float Weight,  const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
-	if(IsBlockEffect(CAPEffect))
+	if(Target->IsBlockEffect(CAPEffect))
 	{
 		return false;
 	}
@@ -164,6 +170,16 @@ bool UCapabilitySystemComponent::AffectFrom(TSoftObjectPtr<UCAPAffect> Affect, c
 void UCapabilitySystemComponent::AffectTo(TSoftObjectPtr<UCAPAffect> Affect)
 {
 	//누군가에게 영향을 줬다.
+}
+
+void UCapabilitySystemComponent::AddBlockGameplayTag(const FGameplayTag& GameplayTag)
+{
+	BlockGameplayTagContainer.AddTag(GameplayTag);
+}
+
+void UCapabilitySystemComponent::RemoveBlockGameplayTag(const FGameplayTag& GameplayTag)
+{
+	BlockGameplayTagContainer.RemoveTag(GameplayTag);
 }
 
 TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass, int32 AbilityLevel)

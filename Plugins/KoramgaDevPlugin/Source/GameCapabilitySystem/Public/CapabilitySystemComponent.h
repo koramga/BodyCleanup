@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<UCAPAbility*>			CAPAbilities;
 
+	UPROPERTY()
+	FGameplayTagContainer			BlockGameplayTagContainer;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -49,6 +52,8 @@ public :
 	virtual bool ApplyGameplayEffectToSelf(TSoftObjectPtr<class UCAPEffect> CAPEffect, int32 AbilityLevel = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
 	bool AffectFrom(TSoftObjectPtr<class UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
 	void AffectTo(TSoftObjectPtr<class UCAPAffect> Affect);
+	void AddBlockGameplayTag(const FGameplayTag& GameplayTag);
+	void RemoveBlockGameplayTag(const FGameplayTag& GameplayTag);
 
 public :
 	TSoftObjectPtr<UCAPAbility> AddAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass, int32 AbilityLevel);

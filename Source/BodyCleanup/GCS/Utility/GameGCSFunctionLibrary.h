@@ -20,4 +20,6 @@ public :
 	static const FGameplayTag ChargingAttackGameplayTag;
 	static const FGameplayTag SpecialAttackGameplayTag;
 	static const FGameplayTag PlayerAttackGameplayTag;
+	static const FGameplayTag DamageRootTag;
+	static const FGameplayTag MeleeDamageTag;	
 };
