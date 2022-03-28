@@ -434,14 +434,12 @@ void ABaseCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& 
 		{
 			if(InNotifyStruct.bIsEnabled)
 			{
-				UE_LOG(LogTemp, Display, TEXT("상태면역 해제"));
-				
+				//상태 면역 X (일반)
 				CapabilitySystemComponent->RemoveBlockGameplayTag(UGameGCSFunctionLibrary::DamageRootTag);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Display, TEXT("상태면역"));
-				
+				//상태 면역 (무적)
 				CapabilitySystemComponent->AddBlockGameplayTag(UGameGCSFunctionLibrary::DamageRootTag);
 			}
 		}
