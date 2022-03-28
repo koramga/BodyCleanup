@@ -23,9 +23,9 @@ struct FAnimNotify_ChangeOfStateStruct
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)	
 	EAnimNotify_ChangeOfStateType	Type;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool							bIsEnabled;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup", meta = (EditCondition = "Type == EAnimNotify_ChangeOfStateType::EnableCollision", EditConditionHides))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "Type == EAnimNotify_ChangeOfStateType::EnableCollision", EditConditionHides))
 	TArray<FName>					CollisionNames;
 };
