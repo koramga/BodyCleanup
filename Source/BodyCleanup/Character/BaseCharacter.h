@@ -11,10 +11,11 @@
 #include "../GAS/Ability/BaseGameplayAbility.h"
 #include "Interface/BTCharacterInterface.h"
 #include "../GCS/Component/BaseCapabilitySystemComponent.h"
+#include "AnimationDesignerTools/Public/Interface/Actor/AnimationToolsActorInterface.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public ICapabilitySystemInterface, public IBTCharacterInterface, public IGCSActorInterface
+class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public ICapabilitySystemInterface, public IBTCharacterInterface, public IGCSActorInterface, public IAnimationToolsActorInterface
 {
 	GENERATED_BODY()
 
@@ -81,7 +82,7 @@ public :
 	virtual void RemoveAbility(TSubclassOf<class UCAPAbility> CAPAbilityClass) override;
 	virtual bool IsDeath() const override;
 	virtual void SetDestroyFromTrigger() override;
-	virtual void SetEnableAttack(bool bIsEnableAttack);
+	virtual void SetEnableAttack(bool bIsEnableAttack, const TArray<FString>& ComponentNames);
 	
 public :
 	virtual void SetTextToSpeechBubble(const FString& Text);
@@ -97,5 +98,6 @@ public:
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
 	virtual FBTPatrolInfo GetPatrolInfo() const override;
 	virtual void SetNextPatrol() override;
+	virtual void OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct) override;
 	virtual void SetFocusOn(bool bIsFocusOn);
 };

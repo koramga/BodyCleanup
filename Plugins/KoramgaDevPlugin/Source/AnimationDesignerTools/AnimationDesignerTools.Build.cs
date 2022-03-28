@@ -11,6 +11,8 @@ public class AnimationDesignerTools : ModuleRules
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
+				"AnimationDesignerTools",
+				"AnimationDesignerTools/Public"
 			}
 			);
 				

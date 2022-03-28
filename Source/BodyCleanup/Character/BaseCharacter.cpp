@@ -9,6 +9,7 @@
 #include "Components/Widget.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/Script/BubbleScriptUserWidget.h"
+#include "BodyCleanup/Actor/Modular/WeaponModularActor.h"
 #include "BodyCleanup/Game/GameInstance/BaseGameInstance.h"
 #include "BodyCleanup/Game/GameMode/BaseGameModeBase.h"
 
@@ -290,7 +291,7 @@ void ABaseCharacter::SetDestroyFromTrigger()
 	UpdateDeath(true);
 }
 
-void ABaseCharacter::SetEnableAttack(bool bIsEnableAttack)
+void ABaseCharacter::SetEnableAttack(bool bIsEnableAttack, const TArray<FString>& ComponentNames)
 {
 }
 
@@ -387,6 +388,49 @@ FBTPatrolInfo ABaseCharacter::GetPatrolInfo() const
 
 void ABaseCharacter::SetNextPatrol()
 {
+}
+
+void ABaseCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct)
+{
+	if(EAnimNotify_ChangeOfStateType::EnableCollision == InNotifyStruct.Type)
+	{
+		for(const FName& Name : InNotifyStruct.CollisionNames)
+		{
+			TArray<UActorComponent*> ActorComponents; 
+			
+			GetComponents(UActorComponent::StaticClass(), ActorComponents);
+
+			for(UActorComponent* ActorComponent : ActorComponents)
+			{
+				if(FName(*ActorComponent->GetName()) == Name)
+				{
+					if(ActorComponent->IsA(UChildActorComponent::StaticClass()))
+					{
+						UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(ActorComponent);
+
+						if(IsValid(ChildActorComponent))
+						{
+							AActor* ChildActor = ChildActorComponent->GetChildActor();
+
+							if(IsValid(ChildActor))
+							{
+								if(ChildActor->IsA(ABaseModularActor::StaticClass()))
+								{
+									ABaseModularActor* BaseModularActor = Cast<ABaseModularActor>(ChildActor);
+									BaseModularActor->SetEnableCollision(InNotifyStruct.bIsEnabled);
+									break;
+								}
+							}
+						}					
+					}
+				}
+			}	
+		}
+	}
+	else if(EAnimNotify_ChangeOfStateType::EnableBeDamaged == InNotifyStruct.Type)
+	{
+		
+	}
 }
 
 void ABaseCharacter::SetFocusOn(bool bIsFocusOn)

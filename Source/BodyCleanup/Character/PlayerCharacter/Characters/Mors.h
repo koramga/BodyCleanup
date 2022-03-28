@@ -29,7 +29,6 @@ protected:
 	virtual void InputReleasedMouseRightClick() override;
 	virtual void InputPressedMouseWheelClick() override;
 	virtual void InputReleasedMouseWheelClick() override;
-	virtual void SetEnableAttack(bool bIsEnableAttack) override;
 
 public:
 	// Called every frame
