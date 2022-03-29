@@ -18,6 +18,14 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 		{
 			MontageCurrentSectionName = CurrentMontageSectionName;
 			
+			if(EMontageSectionType::Aim == MontageSectionType)
+			{
+				if(BasePlayerCharacter.IsValid())
+				{
+					BasePlayerCharacter->SetAimMode(false);
+				}
+			}		
+			
 			NextSectionName = NAME_None;
 			PressedSectionName = NAME_None;
 			ReleasedSectionName = NAME_None;
@@ -30,7 +38,8 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 				UMontageSectionFlow* MontageSectionFlow = Cast<UMontageSectionFlow>(MetaData);
 
 				if(IsValid(MontageSectionFlow))
-				{
+				{			
+				
 					NextSectionName = MontageSectionFlow->GetNextSectionName();
 					PressedSectionName = MontageSectionFlow->GetPressedSectionName();
 					ReleasedSectionName = MontageSectionFlow->GetReleasedSectionName();
@@ -65,13 +74,21 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 
 					Montage_SetNextSection(MontageCurrentSectionName, MontageNextSectionName);
 
+					if(EMontageSectionType::Aim == MontageSectionType)
+					{
+						if(BasePlayerCharacter.IsValid())
+						{
+							BasePlayerCharacter->SetAimMode(true);
+						}
+					}
+
 					break;
 				}
 			}
 		}
 		else
 		{
-			if(MontageSectionType == EMontageSectionType::Energy)
+			if(EMontageSectionType::Energy == MontageSectionType)
 			{
 				if(BasePlayerCharacter.IsValid())
 				{
@@ -87,6 +104,13 @@ void UPlayerCharacterAnimInstance::UpdateMontage(float DeltaSeconds)
 						}
 					}
 				}
+			}
+			else if(EMontageSectionType::Aim == MontageSectionType)
+			{
+				//if(BasePlayerCharacter.IsValid())
+				//{
+				//	BasePlayerCharacter->SetLookAtMousePoint();
+				//}
 			}
 		}
 	}

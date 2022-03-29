@@ -6,6 +6,28 @@
 #include "GameFramework/Character.h"
 #include "BasePlayerCharacter.generated.h"
 
+USTRUCT(BlueprintType)
+struct FPlayerAimParam
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					AimTargetArmLengthInterpTime = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					AimTargetOffsetInterpTime = 2.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					MaxAimTargetArmLegnth = 200.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float					MaxAimTargetOffset = 200.f;
+
+	float					TickTime = FLT_MAX;
+	bool					bIsAimMode = false;
+	float					OriginalTargetArmLength = 0.f;
+};
+
 UCLASS()
 class BODYCLEANUP_API ABasePlayerCharacter : public ABaseCharacter
 {
@@ -24,6 +46,9 @@ protected :
 
 	UPROPERTY(VisibleAnywhere)
 	class UPlayerCharacterAnimInstance* PlayerCharacterAnimInstance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|Aim")
+	FPlayerAimParam						PlayerAimParam;	
 
 protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -38,7 +63,7 @@ protected :
 	bool						bIsPressedLeftMouse = false;
 	bool						bIsPressedRightMouse = false;
 	bool						bIsPressedWheelMouse = false;
-	bool						bIsPressedInteractive = false;	
+	bool						bIsPressedInteractive = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -47,7 +72,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void UpdateAimMode(float DeltaTime);
 
+	
 protected:
 	virtual void UpdateDeath(bool bInIsDeath) override;
 	void SetKeyboardControlType(EKeyboardControlType KeyboardControlType);
@@ -58,6 +85,7 @@ public :
 	bool	IsPressedWheelMouse() const;
 	bool	IsPressedInteractive() const;
 	void	SetLookAtMousePoint();
+	void	SetAimMode(bool bInIsAimMode);
 
 public :
 	virtual void InputMoveForward(float InputAxis);

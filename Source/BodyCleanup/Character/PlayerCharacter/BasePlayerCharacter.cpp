@@ -9,7 +9,6 @@
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
 #include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
-#include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 #include "BodyCleanup/UI/Screen/MainScreenWidget.h"
 #include "GameFramework/GameModeBase.h"
 
@@ -72,6 +71,8 @@ void ABasePlayerCharacter::BeginPlay()
 	{
 		PlayerCharacterAnimInstance = Cast<UPlayerCharacterAnimInstance>(BaseAnimInstance);
 	}
+
+	PlayerAimParam.OriginalTargetArmLength = SpringArmComponent->TargetArmLength;
 }
 
 // Called every frame
@@ -79,6 +80,68 @@ void ABasePlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UpdateAimMode(DeltaTime);
+}
+
+void ABasePlayerCharacter::UpdateAimMode(float DeltaTime)
+{
+	if(PlayerAimParam.TickTime < PlayerAimParam.AimTargetArmLengthInterpTime)
+	{
+		//마우스 방향을 바라보도록 하고
+
+		PlayerAimParam.TickTime += DeltaTime;
+
+		PlayerAimParam.TickTime = FMath::Clamp(PlayerAimParam.TickTime, 0.f, PlayerAimParam.AimTargetArmLengthInterpTime);
+
+		if(PlayerAimParam.bIsAimMode)
+		{
+			SpringArmComponent->TargetArmLength = PlayerAimParam.OriginalTargetArmLength + PlayerAimParam.TickTime * PlayerAimParam.MaxAimTargetArmLegnth;
+		}
+		else
+		{
+			SpringArmComponent->TargetArmLength = PlayerAimParam.OriginalTargetArmLength + (PlayerAimParam.AimTargetArmLengthInterpTime - PlayerAimParam.TickTime) * PlayerAimParam.MaxAimTargetArmLegnth;
+			//SpringArmComponent->TargetOffset = FVector::ZeroVector;
+			SpringArmComponent->TargetOffset = FMath::VInterpTo(SpringArmComponent->TargetOffset, FVector::ZeroVector, DeltaTime, PlayerAimParam.AimTargetOffsetInterpTime);
+		}
+	}
+	
+	if(PlayerAimParam.bIsAimMode)
+	{
+		if(IsValid(GetWorld()->GetFirstPlayerController()))
+		{
+			ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(GetWorld()->GetFirstPlayerController()->Player);
+
+			if(IsValid(LocalPlayer))
+			{
+				FVector2D MousePoint;
+				FVector2D ViewportSize;
+				FVector2D CenterPoint;
+				FVector2D DeltaPoint;
+			
+				LocalPlayer->ViewportClient->GetMousePosition(MousePoint);
+				LocalPlayer->ViewportClient->GetViewportSize(ViewportSize);
+
+				//Center에서 얼마나 벗어났느냐에 대한 Delta값만 필요하다.
+				CenterPoint.X = ViewportSize.X / 2.f;
+				CenterPoint.Y = ViewportSize.Y / 2.f;
+
+				DeltaPoint = FMath::Abs(CenterPoint - MousePoint);
+
+				FVector ActorForwardVector = GetActorForwardVector();
+
+				float MaxAimTargetOffset = FMath::Clamp(DeltaPoint.Size(), 0.f, PlayerAimParam.MaxAimTargetOffset);
+
+				SpringArmComponent->TargetOffset = FMath::VInterpTo(SpringArmComponent->TargetOffset, ActorForwardVector * MaxAimTargetOffset, DeltaTime, PlayerAimParam.AimTargetOffsetInterpTime); 
+				
+				//SpringArmComponent->TargetOffset = ActorForwardVector * MaxAimTargetOffset;
+		
+				//UE_LOG(LogTemp, Display, TEXT("%.2f, %.2f : %.2f, %.2f"), MousePoint.X, MousePoint.Y, ViewportSize.X, ViewportSize.Y);
+			}
+			
+		}
+		
+		SetLookAtMousePoint();
+	}
 }
 
 void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
@@ -162,6 +225,12 @@ void ABasePlayerCharacter::SetLookAtMousePoint()
 			}			
 		}
 	}
+}
+
+void ABasePlayerCharacter::SetAimMode(bool bInIsAimMode)
+{
+	PlayerAimParam.bIsAimMode = bInIsAimMode;
+	PlayerAimParam.TickTime = 0.f;
 }
 
 void ABasePlayerCharacter::InputMoveForward(float InputAxis)

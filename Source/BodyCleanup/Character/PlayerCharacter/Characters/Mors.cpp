@@ -18,6 +18,11 @@ AMors::AMors()
 void AMors::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(IsValid(RangeAttackCAPAbilityClass))
+	{
+		AddAbility(RangeAttackCAPAbilityClass);
+	}
 }
 
 void AMors::InputPressedMouseLeftClick()
@@ -49,11 +54,24 @@ void AMors::InputReleasedMouseLeftClick()
 void AMors::InputPressedMouseRightClick()
 {
 	Super::InputPressedMouseRightClick();
+
+	if(CapabilitySystemComponent->CanActivateAbilityByTag(UGameGCSFunctionLibrary::SpecialAttackGameplayTag))
+	{
+		//활성화 시킨다.
+		if(false == CapabilitySystemComponent->TryActivateAbilityByTag(UGameGCSFunctionLibrary::SpecialAttackGameplayTag))
+		{
+		}
+	}
 }
 
 void AMors::InputReleasedMouseRightClick()
 {
 	Super::InputReleasedMouseRightClick();
+
+	if(CapabilitySystemComponent->IsActivateAbilityByTag(UGameGCSFunctionLibrary::SpecialAttackGameplayTag))
+	{
+		BaseAnimInstance->UpdateMontageFromKey(EInputEvent::IE_Released);
+	}
 }
 
 void AMors::InputPressedMouseWheelClick()

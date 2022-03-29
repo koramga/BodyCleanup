@@ -14,9 +14,10 @@ class BODYCLEANUP_API AMors : public ABasePlayerCharacter
 public:
 	// Sets default values for this actor's properties
 	AMors();
-
+	
 protected:
-	class AWeaponModularActor*	WeaponModularActor;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|SpecialAbility")
+	TSubclassOf<class UCAPAbility>		RangeAttackCAPAbilityClass;
 
 protected:
 	// Called when the game starts or when spawned
