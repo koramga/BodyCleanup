@@ -30,6 +30,8 @@ protected:
 	virtual void InputReleasedMouseRightClick() override;
 	virtual void InputPressedMouseWheelClick() override;
 	virtual void InputReleasedMouseWheelClick() override;
+	virtual void InputPressedSpacebar();
+	virtual void InputReleasedSpacebar();
 
 public:
 	// Called every frame

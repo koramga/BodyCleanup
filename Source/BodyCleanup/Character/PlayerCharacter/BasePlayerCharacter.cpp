@@ -386,12 +386,10 @@ void ABasePlayerCharacter::InputPressedToggleMoving()
 
 void ABasePlayerCharacter::InputPressedSpacebar()
 {
-	if(PlayerCharacterAnimInstance->CanUpdateAnimationType(EAnimationType::Dash))
-	{
-		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Dash);
-	}
+	Jump();
 }
 
 void ABasePlayerCharacter::InputReleasedSpacebar()
 {
+	StopJumping();
 }

@@ -5,6 +5,7 @@
 
 #include "BodyCleanup/Actor/Modular/WeaponModularActor.h"
 #include "BodyCleanup/Animation/BaseAnimInstance.h"
+#include "BodyCleanup/Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
 #include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 
 
@@ -95,6 +96,19 @@ void AMors::InputReleasedMouseWheelClick()
 	{
 		BaseAnimInstance->UpdateMontageFromKey(EInputEvent::IE_Released);
 	}
+}
+
+void AMors::InputPressedSpacebar()
+{
+	if(PlayerCharacterAnimInstance->CanUpdateAnimationType(EAnimationType::Dash))
+	{
+		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Dash);
+	}
+}
+
+void AMors::InputReleasedSpacebar()
+{
+	//Super::InputReleasedSpacebar();
 }
 
 // Called every frame
