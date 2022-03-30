@@ -67,7 +67,8 @@ void ABasePlayerController::__InputMoveForward(float InputAxis)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputMoveForward(InputAxis);
 		}		
@@ -80,7 +81,8 @@ void ABasePlayerController::__InputMoveRight(float InputAxis)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputMoveRight(InputAxis);
 		}
@@ -93,7 +95,8 @@ void ABasePlayerController::__InputMouseWheel(float InputAxis)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputMouseWheel(InputAxis);
 		}
@@ -106,7 +109,8 @@ void ABasePlayerController::__InputPressedMouseLeftClick()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputPressedMouseLeftClick();
 		}
@@ -119,7 +123,8 @@ void ABasePlayerController::__InputReleasedMouseLeftClick()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputReleasedMouseLeftClick();
 		}
@@ -132,7 +137,8 @@ void ABasePlayerController::__InputPressedMouseRightClick()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputPressedMouseRightClick();
 		}
@@ -159,7 +165,8 @@ void ABasePlayerController::__InputReleasedMouseRightClick()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputReleasedMouseRightClick();
 		}
@@ -172,7 +179,8 @@ void ABasePlayerController::__InputPressedMouseWheelClick()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputPressedMouseWheelClick();
 		}
@@ -185,7 +193,8 @@ void ABasePlayerController::__InputReleasedMouseWheelClick()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputReleasedMouseWheelClick();
 		}
@@ -214,7 +223,8 @@ void ABasePlayerController::__InputPressedJump()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputJump();
 		}
@@ -227,7 +237,8 @@ void ABasePlayerController::__InputReleasedJump()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputStopJumping();
 		}
@@ -240,7 +251,8 @@ void ABasePlayerController::__InputPressedInteractive()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputPressedInteractive();
 		}
@@ -253,7 +265,8 @@ void ABasePlayerController::__InputReleasedInteractive()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputReleasedInteractive();
 		}
@@ -266,7 +279,8 @@ void ABasePlayerController::__InputPressedSpacebar()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputPressedSpacebar();
 		}
@@ -279,7 +293,8 @@ void ABasePlayerController::__InputReleasedSpacebar()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputReleasedSpacebar();
 		}
@@ -407,7 +422,8 @@ void ABasePlayerController::__InputPressedToggleMoving()
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if (IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter)
+			&& false == PlayerCharacter->IsDeath())
 		{
 			PlayerCharacter->InputPressedToggleMoving();
 		}
@@ -422,7 +438,7 @@ void ABasePlayerController::SetFocusOnCharacter(bool bInIsFocusOnCharacter)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if(IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter))
 		{
 			PlayerCharacter->SetFocusOn(true);		
 		}
@@ -431,7 +447,7 @@ void ABasePlayerController::SetFocusOnCharacter(bool bInIsFocusOnCharacter)
 	{
 		ABasePlayerCharacter* PlayerCharacter = Cast<ABasePlayerCharacter>(GetCharacter());
 
-		if(IsValid(PlayerCharacter))
+		if (IsValid(PlayerCharacter))
 		{
 			PlayerCharacter->SetFocusOn(false);		
 		}

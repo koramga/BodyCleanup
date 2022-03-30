@@ -53,7 +53,7 @@ void AMors::InputReleasedMouseLeftClick()
 }
 
 void AMors::InputPressedMouseRightClick()
-{
+{	
 	Super::InputPressedMouseRightClick();
 
 	if(CapabilitySystemComponent->CanActivateAbilityByTag(UGameGCSFunctionLibrary::SpecialAttackGameplayTag))
@@ -66,7 +66,7 @@ void AMors::InputPressedMouseRightClick()
 }
 
 void AMors::InputReleasedMouseRightClick()
-{
+{	
 	Super::InputReleasedMouseRightClick();
 
 	if(CapabilitySystemComponent->IsActivateAbilityByTag(UGameGCSFunctionLibrary::SpecialAttackGameplayTag))
@@ -76,7 +76,7 @@ void AMors::InputReleasedMouseRightClick()
 }
 
 void AMors::InputPressedMouseWheelClick()
-{
+{	
 	Super::InputPressedMouseWheelClick();
 
 	if(CapabilitySystemComponent->CanActivateAbilityByTag(UGameGCSFunctionLibrary::ChargingAttackGameplayTag))
@@ -99,7 +99,7 @@ void AMors::InputReleasedMouseWheelClick()
 }
 
 void AMors::InputPressedSpacebar()
-{
+{	
 	if(PlayerCharacterAnimInstance->CanUpdateAnimationType(EAnimationType::Dash))
 	{
 		PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Dash);
@@ -107,7 +107,7 @@ void AMors::InputPressedSpacebar()
 }
 
 void AMors::InputReleasedSpacebar()
-{
+{	
 	//Super::InputReleasedSpacebar();
 }
 

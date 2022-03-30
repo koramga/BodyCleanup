@@ -394,42 +394,7 @@ void ABaseCharacter::SetNextPatrol()
 
 void ABaseCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct)
 {
-	if(EAnimNotify_ChangeOfStateType::EnableCollision == InNotifyStruct.Type)
-	{
-		for(const FName& Name : InNotifyStruct.CollisionNames)
-		{
-			TArray<UActorComponent*> ActorComponents; 
-			
-			GetComponents(UActorComponent::StaticClass(), ActorComponents);
-
-			for(UActorComponent* ActorComponent : ActorComponents)
-			{
-				if(FName(*ActorComponent->GetName()) == Name)
-				{
-					if(ActorComponent->IsA(UChildActorComponent::StaticClass()))
-					{
-						UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(ActorComponent);
-
-						if(IsValid(ChildActorComponent))
-						{
-							AActor* ChildActor = ChildActorComponent->GetChildActor();
-
-							if(IsValid(ChildActor))
-							{
-								if(ChildActor->IsA(ABaseModularActor::StaticClass()))
-								{
-									ABaseModularActor* BaseModularActor = Cast<ABaseModularActor>(ChildActor);
-									BaseModularActor->SetEnableCollision(InNotifyStruct.bIsEnabled);
-									break;
-								}
-							}
-						}					
-					}
-				}
-			}	
-		}
-	}
-	else if(EAnimNotify_ChangeOfStateType::EnableBeDamaged == InNotifyStruct.Type)
+	if(EAnimNotify_ChangeOfStateType::EnableBeDamaged == InNotifyStruct.Type)
 	{
 		if(IsValid(CapabilitySystemComponent))
 		{

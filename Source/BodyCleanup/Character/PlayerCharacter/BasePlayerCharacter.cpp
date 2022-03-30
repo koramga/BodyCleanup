@@ -7,8 +7,10 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
+#include "BodyCleanup/Actor/Modular/BaseModularActor.h"
 #include "BodyCleanup/Controller/Player/BasePlayerController.h"
 #include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
+#include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 #include "BodyCleanup/UI/Screen/MainScreenWidget.h"
 #include "GameFramework/GameModeBase.h"
 
@@ -169,6 +171,47 @@ void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
 	//}
 }
 
+void ABasePlayerCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct)
+{
+	Super::OnChangeOfStateFromNotify(InNotifyStruct);
+	
+	if(EAnimNotify_ChangeOfStateType::EnableCollision == InNotifyStruct.Type)
+	{
+		for(const FName& Name : InNotifyStruct.CollisionNames)
+		{
+			TArray<UActorComponent*> ActorComponents; 
+			
+			GetComponents(UActorComponent::StaticClass(), ActorComponents);
+
+			for(UActorComponent* ActorComponent : ActorComponents)
+			{
+				if(FName(*ActorComponent->GetName()) == Name)
+				{
+					if(ActorComponent->IsA(UChildActorComponent::StaticClass()))
+					{
+						UChildActorComponent* ChildActorComponent = Cast<UChildActorComponent>(ActorComponent);
+
+						if(IsValid(ChildActorComponent))
+						{
+							AActor* ChildActor = ChildActorComponent->GetChildActor();
+
+							if(IsValid(ChildActor))
+							{
+								if(ChildActor->IsA(ABaseModularActor::StaticClass()))
+								{
+									ABaseModularActor* BaseModularActor = Cast<ABaseModularActor>(ChildActor);
+									BaseModularActor->SetEnableCollision(InNotifyStruct.bIsEnabled);
+									break;
+								}
+							}
+						}					
+					}
+				}
+			}	
+		}
+	}
+}
+
 void ABasePlayerCharacter::SetKeyboardControlType(EKeyboardControlType KeyboardControlType)
 {
 	AMainGameModeBase* MainGameModeBase = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -234,7 +277,7 @@ void ABasePlayerCharacter::SetAimMode(bool bInIsAimMode)
 }
 
 void ABasePlayerCharacter::InputMoveForward(float InputAxis)
-{
+{	
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
 		if (PlayerCharacterAnimInstance->CanMove())
@@ -276,7 +319,7 @@ void ABasePlayerCharacter::InputMoveForward(float InputAxis)
 }
 
 void ABasePlayerCharacter::InputMoveRight(float InputAxis)
-{
+{	
 	if (IsValid(PlayerCharacterAnimInstance))
 	{
 		if (PlayerCharacterAnimInstance->CanMove())

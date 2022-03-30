@@ -17,11 +17,66 @@ ABaseNPCCharacter::ABaseNPCCharacter()
 void ABaseNPCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<UActorComponent*> ActorComponents = GetComponentsByTag(UPrimitiveComponent::StaticClass(), TEXT("Attack"));
+
+	for(UActorComponent* ActorComponent : ActorComponents)
+	{
+		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(ActorComponent);
+
+		if(IsValid(PrimitiveComponent))
+		{
+			AttackPrimitiveComponents.Add(PrimitiveComponent);
+			PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			PrimitiveComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseNPCCharacter::__OnAttackOverlapBegin);
+			AttackPrimitiveComponentOverlapMap.Add(PrimitiveComponent);
+		}
+	}
+}
+
+void ABaseNPCCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	AttackPrimitiveComponentOverlapMap.Reset();
 }
 
 void ABaseNPCCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABaseNPCCharacter::__OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor != this
+		&& IsValid(OtherActor))
+	{
+		TArray<TWeakObjectPtr<AActor>>* BeginOverlapActors = AttackPrimitiveComponentOverlapMap.Find(OverlappedComp);
+
+		if(BeginOverlapActors != nullptr)
+		{
+			if(false == BeginOverlapActors->Contains(OtherActor))
+			{
+				BeginOverlapActors->Add(OtherActor);
+
+				TSoftObjectPtr<UCAPAbility> CAPAbility = CapabilitySystemComponent->GetActivateAbility();
+
+				if(CAPAbility.IsValid())
+				{
+					if(OtherActor->GetClass()->ImplementsInterface(UCapabilitySystemInterface::StaticClass()))
+					{
+						UCapabilitySystemComponent* TargetCapabilitySystemComponent = Cast<ICapabilitySystemInterface>(OtherActor)->GetCapabilitySystemComponent();
+
+						if(IsValid(TargetCapabilitySystemComponent))
+						{
+							CAPAbility->AffectAbility(TargetCapabilitySystemComponent);
+						}
+					}					
+				}						
+			}
+		}
+	}	
 }
 
 void ABaseNPCCharacter::UpdateDeath(bool bInIsDeath)
@@ -39,6 +94,45 @@ void ABaseNPCCharacter::UpdateDeath(bool bInIsDeath)
 		TArray<TSoftObjectPtr<UPrimitiveComponent>> PrimitiveComponents;
 		
 		ULevelSupportFunctionLibrary::FindPrimitiveComponets(PrimitiveComponents, this);
+	}
+}
+
+void ABaseNPCCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct)
+{
+	Super::OnChangeOfStateFromNotify(InNotifyStruct);
+
+	if(EAnimNotify_ChangeOfStateType::EnableCollision == InNotifyStruct.Type)
+	{
+		TArray<UActorComponent*> ActorComponents;
+		
+		GetComponents(UPrimitiveComponent::StaticClass(), ActorComponents);
+
+		for(UActorComponent* ActorComponent : ActorComponents)
+		{
+			if(InNotifyStruct.CollisionNames.Contains( FName(*ActorComponent->GetName())))
+			{
+				UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(ActorComponent);
+
+				if(IsValid(PrimitiveComponent))
+				{
+					if(InNotifyStruct.bIsEnabled)
+					{
+						PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+					}
+					else
+					{
+						PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+						TArray<TWeakObjectPtr<AActor>>* BeginOverlapActors = AttackPrimitiveComponentOverlapMap.Find(PrimitiveComponent);
+
+						if(nullptr != BeginOverlapActors)
+						{
+							BeginOverlapActors->Reset();
+						}						
+					}
+				}						
+			}
+		}
 	}
 }
 

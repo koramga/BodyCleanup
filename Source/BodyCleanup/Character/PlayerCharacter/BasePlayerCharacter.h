@@ -77,6 +77,7 @@ public:
 	
 protected:
 	virtual void UpdateDeath(bool bInIsDeath) override;
+	virtual void OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct) override;
 	void SetKeyboardControlType(EKeyboardControlType KeyboardControlType);
 	
 public :
