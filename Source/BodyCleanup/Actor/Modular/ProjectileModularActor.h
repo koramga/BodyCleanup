@@ -17,10 +17,10 @@ public:
 	AProjectileModularActor();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|Projectile")
 	float		SpeedPerSecond = 600.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|Projectile")
 	float		DeathTime = 5.f;
 
 protected:
