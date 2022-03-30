@@ -33,4 +33,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|WeaponModularActor")
 	TSubclassOf<class UCAPAbility>		ChargeAttackCAPAbilityClass;
+	
+	TWeakObjectPtr<class ABasePlayerCharacter>		BasePlayerCharacter;
 };

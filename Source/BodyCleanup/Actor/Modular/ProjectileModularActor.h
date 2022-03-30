@@ -3,17 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BodyCleanup/Actor/BaseActor.h"
-#include "BaseProjectile.generated.h"
+#include "BaseModularActor.h"
+#include "GameFramework/Actor.h"
+#include "ProjectileModularActor.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseProjectile : public ABaseActor
+class BODYCLEANUP_API AProjectileModularActor : public ABaseModularActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABaseProjectile();
+	AProjectileModularActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,8 +23,4 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UBoxComponent*	BoxComponent;
 };

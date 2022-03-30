@@ -17,6 +17,8 @@ AWeaponModularActor::AWeaponModularActor()
 void AWeaponModularActor::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	BasePlayerCharacter = Cast<ABasePlayerCharacter>(BaseCharacter);
 
 	if(BasePlayerCharacter.IsValid())
 	{

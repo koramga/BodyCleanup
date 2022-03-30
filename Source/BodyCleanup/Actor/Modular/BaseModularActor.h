@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "BodyCleanup/Actor/BaseActor.h"
 #include "BaseModularActor.generated.h"
 
 UCLASS()
-class BODYCLEANUP_API ABaseModularActor : public AActor
+class BODYCLEANUP_API ABaseModularActor : public ABaseActor
 {
 	GENERATED_BODY()
 
@@ -41,6 +41,6 @@ protected:
 	class UBoxComponent*	BoxComponent;
 
 	bool										bIsDuplicateOverlap = false;
-	TWeakObjectPtr<class ABasePlayerCharacter>	BasePlayerCharacter;
+	TWeakObjectPtr<class ABaseCharacter>		BaseCharacter;
 	TArray<TWeakObjectPtr<class AActor>>		OverlapActors;
 };

@@ -23,11 +23,11 @@ void ABaseModularActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BasePlayerCharacter = Cast<ABasePlayerCharacter>(GetOwner());
+	BaseCharacter = Cast<ABaseCharacter>(GetOwner());
 
-	if(false == BasePlayerCharacter.IsValid())
+	if(false == BaseCharacter.IsValid())
 	{		
-		BasePlayerCharacter = Cast<ABasePlayerCharacter>(GetAttachParentActor());
+		BaseCharacter = Cast<ABaseCharacter>(GetAttachParentActor());
 	}
 
 	if(IsValid(BoxComponent))
@@ -72,7 +72,7 @@ void ABaseModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 void ABaseModularActor::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	if(OtherActor != BasePlayerCharacter)
+	if(OtherActor != BaseCharacter)
 	{
 		bool bIsAdd = false;
 		
