@@ -99,5 +99,6 @@ public:
 	virtual FBTPatrolInfo GetPatrolInfo() const override;
 	virtual void SetNextPatrol() override;
 	virtual void OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct) override;
+	virtual void OnCreateActorFromNotify(TWeakObjectPtr<AActor> Actor) override;
 	virtual void SetFocusOn(bool bIsFocusOn);
 };

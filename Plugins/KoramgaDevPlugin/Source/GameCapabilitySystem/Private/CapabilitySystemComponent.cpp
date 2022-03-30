@@ -37,7 +37,7 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	TArray<UCAPAffect*> DoneAffects;
 	
-	for(UCAPAffect* CAPAffect : OwnCAPAffects)
+	for(UCAPAffect* CAPAffect : WorkCAPAffects)
 	{
 		if(IsValid(CAPAffect))
 		{
@@ -52,7 +52,7 @@ void UCapabilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	for(UCAPAffect* DoneCAPAffect : DoneAffects)
 	{
-		OwnCAPAffects.Remove(DoneCAPAffect);
+		WorkCAPAffects.Remove(DoneCAPAffect);
 	}
 
 	for(UCAPAbility* CAPAbility : CAPAbilities)
@@ -71,7 +71,7 @@ bool UCapabilitySystemComponent::IsBlockEffect(TSoftObjectPtr<UCAPEffect> CAPEff
 		return true;
 	}
 	
-	for(UCAPAffect* CAPAffect : OwnCAPAffects)
+	for(UCAPAffect* CAPAffect : WorkCAPAffects)
 	{
 		TSoftObjectPtr<UCAPEffect> CAPEffectInAffect = CAPAffect->GetEffect();
 
@@ -121,7 +121,33 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAP
 		{
 			CAPAffect->SetAdvantage(*Advantages);
 		}
-		OwnCAPAffects.Add(CAPAffect);
+		WorkCAPAffects.Add(CAPAffect);
+	}
+
+	return true;
+}
+
+bool UCapabilitySystemComponent::ApplyGameplayEffectFromSource(TSoftObjectPtr<UCAPEffect> CAPEffect,
+	UCapabilitySystemComponent* Source, int32 AbilityLevel, float Weight, const TArray<FCAPEffectAdvantage>* Advantages)
+{
+	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
+	if(Source->IsBlockEffect(CAPEffect))
+	{
+		return false;
+	}
+	
+	UCAPAffect* CAPAffect = NewObject<UCAPAffect>();
+
+	if(IsValid(CAPAffect))
+	{
+		CAPAffect->SetSourceCapabilitySystemComponent(Source);
+		CAPAffect->SetTargetCapabilitySystemComponent(this);
+		CAPAffect->SetEffect(CAPEffect, AbilityLevel, Weight);
+		if(nullptr != Advantages)
+		{
+			CAPAffect->SetAdvantage(*Advantages);
+		}
+		WorkCAPAffects.Add(CAPAffect);
 	}
 
 	return true;
@@ -146,7 +172,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(TSoftObjectPtr<UCAPEf
 		{
 			CAPAffect->SetAdvantage(*Advantages);
 		}
-		OwnCAPAffects.Add(CAPAffect);
+		WorkCAPAffects.Add(CAPAffect);
 	}
 
 	return true;
@@ -165,11 +191,6 @@ bool UCapabilitySystemComponent::AffectFrom(TSoftObjectPtr<UCAPAffect> Affect, c
 	}
 	
 	return false;
-}
-
-void UCapabilitySystemComponent::AffectTo(TSoftObjectPtr<UCAPAffect> Affect)
-{
-	//누군가에게 영향을 줬다.
 }
 
 void UCapabilitySystemComponent::AddBlockGameplayTag(const FGameplayTag& GameplayTag)
@@ -210,6 +231,16 @@ TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::GetAbility(TSubclassOf<U
 	}
 
 	return nullptr;	
+}
+
+TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::GetAbilityFromIndex(int32 Index)
+{
+	if(CAPAbilities.Num() > Index)
+	{
+		return CAPAbilities[Index];
+	}
+
+	return nullptr;
 }
 
 TSoftObjectPtr<UCAPAbility> UCapabilitySystemComponent::GetActivateAbility() const

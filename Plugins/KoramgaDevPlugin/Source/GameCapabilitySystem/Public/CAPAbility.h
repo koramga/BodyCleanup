@@ -51,10 +51,12 @@ protected:
 
 protected:
 	TSoftObjectPtr<class UCapabilitySystemComponent> GetOwnerCapabilitySystemComponent() const;
+	
 
 public :
 	virtual void CommitAbility();
-	virtual void AffectAbility(class UCapabilitySystemComponent* Target);	
+	virtual void AffectAbility(class UCapabilitySystemComponent* Target);
+	virtual void AffectAbilityFromSource(class UCapabilitySystemComponent* Source);
 
 public :
 	void Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> InOwnerCapabilitySystemComponent);
@@ -63,13 +65,13 @@ public :
 	bool Activate();
 	bool DeActivate();
 	virtual bool CanActivate();
+	TSoftObjectPtr<class UCAPEffect> GetAbilityCAPEffect() const;
+	int32 GetAbilityLevel() const;
+	float GetWeight() const;
+	bool IsAbilityTag(const FGameplayTag& GameplayTag) const;
 
 public :
 	void SetAbilityLevel(int32 InAbilityLevel);
 	void SetWeight(float InWeight);
 	void AddWeight(float InAddWeight);
-	
-public :
-	int32 GetAbilityLevel() const;
-	bool IsAbilityTag(const FGameplayTag& GameplayTag);
 };

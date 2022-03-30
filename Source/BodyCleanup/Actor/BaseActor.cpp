@@ -166,10 +166,23 @@ void ABaseActor::AddAttributeSet(TSubclassOf<UCAPAttributeSet> CAPAttributeSetCl
 
 void ABaseActor::AddAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 {
+	if(IsValid(CapabilitySystemComponent))
+	{
+		TSoftObjectPtr<UCAPAbility> CAPAbility = CapabilitySystemComponent->AddAbility(CAPAbilityClass, 0);
+
+		if(CAPAbility.IsValid())
+		{
+			
+		}
+	}	
 }
 
 void ABaseActor::RemoveAbility(TSubclassOf<UCAPAbility> CAPAbilityClass)
 {
+	if(IsValid(CapabilitySystemComponent))
+	{
+		CapabilitySystemComponent->RemoveAbility(CAPAbilityClass);
+	}	
 }
 
 bool ABaseActor::IsDeath() const

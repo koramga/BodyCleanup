@@ -63,8 +63,15 @@ void ABaseModularActor::SetDuplicateOverlap(bool bInIsDuplicateOverlap)
 	bIsDuplicateOverlap = bInIsDuplicateOverlap;
 }
 
+void ABaseModularActor::AddIgnoreActor(AActor* IgnoreActor)
+{
+	BoxComponent->IgnoreActorWhenMoving(IgnoreActor, true);
+	
+	IgnoreActors.Add(IgnoreActor);
+}
+
 void ABaseModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//UE_LOG(LogTemp, Display, TEXT("OnOverlapBegin : <%s>"), *OtherComp->GetName());
 }
@@ -76,10 +83,15 @@ void ABaseModularActor::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 	{
 		bool bIsAdd = false;
 		
-		if(INDEX_NONE == OverlapActors.Find(OtherActor))
+		if(false == OverlapActors.Contains(OtherActor))
 		{
 			OverlapActors.Add(OtherActor);
 			bIsAdd = true;
+		}
+
+		if(IgnoreActors.Contains(OtherActor))
+		{
+			return;
 		}
 
 		if(bIsDuplicateOverlap)

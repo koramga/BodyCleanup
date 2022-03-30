@@ -26,6 +26,7 @@ public:
 public :
 	void SetEnableCollision(bool bIsEnableCollision);
 	void SetDuplicateOverlap(bool bInIsDuplicateOverlap);
+	void AddIgnoreActor(AActor* IgnoreActor);
 
 protected:
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -43,4 +44,5 @@ protected:
 	bool										bIsDuplicateOverlap = false;
 	TWeakObjectPtr<class ABaseCharacter>		BaseCharacter;
 	TArray<TWeakObjectPtr<class AActor>>		OverlapActors;
+	TArray<TWeakObjectPtr<class AActor>>		IgnoreActors;
 };

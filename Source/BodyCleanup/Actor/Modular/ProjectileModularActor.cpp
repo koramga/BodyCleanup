@@ -14,12 +14,44 @@ AProjectileModularActor::AProjectileModularActor()
 void AProjectileModularActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(DeathTime > 0.f)
+	{
+		SetLifeSpan(DeathTime);
+	}
+}
+
+
+void AProjectileModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	
+	UE_LOG(LogTemp, Display, TEXT("Overlap Actor <%s>"), *OtherActor->GetName());
+
+	TSoftObjectPtr<UCAPAbility> CAPAbility = CapabilitySystemComponent->GetAbilityFromIndex(0);
+
+	if(CAPAbility.IsValid())
+	{
+		if(OtherActor->GetClass()->ImplementsInterface(UCapabilitySystemInterface::StaticClass()))
+		{
+			UCapabilitySystemComponent* TargetCapabilitySystemComponent = Cast<ICapabilitySystemInterface>(OtherActor)->GetCapabilitySystemComponent();
+			
+			TargetCapabilitySystemComponent->ApplyGameplayEffectFromSource(CAPAbility->GetAbilityCAPEffect()
+				, CapabilitySystemComponent, CAPAbility->GetAbilityLevel(), CAPAbility->GetWeight());
+		}		
+	}
+
+	Destroy();
+	//SetEnableCollision(false);
+	//SetActorHiddenInGame(true);
+	//SetLifeSpan(0.1f);
 }
 
 // Called every frame
 void AProjectileModularActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * (DeltaTime * SpeedPerSecond));
 }
-

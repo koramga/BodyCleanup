@@ -45,6 +45,19 @@ void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target)
 	}
 }
 
+void UCAPAbility::AffectAbilityFromSource(UCapabilitySystemComponent* Source)
+{
+	if(OwnerCapabilitySystemComponent.IsValid())
+	{
+		if(AbilityCAPEffect.IsValid())
+		{
+			//UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
+			
+			OwnerCapabilitySystemComponent->ApplyGameplayEffectFromSource(AbilityCAPEffect, Source, AbilityLevel, Weight);
+		}
+	}	
+}
+
 void UCAPAbility::Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> InOwnerCapabilitySystemComponent)
 {
 	OwnerCapabilitySystemComponent = InOwnerCapabilitySystemComponent;
@@ -75,6 +88,11 @@ bool UCAPAbility::CanActivate()
 	}
 	
 	return true;
+}
+
+TSoftObjectPtr<UCAPEffect> UCAPAbility::GetAbilityCAPEffect() const
+{
+	return AbilityCAPEffect;
 }
 
 void UCAPAbility::Tick(float DeltaTime)
@@ -136,7 +154,12 @@ int32 UCAPAbility::GetAbilityLevel() const
 	return AbilityLevel;
 }
 
-bool UCAPAbility::IsAbilityTag(const FGameplayTag& GameplayTag)
+float UCAPAbility::GetWeight() const
+{
+	return Weight;
+}
+
+bool UCAPAbility::IsAbilityTag(const FGameplayTag& GameplayTag) const
 {
 	return AbilityTags.HasTagExact(GameplayTag);
 }

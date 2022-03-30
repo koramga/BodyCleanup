@@ -23,12 +23,6 @@ bool UCAPAffect::ProcessDone()
 		return false;
 	}
 
-	if(false == SourceCapabilitySystemComponent.IsValid())
-	{
-		__SetDone();
-		return false;
-	}
-
 	if(false == TargetCapabilitySystemComponent.IsValid())
 	{
 		__SetDone();
@@ -40,7 +34,7 @@ bool UCAPAffect::ProcessDone()
 
 void UCAPAffect::SetEffect(TSoftObjectPtr<UCAPEffect> InCAPEffect, int32 InAbilityLevel, float InWeight)
 {
-	CAPEffect = InCAPEffect;
+	CAPEffect = InCAPEffect.Get();
 	AbilityLevel = InAbilityLevel;
 	Weight = InWeight;
 }
@@ -99,7 +93,6 @@ void UCAPAffect::Tick(float DeltaTime)
 
 			if(TargetCapabilitySystemComponent->AffectFrom(this, Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable))
 			{
-				SourceCapabilitySystemComponent->AffectTo(this);
 			}
 		}
 	}	

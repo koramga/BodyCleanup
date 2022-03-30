@@ -9,6 +9,7 @@
 #include "Components/Widget.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/Script/BubbleScriptUserWidget.h"
+#include "BodyCleanup/Actor/Modular/ProjectileModularActor.h"
 #include "BodyCleanup/Actor/Modular/WeaponModularActor.h"
 #include "BodyCleanup/Game/GameInstance/BaseGameInstance.h"
 #include "BodyCleanup/Game/GameMode/BaseGameModeBase.h"
@@ -443,6 +444,21 @@ void ABaseCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& 
 				CapabilitySystemComponent->AddBlockGameplayTag(UGameGCSFunctionLibrary::DamageRootTag);
 			}
 		}
+	}
+}
+
+void ABaseCharacter::OnCreateActorFromNotify(TWeakObjectPtr<AActor> Actor)
+{
+	if(IsValid(CapabilitySystemComponent))
+	{
+		if(Actor->IsA(AProjectileModularActor::StaticClass()))
+		{
+			AProjectileModularActor* ProjectileModularActor = Cast<AProjectileModularActor>(Actor);
+
+			ProjectileModularActor->AddIgnoreActor(this);
+			ProjectileModularActor->AddAbility(CapabilitySystemComponent->GetActivateAbility()->GetClass());
+			ProjectileModularActor->SetEnableCollision(true);
+		}		
 	}
 }
 
