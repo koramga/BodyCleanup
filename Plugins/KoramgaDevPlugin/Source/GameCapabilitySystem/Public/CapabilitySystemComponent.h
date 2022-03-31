@@ -49,15 +49,15 @@ protected:
 public :
 	TSoftObjectPtr<UCAPAttributeSet> AddAttribute(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass);
 	//ApplyGameplayEffectFromSource도 존재해야함. 현재 해당 코드가 존재하지 않음.
-	virtual bool ApplyGameplayEffectToTarget(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, float Weight = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
-	virtual bool ApplyGameplayEffectFromSource(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Source, int32 AbilityLevel = 0, float Weight = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
-	virtual bool ApplyGameplayEffectToSelf(TSoftObjectPtr<class UCAPEffect> CAPEffect, int32 AbilityLevel = 0, const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
+	virtual bool ApplyGameplayEffectToTarget(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, float Weight = 0, const FHitResult& HitResult = FHitResult(), const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
+	virtual bool ApplyGameplayEffectFromSource(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Source, int32 AbilityLevel = 0, float Weight = 0, const FHitResult& HitResult = FHitResult(), const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
+	virtual bool ApplyGameplayEffectToSelf(TSoftObjectPtr<class UCAPEffect> CAPEffect, int32 AbilityLevel = 0, const FHitResult& HitResult = FHitResult(), const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
 
 	//AffectFrom만 있고 To는 없는 이유
 	//Target은 살아있고, Source는 죽을 경우가 존재하기 때문
 	//우선 그 반대의 경우는 쿨하게 무시해도 되는데, [Target이 사라졌으므로 의미가 없으니까] 그렇지만 Source가 사라지는건 의미가 있음
 	//ex) Projectile의 경우 Source가 Projectile, Character는 Target인 경우 Source는 의미없지만 Target은 의미가 있음. 
-	bool AffectFrom(TSoftObjectPtr<class UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value);
+	bool AffectFrom(TSoftObjectPtr<class UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value, const FHitResult& HitResult);
 	void AddBlockGameplayTag(const FGameplayTag& GameplayTag);
 	void RemoveBlockGameplayTag(const FGameplayTag& GameplayTag);
 

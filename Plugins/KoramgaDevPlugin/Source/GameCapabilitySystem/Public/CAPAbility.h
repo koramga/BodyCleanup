@@ -55,8 +55,8 @@ protected:
 
 public :
 	virtual void CommitAbility();
-	virtual void AffectAbility(class UCapabilitySystemComponent* Target);
-	virtual void AffectAbilityFromSource(class UCapabilitySystemComponent* Source);
+	virtual void AffectAbility(class UCapabilitySystemComponent* Target, const FHitResult& HitResult = FHitResult());
+	virtual void AffectAbilityFromSource(class UCapabilitySystemComponent* Source, const FHitResult& HitResult = FHitResult());
 
 public :
 	void Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> InOwnerCapabilitySystemComponent);

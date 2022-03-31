@@ -102,7 +102,7 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 	return CAPAttributeSet;
 }
 
-bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, float Weight,  const TArray<FCAPEffectAdvantage>* Advantages)
+bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, float Weight,  const FHitResult& HitResult, const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
 	if(Target->IsBlockEffect(CAPEffect))
@@ -117,6 +117,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAP
 		CAPAffect->SetSourceCapabilitySystemComponent(this);
 		CAPAffect->SetTargetCapabilitySystemComponent(Target);
 		CAPAffect->SetEffect(CAPEffect, AbilityLevel, Weight);
+		CAPAffect->SetHitResult(HitResult);
 		if(nullptr != Advantages)
 		{
 			CAPAffect->SetAdvantage(*Advantages);
@@ -128,7 +129,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAP
 }
 
 bool UCapabilitySystemComponent::ApplyGameplayEffectFromSource(TSoftObjectPtr<UCAPEffect> CAPEffect,
-	UCapabilitySystemComponent* Source, int32 AbilityLevel, float Weight, const TArray<FCAPEffectAdvantage>* Advantages)
+	UCapabilitySystemComponent* Source, int32 AbilityLevel, float Weight, const FHitResult& HitResult, const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
 	if(Source->IsBlockEffect(CAPEffect))
@@ -143,6 +144,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectFromSource(TSoftObjectPtr<UC
 		CAPAffect->SetSourceCapabilitySystemComponent(Source);
 		CAPAffect->SetTargetCapabilitySystemComponent(this);
 		CAPAffect->SetEffect(CAPEffect, AbilityLevel, Weight);
+		CAPAffect->SetHitResult(HitResult);
 		if(nullptr != Advantages)
 		{
 			CAPAffect->SetAdvantage(*Advantages);
@@ -154,7 +156,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectFromSource(TSoftObjectPtr<UC
 }
 
 bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(TSoftObjectPtr<UCAPEffect> CAPEffect, int32 AbilityLevel,
-	const TArray<FCAPEffectAdvantage>* Advantages)
+	const FHitResult& HitResult, const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	if(IsBlockEffect(CAPEffect))
 	{
@@ -168,6 +170,7 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(TSoftObjectPtr<UCAPEf
 		CAPAffect->SetSourceCapabilitySystemComponent(this);
 		CAPAffect->SetTargetCapabilitySystemComponent(this);
 		CAPAffect->SetEffect(CAPEffect, AbilityLevel);
+		CAPAffect->SetHitResult(HitResult);
 		if(nullptr != Advantages)
 		{
 			CAPAffect->SetAdvantage(*Advantages);
@@ -178,13 +181,13 @@ bool UCapabilitySystemComponent::ApplyGameplayEffectToSelf(TSoftObjectPtr<UCAPEf
 	return true;
 }
 
-bool UCapabilitySystemComponent::AffectFrom(TSoftObjectPtr<UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value)
+bool UCapabilitySystemComponent::AffectFrom(TSoftObjectPtr<UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp ModifierOp, float Value, const FHitResult& HitResult)
 {
 	//누군가에게 영향을 받았다.
 
 	for(UCAPAttributeSet* CAPAttribute : CAPAttributeSets)
 	{
-		if(CAPAttribute->AffectAttribute(Affect, AttributeName, ModifierOp, Value))
+		if(CAPAttribute->AffectAttribute(Affect, AttributeName, ModifierOp, Value, HitResult))
 		{
 			return true;
 		}

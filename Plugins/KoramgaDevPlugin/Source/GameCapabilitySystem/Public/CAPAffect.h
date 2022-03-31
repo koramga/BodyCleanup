@@ -38,6 +38,7 @@ protected:
 	bool											bIsFinish = false;
 	float											RemainTime = 0.f;
 	float											TotalTickTime = 0.f;
+	FHitResult										HitResult;
 	
 private :
 	void __SetDone();
@@ -50,6 +51,7 @@ public :
 	void SetAdvantage(const TArray<FCAPEffectAdvantage>& InAdvantages);
 	void SetSourceCapabilitySystemComponent(class UCapabilitySystemComponent* InSourceCapabilitySystemComponent);
 	void SetTargetCapabilitySystemComponent(class UCapabilitySystemComponent* InTargetCapabilitySystemComponent);
+	void SetHitResult(const FHitResult& InHitResult);
 	
 public :
 	void BeginPlay();

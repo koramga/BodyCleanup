@@ -77,6 +77,7 @@ public:
 	
 protected:
 	virtual void UpdateDeath(bool bInIsDeath) override;
+	virtual void OnHit(const FOnCAPAttributeChangeData& Data) override;
 	virtual void OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct) override;
 	void SetKeyboardControlType(EKeyboardControlType KeyboardControlType);
 	
@@ -86,6 +87,7 @@ public :
 	bool	IsPressedWheelMouse() const;
 	bool	IsPressedInteractive() const;
 	void	SetLookAtMousePoint();
+	void	SetLookAtLocation(const FVector& LookAtPoint);
 	void	SetAimMode(bool bInIsAimMode);
 
 public :

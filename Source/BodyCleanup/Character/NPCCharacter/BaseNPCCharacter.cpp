@@ -4,6 +4,7 @@
 #include "BaseNPCCharacter.h"
 #include "Interface/BTPatrolActorInterface.h"
 #include "../../Actor/Level/Patrol/BasePatrolActor.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
 
@@ -70,7 +71,35 @@ void ABaseNPCCharacter::__OnAttackOverlapBegin(UPrimitiveComponent* OverlappedCo
 
 						if(IsValid(TargetCapabilitySystemComponent))
 						{
-							CAPAbility->AffectAbility(TargetCapabilitySystemComponent);
+							UBoxComponent* BoxComponent = Cast<UBoxComponent>(OverlappedComp);
+
+							FHitResult HitResult = SweepResult;
+							
+							if(IsValid(BoxComponent))
+							{
+								TArray<FHitResult> AllResults; 
+								GetWorld()->SweepMultiByObjectType(
+								AllResults,
+								BoxComponent->GetComponentTransform().GetLocation(),
+								BoxComponent->GetComponentTransform().GetLocation(),
+								BoxComponent->GetComponentTransform().GetRotation(),
+								0,
+								FCollisionShape::MakeBox(BoxComponent->GetScaledBoxExtent()),  
+								FCollisionQueryParams::FCollisionQueryParams(false));
+
+								for(FHitResult InputHitResult : AllResults)
+								{
+									if(InputHitResult.GetActor() == OtherActor
+										&& InputHitResult.GetComponent() == OtherComp)
+									{
+										HitResult = InputHitResult;
+										break;
+									}
+								}
+								
+							}
+							
+							CAPAbility->AffectAbility(TargetCapabilitySystemComponent, HitResult);
 						}
 					}					
 				}						

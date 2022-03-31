@@ -32,7 +32,7 @@ void ABaseModularActor::BeginPlay()
 
 	if(IsValid(BoxComponent))
 	{
-		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseModularActor::ABaseModularActor::__OnOverlapBegin);
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABaseModularActor::__OnOverlapBegin);
 	}
 
 	SetEnableCollision(false);
@@ -94,15 +94,37 @@ void ABaseModularActor::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			return;
 		}
 
+		TArray<FHitResult> AllResults; 
+		GetWorld()->SweepMultiByObjectType(
+		AllResults,
+		GetActorLocation(),
+		GetActorLocation(),
+		FQuat::Identity,
+	0,
+		FCollisionShape::MakeBox(BoxComponent->GetScaledBoxExtent()),  
+		FCollisionQueryParams::FCollisionQueryParams(false));
+
+		FHitResult HitResult;
+		
+		for(FHitResult InputHitResult : AllResults)
+		{
+			if(InputHitResult.GetActor() == OtherActor
+				&& InputHitResult.GetComponent() == OtherComp)
+			{
+				HitResult = InputHitResult;
+				break;
+			}
+		}
+
 		if(bIsDuplicateOverlap)
 		{
-			OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+			OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, HitResult);
 		}
 		else
 		{
 			if(bIsAdd)
 			{
-				OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+				OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, HitResult);
 			}
 		}
 	}

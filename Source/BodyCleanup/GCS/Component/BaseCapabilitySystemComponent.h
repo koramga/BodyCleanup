@@ -16,7 +16,7 @@ class BODYCLEANUP_API UBaseCapabilitySystemComponent : public UCapabilitySystemC
 	GENERATED_BODY()
 
 public :
-	virtual bool ApplyGameplayEffectToTargetWithAdvantage(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, float Weight = 0);
+	virtual bool ApplyGameplayEffectToTargetWithAdvantage(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, float Weight = 0, const FHitResult& HitResult = FHitResult());
 	virtual void LeftAnimationType(EAnimationType AnimationType);
 	virtual float GetAbilityRangeByTag(const FGameplayTag& Tag);
 };

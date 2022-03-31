@@ -87,7 +87,7 @@ void AWeaponModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 				
 				if(CAPAbility.IsValid())
 				{
-					CAPAbility->AffectAbility(TargetCapabilitySystemComponent);
+					CAPAbility->AffectAbility(TargetCapabilitySystemComponent, SweepResult);
 				}
 			}			
 		}

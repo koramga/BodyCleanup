@@ -54,6 +54,11 @@ void UCAPAffect::SetTargetCapabilitySystemComponent(UCapabilitySystemComponent* 
 	TargetCapabilitySystemComponent = InTargetCapabilitySystemComponent;
 }
 
+void UCAPAffect::SetHitResult(const FHitResult& InHitResult)
+{
+	HitResult = InHitResult;
+}
+
 void UCAPAffect::BeginPlay()
 {
 	if(false == ProcessDone())
@@ -91,7 +96,7 @@ void UCAPAffect::Tick(float DeltaTime)
 				}
 			}
 
-			if(TargetCapabilitySystemComponent->AffectFrom(this, Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable))
+			if(TargetCapabilitySystemComponent->AffectFrom(this, Magnitude.AttributeName, Magnitude.ModifierOp, MagnitudeVariable, HitResult))
 			{
 			}
 		}

@@ -67,6 +67,7 @@ private :
 
 protected:
 	virtual void UpdateDeath(bool bInIsDeath);
+	virtual void OnHit(const FOnCAPAttributeChangeData& Data);
 
 public :
 	void SetAnimationType(EAnimationType AnimationType, UAnimMontage* AnimMontage = nullptr);

@@ -32,7 +32,7 @@ void UCAPAbility::CommitAbility()
 	}
 }
 
-void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target)
+void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target, const FHitResult& HitResult)
 {
 	if(OwnerCapabilitySystemComponent.IsValid())
 	{
@@ -40,12 +40,12 @@ void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target)
 		{
 			//UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
 			
-			OwnerCapabilitySystemComponent->ApplyGameplayEffectToTarget(AbilityCAPEffect, Target, AbilityLevel, Weight);
+			OwnerCapabilitySystemComponent->ApplyGameplayEffectToTarget(AbilityCAPEffect, Target, AbilityLevel, Weight, HitResult);
 		}
 	}
 }
 
-void UCAPAbility::AffectAbilityFromSource(UCapabilitySystemComponent* Source)
+void UCAPAbility::AffectAbilityFromSource(UCapabilitySystemComponent* Source, const FHitResult& HitResult)
 {
 	if(OwnerCapabilitySystemComponent.IsValid())
 	{
@@ -53,7 +53,7 @@ void UCAPAbility::AffectAbilityFromSource(UCapabilitySystemComponent* Source)
 		{
 			//UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
 			
-			OwnerCapabilitySystemComponent->ApplyGameplayEffectFromSource(AbilityCAPEffect, Source, AbilityLevel, Weight);
+			OwnerCapabilitySystemComponent->ApplyGameplayEffectFromSource(AbilityCAPEffect, Source, AbilityLevel, Weight, HitResult);
 		}
 	}	
 }

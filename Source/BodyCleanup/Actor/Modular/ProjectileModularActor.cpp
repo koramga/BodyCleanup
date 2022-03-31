@@ -38,7 +38,7 @@ void AProjectileModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 			UCapabilitySystemComponent* TargetCapabilitySystemComponent = Cast<ICapabilitySystemInterface>(OtherActor)->GetCapabilitySystemComponent();
 			
 			TargetCapabilitySystemComponent->ApplyGameplayEffectFromSource(CAPAbility->GetAbilityCAPEffect()
-				, CapabilitySystemComponent, CAPAbility->GetAbilityLevel(), CAPAbility->GetWeight());
+				, CapabilitySystemComponent, CAPAbility->GetAbilityLevel(), CAPAbility->GetWeight(), SweepResult);
 		}		
 	}
 

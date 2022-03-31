@@ -143,6 +143,7 @@ struct FOnCAPAttributeChangeData
 	float NewValue;
 	FName AttributeName;
 	TSoftObjectPtr<class UCAPAttributeSet> AttributeSet;
+	FHitResult HitResult;
 };
 
 USTRUCT(BlueprintType)

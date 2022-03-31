@@ -23,7 +23,7 @@ void UCAPAttributeSet::PostUpdateAttribute(const FOnCAPAttributeChangeData& OnCa
 //	}
 //	
 //}
-bool UCAPAttributeSet::AffectAttribute(TSoftObjectPtr<UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp Op, float Magnitude)
+bool UCAPAttributeSet::AffectAttribute(TSoftObjectPtr<UCAPAffect> Affect, const FName& AttributeName, ECAPModifierOp Op, float Magnitude, const FHitResult& HitResult)
 {
 	for(FCAPAttributeData& CAPAttributeData : CAPAttributeDatas)
 	{
@@ -33,6 +33,7 @@ bool UCAPAttributeSet::AffectAttribute(TSoftObjectPtr<UCAPAffect> Affect, const 
 			AttributeChangeData.AttributeName = AttributeName;
 			AttributeChangeData.OldValue = CAPAttributeData.GetCurrentValue();
 			AttributeChangeData.AttributeSet = this;
+			AttributeChangeData.HitResult = HitResult;
 			
 			switch (Op)
 			{

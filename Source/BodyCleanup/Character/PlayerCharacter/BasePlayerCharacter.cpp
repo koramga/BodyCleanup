@@ -171,6 +171,22 @@ void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
 	//}
 }
 
+void ABasePlayerCharacter::OnHit(const FOnCAPAttributeChangeData& Data)
+{
+	Super::OnHit(Data);
+
+	if(Data.HitResult.ImpactPoint != FVector::ZeroVector)
+	{
+		if(PlayerCharacterAnimInstance->CanUpdateAnimationType(EAnimationType::Hit))
+		{
+			PlayerCharacterAnimInstance->SetAnimationType(EAnimationType::Hit);
+			SetLookAtLocation(Data.HitResult.ImpactPoint);
+		}		
+		
+		//UE_LOG(LogTemp, Display, TEXT("OnHit ImpactPoint : <%.2f, %.2f, %.2f>"), Data.HitResult.ImpactPoint.X, Data.HitResult.ImpactPoint.Y, Data.HitResult.ImpactPoint.Z);
+	}
+}
+
 void ABasePlayerCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& InNotifyStruct)
 {
 	Super::OnChangeOfStateFromNotify(InNotifyStruct);
@@ -268,6 +284,15 @@ void ABasePlayerCharacter::SetLookAtMousePoint()
 			}			
 		}
 	}
+}
+
+void ABasePlayerCharacter::SetLookAtLocation(const FVector& LookAtPoint)
+{
+	FRotator tempRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), LookAtPoint);
+	tempRot.Pitch = 0;
+	tempRot.Roll = 0;
+
+	SetActorRotation(tempRot);
 }
 
 void ABasePlayerCharacter::SetAimMode(bool bInIsAimMode)

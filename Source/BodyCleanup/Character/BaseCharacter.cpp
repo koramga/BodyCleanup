@@ -168,6 +168,8 @@ void ABaseCharacter::__OnGCSAttributeChanged(const FOnCAPAttributeChangeData& Da
 			{
 				UpdateDeath(true);
 			}
+
+			OnHit(Data);
 		}
 	}
 }
@@ -176,6 +178,11 @@ void ABaseCharacter::UpdateDeath(bool bInIsDeath)
 {
 	LevelTriggerActorAssist->SetLevelTriggerState(ELevelTriggerActorState::Death, true);
 	bIsDeath = bInIsDeath;	
+}
+
+void ABaseCharacter::OnHit(const FOnCAPAttributeChangeData& Data)
+{
+	
 }
 
 void ABaseCharacter::SetAnimationType(EAnimationType AnimationType, UAnimMontage* Montage)
