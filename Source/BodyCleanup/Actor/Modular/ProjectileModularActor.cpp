@@ -3,6 +3,8 @@
 
 #include "ProjectileModularActor.h"
 
+#include "BodyCleanup/GCS/Utility/GameBTFunctionLibraray.h"
+
 
 // Sets default values
 AProjectileModularActor::AProjectileModularActor()
@@ -26,21 +28,26 @@ void AProjectileModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnOverlapBegin(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	
-	UE_LOG(LogTemp, Display, TEXT("Overlap Actor <%s>"), *OtherActor->GetName());
 
-	TSoftObjectPtr<UCAPAbility> CAPAbility = CapabilitySystemComponent->GetAbilityFromIndex(0);
-
-	if(CAPAbility.IsValid())
+	if(IsValid(OtherActor))
 	{
-		if(OtherActor->GetClass()->ImplementsInterface(UCapabilitySystemInterface::StaticClass()))
+		TSoftObjectPtr<UCAPAbility> CAPAbility = CapabilitySystemComponent->GetAbilityFromIndex(0);
+
+		if(CAPAbility.IsValid())
 		{
-			UCapabilitySystemComponent* TargetCapabilitySystemComponent = Cast<ICapabilitySystemInterface>(OtherActor)->GetCapabilitySystemComponent();
+			if(OtherActor->GetClass()->ImplementsInterface(UCapabilitySystemInterface::StaticClass()))
+			{
+				if(UGameBTFunctionLibraray::IsEnemy(GetOwner(), OtherActor))
+				{
+					UCapabilitySystemComponent* TargetCapabilitySystemComponent = Cast<ICapabilitySystemInterface>(OtherActor)->GetCapabilitySystemComponent();
 			
-			TargetCapabilitySystemComponent->ApplyGameplayEffectFromSource(CAPAbility->GetAbilityCAPEffect()
-				, CapabilitySystemComponent, CAPAbility->GetAbilityLevel(), CAPAbility->GetWeight(), SweepResult);
+					TargetCapabilitySystemComponent->ApplyGameplayEffectFromSource(CAPAbility->GetAbilityCAPEffect()
+						, CapabilitySystemComponent, CAPAbility->GetAbilityLevel(), CAPAbility->GetWeight(), SweepResult);					
+				}
+			}		
 		}		
 	}
+
 
 	Destroy();
 	//SetEnableCollision(false);

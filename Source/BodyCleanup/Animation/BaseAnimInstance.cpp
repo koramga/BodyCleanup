@@ -213,7 +213,12 @@ bool UBaseAnimInstance::CanUpdateAnimationType(EAnimationType InAnimationType) c
 	}
 	else if(EAnimationType::Attack == InAnimationType)
 	{
-		if(EAnimationType::Idle != AnimationType)
+		if(EAnimationType::Idle == AnimationType
+			|| EAnimationType::Attack == AnimationType)
+		{
+			
+		}
+		else
 		{
 			return false;
 		}

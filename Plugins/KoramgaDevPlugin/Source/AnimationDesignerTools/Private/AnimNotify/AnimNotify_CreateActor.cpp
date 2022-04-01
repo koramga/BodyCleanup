@@ -19,29 +19,32 @@ void UAnimNotify_CreateActor::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		AActor* Actor = MeshComp->GetWorld()->SpawnActor(ActorClass);
 
-		if(BoneName != NAME_None)
+		if(IsValid(Actor))
 		{
-			int32 BoneIndex = MeshComp->GetBoneIndex(BoneName);
-			FTransform BoneTransform;
-
-			if(BoneIndex != INDEX_NONE)
+			Actor->SetOwner(MeshComp->GetOwner());
+			
+			if(BoneName != NAME_None)
 			{
-				BoneTransform = MeshComp->GetBoneTransform(BoneIndex);
-			}
-			else
-			{
-				BoneTransform = MeshComp->GetSocketTransform(BoneName);
-			}
+				int32 BoneIndex = MeshComp->GetBoneIndex(BoneName);
+				FTransform BoneTransform;
 
-			UE_LOG(LogTemp, Display, TEXT("<%.2f, %.2f, %.2f>"), BoneTransform.GetLocation().X, BoneTransform.GetLocation().Y, BoneTransform.GetLocation().Z);
-				
-			Actor->SetActorLocation(BoneTransform.GetLocation() + MeshComp->GetOwner()->GetActorForwardVector() * DistanceOffset);
-			Actor->SetActorRotation(MeshComp->GetOwner()->GetActorRotation());
-		}
-		
-		if(MeshComp->GetOwner()->GetClass()->ImplementsInterface(UAnimationToolsActorInterface::StaticClass()))
-		{
-			Cast<IAnimationToolsActorInterface>(MeshComp->GetOwner())->OnCreateActorFromNotify(Actor);
+				if(BoneIndex != INDEX_NONE)
+				{
+					BoneTransform = MeshComp->GetBoneTransform(BoneIndex);
+				}
+				else
+				{
+					BoneTransform = MeshComp->GetSocketTransform(BoneName);
+				}
+
+				Actor->SetActorLocation(BoneTransform.GetLocation() + MeshComp->GetOwner()->GetActorForwardVector() * DistanceOffset);
+				Actor->SetActorRotation(MeshComp->GetOwner()->GetActorRotation());
+			}
+			
+			if(MeshComp->GetOwner()->GetClass()->ImplementsInterface(UAnimationToolsActorInterface::StaticClass()))
+			{
+				Cast<IAnimationToolsActorInterface>(MeshComp->GetOwner())->OnCreateActorFromNotify(Actor);
+			}
 		}		
 	}
 }

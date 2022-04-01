@@ -4,7 +4,9 @@
 #include "WeaponModularActor.h"
 
 #include "BodyCleanup/Character/PlayerCharacter/BasePlayerCharacter.h"
+#include "BodyCleanup/GCS/Utility/GameBTFunctionLibraray.h"
 #include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
+#include "Interface/BTControllerInterface.h"
 
 
 // Sets default values
@@ -72,23 +74,26 @@ void AWeaponModularActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			UCapabilitySystemComponent* TargetCapabilitySystemComponent = CapabilitySystemInterface->GetCapabilitySystemComponent();			
 
 			if(IsValid(TargetCapabilitySystemComponent))
-			{				
-				UCapabilitySystemComponent* SelfCAPComponent = BasePlayerCharacter->GetCapabilitySystemComponent();
-				TSoftObjectPtr<UCAPAbility> CAPAbility;
+			{
+				if(UGameBTFunctionLibraray::IsEnemy(BasePlayerCharacter.Get(), OtherActor))
+				{
+					UCapabilitySystemComponent* SelfCAPComponent = BasePlayerCharacter->GetCapabilitySystemComponent();
+					TSoftObjectPtr<UCAPAbility> CAPAbility;
 
-				if(SelfCAPComponent->IsActivateAbilityByClass(GeneralAttackCAPAbilityClass))
-				{
-					CAPAbility = SelfCAPComponent->GetAbility(GeneralAttackCAPAbilityClass);
-				}
-				else if(SelfCAPComponent->IsActivateAbilityByClass(ChargeAttackCAPAbilityClass))
-				{
-					CAPAbility = SelfCAPComponent->GetAbility(ChargeAttackCAPAbilityClass);					
-				}
+					if(SelfCAPComponent->IsActivateAbilityByClass(GeneralAttackCAPAbilityClass))
+					{
+						CAPAbility = SelfCAPComponent->GetAbility(GeneralAttackCAPAbilityClass);
+					}
+					else if(SelfCAPComponent->IsActivateAbilityByClass(ChargeAttackCAPAbilityClass))
+					{
+						CAPAbility = SelfCAPComponent->GetAbility(ChargeAttackCAPAbilityClass);					
+					}
 				
-				if(CAPAbility.IsValid())
-				{
-					CAPAbility->AffectAbility(TargetCapabilitySystemComponent, SweepResult);
-				}
+					if(CAPAbility.IsValid())
+					{
+						CAPAbility->AffectAbility(TargetCapabilitySystemComponent, SweepResult);
+					}					
+				}				
 			}			
 		}
 	}

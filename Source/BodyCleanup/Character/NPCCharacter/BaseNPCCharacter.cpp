@@ -4,6 +4,7 @@
 #include "BaseNPCCharacter.h"
 #include "Interface/BTPatrolActorInterface.h"
 #include "../../Actor/Level/Patrol/BasePatrolActor.h"
+#include "BodyCleanup/GCS/Utility/GameBTFunctionLibraray.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "LevelDesignerTools/Utility/LevelSupportFunctionLibrary.h"
@@ -71,20 +72,20 @@ void ABaseNPCCharacter::__OnAttackOverlapBegin(UPrimitiveComponent* OverlappedCo
 
 						if(IsValid(TargetCapabilitySystemComponent))
 						{
-							UBoxComponent* BoxComponent = Cast<UBoxComponent>(OverlappedComp);
-
-							FHitResult HitResult = SweepResult;
-							
-							if(IsValid(BoxComponent))
+							if(UGameBTFunctionLibraray::IsEnemy(this, OtherActor))
 							{
+								FCollisionShape CollisionShape = OverlappedComp->GetCollisionShape();
+
+								FHitResult HitResult = SweepResult;
+						
 								TArray<FHitResult> AllResults; 
 								GetWorld()->SweepMultiByObjectType(
 								AllResults,
-								BoxComponent->GetComponentTransform().GetLocation(),
-								BoxComponent->GetComponentTransform().GetLocation(),
-								BoxComponent->GetComponentTransform().GetRotation(),
+								OverlappedComp->GetComponentTransform().GetLocation(),
+								OverlappedComp->GetComponentTransform().GetLocation(),
+								OverlappedComp->GetComponentTransform().GetRotation(),
 								0,
-								FCollisionShape::MakeBox(BoxComponent->GetScaledBoxExtent()),  
+								CollisionShape,  
 								FCollisionQueryParams::FCollisionQueryParams(false));
 
 								for(FHitResult InputHitResult : AllResults)
@@ -96,10 +97,9 @@ void ABaseNPCCharacter::__OnAttackOverlapBegin(UPrimitiveComponent* OverlappedCo
 										break;
 									}
 								}
-								
-							}
 							
-							CAPAbility->AffectAbility(TargetCapabilitySystemComponent, HitResult);
+								CAPAbility->AffectAbility(TargetCapabilitySystemComponent, HitResult);								
+							}							
 						}
 					}					
 				}						

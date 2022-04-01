@@ -426,7 +426,8 @@ void ABaseCharacter::OnCreateActorFromNotify(TWeakObjectPtr<AActor> Actor)
 		if(Actor->IsA(AProjectileModularActor::StaticClass()))
 		{
 			AProjectileModularActor* ProjectileModularActor = Cast<AProjectileModularActor>(Actor);
-
+			
+			ProjectileModularActor->SetOwner(this);
 			ProjectileModularActor->AddIgnoreActor(this);
 			ProjectileModularActor->AddAbility(CapabilitySystemComponent->GetActivateAbility()->GetClass());
 			ProjectileModularActor->SetEnableCollision(true);
