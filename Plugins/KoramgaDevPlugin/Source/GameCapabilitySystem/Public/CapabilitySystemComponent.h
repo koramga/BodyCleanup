@@ -48,7 +48,8 @@ protected:
 	
 public :
 	TSoftObjectPtr<UCAPAttributeSet> AddAttribute(TSubclassOf<class UCAPAttributeSet> CAPAttributeSetClass);
-	//ApplyGameplayEffectFromSource도 존재해야함. 현재 해당 코드가 존재하지 않음.
+	FCAPAttributeData* GetAttributeDataByAttributeName(const FName& AttributeName);
+	
 	virtual bool ApplyGameplayEffectToTarget(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel = 0, float Weight = 0, const FHitResult& HitResult = FHitResult(), const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
 	virtual bool ApplyGameplayEffectFromSource(TSoftObjectPtr<class UCAPEffect> CAPEffect, UCapabilitySystemComponent* Source, int32 AbilityLevel = 0, float Weight = 0, const FHitResult& HitResult = FHitResult(), const TArray<FCAPEffectAdvantage>* Advantages = nullptr);
 	virtual bool ApplyGameplayEffectToSelf(TSoftObjectPtr<class UCAPEffect> CAPEffect, int32 AbilityLevel = 0, const FHitResult& HitResult = FHitResult(), const TArray<FCAPEffectAdvantage>* Advantages = nullptr);

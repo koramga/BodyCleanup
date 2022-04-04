@@ -22,4 +22,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	virtual void OnHit(const FOnCAPAttributeChangeData& Data) override;;
+
+protected:
+	int		CurrentPhase = 0;
 };

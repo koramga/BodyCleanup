@@ -69,3 +69,16 @@ bool UCAPAttributeSet::AffectAttribute(TSoftObjectPtr<UCAPAffect> Affect, const 
 
 	return false;
 }
+
+FCAPAttributeData* UCAPAttributeSet::GetAttributeDataByName(const FName& AttributeName)
+{
+	for(FCAPAttributeData& CAPAttributeData : CAPAttributeDatas)
+	{
+		if(CAPAttributeData.GetAttributeName() == AttributeName)
+		{
+			return &CAPAttributeData;
+		}
+	}
+
+	return nullptr;
+}

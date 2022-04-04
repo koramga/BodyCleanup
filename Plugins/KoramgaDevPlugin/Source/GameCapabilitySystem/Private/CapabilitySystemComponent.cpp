@@ -102,6 +102,21 @@ TSoftObjectPtr<UCAPAttributeSet> UCapabilitySystemComponent::AddAttribute(TSubcl
 	return CAPAttributeSet;
 }
 
+FCAPAttributeData* UCapabilitySystemComponent::GetAttributeDataByAttributeName(const FName& AttributeName)
+{
+	for(UCAPAttributeSet* AttributeSet : CAPAttributeSets)
+	{
+		FCAPAttributeData* CAPAttributeData = AttributeSet->GetAttributeDataByName(AttributeName);
+
+		if(nullptr != CAPAttributeData)
+		{
+			return CAPAttributeData;
+		}
+	}
+
+	return nullptr;
+}
+
 bool UCapabilitySystemComponent::ApplyGameplayEffectToTarget(TSoftObjectPtr<UCAPEffect> CAPEffect, UCapabilitySystemComponent* Target, int32 AbilityLevel, float Weight,  const FHitResult& HitResult, const TArray<FCAPEffectAdvantage>* Advantages)
 {
 	//어떻게 데이터를 푸쉬해버릴까? 규칙을 어떻게 할까?
