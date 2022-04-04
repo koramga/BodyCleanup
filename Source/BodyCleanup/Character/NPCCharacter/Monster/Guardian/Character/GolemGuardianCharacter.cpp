@@ -72,7 +72,7 @@ void AGolemGuardianCharacter::OnHit(const FOnCAPAttributeChangeData& Data)
 					else if(CurrentPhase == 2)
 					{
 						MaterialInstanceDynamic->SetVectorParameterValue("BaseColor", FLinearColor(1.f, 0.f, 0.f, 1.f));
-					}					
+					}
 				}
 				
 				if(Controller->GetClass()->ImplementsInterface(UBTControllerInterface::StaticClass()))
