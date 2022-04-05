@@ -40,8 +40,8 @@ protected:
 	float								InitCooldown = 0.f;
 
 	//스킬의 사용이 끝난 뒤 적용되는 쿨다운 시간입니다.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Delay")
-	float								Delay = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Cooldown")
+	float								Delay = 0.1f;
 	
 protected:
 	TSoftObjectPtr<class UCAPEffect>	CostCAPEffect;
