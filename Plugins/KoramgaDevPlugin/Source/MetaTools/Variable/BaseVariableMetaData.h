@@ -16,7 +16,6 @@ enum class EMetaVariableType : uint8
 	Bool,
 	Int,
 	Float,
-	Double,
 	Vector,
 	Vector4,
 	LinearColor,

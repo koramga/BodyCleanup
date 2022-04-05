@@ -30,9 +30,6 @@ TMetaVariable UMetaToolsFunctionLibrary::MakeRangeScopeVariable(const TMetaVaria
 		case EMetaVariableType::Float:
 			Result.Set<float>(FMath::Lerp<float>(LMetaVariant.Get<float>(), RMetaVariant.Get<float>(), FMath::RandRange(0.f, 1.f)));
 			break;
-		case EMetaVariableType::Double:
-			Result.Set<double>(FMath::Lerp<double>(LMetaVariant.Get<double>(), RMetaVariant.Get<double>(), FMath::RandRange(0.f, 1.f)));
-			break;
 		case EMetaVariableType::Vector:
 			Result.Set<FVector>(FMath::Lerp<FVector>(LMetaVariant.Get<FVector>(), RMetaVariant.Get<FVector>(), FMath::RandRange(0.f, 1.f)));
 			break;

@@ -1,30 +1,30 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "LinearColorVariableMetaData.h"
+#include "IntegerVariableMetaData.h"
 
 #include "MetaTools/Utility/MetaToolsFunctionLibrary.h"
 
-FLinearColorVariableMetaData::FLinearColorVariableMetaData()
+FIntegerVariableMetaData::FIntegerVariableMetaData()
 {
-	MetaVariableType = EMetaVariableType::LinearColor;
+	MetaVariableType = EMetaVariableType::Int;
 }
 
-TMetaVariable FLinearColorVariableMetaData::GetMetaVariable() const
+TMetaVariable FIntegerVariableMetaData::GetMetaVariable() const
 {
 	TMetaVariable MetaVariable;
 
 	if (EMetaVariableScope::Normal == MetaVariableScope)
 	{
-		MetaVariable.Set<FLinearColor>(NormalVariableMetaData.Value);
+		MetaVariable.Set<int>(NormalVariableMetaData.Value);
 	}
 	else if(EMetaVariableScope::Range == MetaVariableScope)
 	{
 		TMetaVariable MinMetaVariable;
 		TMetaVariable MaxMetaVariable;
 		
-		MinMetaVariable.Set<FLinearColor>(RangeVariableMetaData.Min);
-		MaxMetaVariable.Set<FLinearColor>(RangeVariableMetaData.Max);
+		MinMetaVariable.Set<int>(RangeVariableMetaData.Min);
+		MaxMetaVariable.Set<int>(RangeVariableMetaData.Max);
 
 		MetaVariable = UMetaToolsFunctionLibrary::MakeRangeScopeVariable(MinMetaVariable, MaxMetaVariable);
 	}
