@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseVariableMetaDataGroup.h"
 #include "MetaTools/Variable/FloatVariableMetaData.h"
 #include "MetaTools/Variable/LinearColorVariableMetaData.h"
 #include "MetaTools/Variable/VectorVariableMetaData.h"
@@ -13,15 +14,6 @@
  * 
  */
 
-
-UENUM(BlueprintType)
-enum class EMaterialInstanceVariableType : uint8
-{
-	Float,
-	Vector,
-	LinearColor,
-};
-
 USTRUCT(BlueprintType)
 struct METATOOLS_API FMaterialInstanceVariable
 {
@@ -29,15 +21,15 @@ struct METATOOLS_API FMaterialInstanceVariable
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EMaterialInstanceVariableType	MaterialInstanceVariable = EMaterialInstanceVariableType::Float;
+	FName						ParameterName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MaterialInstanceVariable == EMaterialInstanceVariableType::Float", EditConditionHides))
-	FFloatVariableMetaData			FloatVariableMetaData;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32						DynamicMaterialInstanceElementIndex = 0;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MaterialInstanceVariable == EMaterialInstanceVariableType::Vector", EditConditionHides))
-	FVectorVariableMetaData			VectorVariableMetaData;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FBaseVariableMetaDataGroup	BaseVariableMetaDataGroup;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "MaterialInstanceVariable == EMaterialInstanceVariableType::LinearColor", EditConditionHides))
-	FLinearColorVariableMetaData	LinearColorVariableMetaData;
-	
+protected:
+	bool SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent);
+	bool SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic);
 };
