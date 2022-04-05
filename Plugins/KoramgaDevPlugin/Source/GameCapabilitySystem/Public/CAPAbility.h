@@ -15,6 +15,9 @@ class GAMECAPABILITYSYSTEM_API UCAPAbility : public UObject
 {
 	GENERATED_BODY()
 
+public :
+	UCAPAbility();
+
 protected:
 	//Ability Tag입니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Tags")
@@ -35,15 +38,19 @@ protected:
 	//초기 쿨다운 시간입니다. 보스같은 중요한 스킬 패턴은 바로 처음부터 나오는게 아니라 시간이 지나고 사용할 수 있어야 하므로 설정할 수 있도록 하였습니다.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Cooldown")
 	float								InitCooldown = 0.f;
+
+	//스킬의 사용이 끝난 뒤 적용되는 쿨다운 시간입니다.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Delay")
+	float								Delay = 0.f;
 	
 protected:
 	TSoftObjectPtr<class UCAPEffect>	CostCAPEffect;
-	TSoftObjectPtr<class UCAPEffect>	AbilityCAPEffect;
 	TSoftObjectPtr<class UCapabilitySystemComponent>	OwnerCapabilitySystemComponent;
 	bool	bIsActivate = false;
 	int32	AbilityLevel = 0;
 	float	CurrentCooldown;
-	float	Weight;
+	float	CurrentDelay;
+	float	Weight;	
 	
 protected:
 	virtual void OnActivateAbility();
@@ -65,7 +72,7 @@ public :
 	bool Activate();
 	bool DeActivate();
 	virtual bool CanActivate();
-	TSoftObjectPtr<class UCAPEffect> GetAbilityCAPEffect() const;
+	TSoftObjectPtr<class UCAPEffect> GetAbilityCAPEffect();
 	int32 GetAbilityLevel() const;
 	float GetWeight() const;
 	bool IsAbilityTag(const FGameplayTag& GameplayTag) const;

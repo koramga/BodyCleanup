@@ -6,6 +6,11 @@
 #include "CapabilitySystemComponent.h"
 #include "CAPEffect.h"
 
+UCAPAbility::UCAPAbility()
+	: CurrentCooldown(0.f), CurrentDelay(0.f)
+{
+}
+
 void UCAPAbility::OnActivateAbility()
 {
 	Weight = 0.f;
@@ -36,9 +41,10 @@ void UCAPAbility::AffectAbility(UCapabilitySystemComponent* Target, const FHitRe
 {
 	if(OwnerCapabilitySystemComponent.IsValid())
 	{
-		if(AbilityCAPEffect.IsValid())
+		if(IsValid(AbilityCAPEffectClass))
 		{
 			//UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
+			UCAPEffect* AbilityCAPEffect = NewObject<UCAPEffect>(this, AbilityCAPEffectClass);
 			
 			OwnerCapabilitySystemComponent->ApplyGameplayEffectToTarget(AbilityCAPEffect, Target, AbilityLevel, Weight, HitResult);
 		}
@@ -49,9 +55,9 @@ void UCAPAbility::AffectAbilityFromSource(UCapabilitySystemComponent* Source, co
 {
 	if(OwnerCapabilitySystemComponent.IsValid())
 	{
-		if(AbilityCAPEffect.IsValid())
+		if(IsValid(AbilityCAPEffectClass))
 		{
-			//UE_LOG(LogTemp, Display, TEXT("AffectAbility Weight : <%.2f>"), Weight);
+			UCAPEffect* AbilityCAPEffect = NewObject<UCAPEffect>(this, AbilityCAPEffectClass);
 			
 			OwnerCapabilitySystemComponent->ApplyGameplayEffectFromSource(AbilityCAPEffect, Source, AbilityLevel, Weight, HitResult);
 		}
@@ -64,12 +70,7 @@ void UCAPAbility::Initialize(TSoftObjectPtr<class UCapabilitySystemComponent> In
 	
 	if(IsValid(CostCAPEffectClass))
 	{
-		CostCAPEffect = NewObject<UCAPEffect>(this, CostCAPEffectClass);
-	}
-
-	if(IsValid(AbilityCAPEffectClass))
-	{
-		AbilityCAPEffect = NewObject<UCAPEffect>(this, AbilityCAPEffectClass);
+		CostCAPEffect =  NewObject<UCAPEffect>(this, CostCAPEffectClass);
 	}
 
 	CurrentCooldown = InitCooldown;
@@ -82,7 +83,8 @@ bool UCAPAbility::IsActivate()
 
 bool UCAPAbility::CanActivate()
 {
-	if(CurrentCooldown > 0.f)
+	if(CurrentCooldown > 0.f
+		|| CurrentDelay > 0.f)
 	{
 		return false;
 	}
@@ -90,9 +92,14 @@ bool UCAPAbility::CanActivate()
 	return true;
 }
 
-TSoftObjectPtr<UCAPEffect> UCAPAbility::GetAbilityCAPEffect() const
+TSoftObjectPtr<UCAPEffect> UCAPAbility::GetAbilityCAPEffect()
 {
-	return AbilityCAPEffect;
+	if(IsValid(AbilityCAPEffectClass))
+	{ 
+		return NewObject<UCAPEffect>(this, AbilityCAPEffectClass);
+	}
+
+	return nullptr;
 }
 
 void UCAPAbility::Tick(float DeltaTime)
@@ -105,7 +112,17 @@ void UCAPAbility::Tick(float DeltaTime)
 		{
 			CurrentCooldown = 0.f;
 		}		
-	}	
+	}
+
+	if(CurrentDelay > 0.f)
+	{
+		CurrentDelay -= DeltaTime;
+
+		if(CurrentDelay <= 0.f)
+		{
+			CurrentDelay = 0.f;
+		}
+	}
 }
 
 bool UCAPAbility::Activate()
@@ -126,6 +143,7 @@ bool UCAPAbility::DeActivate()
 {
 	if(IsActivate())
 	{
+		CurrentDelay = Delay;
 		bIsActivate = false;
 		OnEndAbility();
 		return true;

@@ -421,7 +421,8 @@ void ABaseCharacter::OnChangeOfStateFromNotify(FAnimNotify_ChangeOfStateStruct& 
 
 void ABaseCharacter::OnCreateActorFromNotify(TWeakObjectPtr<AActor> Actor)
 {
-	if(IsValid(CapabilitySystemComponent))
+	if(IsValid(CapabilitySystemComponent)
+		&& CapabilitySystemComponent->GetActivateAbility().IsValid())
 	{
 		if(Actor->IsA(AProjectileModularActor::StaticClass()))
 		{
