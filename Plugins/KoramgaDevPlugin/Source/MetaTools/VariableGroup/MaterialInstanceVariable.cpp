@@ -3,7 +3,7 @@
 
 #include "MaterialInstanceVariable.h"
 
-bool FMaterialInstanceVariable::SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent)
+bool FMaterialInstanceVariable::SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent) const
 {
 	UMaterialInstanceDynamic* MaterialInstanceDynamic = SkeletalMeshComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
 
@@ -15,7 +15,7 @@ bool FMaterialInstanceVariable::SetMaterialInstanceParameter(USkeletalMeshCompon
 	return false;
 }
 
-bool FMaterialInstanceVariable::SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic)
+bool FMaterialInstanceVariable::SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic) const
 {
 	if(IsValid(MaterialInstanceDynamic))
 	{

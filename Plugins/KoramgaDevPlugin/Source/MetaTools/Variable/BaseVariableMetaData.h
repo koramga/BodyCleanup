@@ -28,7 +28,7 @@ enum class EMetaVariableScope : uint8
 	Range,
 };
 
-typedef TVariant<bool, int32, float, double, FVector, FVector4, FLinearColor, FString, FName> TMetaVariable;
+typedef TVariant<bool, int32, float, FVector, FVector4, FLinearColor> TMetaVariable;
 
 USTRUCT(BlueprintType)
 struct METATOOLS_API FBaseVariableMetaData

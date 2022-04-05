@@ -29,7 +29,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FBaseVariableMetaDataGroup	BaseVariableMetaDataGroup;
 
-protected:
-	bool SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent);
-	bool SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic);
+public:
+	bool SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent) const;
+	bool SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic) const;
 };
