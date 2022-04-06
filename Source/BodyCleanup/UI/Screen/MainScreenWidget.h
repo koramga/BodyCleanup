@@ -63,6 +63,9 @@ protected:
 	class UTimerScreenWidget* TimeScreenWidget;
 
 	UPROPERTY()
+	class UProgressBar* ProgressBarHP;
+
+	UPROPERTY()
 	FVector2D	ScreenScriptPosition;
 	
 	UPROPERTY()
@@ -114,4 +117,5 @@ public :
 	void ResetCorpseCount();
 	void StartTimer();
 	void TimeOutOfTime();
+	void SetHPPercent(float HPPercent);
 };

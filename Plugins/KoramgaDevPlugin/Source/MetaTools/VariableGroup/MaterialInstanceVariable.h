@@ -31,5 +31,10 @@ protected:
 
 public:
 	bool SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent) const;
+	bool SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent, const TMetaVariable& MetaVariable) const;
 	bool SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic) const;
+	bool SetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic, const TMetaVariable& MetaVariable) const;
+	
+	TMetaVariable GetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent) const;
+	TMetaVariable GetMaterialInstanceParameter(UMaterialInstanceDynamic* MaterialInstanceDynamic) const;
 };

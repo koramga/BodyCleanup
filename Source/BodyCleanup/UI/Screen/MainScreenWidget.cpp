@@ -25,6 +25,7 @@ void UMainScreenWidget::NativePreConstruct()
 	VerticalBoxKeyboardElement = Cast<UVerticalBox>(GetWidgetFromName(TEXT("VerticalBoxKeyboardElement")));
 	CorpseElementWidget = Cast<UCorpseElementWidget>(GetWidgetFromName(TEXT("UI_CorpseElement")));
 	TimeScreenWidget = Cast<UTimerScreenWidget>(GetWidgetFromName(TEXT("UI_TimerScreen")));
+	ProgressBarHP = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBarHP")));
 }
 
 void UMainScreenWidget::NativeConstruct()
@@ -386,4 +387,12 @@ void UMainScreenWidget::StartTimer()
 
 void UMainScreenWidget::TimeOutOfTime()
 {
+}
+
+void UMainScreenWidget::SetHPPercent(float HPPercent)
+{
+	if(IsValid(ProgressBarHP))
+	{
+		ProgressBarHP->SetPercent(HPPercent);
+	}
 }

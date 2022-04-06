@@ -137,6 +137,38 @@ void ABaseCharacter::Tick(float DeltaTime)
 	{
 		BaseAnimInstance->SetMovementMode(GetCharacterMovement()->MovementMode);
 	}
+
+	if(CharacterHitInformation.MaterialTickTime >= 0.f)
+	{
+		if(CharacterHitInformation.MaterialTickTime > CharacterHitInformation.MaterialUpdateKeepTime)
+		{
+			//경과 종료!
+			CharacterHitInformation.MaterialTickTime = -1.f;
+
+			for(int i = 0; i < CharacterHitInformation.MaterialInstanceVariables.Num(); ++i)
+			{
+				const FMaterialInstanceVariable& MaterialInstanceVariable = CharacterHitInformation.MaterialInstanceVariables[i];
+				MaterialInstanceVariable.SetMaterialInstanceParameter(GetMesh(), CharacterHitInformation.BackupMetaVariables[i]);
+			}
+			
+			CharacterHitInformation.BackupMetaVariables.Reset();
+		}
+		
+		if(CharacterHitInformation.MaterialTickTime == 0.f
+			&& CharacterHitInformation.BackupMetaVariables.Num() == 0)
+		{
+			//최초 구간!
+			
+			for(const FMaterialInstanceVariable& MaterialInstanceVariable : CharacterHitInformation.MaterialInstanceVariables)
+			{
+				CharacterHitInformation.BackupMetaVariables.Add(MaterialInstanceVariable.GetMaterialInstanceParameter(GetMesh()));
+				MaterialInstanceVariable.SetMaterialInstanceParameter(GetMesh());
+			}
+		}
+		
+
+		CharacterHitInformation.MaterialTickTime += DeltaTime;
+	}
 }
 
 void ABaseCharacter::UpdateAnimationType(EAnimationType AnimationType, EAnimationType BeforeAnimationType)
@@ -182,7 +214,7 @@ void ABaseCharacter::UpdateDeath(bool bInIsDeath)
 
 void ABaseCharacter::OnHit(const FOnCAPAttributeChangeData& Data)
 {
-	
+	CharacterHitInformation.MaterialTickTime = 0.f;
 }
 
 void ABaseCharacter::SetAnimationType(EAnimationType AnimationType, UAnimMontage* Montage)

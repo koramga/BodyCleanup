@@ -12,7 +12,27 @@
 #include "Interface/BTCharacterInterface.h"
 #include "../GCS/Component/BaseCapabilitySystemComponent.h"
 #include "AnimationDesignerTools/Public/Interface/Actor/AnimationToolsActorInterface.h"
+#include "MetaTools/VariableGroup/MaterialInstanceVariable.h"
 #include "BaseCharacter.generated.h"
+
+USTRUCT(BlueprintType)
+struct BODYCLEANUP_API FCharacterHitInformation
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float								MaterialUpdateKeepTime = 0.3f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FMaterialInstanceVariable>	MaterialInstanceVariables;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class USoundToolDataAsset*			HitSound;
+
+	TArray<TMetaVariable>				BackupMetaVariables;
+	float								MaterialTickTime = -1.f;
+};
 
 UCLASS()
 class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public ICapabilitySystemInterface, public IBTCharacterInterface, public IGCSActorInterface, public IAnimationToolsActorInterface
@@ -41,6 +61,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UWidgetComponent*			SpeechBubbleWidgetComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|Hit")
+	FCharacterHitInformation		CharacterHitInformation;
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsDeath = false;

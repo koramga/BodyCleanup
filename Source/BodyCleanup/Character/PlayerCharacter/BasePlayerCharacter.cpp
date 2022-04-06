@@ -9,6 +9,7 @@
 #include "../../Animation/PlayerCharacter/PlayerCharacterAnimInstance.h"
 #include "BodyCleanup/Actor/Modular/BaseModularActor.h"
 #include "BodyCleanup/Controller/Player/BasePlayerController.h"
+#include "BodyCleanup/Game/GameInstance/BaseGameInstance.h"
 #include "BodyCleanup/Game/GameMode/MainGameModeBase.h"
 #include "BodyCleanup/GCS/Utility/GameGCSFunctionLibrary.h"
 #include "BodyCleanup/UI/Screen/MainScreenWidget.h"
@@ -174,6 +175,32 @@ void ABasePlayerCharacter::UpdateDeath(bool bInIsDeath)
 void ABasePlayerCharacter::OnHit(const FOnCAPAttributeChangeData& Data)
 {
 	Super::OnHit(Data);
+
+	
+	AMainGameModeBase* MainGameModeBase = Cast<AMainGameModeBase>(GetWorld()->GetAuthGameMode());
+	TSoftObjectPtr<UMainScreenWidget> MainScreenWidget;
+	
+	if(nullptr != MainGameModeBase)
+	{
+		MainScreenWidget = MainGameModeBase->GetMainScreenWidget();
+
+		if(MainScreenWidget.IsValid())
+		{			
+			UBaseGameInstance* BaseGameInstance = Cast<UBaseGameInstance>(GetWorld()->GetAuthGameMode()->GetGameInstance());
+
+			if(IsValid(BaseGameInstance))
+			{
+				FName StatTypeName = BaseGameInstance->GetStatTypeToName(EGameStatType::MaxHP);
+
+				FCAPAttributeData* AttributeData = CapabilitySystemComponent->GetAttributeDataByAttributeName(StatTypeName);
+
+				if(nullptr != AttributeData)
+				{
+					MainScreenWidget->SetHPPercent(Data.NewValue / AttributeData->GetCurrentValue());
+				}
+			}
+		}
+	}
 
 	if(Data.HitResult.ImpactPoint != FVector::ZeroVector)
 	{
