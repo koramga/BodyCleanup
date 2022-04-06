@@ -27,12 +27,11 @@ public :
 	UAnimNotify_CameraShake();
 	
 protected:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EAnimNotify_CameraShakeType		CameraShakeType = EAnimNotify_CameraShakeType::Local;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UCameraShakeBase>	CameraShakeBase;
+	TSubclassOf<UCameraShakeBase>	CameraShakeBaseClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition = "CameraShakeType == EAnimNotify_CameraShakeType::Local", EditConditionHides))
 	float							Scale = 1.f;

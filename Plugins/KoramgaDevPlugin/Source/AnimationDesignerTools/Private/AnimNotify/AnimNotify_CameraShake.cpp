@@ -16,24 +16,27 @@ void UAnimNotify_CameraShake::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 {
 	Super::Notify(MeshComp, Animation);
 
-	ACharacter* BaseCharacter = Cast<ACharacter>(MeshComp->GetOwner());
-
-	if(IsValid(BaseCharacter))
+	if(IsValid(CameraShakeBaseClass))
 	{
-		APlayerController* BasePlayerController = Cast<APlayerController>(BaseCharacter->GetController());
+		ACharacter* BaseCharacter = Cast<ACharacter>(MeshComp->GetOwner());
 
-		if(IsValid(BasePlayerController))
+		if(IsValid(BaseCharacter))
 		{
-			if(CameraShakeType == EAnimNotify_CameraShakeType::Local)
+			APlayerController* BasePlayerController = Cast<APlayerController>(BaseCharacter->GetController());
+
+			if(IsValid(BasePlayerController))
 			{
-				BasePlayerController->ClientPlayCameraShake(CameraShakeBase, Scale, PlaySpace, UserPlaySpaceRot);
-			}
+				if(CameraShakeType == EAnimNotify_CameraShakeType::Local)
+				{
+					BasePlayerController->ClientPlayCameraShake(CameraShakeBaseClass, Scale, PlaySpace, UserPlaySpaceRot);
+				}
 			
-			if(CameraShakeType == EAnimNotify_CameraShakeType::World)
-			{
-				BasePlayerController->PlayerCameraManager->PlayWorldCameraShake(MeshComp->GetWorld(), CameraShakeBase, Epicenter, InnerRadius, OuterRadius, Falloff, bOrientShakeTowordsEpicenter);
+				if(CameraShakeType == EAnimNotify_CameraShakeType::World)
+				{
+					BasePlayerController->PlayerCameraManager->PlayWorldCameraShake(MeshComp->GetWorld(), CameraShakeBaseClass, Epicenter, InnerRadius, OuterRadius, Falloff, bOrientShakeTowordsEpicenter);
+				}
 			}
-		}
+		}		
 	}
 }
 
