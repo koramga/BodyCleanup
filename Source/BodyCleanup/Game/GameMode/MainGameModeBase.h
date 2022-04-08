@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseGameModeBase.h"
+#include "Core/Dungeon.h"
 #include "MainGameModeBase.generated.h"
 
 /**
@@ -28,10 +29,26 @@ protected:
 
 	UPROPERTY()
 	TArray<TSoftObjectPtr<class ARobotCorpseActor>> RobotCorpseActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ADungeon*			Dungeon;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool				bIsDungeonReady;
+	bool				bIsNeedDungeonBuild;
 	
 protected :
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
+protected:
+	void BeginPlayForDungeonArchitecture();
+	
+	UFUNCTION()
+	void OnInitialChunksLoaded(ADungeon* InDungeon);
+	
+	void	BuildDungeon();
 
 private:
 	UFUNCTION()

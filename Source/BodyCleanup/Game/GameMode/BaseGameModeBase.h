@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/GameMode.h"
 #include "LevelDesignerTools/GameMode/LevelToolsGameModeBase.h"
 #include "LevelDesignerTools/Trigger/Managers/LevelTriggerManager.h"
 #include "GameFramework/GameModeBase.h"
@@ -14,7 +15,7 @@
  * 
  */
 UCLASS()
-class BODYCLEANUP_API ABaseGameModeBase : public AGameModeBase, public ILevelToolsGameModeBase, public ISoundToolsGameModeBaseInterface
+class BODYCLEANUP_API ABaseGameModeBase : public AGameMode, public ILevelToolsGameModeBase, public ISoundToolsGameModeBaseInterface
 {
 	GENERATED_BODY()
 

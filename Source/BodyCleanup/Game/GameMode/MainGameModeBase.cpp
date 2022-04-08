@@ -7,6 +7,7 @@
 #include "../../Controller/Player/BasePlayerController.h"
 #include "BodyCleanup/Actor/Ragdoll/RobotCorpseActor.h"
 #include "BodyCleanup/UI/Screen/PauseMenuScreenWidget.h"
+#include "GameFramework/PlayerStart.h"
 
 void AMainGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
@@ -16,6 +17,8 @@ void AMainGameModeBase::InitGame(const FString& MapName, const FString& Options,
 void AMainGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bIsNeedDungeonBuild = true;
 
 	if(IsValid(BaseScreenWidget))
 	{
@@ -32,7 +35,42 @@ void AMainGameModeBase::BeginPlay()
 			PauseMenuScreenWidget->SetHiddenInGame(true);
 		}			
 	}
+
+	BeginPlayForDungeonArchitecture();
 }
+
+void AMainGameModeBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
+void AMainGameModeBase::BeginPlayForDungeonArchitecture()
+{
+	Dungeon = Cast<ADungeon>(UGameplayStatics::GetActorOfClass(GetWorld(), ADungeon::StaticClass()));
+
+	if(IsValid(Dungeon))
+	{
+		Dungeon->LevelStreamingModel->OnInitialChunksLoaded.AddDynamic(this, &AMainGameModeBase::OnInitialChunksLoaded);
+		BuildDungeon();
+	}
+}
+
+void AMainGameModeBase::OnInitialChunksLoaded(ADungeon* InDungeon)
+{
+	bIsDungeonReady = true;
+}
+
+void AMainGameModeBase::BuildDungeon()
+{
+	if(IsValid(Dungeon) && bIsNeedDungeonBuild)
+	{
+		bIsDungeonReady = false;
+		bIsNeedDungeonBuild = !bIsNeedDungeonBuild;
+		Dungeon->Config->Seed = UKismetMathLibrary::RandomInteger(10000);
+		Dungeon->BuildDungeon();
+	}
+}
+
 
 void AMainGameModeBase::__OnRobotCorpseActorDestroyed(AActor* Actor, EEndPlayReason::Type EndPlayReason)
 {
