@@ -125,6 +125,7 @@ struct FLevelTriggerSettings
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ELevelTriggerWayType				LevelTriggerWayType;
 	ETriggerPrimitiveComponentEventType TriggerPrimitiveComponentEventType;
 };

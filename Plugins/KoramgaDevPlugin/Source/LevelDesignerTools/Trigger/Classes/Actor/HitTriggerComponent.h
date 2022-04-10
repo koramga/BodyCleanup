@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "TriggerActorComponent.h"
-#include "DeathTriggerComponent.generated.h"
+#include "HitTriggerComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
-class LEVELDESIGNERTOOLS_API UDeathTriggerComponent : public UTriggerActorComponent
+class LEVELDESIGNERTOOLS_API UHitTriggerComponent : public UTriggerActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UDeathTriggerComponent();
+	UHitTriggerComponent();
 
 protected:
 	// Called when the game starts

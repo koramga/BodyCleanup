@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "TriggerSceneComponent.h"
-#include "HitTriggerComponent.generated.h"
+#include "HitComponentTriggerComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))
-class LEVELDESIGNERTOOLS_API UHitTriggerComponent : public UTriggerSceneComponent
+class LEVELDESIGNERTOOLS_API UHitComponentTriggerComponent : public UTriggerSceneComponent
 {
 	GENERATED_BODY()
 
 public :
-	UHitTriggerComponent();
+	UHitComponentTriggerComponent();
 
 protected:
 	// Called when the game starts

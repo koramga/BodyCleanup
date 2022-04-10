@@ -214,6 +214,7 @@ void ABaseCharacter::UpdateDeath(bool bInIsDeath)
 
 void ABaseCharacter::OnHit(const FOnCAPAttributeChangeData& Data)
 {
+	LevelTriggerActorAssist->SetLevelTriggerStateOnce(ELevelTriggerActorState::Hit);
 	CharacterHitInformation.MaterialTickTime = 0.f;
 }
 

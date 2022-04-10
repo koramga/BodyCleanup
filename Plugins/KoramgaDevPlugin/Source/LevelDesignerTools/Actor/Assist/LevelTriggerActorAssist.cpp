@@ -4,6 +4,7 @@
 #include "LevelTriggerActorAssist.h"
 #include "../../Trigger/Interfaces/LevelTriggerInterface.h"
 #include "../../Trigger/Classes/Actor/DeathTriggerComponent.h"
+#include "LevelDesignerTools/Trigger/Classes/Actor/HitTriggerComponent.h"
 
 void ULevelTriggerActorAssist::RegisterTrigger(ILevelTriggerInterface* LevelTriggerInterface)
 {
@@ -30,4 +31,25 @@ void ULevelTriggerActorAssist::SetLevelTriggerState(ELevelTriggerActorState Leve
 			}
 		}
 	}
+	if (ELevelTriggerActorState::Hit == LevelTriggerActorState)
+	{
+		FLevelTriggerUpdateActionParam UpdateActionParam;
+		UpdateActionParam.bIsOnTrigger = bIsState;
+
+		for (TSoftObjectPtr<UObject>& LevelTriggerInterface : LevelTriggerInterfaces)
+		{
+			UHitTriggerComponent* HitTriggerComponent = Cast<UHitTriggerComponent>(LevelTriggerInterface.Get());
+
+			if (IsValid(HitTriggerComponent))
+			{
+				HitTriggerComponent->UpdateAction(UpdateActionParam);
+			}
+		}
+	}
+}
+
+void ULevelTriggerActorAssist::SetLevelTriggerStateOnce(ELevelTriggerActorState LevelTriggerActorState)
+{
+	SetLevelTriggerState(LevelTriggerActorState, true);
+	SetLevelTriggerState(LevelTriggerActorState, false);
 }

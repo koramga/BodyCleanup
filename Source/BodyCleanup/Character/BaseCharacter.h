@@ -27,9 +27,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FMaterialInstanceVariable>	MaterialInstanceVariables;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class USoundToolDataAsset*			HitSound;
-
 	TArray<TMetaVariable>				BackupMetaVariables;
 	float								MaterialTickTime = -1.f;
 };

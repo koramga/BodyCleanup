@@ -25,7 +25,7 @@ protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FLevelTriggerUpdateParam	LevelTriggerUpdateParam;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup|TriggerSettings")
 	FLevelTriggerSettings		LevelTriggerSettings;
 
 protected:

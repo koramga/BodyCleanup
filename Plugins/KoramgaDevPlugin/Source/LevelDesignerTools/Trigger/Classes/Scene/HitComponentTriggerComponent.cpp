@@ -1,30 +1,30 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HitTriggerComponent.h"
+#include "HitComponentTriggerComponent.h"
 #include "../../../Utility/LevelSupportFunctionLibrary.h"
 
-UHitTriggerComponent::UHitTriggerComponent()
+UHitComponentTriggerComponent::UHitComponentTriggerComponent()
 {
 	LevelTriggerSettings.TriggerPrimitiveComponentEventType = ETriggerPrimitiveComponentEventType::Hit;
 }
 
-void UHitTriggerComponent::BeginPlay()
+void UHitComponentTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void UHitTriggerComponent::SetupTrigger()
+void UHitComponentTriggerComponent::SetupTrigger()
 {
 	Super::SetupTrigger();
 }
 
-void UHitTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
+void UHitComponentTriggerComponent::UpdateTrigger(const FLevelTriggerUpdateParam& InputLevelTriggerUpdateParam)
 {
 	Super::UpdateTrigger(InputLevelTriggerUpdateParam);
 }
 
-bool UHitTriggerComponent::IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult)
+bool UHitComponentTriggerComponent::IsApplyTriggerFromPrimitiveComopnent(UPrimitiveComponent* OtherPrimitiveComponent, AActor* OtherActor, const FHitResult& SweepResult)
 {
 	if(false == Super::IsApplyTriggerFromPrimitiveComopnent(OtherPrimitiveComponent, OtherActor, SweepResult))
 	{

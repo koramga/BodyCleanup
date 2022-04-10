@@ -1,17 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DeathTriggerComponent.h"
+#include "HitTriggerComponent.h"
+
+#include "LevelDesignerTools/Actor/LevelToolsActorInterface.h"
 #include "GameFramework/GameModeBase.h"
 #include "../../../GameMode/LevelToolsGameModeBase.h"
 #include "../../../Actor/LevelToolsActorInterface.h"
 
-UDeathTriggerComponent::UDeathTriggerComponent()
+UHitTriggerComponent::UHitTriggerComponent()
 {
 	LevelTriggerInputFrom.LevelTriggerInputNodeFromType = ELevelTriggerInputNodeFromType::Action;
 }
 
-void UDeathTriggerComponent::BeginPlay()
+void UHitTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -33,9 +35,11 @@ void UDeathTriggerComponent::BeginPlay()
 	}
 }
 
-void UDeathTriggerComponent::UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam)
+void UHitTriggerComponent::UpdateAction(const FLevelTriggerUpdateActionParam& LevelTriggerUpdateActionParam)
 {
 	Super::UpdateAction(LevelTriggerUpdateActionParam);
+
+	UE_LOG(LogTemp, Display, TEXT("UpdateAction HitTriggerComponent"));
 
 	ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());
 

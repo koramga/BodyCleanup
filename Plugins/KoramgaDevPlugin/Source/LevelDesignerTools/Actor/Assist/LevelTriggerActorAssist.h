@@ -15,6 +15,7 @@ class ILevelTriggerInterface;
 enum class ELevelTriggerActorState
 {
 	Death,
+	Hit,
 };
 
 UCLASS()
@@ -31,4 +32,5 @@ public :
 
 public :
 	void SetLevelTriggerState(ELevelTriggerActorState LevelTriggerActorState, bool bIsState);
+	void SetLevelTriggerStateOnce(ELevelTriggerActorState LevelTriggerActorState);
 };
