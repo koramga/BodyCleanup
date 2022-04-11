@@ -27,10 +27,10 @@ public :
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(ClampMin="0.0", ClampMax="10.0",UIMin="0.0",UIMax="10.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|TimeDilationTriggerComponent", meta=(ClampMin="0.0", ClampMax="10.0",UIMin="0.0",UIMax="10.0"))
 	float TimeDilation = 0.5f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(ClampMin="0.0", UIMin="0.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|TimeDilationTriggerComponent", meta=(ClampMin="0.0", UIMin="0.0"))
 	float KeepTime = 0.2f;
 
 	float TickTime = 0.f;

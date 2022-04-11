@@ -36,10 +36,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	FLevelTriggerInputTo				LevelTriggerInputTo;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	float								MaterialUpdateKeepTime = 0.3f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup|ComponentMovementComponent")
 	TArray<FMaterialInstanceVariable>	MaterialInstanceVariables;
 
 	TArray<TMetaVariable>				BackupMetaVariables;
