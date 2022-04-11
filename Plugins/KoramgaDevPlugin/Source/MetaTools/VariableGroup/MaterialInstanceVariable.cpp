@@ -3,9 +3,9 @@
 
 #include "MaterialInstanceVariable.h"
 
-bool FMaterialInstanceVariable::SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent) const
+bool FMaterialInstanceVariable::SetMaterialInstanceParameter(UPrimitiveComponent* PrimitiveComponent) const
 {
-	UMaterialInstanceDynamic* MaterialInstanceDynamic = SkeletalMeshComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
+	UMaterialInstanceDynamic* MaterialInstanceDynamic = PrimitiveComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
 
 	if(IsValid(MaterialInstanceDynamic))
 	{
@@ -15,10 +15,10 @@ bool FMaterialInstanceVariable::SetMaterialInstanceParameter(USkeletalMeshCompon
 	return false;
 }
 
-bool FMaterialInstanceVariable::SetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent,
+bool FMaterialInstanceVariable::SetMaterialInstanceParameter(UPrimitiveComponent* PrimitiveComponent,
 	const TMetaVariable& MetaVariable) const
 {
-	UMaterialInstanceDynamic* MaterialInstanceDynamic = SkeletalMeshComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
+	UMaterialInstanceDynamic* MaterialInstanceDynamic = PrimitiveComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
 
 	if(IsValid(MaterialInstanceDynamic))
 	{
@@ -132,9 +132,9 @@ bool FMaterialInstanceVariable::SetMaterialInstanceParameter(UMaterialInstanceDy
 	return false;
 }
 
-TMetaVariable FMaterialInstanceVariable::GetMaterialInstanceParameter(USkeletalMeshComponent* SkeletalMeshComponent) const
+TMetaVariable FMaterialInstanceVariable::GetMaterialInstanceParameter(UPrimitiveComponent* PrimitiveComponent) const
 {
-	UMaterialInstanceDynamic* MaterialInstanceDynamic = SkeletalMeshComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
+	UMaterialInstanceDynamic* MaterialInstanceDynamic = PrimitiveComponent->CreateDynamicMaterialInstance(DynamicMaterialInstanceElementIndex);
 
 	if(IsValid(MaterialInstanceDynamic))
 	{

@@ -39,8 +39,6 @@ void UHitTriggerComponent::UpdateAction(const FLevelTriggerUpdateActionParam& Le
 {
 	Super::UpdateAction(LevelTriggerUpdateActionParam);
 
-	UE_LOG(LogTemp, Display, TEXT("UpdateAction HitTriggerComponent"));
-
 	ILevelToolsGameModeBase* LevelToolsGameModeBase = Cast<ILevelToolsGameModeBase>(GetWorld()->GetAuthGameMode());
 
 	if (nullptr != LevelToolsGameModeBase)
