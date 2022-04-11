@@ -93,8 +93,22 @@ void UAttributeTriggerComponent::ExecuteTriggerAction(const FLevelAttributeTrigg
 					{
 						Cast<UPrimitiveComponent>(SceneComponent)->SetGenerateOverlapEvents(false);
 					}
+				}
+			}
+			else if(ELevelAttributeTriggerActionType::SetMaterialVariable == ExecuteAction.ActionType)
+			{
+				USceneComponent* SceneComponent = Cast<USceneComponent>(Component.Get());
+
+				if(IsValid(SceneComponent))
+				{
+					if(SceneComponent->IsA(UPrimitiveComponent::StaticClass()))
+					{
+						for(const FMaterialInstanceVariable& MaterialInstanceVariable : ExecuteAction.MaterialInstanceVariables)
+						{
+							MaterialInstanceVariable.SetMaterialInstanceParameter(Cast<UPrimitiveComponent>(SceneComponent));
+						}
+					}
 				}				
-				
 			}
 		}
 	}

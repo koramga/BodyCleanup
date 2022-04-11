@@ -30,6 +30,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|Patrol", meta = (EditCondition = "PatrolType == EBTPatrolType::Space", EditConditionHides))
 	FFloatVariableMetaData				MaxPatrolDistance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Setup|Phase")
+	int									CurrentPhase = 0;
 
 	int32	PatrolActorIndex = 0;
 	int32	PatrolActorDirection = 1;
@@ -60,4 +63,6 @@ public :
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
 	virtual void SetNextPatrol() override;
 	virtual FBTPatrolInfo GetPatrolInfo() const override;
+	int		GetPhase() const;
+	void	SetPhase(int32 InCurrentPahse);
 };

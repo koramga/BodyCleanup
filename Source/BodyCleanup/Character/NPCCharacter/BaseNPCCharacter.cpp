@@ -2,6 +2,8 @@
 
 
 #include "BaseNPCCharacter.h"
+
+#include "BTGameFunctionLibrary.h"
 #include "Interface/BTPatrolActorInterface.h"
 #include "../../Actor/Level/Patrol/BasePatrolActor.h"
 #include "BodyCleanup/GCS/Utility/GameBTFunctionLibraray.h"
@@ -245,4 +247,27 @@ FBTPatrolInfo ABaseNPCCharacter::GetPatrolInfo() const
 	PatrolInfo.MaxDistance = MaxPatrolDistance.GetMetaVariable().Get<float>();
 
 	return PatrolInfo;
+}
+
+int ABaseNPCCharacter::GetPhase() const
+{
+	return CurrentPhase;
+}
+
+void ABaseNPCCharacter::SetPhase(int32 InCurrentPahse)
+{
+	CurrentPhase = InCurrentPahse;
+	
+	if(Controller->GetClass()->ImplementsInterface(UBTControllerInterface::StaticClass()))
+	{
+		IBTControllerInterface* BTControllerInterface = Cast<IBTControllerInterface>(Controller);
+
+		if(nullptr != BTControllerInterface)
+		{						
+			TBlackboardVariable PhaseVariable;
+			PhaseVariable.Set<int32>(CurrentPhase);
+						
+			BTControllerInterface->SetBlackboardVariable(UBTGameFunctionLibrary::PhaseName, PhaseVariable);
+		}
+	}
 }

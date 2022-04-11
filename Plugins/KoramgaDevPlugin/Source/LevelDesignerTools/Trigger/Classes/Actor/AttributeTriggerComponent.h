@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TriggerActorComponent.h"
+#include "MetaTools/VariableGroup/MaterialInstanceVariable.h"
 #include "AttributeTriggerComponent.generated.h"
 
 /**
@@ -18,6 +19,7 @@ enum class ELevelAttributeTriggerActionType : uint8
 	InVisible,
 	EnableOverlap,
 	DisableOverlap,
+	SetMaterialVariable,
 };
 
 USTRUCT(BlueprintType, Blueprintable)
@@ -37,6 +39,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FName>						Names;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ActionType == ELevelAttributeTriggerActionType::SetMaterialVariable", EditConditionHides))
+	TArray<FMaterialInstanceVariable>	MaterialInstanceVariables;
 };
 
 UCLASS(ClassGroup = (Triggers), meta = (BlueprintSpawnableComponent))

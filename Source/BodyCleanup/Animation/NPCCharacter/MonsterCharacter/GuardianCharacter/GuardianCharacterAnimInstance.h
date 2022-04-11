@@ -8,7 +8,8 @@
 
 /**
  * 
- */
+*/
+
 UCLASS()
 class BODYCLEANUP_API UGuardianCharacterAnimInstance : public UMonsterCharacterAnimInstance
 {

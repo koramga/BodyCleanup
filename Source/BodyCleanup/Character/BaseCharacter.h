@@ -15,22 +15,6 @@
 #include "MetaTools/VariableGroup/MaterialInstanceVariable.h"
 #include "BaseCharacter.generated.h"
 
-//USTRUCT(BlueprintType)
-//struct BODYCLEANUP_API FCharacterHitInformation
-//{
-//	GENERATED_BODY()
-//
-//public:
-//	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-//	float								MaterialUpdateKeepTime = 0.3f;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-//	TArray<FMaterialInstanceVariable>	MaterialInstanceVariables;
-//
-//	TArray<TMetaVariable>				BackupMetaVariables;
-//	float								MaterialTickTime = -1.f;
-//};
-
 UCLASS()
 class BODYCLEANUP_API ABaseCharacter : public ACharacter, public ILevelToolsActorInterface, public ICapabilitySystemInterface, public IBTCharacterInterface, public IGCSActorInterface, public IAnimationToolsActorInterface
 {
