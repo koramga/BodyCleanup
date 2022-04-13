@@ -650,6 +650,11 @@ FBTPatrolInfo ABasePlayerController::GetPatrolInfo() const
 	return FBTPatrolInfo();
 }
 
+void ABasePlayerController::OnStartMatch()
+{
+	UE_LOG(LogTemp, Display, TEXT("OnStartMatch"));
+}
+
 void ABasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

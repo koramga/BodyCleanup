@@ -18,7 +18,17 @@ AGroupPlayerController::AGroupPlayerController()
 void AGroupPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void AGroupPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+}
+
+void AGroupPlayerController::OnStartMatch()
+{
+	Super::OnStartMatch();
+	
 	AActor* PlayerStartActor = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
 
 	if (IsValid(PlayerStartActor))
@@ -68,12 +78,6 @@ void AGroupPlayerController::BeginPlay()
 			}
 		}
 	}
-
-}
-
-void AGroupPlayerController::PlayerTick(float DeltaTime)
-{
-	Super::PlayerTick(DeltaTime);
 }
 
 void AGroupPlayerController::InputPressedSwapCharacter()

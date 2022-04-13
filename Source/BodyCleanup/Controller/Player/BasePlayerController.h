@@ -68,6 +68,7 @@ public :
 	bool GetHitResultsAtScreenPosition(TArray<FHitResult>& HitResults, FVector2D ScreenPosition, ECollisionChannel CollisionChannel, bool bTraceComplex);
 	bool GetHitResultsAtMousePosition(TArray<FHitResult>& HitResults, ETraceTypeQuery TraceChannel, bool bTraceComplex);
 	bool GetLevelHitResultAtMousePosition(FHitResult& OutHitResult);
+	
 public :
 	virtual ETeamType GetTeamType() const override;
 	virtual TBlackboardVariable GetBlackboardVariable(const FName& Name, EBlackboardVariableType BlackboardVariableType) const override;
@@ -84,4 +85,5 @@ public :
 	virtual class IBTPatrolActorInterface* GetPatrolActorInterface() const override;
 	virtual void SetNextPatrol() override;
 	virtual FBTPatrolInfo GetPatrolInfo() const override;
+	virtual void OnStartMatch();
 };

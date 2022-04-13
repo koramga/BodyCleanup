@@ -42,6 +42,9 @@ protected:
 protected:
 	virtual void PlayerTick(float DeltaTime) override;
 
+public :
+	virtual void OnStartMatch() override;
+
 protected:
 	virtual void InputPressedSwapCharacter()			override;
 	virtual void InputPressedReturnToCharacter()		override;

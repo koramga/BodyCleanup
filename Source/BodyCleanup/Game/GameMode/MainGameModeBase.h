@@ -36,17 +36,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool				bIsDungeonReady;
 	bool				bIsNeedDungeonBuild;
+	bool				bIsEndInitDungeon = false;
 	
 protected :
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void StartMatch() override;
 
 protected:
 	void BeginPlayForDungeonArchitecture();
 	
 	UFUNCTION()
 	void OnInitialChunksLoaded(ADungeon* InDungeon);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsReadyToStartMatch() const;
 	
 	void	BuildDungeon();
 
@@ -57,6 +62,7 @@ private:
 public :
 	TSoftObjectPtr<class UMainScreenWidget>	GetMainScreenWidget() const;
 	TSoftObjectPtr<class UPauseMenuScreenWidget> GetPauseMenuScreenWidget() const;
+	bool IsDungeonReady() const;
 
 public:
 	FOnLevelStart OnLevelStartDelegate;

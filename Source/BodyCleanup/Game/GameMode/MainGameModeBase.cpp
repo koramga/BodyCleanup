@@ -20,6 +20,8 @@ void AMainGameModeBase::BeginPlay()
 
 	bIsNeedDungeonBuild = true;
 
+	BeginPlayForDungeonArchitecture();
+
 	if(IsValid(BaseScreenWidget))
 	{
 		MainScreenWidget = Cast<UMainScreenWidget>(BaseScreenWidget);
@@ -35,13 +37,25 @@ void AMainGameModeBase::BeginPlay()
 			PauseMenuScreenWidget->SetHiddenInGame(true);
 		}			
 	}
-
-	BeginPlayForDungeonArchitecture();
 }
 
 void AMainGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void AMainGameModeBase::StartMatch()
+{
+	Super::StartMatch();
+	
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(PlayerController);
+
+	if(IsValid(BasePlayerController))
+	{
+		BasePlayerController->OnStartMatch();
+	}
 }
 
 void AMainGameModeBase::BeginPlayForDungeonArchitecture()
@@ -53,11 +67,28 @@ void AMainGameModeBase::BeginPlayForDungeonArchitecture()
 		Dungeon->LevelStreamingModel->OnInitialChunksLoaded.AddDynamic(this, &AMainGameModeBase::OnInitialChunksLoaded);
 		BuildDungeon();
 	}
+	
+	bIsEndInitDungeon = true;
 }
 
 void AMainGameModeBase::OnInitialChunksLoaded(ADungeon* InDungeon)
 {
 	bIsDungeonReady = true;
+}
+
+bool AMainGameModeBase::IsReadyToStartMatch() const
+{
+	if(bIsEndInitDungeon)
+	{
+		if(IsValid(Dungeon))
+		{
+			return bIsDungeonReady;
+		}
+
+		return true;		
+	}
+
+	return false;
 }
 
 void AMainGameModeBase::BuildDungeon()
@@ -91,6 +122,11 @@ TSoftObjectPtr<UMainScreenWidget> AMainGameModeBase::GetMainScreenWidget() const
 TSoftObjectPtr<UPauseMenuScreenWidget> AMainGameModeBase::GetPauseMenuScreenWidget() const
 {
 	return Cast<UPauseMenuScreenWidget>(PauseMenuScreenWidget);
+}
+
+bool AMainGameModeBase::IsDungeonReady() const
+{
+	return bIsDungeonReady;
 }
 
 void AMainGameModeBase::TogglePauseMenu()
