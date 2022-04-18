@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapConnectionEditor/Preview3D/SSnapConnectionPreview3DViewportToolbar.h"
 
@@ -31,7 +31,7 @@ void SSnapConnectionPreview3DViewportToolbar::Construct(const FArguments& InArgs
         SNew(SBorder)
 		.BorderImage(FEditorStyle::GetBrush("NoBorder"))
 		// Color and opacity is changed based on whether or not the mouse cursor is hovering over the toolbar area
-		.ColorAndOpacity(this, &SViewportToolBar::OnGetColorAndOpacity)
+		//.ColorAndOpacity(this, &SViewportToolBar::OnGetColorAndOpacity)
 		.ForegroundColor(FEditorStyle::GetSlateColor(DefaultForegroundName))
         [
             SNew(SVerticalBox)

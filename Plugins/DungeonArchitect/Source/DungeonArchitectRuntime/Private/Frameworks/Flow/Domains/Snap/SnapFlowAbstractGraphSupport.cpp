@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Flow/Domains/Snap/SnapFlowAbstractGraphSupport.h"
 
@@ -695,3 +695,4 @@ void FSGFNodeGroupGenLib::BuildNodeGroup(const FFlowAbstractGraphQuery& InGraphQ
 		}
 	}
 }
+

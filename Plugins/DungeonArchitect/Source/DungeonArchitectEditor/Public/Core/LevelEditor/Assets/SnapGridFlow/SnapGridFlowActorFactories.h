@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -11,8 +11,7 @@ class DUNGEONARCHITECTEDITOR_API USnapGridFlowModuleBoundsActorFactory : public 
 
     // UActorFactory interface
     virtual UObject* GetAssetFromActorInstance(AActor* ActorInstance) override;
-    virtual AActor* SpawnActor(UObject* Asset, ULevel* InLevel, const FTransform& Transform, EObjectFlags InObjectFlags,
-                               FName Name) override;
+    virtual AActor* SpawnActor(UObject* InAsset, ULevel* InLevel, const FTransform& InTransform, const FActorSpawnParameters& InSpawnParams) override;
     virtual void PostSpawnActor(UObject* Asset, AActor* NewActor) override;
     virtual void PostCreateBlueprint(UObject* Asset, AActor* CDO) override;
     virtual bool CanCreateActorFrom(const FAssetData& AssetData, FText& OutErrorMsg) override;

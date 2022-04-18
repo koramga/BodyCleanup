@@ -1,12 +1,10 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/GraphGrammar/ExecutionGraph/Widgets/SGraphPin_ExecNodePin.h"
 
 
 void SGraphPin_ExecNodePin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) {
     this->SetCursor(EMouseCursor::Default);
-
-    typedef SGraphPin_ExecNodePin ThisClass;
 
     bShowLabel = true;
     IsEditable = true;
@@ -20,9 +18,9 @@ void SGraphPin_ExecNodePin::Construct(const FArguments& InArgs, UEdGraphPin* InP
     // Set up a hover for pins that is tinted the color of the pin.
     SBorder::Construct(SBorder::FArguments()
                        .BorderImage(this, &SGraphPin_ExecNodePin::GetPinBorder)
-                       .BorderBackgroundColor(this, &ThisClass::GetPinColor)
-                       .OnMouseButtonDown(this, &ThisClass::OnPinMouseDown)
-                       .Cursor(this, &ThisClass::GetPinCursor)
+                       .BorderBackgroundColor(this, &SGraphPin_ExecNodePin::GetPinColor)
+                       .OnMouseButtonDown(this, &SGraphPin_ExecNodePin::OnPinMouseDown)
+                       .Cursor(this, &SGraphPin_ExecNodePin::GetPinCursor)
                        .Padding(FMargin(5.0f))
     );
 }

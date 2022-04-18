@@ -1,10 +1,10 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/DungeonThemeGraphHandler.h"
 
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonActorTemplate.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMarker.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMesh.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonActorTemplate.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonMarker.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonMesh.h"
 
 #include "EdGraphUtilities.h"
 #include "Framework/Commands/GenericCommands.h"
@@ -351,3 +351,4 @@ void FDungeonArchitectThemeGraphHandler::ShowProperties(const TArray<UObject*>& 
 void FDungeonArchitectThemeGraphHandler::ShowDefaultEditorProperties() const {
     ShowProperties(EditorPropertiesPtr.Get());
 }
+

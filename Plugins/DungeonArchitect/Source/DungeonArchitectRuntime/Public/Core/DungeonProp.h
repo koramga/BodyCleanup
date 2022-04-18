@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -9,17 +9,17 @@
 #include "DungeonProp.generated.h"
 
 USTRUCT(Blueprintable)
-struct DUNGEONARCHITECTRUNTIME_API FPropSocket {
+struct DUNGEONARCHITECTRUNTIME_API FDAMarkerInfo {
     GENERATED_USTRUCT_BODY()
 
-    FPropSocket() : Id(-1), IsConsumed(false) {
+    FDAMarkerInfo() : Id(-1) {
     }
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonMarker)
     int32 Id;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonMarker)
-    FString SocketType;
+    FString MarkerName;
 
     /** The name of the clustered theme to override on this marker */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonMarker)
@@ -28,12 +28,9 @@ struct DUNGEONARCHITECTRUNTIME_API FPropSocket {
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonMarker)
     FTransform Transform;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DungeonMarker)
-    bool IsConsumed;
-
     TSharedPtr<class IDungeonMarkerUserData> UserData;
 
-    FORCEINLINE bool operator==(const FPropSocket& other) const {
+    FORCEINLINE bool operator==(const FDAMarkerInfo& other) const {
         return other.Id == Id;
     }
 };

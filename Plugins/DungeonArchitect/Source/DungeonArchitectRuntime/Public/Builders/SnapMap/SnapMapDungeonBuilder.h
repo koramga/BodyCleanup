@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -68,9 +68,9 @@ public:
     
 protected:
     virtual bool PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                               const FPropSocket& socket) override;
+                               const FDAMarkerInfo& socket) override;
     virtual FTransform PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                     const FPropSocket& socket) override;
+                                     const FDAMarkerInfo& socket) override;
 
     SnapLib::FModuleNodePtr GenerateModuleNodeGraph(int32 InSeed) const;
     virtual bool IdentifyBuildSucceeded() const override;
@@ -87,7 +87,7 @@ protected:
 
 class FSnapMapStreamingChunkHandler : public FSnapStreamingChunkHandlerBase {
 public:
-    FSnapMapStreamingChunkHandler(UWorld* InWorld, USnapMapDungeonModel* InSnapMapModel, UDungeonLevelStreamingModel* InLevelStreamingModel);
+    FSnapMapStreamingChunkHandler(UWorld* InWorld, TWeakObjectPtr<ADungeon> InDungeon, USnapMapDungeonModel* InSnapMapModel, UDungeonLevelStreamingModel* InLevelStreamingModel);
     virtual TArray<struct FSnapConnectionInstance>* GetConnections() const override;
 
 public:

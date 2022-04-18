@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/Visualization/ThemeEditorMarkerVisualizer.h"
 
@@ -296,8 +296,8 @@ void AThemeEditorMarkerVisualizer::BuildVisualization(UDungeonConfig* InConfig, 
 		FDAMarkerVisMeshBuilderPtr MeshBuilder = *MeshBuilderPtr;
 		if (!MeshBuilder.IsValid()) continue;
 
-		for (const FPropSocket& Marker : InBuilder->GetMarkers()) {
-			FName MarkerName = *Marker.SocketType;
+		for (const FDAMarkerInfo& Marker : InBuilder->GetMarkers()) {
+			FName MarkerName = *Marker.MarkerName;
 			if (MarkerName == MarkerToVisualize) {
 				MeshBuilder->Build(Marker.Transform, Vertices, Indices);
 			}

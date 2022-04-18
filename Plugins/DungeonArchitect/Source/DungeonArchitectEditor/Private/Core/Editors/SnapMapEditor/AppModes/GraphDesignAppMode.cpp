@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapMapEditor/AppModes/GraphDesignAppMode.h"
 
@@ -34,9 +34,15 @@ FSnapMapEditor_GraphDesignAppMode::FSnapMapEditor_GraphDesignAppMode(
 
     // Create the details property editor widget
     {
-        FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>(
-            "PropertyEditor");
-        const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true, this);
+        FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+        FDetailsViewArgs DetailsViewArgs;
+        DetailsViewArgs.bUpdatesFromSelection = false;
+        DetailsViewArgs.bLockable = false;
+        DetailsViewArgs.bAllowSearch = true;
+        DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+        DetailsViewArgs.bHideSelectionTip = true;
+        DetailsViewArgs.NotifyHook = this;
+        
         TSharedRef<IDetailsView> PropertyEditorRef = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
         PropertyEditor = PropertyEditorRef;
     }
@@ -89,7 +95,6 @@ TSharedRef<SDockTab> FSnapMapEditorTabFactory_Performance::SpawnTab(const FWorkf
     // Spawn the tab
     TSharedRef<SDockTab> NewTab = SNew(SDockTab)
         .TabRole(this->TabRole)
-        .Icon(GetTabIcon(Info))
         .Label(ConstructTabName(Info))
         .ShouldAutosize(bShouldAutosize)
     [
@@ -136,19 +141,11 @@ void FSnapMapEditor_GraphDesignAppMode::PostActivateMode() {
 
 TSharedRef<FTabManager::FLayout> FSnapMapEditor_GraphDesignAppMode::BuildEditorFrameLayout(
     TSharedPtr<class FSnapMapEditor> InFlowEditor) {
-    return FTabManager::NewLayout("Standalone_DungeonFlowEditor_DesignLayout_v0.1.0")
+    return FTabManager::NewLayout("Standalone_DungeonFlowEditor_DesignLayout_v0.1.1")
         ->AddArea
         (
             FTabManager::NewPrimaryArea()
             ->SetOrientation(Orient_Vertical)
-            // Toolbar
-            ->Split
-            (
-                FTabManager::NewStack()
-                ->SetSizeCoefficient(0.1f)
-                ->SetHideTabWell(true)
-                ->AddTab(InFlowEditor->GetToolbarTabId(), ETabState::OpenedTab)
-            )
             // Body of the editor
             ->Split
             (

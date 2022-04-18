@@ -6,6 +6,7 @@ namespace UnrealBuildTool.Rules
     {
         public DungeonArchitectRuntime(ReadOnlyTargetRules Target) : base(Target)
         {
+            //bUseUnity = false;
             bLegacyPublicIncludePaths = false;
             PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
             ShadowVariableWarningLevel = WarningLevel.Error;

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Snap/Lib/Streaming/SnapStreaming.h"
 
@@ -66,8 +66,9 @@ void USnapStreamingChunk::DestroyChunk(UWorld* InWorld) {
     Super::DestroyChunk(InWorld);
 }
 
-FSnapStreamingChunkHandlerBase::FSnapStreamingChunkHandlerBase(TWeakObjectPtr<UWorld> InWorld, TWeakObjectPtr<UDungeonLevelStreamingModel> InLevelStreamingModel)
+FSnapStreamingChunkHandlerBase::FSnapStreamingChunkHandlerBase(TWeakObjectPtr<UWorld> InWorld, TWeakObjectPtr<ADungeon> InDungeon, TWeakObjectPtr<UDungeonLevelStreamingModel> InLevelStreamingModel)
     : World(InWorld)
+    , Dungeon(InDungeon)
     , LevelStreamingModel(InLevelStreamingModel)
 {
 }
@@ -161,7 +162,7 @@ void FSnapStreamingChunkHandlerBase::Internal_SpawnChunkConnections(const FGuid&
                     ConnectionData->bHasSpawnedDoorActor = true;
                 }
                 else {
-                    ConnectionActor->BuildConnectionInstance(DoorLevel);
+                    ConnectionActor->BuildConnectionInstance(Dungeon.Get(), DoorLevel);
                     ConnectionData->SpawnedDoorActors = ConnectionActor->GetSpawnedInstancesPtr();
                     ConnectionData->bHasSpawnedDoorActor = true;
                     OnConnectionDoorCreated(ConnectionData);
@@ -180,7 +181,7 @@ void FSnapStreamingChunkHandlerBase::Internal_SpawnChunkConnections(const FGuid&
         else {
             // No connection exists. This is a wall
             ConnectionActor->ConnectionComponent->ConnectionState = ESnapConnectionState::Wall;
-            ConnectionActor->BuildConnectionInstance(WallLevel);
+            ConnectionActor->BuildConnectionInstance(Dungeon.Get(), WallLevel);
         }
     }
 }

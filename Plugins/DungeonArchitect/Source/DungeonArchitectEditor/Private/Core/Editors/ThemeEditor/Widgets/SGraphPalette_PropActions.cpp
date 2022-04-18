@@ -1,9 +1,9 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/Widgets/SGraphPalette_PropActions.h"
 
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphSchema_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/DungeonArchitectThemeEditor.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphSchema_DungeonProp.h"
 
 void SGraphPalette_PropActions::Construct(const FArguments& InArgs, TWeakPtr<SGraphEditor> InGraphEditor) {
     this->GraphEditorPtr = InGraphEditor;

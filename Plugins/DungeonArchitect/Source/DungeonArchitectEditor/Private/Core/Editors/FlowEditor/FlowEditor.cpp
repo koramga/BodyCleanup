@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/FlowEditor/FlowEditor.h"
 
@@ -66,58 +66,45 @@ void FFlowEditorBase::InitEditor(const EToolkitMode::Type Mode, const TSharedPtr
 
     if (!Layout.IsValid()) {
         // Default layout
-        Layout = FTabManager::NewLayout(ConstructLayoutName("1.0.0"))
+        Layout = FTabManager::NewLayout(ConstructLayoutName("FlowEditor_Layout_v1.0.1"))
             ->AddArea
             (
                 FTabManager::NewPrimaryArea()
                 ->SetOrientation(Orient_Vertical)
                 ->Split
                 (
-                    FTabManager::NewStack()
-                    ->SetSizeCoefficient(0.1f)
-                    ->SetHideTabWell(true)
-                    ->AddTab(GetToolbarTabId(), ETabState::OpenedTab)
+                    FTabManager::NewSplitter()
+                    ->SetSizeCoefficient(0.4f)
+                    ->SetOrientation(Orient_Horizontal)
+                    ->Split // Exec Graph
+                    (
+                        FTabManager::NewStack()
+                        ->SetSizeCoefficient(0.65f)
+                        ->AddTab(FFlowEditorTabs::ExecGraphID, ETabState::OpenedTab)
+                        ->SetHideTabWell(true)
+                    )
+                    ->Split // Preview Viewport 3D
+                    (
+                        FTabManager::NewStack()
+                        ->SetSizeCoefficient(0.35f)
+                        ->AddTab(FFlowEditorTabs::ViewportID, ETabState::OpenedTab)
+                        ->SetHideTabWell(true)
+                    )
                 )
                 ->Split
                 (
                     FTabManager::NewSplitter()
-                    ->SetOrientation(Orient_Vertical)
-                    ->Split
+                    ->SetSizeCoefficient(0.6f)
+                    ->SetOrientation(Orient_Horizontal)
+                    ->Split // Details Tab
                     (
-
-                        FTabManager::NewSplitter()
-                        ->SetSizeCoefficient(0.4f)
-                        ->SetOrientation(Orient_Horizontal)
-                        ->Split // Exec Graph
-                        (
-                            FTabManager::NewStack()
-                            ->SetSizeCoefficient(0.65f)
-                            ->AddTab(FFlowEditorTabs::ExecGraphID, ETabState::OpenedTab)
-                            ->SetHideTabWell(true)
-                        )
-                        ->Split // Preview Viewport 3D
-                        (
-                            FTabManager::NewStack()
-                            ->SetSizeCoefficient(0.35f)
-                            ->AddTab(FFlowEditorTabs::ViewportID, ETabState::OpenedTab)
-                            ->SetHideTabWell(true)
-                        )
+                        FTabManager::NewStack()
+                        ->SetSizeCoefficient(0.15f)
+                        ->AddTab(FFlowEditorTabs::DetailsID, ETabState::OpenedTab)
                     )
-                    ->Split
+                    ->Split // Domain Editors
                     (
-                        FTabManager::NewSplitter()
-                        ->SetSizeCoefficient(0.6f)
-                        ->SetOrientation(Orient_Horizontal)
-                        ->Split // Details Tab
-                        (
-                            FTabManager::NewStack()
-                            ->SetSizeCoefficient(0.15f)
-                            ->AddTab(FFlowEditorTabs::DetailsID, ETabState::OpenedTab)
-                        )
-                        ->Split // Domain Editors
-                        (
-                            CreateDomainEditorLayout()
-                        )
+                        CreateDomainEditorLayout()
                     )
                 )
             );
@@ -346,7 +333,14 @@ void FFlowEditorBase::CreateExecGraphEditorWidget() {
 
 void FFlowEditorBase::CreatePropertyEditorWidget() {
     FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-    const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true, this);
+    FDetailsViewArgs DetailsViewArgs;
+    DetailsViewArgs.bUpdatesFromSelection = false;
+    DetailsViewArgs.bLockable = false;
+    DetailsViewArgs.bAllowSearch = true;
+    DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+    DetailsViewArgs.bHideSelectionTip = true;
+    DetailsViewArgs.NotifyHook = this;
+
     PropertyEditor = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
 }
 

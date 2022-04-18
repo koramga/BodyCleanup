@@ -1,8 +1,8 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Customizations/Details/DATransformDetails.h"
 
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonActorBase.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonActorBase.h"
 
 #include "CoreGlobals.h"
 #include "DetailLayoutBuilder.h"
@@ -278,7 +278,6 @@ void FDATransformDetails::GenerateChildContent(IDetailChildrenBuilder& ChildrenB
 				.Y(this, &FDATransformDetails::GetLocationY)
 				.Z(this, &FDATransformDetails::GetLocationZ)
 				.bColorAxisLabels(true)
-				.AllowResponsiveLayout(true)
 				.IsEnabled(this, &FDATransformDetails::GetIsEnabled)
 				.OnXCommitted(this, &FDATransformDetails::OnSetLocation, 0)
 				.OnYCommitted(this, &FDATransformDetails::OnSetLocation, 1)
@@ -342,7 +341,6 @@ void FDATransformDetails::GenerateChildContent(IDetailChildrenBuilder& ChildrenB
 				.Roll(this, &FDATransformDetails::GetRotationX)
 				.Pitch(this, &FDATransformDetails::GetRotationY)
 				.Yaw(this, &FDATransformDetails::GetRotationZ)
-				.AllowResponsiveLayout(true)
 				.bColorAxisLabels(true)
 				.IsEnabled(this, &FDATransformDetails::GetIsEnabled)
 				.OnBeginSliderMovement(this, &FDATransformDetails::OnBeginRotatonSlider)
@@ -402,12 +400,11 @@ void FDATransformDetails::GenerateChildContent(IDetailChildrenBuilder& ChildrenB
                   .VAlign(VAlign_Center)
                   .FillWidth(1.0f)
                 [
-                    SNew(SVectorInputBox)
+                SNew(SVectorInputBox)
 				.X(this, &FDATransformDetails::GetScaleX)
 				.Y(this, &FDATransformDetails::GetScaleY)
 				.Z(this, &FDATransformDetails::GetScaleZ)
 				.bColorAxisLabels(true)
-				.AllowResponsiveLayout(true)
 				.IsEnabled(this, &FDATransformDetails::GetIsEnabled)
 				.OnXCommitted(this, &FDATransformDetails::OnSetScale, 0)
 				.OnYCommitted(this, &FDATransformDetails::OnSetScale, 1)
@@ -431,8 +428,8 @@ void FDATransformDetails::GenerateChildContent(IDetailChildrenBuilder& ChildrenB
                                      "When locked, scales uniformly based on the current xyz scale values so the object maintains its shape in each direction when scaled"))
                     [
                         SNew(SImage)
-					.Image(this, &FDATransformDetails::GetPreserveScaleRatioImage)
-					.ColorAndOpacity(FSlateColor::UseForeground())
+					    .Image(this, &FDATransformDetails::GetPreserveScaleRatioImage)
+					    .ColorAndOpacity(FSlateColor::UseForeground())
                     ]
                 ]
                 + SHorizontalBox::Slot()
@@ -484,9 +481,7 @@ bool FDATransformDetails::GetIsEnabled() const {
 }
 
 const FSlateBrush* FDATransformDetails::GetPreserveScaleRatioImage() const {
-    return bPreserveScaleRatio
-               ? FEditorStyle::GetBrush(TEXT("GenericLock"))
-               : FEditorStyle::GetBrush(TEXT("GenericUnlock"));
+	return bPreserveScaleRatio ? FEditorStyle::GetBrush( TEXT("Icons.Lock") ) : FEditorStyle::GetBrush( TEXT("Icons.Unlock") ) ;
 }
 
 ECheckBoxState FDATransformDetails::IsPreserveScaleRatioChecked() const {
@@ -759,7 +754,7 @@ void FDATransformDetails::OnSetRotation(float NewValue, bool bCommitted, int32 A
                                                      : CurrentComponentRotation;
                     FRotator OldRelativeRotation = RelativeRotation;
 
-                    float& ValueToChange = Axis == 0
+                    FRotator::FReal& ValueToChange = Axis == 0
                                                ? RelativeRotation.Roll
                                                : Axis == 1
                                                ? RelativeRotation.Pitch

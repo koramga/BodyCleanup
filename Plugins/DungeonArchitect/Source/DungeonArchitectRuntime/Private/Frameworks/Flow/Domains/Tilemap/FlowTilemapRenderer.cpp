@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Flow/Domains/Tilemap/FlowTilemapRenderer.h"
 
@@ -36,36 +36,30 @@ public:
         Canvas = NewObject<UCanvas>(GetTransientPackage(), NAME_None);
         Size = FVector2D(TextureRenderTarget->SizeX, TextureRenderTarget->SizeY);
 
-        FTextureRenderTargetResource* RenderTargetResource = TextureRenderTarget->GameThread_GetRenderTargetResource();
-        if (RenderTargetResource) {
+        if (FTextureRenderTargetResource* RenderTargetResource = TextureRenderTarget->GameThread_GetRenderTargetResource()) {
             FCanvas* NewCanvas = new FCanvas(
                 RenderTargetResource,
                 nullptr,
-                0, 0, 0,
+                FGameTime::CreateDilated(0, 0, 0, 0),
                 GMaxRHIFeatureLevel,
                 FCanvas::CDM_ImmediateDrawing);
             Canvas->Init(TextureRenderTarget->SizeX, TextureRenderTarget->SizeY, nullptr, NewCanvas);
             Canvas->Update();
 
+#if  WANTS_DRAW_MESH_EVENTS
             Context.DrawEvent = new FDrawEvent();
-
-            FName RTName = TextureRenderTarget->GetFName();
-            FDrawEvent* DrawEvent = Context.DrawEvent;
+            BEGIN_DRAW_EVENTF_GAMETHREAD(DrawCanvasToTarget, (*Context.DrawEvent), *TextureRenderTarget->GetFName().ToString())
+#endif // WANTS_DRAW_MESH_EVENTS
+            
             ENQUEUE_RENDER_COMMAND(BeginDrawEventCommand)(
-                [RTName, DrawEvent, RenderTargetResource](FRHICommandListImmediate& RHICmdList) {
+                [RenderTargetResource](FRHICommandListImmediate& RHICmdList)
+                {
                     RenderTargetResource->FlushDeferredResourceUpdate(RHICmdList);
-
-                    BEGIN_DRAW_EVENTF(
-                        RHICmdList,
-                        DrawCanvasToTarget,
-                        (*DrawEvent),
-                        *RTName.ToString());
                 });
         }
     }
 
     static void EndDrawCanvasToRenderTarget(UCanvas* Canvas, const FDrawToRenderTargetContext& Context) {
-
         if (Canvas->Canvas) {
             Canvas->Canvas->Flush_GameThread();
             delete Canvas->Canvas;
@@ -75,20 +69,22 @@ public:
         if (Context.RenderTarget) {
             FTextureRenderTargetResource* RenderTargetResource = Context.RenderTarget->GameThread_GetRenderTargetResource();
             if (RenderTargetResource) {
-                FDrawEvent* DrawEvent = Context.DrawEvent;
                 ENQUEUE_RENDER_COMMAND(CanvasRenderTargetResolveCommand)(
-                    [RenderTargetResource, DrawEvent](FRHICommandList& RHICmdList) {
+                    [RenderTargetResource](FRHICommandList& RHICmdList) {
                         RHICmdList.CopyToResolveTarget(RenderTargetResource->GetRenderTargetTexture(),
                                                        RenderTargetResource->TextureRHI, FResolveParams());
-                        STOP_DRAW_EVENT((*DrawEvent));
-                        delete DrawEvent;
                     }
                 );
+                
+#if WANTS_DRAW_MESH_EVENTS
+                STOP_DRAW_EVENT_GAMETHREAD(*Context.DrawEvent);
+                delete Context.DrawEvent;
+#endif // WANTS_DRAW_MESH_EVENTS
+                
+                // Remove references to the context now that we've resolved it, to avoid a crash when EndDrawCanvasToRenderTarget is called multiple times with the same context
+                // const cast required, as BP will treat Context as an output without the const
+                const_cast<FDrawToRenderTargetContext&>(Context) = FDrawToRenderTargetContext();
             }
-
-            // Remove references to the context now that we've resolved it, to avoid a crash when EndDrawCanvasToRenderTarget is called multiple times with the same context
-            // const cast required, as BP will treat Context as an output without the const
-            const_cast<FDrawToRenderTargetContext&>(Context) = FDrawToRenderTargetContext();
         }
     }
 };
@@ -151,7 +147,7 @@ UTextureRenderTarget2D* FFlowTilemapRenderer::Create(UFlowTilemap* Tilemap, cons
 
     // Render the tiles
     FTexture* TileTextureResource = Settings.Textures.TileTexture
-                                        ? Settings.Textures.TileTexture->Resource
+                                        ? Settings.Textures.TileTexture->GetResource()
                                         : GWhiteTexture;
     for (int y = 0; y < Tilemap->GetHeight(); y++) {
         for (int x = 0; x < Tilemap->GetWidth(); x++) {
@@ -297,7 +293,7 @@ UTextureRenderTarget2D* FFlowTilemapRenderer::Create(UFlowTilemap* Tilemap, cons
                 else if (DoorInfo.Angle == 270) OneWayTileTex = OneWayTileTexL;
 
                 if (OneWayTileTex) {
-                    FCanvasTileItem OneWayTileItem(FVector2D(px, py) + DrawOffset, OneWayTileTex->Resource,
+                    FCanvasTileItem OneWayTileItem(FVector2D(px, py) + DrawOffset, OneWayTileTex->GetResource(),
                                                    FVector2D(TileSize, TileSize), FLinearColor::White);
                     OneWayTileItem.BlendMode = SE_BLEND_AlphaBlend;
                     Canvas->DrawItem(OneWayTileItem);

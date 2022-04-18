@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapMapEditor/AppModes/VisualizeAppMode.h"
 
@@ -64,9 +64,14 @@ FSnapMapEditor_VisualizeAppMode::FSnapMapEditor_VisualizeAppMode(TSharedPtr<clas
 
     // Create the visualization details property editor widget
     {
-        FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>(
-            "PropertyEditor");
-        const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true, nullptr);
+        FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+        FDetailsViewArgs DetailsViewArgs;
+        DetailsViewArgs.bUpdatesFromSelection = false;
+        DetailsViewArgs.bLockable = false;
+        DetailsViewArgs.bAllowSearch = true;
+        DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+        DetailsViewArgs.bHideSelectionTip = true;
+
         TSharedRef<IDetailsView> PropertyEditorRef = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
         PropertyEditor = PropertyEditorRef;
     }
@@ -128,19 +133,11 @@ void FSnapMapEditor_VisualizeAppMode::PreDeactivateMode() {
 TSharedRef<FTabManager::FLayout> FSnapMapEditor_VisualizeAppMode::BuildEditorFrameLayout(
     TSharedPtr<class FSnapMapEditor> InFlowEditor) {
 
-    return FTabManager::NewLayout("Standalone_DungeonFlowEditor_VisualizeLayout_v0.1.8")
+    return FTabManager::NewLayout("Standalone_DungeonFlowEditor_VisualizeLayout_v0.1.9")
         ->AddArea
         (
             FTabManager::NewPrimaryArea()
             ->SetOrientation(Orient_Vertical)
-            // Toolbar
-            ->Split
-            (
-                FTabManager::NewStack()
-                ->SetSizeCoefficient(0.1f)
-                ->SetHideTabWell(true)
-                ->AddTab(InFlowEditor->GetToolbarTabId(), ETabState::OpenedTab)
-            )
             // Body of the editor
             ->Split
             (

@@ -1,10 +1,11 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Visualizers/PlaceableMarkerVisualizer.h"
 
 #include "Frameworks/ThemeEngine/Markers/PlaceableMarker.h"
 
 #include "CanvasItem.h"
+#include "CanvasTypes.h"
 
 namespace {
     struct FMarkerRenderInfo {

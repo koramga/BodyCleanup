@@ -6,6 +6,7 @@ namespace UnrealBuildTool.Rules
     {
         public DungeonArchitectEditor(ReadOnlyTargetRules Target) : base(Target)
         {
+            //bUseUnity = false;
             bLegacyPublicIncludePaths = false;
             PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
             ShadowVariableWarningLevel = WarningLevel.Error;
@@ -54,7 +55,8 @@ namespace UnrealBuildTool.Rules
                     "AssetRegistry",
                     "RHI",
                     "MainFrame",
-                    "AddContentDialog"
+                    "AddContentDialog",
+                    "EditorFramework"
                 }
             );
 
@@ -74,7 +76,7 @@ namespace UnrealBuildTool.Rules
                     "Projects",
                     "ToolMenus",
                     "Json",
-                    "JsonUtilities"
+                    "JsonUtilities",
                     // ... add private dependencies that you statically link with here ...
                 }
             );

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Extenders/EditorUIExtender.h"
 
@@ -14,11 +14,13 @@
 #include "Framework/MultiBox/MultiBoxExtender.h"
 #include "Framework/Notifications/NotificationManager.h"
 #include "LevelEditor.h"
+#include "ToolMenus.h"
 #include "Widgets/Notifications/SNotificationList.h"
 
 #define LOCTEXT_NAMESPACE "EditorUIExtender"
 
 void FEditorUIExtender::Extend() {
+    /*
     struct Local {
         static void LaunchURL(FString URL) {
             FPlatformProcess::LaunchURL(*URL, nullptr, nullptr);
@@ -46,7 +48,7 @@ void FEditorUIExtender::Extend() {
         static void ExtendLevelToolbar(FToolBarBuilder& ToolbarBuilder) {
             ToolbarBuilder.AddToolBarButton(FDALevelToolbarCommands::Get().OpenLaunchPad,
                                             TEXT("DALaunchPad"),
-                                            LOCTEXT("DAToolbarButtonText", "Dungeon Arch"),
+                                            LOCTEXT("DAToolbarButtonText_2", "DA LaunchPad"),
                                             LOCTEXT("DAToolbarButtonTooltip", "Dungeon Architect Launch Pad"),
                                             FSlateIcon(FDungeonArchitectStyle::GetStyleSetName(),
                                                        TEXT("DungeonArchitect.Toolbar.IconMain")));
@@ -64,13 +66,30 @@ void FEditorUIExtender::Extend() {
     );
 
     LevelEditorModule.GetToolBarExtensibilityManager().Get()->AddExtender(LevelToolbarExtender);
+
+    */
+
+    if (!IsRunningCommandlet()) {
+        UToolMenu* AssetsToolBar = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.AssetsToolBar");
+        if (AssetsToolBar) {
+            FToolMenuSection& Section = AssetsToolBar->AddSection("Content");
+            FToolMenuEntry LaunchPadEntry = FToolMenuEntry::InitToolBarButton("DA", FUIAction(FExecuteAction::CreateStatic(&FLaunchPadSystem::Launch)),        //FDALevelToolbarCommands::Get().OpenLaunchPad,
+                                                                                    LOCTEXT("DAToolbarButtonText_1", "Dungeon Architect"),
+                                                                                    LOCTEXT("DAToolbarButtonTooltip", "Dungeon Architect Launch Pad"),
+                                                                                    FSlateIcon(FDungeonArchitectStyle::GetStyleSetName(), TEXT("DungeonArchitect.Toolbar.IconMain")));
+            LaunchPadEntry.StyleNameOverride = "CalloutToolbar";
+            Section.AddEntry(LaunchPadEntry);
+        }
+    }
 }
 
 void FEditorUIExtender::Release() {
-    FLevelEditorModule* LevelEditorModule = FModuleManager::Get().GetModulePtr<FLevelEditorModule>("LevelEditor");
-    if (LevelEditorModule) {
-        if (LevelEditorModule->GetToolBarExtensibilityManager().IsValid()) {
-            LevelEditorModule->GetToolBarExtensibilityManager().Get()->RemoveExtender(LevelToolbarExtender);
+    if (!IsRunningCommandlet()) {
+        FLevelEditorModule* LevelEditorModule = FModuleManager::Get().GetModulePtr<FLevelEditorModule>("LevelEditor");
+        if (LevelEditorModule) {
+            if (LevelEditorModule->GetToolBarExtensibilityManager().IsValid()) {
+                LevelEditorModule->GetToolBarExtensibilityManager().Get()->RemoveExtender(LevelToolbarExtender);
+            }
         }
     }
 }

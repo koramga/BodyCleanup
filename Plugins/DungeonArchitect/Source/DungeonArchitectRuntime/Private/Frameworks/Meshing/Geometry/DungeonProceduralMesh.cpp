@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Meshing/Geometry/DungeonProceduralMesh.h"
 
@@ -80,12 +80,12 @@ public:
 
 static void ConvertDAProcMeshToDynMeshVertex(FDynamicMeshVertex& Vert, const FDAProcMeshVertex& ProcVert)
 {
-	Vert.Position = ProcVert.Position;
+	Vert.Position = FVector3f(ProcVert.Position);
 	Vert.Color = ProcVert.Color;
-	Vert.TextureCoordinate[0] = ProcVert.UV0;
-	Vert.TextureCoordinate[1] = ProcVert.UV1;
-	Vert.TextureCoordinate[2] = ProcVert.UV2;
-	Vert.TextureCoordinate[3] = ProcVert.UV3;
+	Vert.TextureCoordinate[0] = FVector2f(ProcVert.UV0);
+	Vert.TextureCoordinate[1] = FVector2f(ProcVert.UV1);
+	Vert.TextureCoordinate[2] = FVector2f(ProcVert.UV2);
+	Vert.TextureCoordinate[3] = FVector2f(ProcVert.UV3);
 	Vert.TangentX = ProcVert.Tangent.TangentX;
 	Vert.TangentZ = ProcVert.Normal;
 	Vert.TangentZ.Vector.W = ProcVert.Tangent.bFlipTangentY ? -127 : 127;
@@ -204,7 +204,7 @@ public:
 					ConvertDAProcMeshToDynMeshVertex(Vertex, ProcVert);
 
 					Section->VertexBuffers.PositionVertexBuffer.VertexPosition(i) = Vertex.Position;
-					Section->VertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(i, Vertex.TangentX.ToFVector(), Vertex.GetTangentY(), Vertex.TangentZ.ToFVector());
+					Section->VertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(i, Vertex.TangentX.ToFVector3f(), Vertex.GetTangentY(), Vertex.TangentZ.ToFVector3f());
 					Section->VertexBuffers.StaticMeshVertexBuffer.SetVertexUV(i, 0, Vertex.TextureCoordinate[0]);
 					Section->VertexBuffers.StaticMeshVertexBuffer.SetVertexUV(i, 1, Vertex.TextureCoordinate[1]);
 					Section->VertexBuffers.StaticMeshVertexBuffer.SetVertexUV(i, 2, Vertex.TextureCoordinate[2]);
@@ -214,30 +214,31 @@ public:
 
 				{
 					auto& VertexBuffer = Section->VertexBuffers.PositionVertexBuffer;
-					void* VertexBufferData = RHILockVertexBuffer(VertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetNumVertices() * VertexBuffer.GetStride(), RLM_WriteOnly);
+					
+					void* VertexBufferData = RHILockBuffer(VertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetNumVertices() * VertexBuffer.GetStride(), RLM_WriteOnly);
 					FMemory::Memcpy(VertexBufferData, VertexBuffer.GetVertexData(), VertexBuffer.GetNumVertices() * VertexBuffer.GetStride());
-					RHIUnlockVertexBuffer(VertexBuffer.VertexBufferRHI);
+					RHIUnlockBuffer(VertexBuffer.VertexBufferRHI);
 				}
 
 				{
 					auto& VertexBuffer = Section->VertexBuffers.ColorVertexBuffer;
-					void* VertexBufferData = RHILockVertexBuffer(VertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetNumVertices() * VertexBuffer.GetStride(), RLM_WriteOnly);
+					void* VertexBufferData = RHILockBuffer(VertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetNumVertices() * VertexBuffer.GetStride(), RLM_WriteOnly);
 					FMemory::Memcpy(VertexBufferData, VertexBuffer.GetVertexData(), VertexBuffer.GetNumVertices() * VertexBuffer.GetStride());
-					RHIUnlockVertexBuffer(VertexBuffer.VertexBufferRHI);
+					RHIUnlockBuffer(VertexBuffer.VertexBufferRHI);
 				}
 
 				{
 					auto& VertexBuffer = Section->VertexBuffers.StaticMeshVertexBuffer;
-					void* VertexBufferData = RHILockVertexBuffer(VertexBuffer.TangentsVertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetTangentSize(), RLM_WriteOnly);
+					void* VertexBufferData = RHILockBuffer(VertexBuffer.TangentsVertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetTangentSize(), RLM_WriteOnly);
 					FMemory::Memcpy(VertexBufferData, VertexBuffer.GetTangentData(), VertexBuffer.GetTangentSize());
-					RHIUnlockVertexBuffer(VertexBuffer.TangentsVertexBuffer.VertexBufferRHI);
+					RHIUnlockBuffer(VertexBuffer.TangentsVertexBuffer.VertexBufferRHI);
 				}
 
 				{
 					auto& VertexBuffer = Section->VertexBuffers.StaticMeshVertexBuffer;
-					void* VertexBufferData = RHILockVertexBuffer(VertexBuffer.TexCoordVertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetTexCoordSize(), RLM_WriteOnly);
+					void* VertexBufferData = RHILockBuffer(VertexBuffer.TexCoordVertexBuffer.VertexBufferRHI, 0, VertexBuffer.GetTexCoordSize(), RLM_WriteOnly);
 					FMemory::Memcpy(VertexBufferData, VertexBuffer.GetTexCoordData(), VertexBuffer.GetTexCoordSize());
-					RHIUnlockVertexBuffer(VertexBuffer.TexCoordVertexBuffer.VertexBufferRHI);
+					RHIUnlockBuffer(VertexBuffer.TexCoordVertexBuffer.VertexBufferRHI);
 				}
 			}
 
@@ -632,7 +633,7 @@ bool UDAProcMeshComponent::GetPhysicsTriMeshData(struct FTriMeshCollisionData* C
 			// Copy vert data
 			for (int32 VertIdx = 0; VertIdx < Section.ProcVertexBuffer.Num(); VertIdx++)
 			{
-				CollisionData->Vertices.Add(Section.ProcVertexBuffer[VertIdx].Position);
+				CollisionData->Vertices.Add(FVector3f(Section.ProcVertexBuffer[VertIdx].Position));
 
 				// Copy UV if desired
 				if (bCopyUVs)

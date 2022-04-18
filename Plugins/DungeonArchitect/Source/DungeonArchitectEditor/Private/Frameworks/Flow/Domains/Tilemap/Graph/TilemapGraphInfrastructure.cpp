@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Flow/Domains/Tilemap/Graph/TilemapGraphInfrastructure.h"
 
@@ -152,8 +152,8 @@ void FGridFlowTilemapConnectionDrawingPolicy::Draw(TMap<TSharedRef<SWidget>, FAr
         for (const FGuid& RefItemId : ItemInfo.Item->ReferencedItemIds) {
             const SGridFlowTilemapGraphNode::FNodeItemInfo* RefItem = ItemInfoList.Find(RefItemId);
             if (RefItem) {
-                FVector2D Src = CurWidget.Geometry.AbsolutePosition + ItemInfo.RenderOffset * Scale;
-                FVector2D Dest = CurWidget.Geometry.AbsolutePosition + RefItem->RenderOffset * Scale;
+                FVector2D Src = FVector2D(CurWidget.Geometry.AbsolutePosition) + ItemInfo.RenderOffset * Scale;
+                FVector2D Dest = FVector2D(CurWidget.Geometry.AbsolutePosition) + RefItem->RenderOffset * Scale;
                 FVector2D Direction = Dest - Src;
                 Direction.Normalize();
                 Dest -= Direction * (RefItem->Widget->GetWidgetRadius() - 1) * Scale;

@@ -1,8 +1,10 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/Preview2D/Preview2DViewportClient.h"
 
 #include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/Preview2D/Preview2DViewportWidget.h"
+
+#include "CanvasTypes.h"
 
 FMGPreview2DViewportClient::FMGPreview2DViewportClient(TWeakPtr<SMGPreview2DViewport> InPatternEditorViewport)
 	: PatternEditorViewportPtr(InPatternEditorViewport)

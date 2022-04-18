@@ -440,7 +440,7 @@ void AMorse::__UpdateOverlapInteractigeSuckingComponent(float DeltaTime)
 			FVector startLoc = ArcShootingStartLocation;
 			FVector targetLoc = ArcShootingEndLocation;
 			FVector outVelocity = FVector::ZeroVector;
-			FOccluderVertexArray arr;
+			TArray<FVector> arr;
 			TArray<AActor*> actorArr;
 			FVector NullVector;
 

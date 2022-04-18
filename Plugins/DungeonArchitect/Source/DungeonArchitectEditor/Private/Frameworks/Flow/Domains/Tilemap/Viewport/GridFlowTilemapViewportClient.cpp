@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Flow/Domains/Tilemap/Viewport/GridFlowTilemapViewportClient.h"
 
@@ -42,8 +42,7 @@ void FGridFlowTilemapViewportClient::Draw(FViewport* Viewport, FCanvas* Canvas) 
             const float Width = Texture->GetSurfaceWidth() * ZoomAmount;
             const float Height = Texture->GetSurfaceHeight() * ZoomAmount;
 
-            Canvas->DrawTile(XPos, YPos, Width, Height, 0.0f, 0.0f, 1.0f, 1.0f, TextureDrawColor, Texture->Resource,
-                             bUseTranslucentBlend);
+            Canvas->DrawTile(XPos, YPos, Width, Height, 0.0f, 0.0f, 1.0f, 1.0f, TextureDrawColor, Texture->GetResource(), bUseTranslucentBlend);
         }
     }
 }

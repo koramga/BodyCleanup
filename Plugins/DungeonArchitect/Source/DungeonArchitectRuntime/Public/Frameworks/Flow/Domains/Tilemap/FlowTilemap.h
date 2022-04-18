@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -126,9 +126,9 @@ struct DUNGEONARCHITECTRUNTIME_API FFlowTilemapCoord {
 };
 
 FORCEINLINE uint32 GetTypeHash(const FFlowTilemapCoord& Coord) {
-    return GetTypeHash(FIntVector4(Coord.Coord.X, Coord.Coord.Y,
-        Coord.bIsEdgeCoord ? 0 : 1,
-        Coord.bHorizontalEdge ? 0 : 1));
+    return HashCombine(
+        GetTypeHash(FIntVector(Coord.Coord.X, Coord.Coord.Y, Coord.bIsEdgeCoord ? 0 : 1)),
+        Coord.bHorizontalEdge ? 0 : 1);
 }
 FORCEINLINE bool operator==(const FFlowTilemapCoord& A, const FFlowTilemapCoord& B) {
     return A.Coord == B.Coord

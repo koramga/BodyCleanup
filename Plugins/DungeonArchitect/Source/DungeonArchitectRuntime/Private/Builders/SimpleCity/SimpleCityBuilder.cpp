@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/SimpleCity/SimpleCityBuilder.h"
 
@@ -43,8 +43,8 @@ void USimpleCityBuilder::BuildDungeonImpl(UWorld* World) {
 
 
 void USimpleCityBuilder::GenerateCityLayout() {
-    CityModel->CityWidth = random.RandRange(CityConfig->MinCitySize, CityConfig->MaxCitySize);
-    CityModel->CityLength = random.RandRange(CityConfig->MinCitySize, CityConfig->MaxCitySize);
+    CityModel->CityWidth = Random.RandRange(CityConfig->MinCitySize, CityConfig->MaxCitySize);
+    CityModel->CityLength = Random.RandRange(CityConfig->MinCitySize, CityConfig->MaxCitySize);
 
     const int32 Width = CityModel->CityWidth;
     const int32 Length = CityModel->CityLength;
@@ -106,14 +106,14 @@ void USimpleCityBuilder::GenerateCityLayout() {
         for (int z = 0; z < Length; z++) {
             // Iterate through each custom block dimension
             for (const FCityBlockDimension& BlockDimension : CityConfig->CityBlockDimensions) {
-                bool bProcess = random.FRand() < BlockDimension.Probability;
+                bool bProcess = Random.FRand() < BlockDimension.Probability;
                 if (bProcess) {
                     int32 BlockWidth = BlockDimension.SizeX;
                     int32 BlockHeight = BlockDimension.SizeY;
 
                     auto InsertHouse = [&]() {
                         if (CanContainBiggerHouse(x, z, BlockWidth, BlockHeight)) {
-                            if (random.FRand() < CityConfig->BiggerHouseProbability) {
+                            if (Random.FRand() < CityConfig->BiggerHouseProbability) {
                                 InsertBiggerHouse(x, z, BlockWidth, BlockHeight, 0, BlockDimension.MarkerName);
                             }
                         }
@@ -123,13 +123,13 @@ void USimpleCityBuilder::GenerateCityLayout() {
                     auto InsertHouse90 = [&]() {
                         // Try the 90 degrees rotated version
                         if (CanContainBiggerHouse(x, z, BlockHeight, BlockWidth)) {
-                            if (random.FRand() < CityConfig->BiggerHouseProbability) {
+                            if (Random.FRand() < CityConfig->BiggerHouseProbability) {
                                 InsertBiggerHouse(x, z, BlockHeight, BlockWidth, 90, BlockDimension.MarkerName);
                             }
                         }
                     };
 
-                    if (random.FRand() < 0.5f) {
+                    if (Random.FRand() < 0.5f) {
                         InsertHouse();
                         InsertHouse90();
                     }
@@ -173,7 +173,7 @@ void USimpleCityBuilder::RemoveRoadEdges() {
     for (int x = 0; x < Width; x++) {
         for (int y = 0; y < Length; y++) {
             if (IsStraightRoad(x, y)) {
-                bool bRemove = random.FRand() < CityConfig->RoadEdgeRemovalProbability;
+                bool bRemove = Random.FRand() < CityConfig->RoadEdgeRemovalProbability;
                 if (bRemove) {
                     RemoveRoadEdge(x, y);
                 }
@@ -270,12 +270,12 @@ ESimpleCityCellType USimpleCityBuilder::GetCellType(int x, int y) {
 }
 
 FQuat USimpleCityBuilder::GetRandomRotation() {
-    float Angle = random.RandRange(0, 3) * 90;
+    float Angle = Random.RandRange(0, 3) * 90;
     return FQuat::MakeFromEuler(FVector(0, 0, Angle));
 }
 
 int USimpleCityBuilder::GetRandomBlockSize() {
-    return random.RandRange(CityConfig->MinBlockSize, CityConfig->MaxBlockSize);
+    return Random.RandRange(CityConfig->MinBlockSize, CityConfig->MaxBlockSize);
 }
 
 bool USimpleCityBuilder::CanContainBiggerHouse(int x, int y, int w, int h) {
@@ -525,11 +525,11 @@ void USimpleCityBuilder::GetDefaultMarkerNames(TArray<FString>& OutMarkerNames) 
 void USimpleCityBuilder::MirrorDungeonWithVolume(ADungeonMirrorVolume* MirrorVolume) {
 }
 
-bool USimpleCityBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FPropSocket& socket) {
+bool USimpleCityBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FDAMarkerInfo& socket) {
     return false;
 }
 
-FTransform USimpleCityBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics, const FPropSocket& socket) {
+FTransform USimpleCityBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics, const FDAMarkerInfo& socket) {
     return FTransform::Identity;
 }
 

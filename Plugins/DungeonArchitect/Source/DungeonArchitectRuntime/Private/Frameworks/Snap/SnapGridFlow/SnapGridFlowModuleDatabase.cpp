@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Snap/SnapGridFlow/SnapGridFlowModuleDatabase.h"
 
@@ -96,7 +96,7 @@ void FSGFModuleAssemblyBuilder::Build(const FVector& InChunkSize,
 
         struct FAssemblyAttachmentDistance {
             EAssemblySide Side = EAssemblySide::Unknown;
-            float Distance = 0;
+            FVector::FReal Distance = 0;
         };
 
         /*

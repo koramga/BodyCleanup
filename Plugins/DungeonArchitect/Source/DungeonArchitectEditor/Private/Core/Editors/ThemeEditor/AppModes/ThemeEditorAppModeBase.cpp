@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/AppModes/ThemeEditorAppModeBase.h"
 
@@ -10,9 +10,14 @@ FThemeEditorAppModeBase::FThemeEditorAppModeBase(TSharedPtr<FDungeonArchitectThe
 {	
 }
 
-TSharedRef<class IDetailsView> FThemeEditorAppModeBase::CreatePropertyEditorWidget() const {
+TSharedRef<class IDetailsView> FThemeEditorAppModeBase::CreatePropertyEditorWidget() {
 	FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true);
+	FDetailsViewArgs DetailsViewArgs;
+	DetailsViewArgs.bUpdatesFromSelection = false;
+	DetailsViewArgs.bLockable = false;
+	DetailsViewArgs.bAllowSearch = true;
+	DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+	DetailsViewArgs.NotifyHook = this;
 	TSharedRef<IDetailsView> PropertyEditorRef = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
 	return PropertyEditorRef;
 }

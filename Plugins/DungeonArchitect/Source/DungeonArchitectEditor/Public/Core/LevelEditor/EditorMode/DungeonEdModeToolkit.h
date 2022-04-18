@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -9,9 +9,6 @@ class FEdMode;
 
 class FDungeonEdModeToolkit : public FModeToolkit {
 public:
-    virtual void RegisterTabSpawners(const TSharedRef<class FTabManager>& TabManager) override;
-    virtual void UnregisterTabSpawners(const TSharedRef<class FTabManager>& TabManager) override;
-
     /** Initializes the dungeon mode toolkit */
     virtual void Init(const TSharedPtr<class IToolkitHost>& InitToolkitHost) override;
 

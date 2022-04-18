@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/Grid/GridDungeonQuery.h"
 
@@ -523,9 +523,9 @@ void UGridDungeonQuery::IsNearMarker(const FTransform& CurrentMarkerTransform, c
         float QueryDistanceSq = NearbyDistance * NearbyDistance;
         FVector CurrentLocation = CurrentMarkerTransform.GetLocation();
 
-        for (const FPropSocket& Socket : Builder->GetMarkerList()) {
+        for (const FDAMarkerInfo& Socket : Builder->GetMarkerList()) {
             float DistanceSq = (Socket.Transform.GetLocation() - CurrentLocation).SizeSquared();
-            if (DistanceSq < QueryDistanceSq && Socket.SocketType == NearbyMarkerName) {
+            if (DistanceSq < QueryDistanceSq && Socket.MarkerName == NearbyMarkerName) {
                 NumFound++;
             }
         }

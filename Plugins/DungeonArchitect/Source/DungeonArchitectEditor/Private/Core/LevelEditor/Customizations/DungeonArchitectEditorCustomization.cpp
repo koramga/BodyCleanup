@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Customizations/DungeonArchitectEditorCustomization.h"
 
@@ -7,7 +7,7 @@
 #include "Builders/SnapMap/Utils/SnapMapModuleDBUtils.h"
 #include "Core/Common/Utils/DungeonEditorUtils.h"
 #include "Core/Dungeon.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMesh.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonMesh.h"
 #include "Core/LevelEditor/Customizations/DungeonArchitectStyle.h"
 #include "Core/LevelEditor/HelpSystem/DungeonArchitectHelpSystem.h"
 #include "Core/Utils/Debug/DungeonDebug.h"
@@ -15,6 +15,7 @@
 #include "Core/Volumes/DungeonVolume.h"
 #include "Frameworks/GraphGrammar/ExecutionGraph/Nodes/EdGraphNode_ExecRuleNode.h"
 #include "Frameworks/LevelStreaming/DungeonLevelStreamer.h"
+#include "Frameworks/MarkerGenerator/MarkerGenPattern.h"
 #include "Frameworks/Snap/SnapGridFlow/SnapGridFlowModuleDatabase.h"
 #include "Frameworks/Snap/SnapMap/SnapMapModuleDatabase.h"
 
@@ -613,7 +614,13 @@ FReply FSnapGridFlowModuleDatabaseCustomization::HandleTool_AddModulesFromDir(ID
                 }
                 
                 FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-                const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true);
+                FDetailsViewArgs DetailsViewArgs;
+                DetailsViewArgs.bUpdatesFromSelection = false;
+                DetailsViewArgs.bLockable = false;
+                DetailsViewArgs.bAllowSearch = true;
+                DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+                DetailsViewArgs.bHideSelectionTip = true;
+                
                 TSharedRef<IDetailsView> PropertyEditor = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
                 PropertyEditor->SetObject(DirImportSettings);
                 
@@ -784,6 +791,48 @@ void FDAExecRuleNodeCustomization::OnExecutionModeChanged(UEdGraphNode_ExecRuleN
 TSharedRef<IDetailCustomization> FDAExecRuleNodeCustomization::MakeInstance() {
     return MakeShareable(new FDAExecRuleNodeCustomization);
 }
+
+
+///////////////////////////////////// FUMarkerGenPatternRuleCustomization /////////////////////////////////////
+void FMGPatternRuleCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) {
+    IDetailCategoryBuilder& Category = DetailBuilder.EditCategory("Pattern Rule");
+    Category.AddCustomRow(LOCTEXT("MGPatternRule_ColorRow", "RandomizeColor"))
+    .WholeRowContent()
+    [
+        SNew(SButton)
+            .Text(LOCTEXT("RandomizeColorLabel", "Randomize Color"))
+            .OnClicked(FOnClicked::CreateStatic(&FMGPatternRuleCustomization::RandomizeColor, &DetailBuilder))
+    ];
+}
+
+FReply FMGPatternRuleCustomization::RandomizeColor(IDetailLayoutBuilder* DetailBuilder) {
+    UMarkerGenPatternRule* PatternRule = FDungeonEditorUtils::GetBuilderObject<UMarkerGenPatternRule>(DetailBuilder);
+    if (PatternRule) {
+        PatternRule->AssignRandomColor();
+        PatternRule->Modify();
+
+        const TSharedRef<IPropertyHandle> ColorPropertyHandle = DetailBuilder->GetProperty(GET_MEMBER_NAME_CHECKED(UMarkerGenPatternRule, Color));
+        ColorPropertyHandle->NotifyPostChange(EPropertyChangeType::Unspecified);
+        ColorPropertyHandle->NotifyFinishedChangingProperties();
+    }
+    return FReply::Handled();
+}
+
+TSharedRef<IDetailCustomization> FMGPatternRuleCustomization::MakeInstance() {
+    return MakeShareable(new FMGPatternRuleCustomization);
+}
+
+void FMGPatternGridLayerCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) {
+    DetailBuilder.EditCategory("Marker Generator").SetSortOrder(0);
+    DetailBuilder.EditCategory("Pattern Matching").SetSortOrder(1);
+    DetailBuilder.EditCategory("Constraints").SetSortOrder(2);
+    DetailBuilder.EditCategory("Advanced").SetSortOrder(3);
+}
+
+TSharedRef<IDetailCustomization> FMGPatternGridLayerCustomization::MakeInstance() {
+    return MakeShareable(new FMGPatternGridLayerCustomization);
+}
+
 
 #undef LOCTEXT_NAMESPACE
 

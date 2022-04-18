@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/EditorMode/DungeonEdModeToolkit.h"
 
@@ -16,14 +16,6 @@ namespace DAEdModeImpl
     const TArray<FName> DAPaletteNames = { DAPaletteName };
 }
 
-
-void FDungeonEdModeToolkit::RegisterTabSpawners(const TSharedRef<class FTabManager>& TabManager) {
-
-}
-
-void FDungeonEdModeToolkit::UnregisterTabSpawners(const TSharedRef<class FTabManager>& TabManager) {
-
-}
 
 void FDungeonEdModeToolkit::Init(const TSharedPtr<class IToolkitHost>& InitToolkitHost) {
     FModeToolkit::Init(InitToolkitHost);
@@ -46,10 +38,7 @@ TSharedPtr<SWidget> FDungeonEdModeToolkit::GetInlineContent() const {
 }
 
 void FDungeonEdModeToolkit::GetToolPaletteNames(TArray<FName>& InPaletteName) const {
-    if (!GetDefault<UEditorStyleSettings>()->bEnableLegacyEditorModeUI)
-    {
-        InPaletteName = DAEdModeImpl::DAPaletteNames;
-    }
+    InPaletteName = DAEdModeImpl::DAPaletteNames;
 }
 
 FText FDungeonEdModeToolkit::GetToolPaletteDisplayName(FName PaletteName) const {

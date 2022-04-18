@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -30,7 +30,7 @@ public:
     bool Seed_Verify(const FText& NewText, FText& OutErrorMessage) const;
     void Seed_Commit(const FText& InText, ETextCommit::Type CommitInfo);
 
-    FReply OnNodeTypeDrop(TSharedPtr<FDragDropOperation> Operation) const;
+    FReply OnNodeTypeDrop(const FGeometry& InGeometry, const FDragDropEvent& InEvent) const;
     bool OnNodeTypeAllowDrop(TSharedPtr<FDragDropOperation> Operation) const;
     bool OnIsNodeTypeDropRecognized(TSharedPtr<FDragDropOperation> Operation) const;
 

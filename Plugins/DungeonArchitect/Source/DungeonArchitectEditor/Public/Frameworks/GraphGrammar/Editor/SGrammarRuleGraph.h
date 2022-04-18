@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -103,7 +103,7 @@ private:
     void OnGraphChangedCallback(const struct FEdGraphEditAction& InAction);
     void NotifyGraphChanged();
 
-    FReply OnNodeTypeDrop(TSharedPtr<FDragDropOperation> Operation);
+    FReply OnNodeTypeDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent);
     bool OnNodeTypeAllowDrop(TSharedPtr<FDragDropOperation> Operation);
     bool OnIsNodeTypeDropRecognized(TSharedPtr<FDragDropOperation> Operation);
     TSharedPtr<SWidget> WrapDropTarget(TSharedRef<SWidget> Widget);

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/GridFlow/GridFlowBuilder.h"
 
@@ -79,7 +79,7 @@ bool UGridFlowBuilder::ExecuteGraph() {
         FFlowProcessorSettings GridFlowProcessorSettings;
         GridFlowProcessorSettings.AttributeList = AttributeList;
         GridFlowProcessorSettings.SerializedAttributeList = GridFlowConfig->ParameterOverrides;
-        Result = FlowProcessor.Process(GridFlowAsset->ExecScript, random, GridFlowProcessorSettings);
+        Result = FlowProcessor.Process(GridFlowAsset->ExecScript, Random, GridFlowProcessorSettings);
         NumTries++;
         if (Result.ExecResult == EFlowTaskExecutionResult::Success) {
             break;
@@ -485,7 +485,7 @@ void UGridFlowBuilder::GetDefaultMarkerNames(TArray<FString>& OutMarkerNames) {
 }
 
 bool UGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                             const FPropSocket& socket) {
+                                             const FDAMarkerInfo& socket) {
     for (UDungeonSelectorLogic* SelectionLogic : SelectionLogics) {
         UGridFlowSelectorLogic* GridFlowSelectionLogic = Cast<UGridFlowSelectorLogic>(SelectionLogic);
         if (!GridFlowSelectionLogic) {
@@ -501,7 +501,7 @@ bool UGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*
         int32 TileX = FMath::FloorToInt(Location.X / GridSize.X) + TileOffset.X;
         int32 TileY = FMath::FloorToInt(Location.Y / GridSize.Y) + TileOffset.Y;
 
-        bool bSelected = GridFlowSelectionLogic->SelectNode(GridFlowModel, GridFlowConfig, this, GridFlowQuery, random,
+        bool bSelected = GridFlowSelectionLogic->SelectNode(GridFlowModel, GridFlowConfig, this, GridFlowQuery, Random,
                                                             TileX, TileY, socket.Transform);
         if (!bSelected) {
             return false;
@@ -511,7 +511,7 @@ bool UGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*
 }
 
 FTransform UGridFlowBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                                   const FPropSocket& socket) {
+                                                   const FDAMarkerInfo& socket) {
     FTransform result = FTransform::Identity;
 
     for (UDungeonTransformLogic* TransformLogic : TransformLogics) {
@@ -528,7 +528,7 @@ FTransform UGridFlowBuilder::PerformTransformLogic(const TArray<UDungeonTransfor
         int32 GridY = FMath::FloorToInt(Location.Y / GridSize.Y);
         FTransform LogicOffset;
         if (TransformLogic) {
-            GridFlowTransformLogic->GetNodeOffset(GridFlowModel, GridFlowConfig, GridFlowQuery, random, GridX, GridY,
+            GridFlowTransformLogic->GetNodeOffset(GridFlowModel, GridFlowConfig, GridFlowQuery, Random, GridX, GridY,
                                                   LogicOffset);
         }
         else {

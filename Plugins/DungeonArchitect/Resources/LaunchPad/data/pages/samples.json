@@ -32,6 +32,18 @@
 					"link": "pages/samples/sample_snap1.json"
 				},
 				{
+					"title": "City Of Brass Sand",
+					"desc": "Theme created using the free City Of Brass art assets",
+					"image": "detail/thumb/sample_cob_sand_t",
+					"link": "pages/samples/sample_cob_sand.json"
+				},
+				{
+					"title": "City Of Brass Garden",
+					"desc": "Theme created using the free City Of Brass art assets",
+					"image": "detail/thumb/sample_cob_garden_t",
+					"link": "pages/samples/sample_cob_garden.json"
+				},
+				{
 					"title": "Candy",
 					"desc": "A simple clean theme using flat textures",
 					"image": "detail/thumb/sample_candy_t",
@@ -83,7 +95,25 @@
 					"desc": "A toon forest theme made using low poly free assets",
 					"image": "detail/thumb/sample_cliff_t",
 					"link": "pages/samples/sample_cliff.json"
+				},
+				{
+					"title": "City Of Brass Sand",
+					"desc": "Theme created using the free City Of Brass art assets",
+					"image": "detail/thumb/sample_cob_sand_t",
+					"link": "pages/samples/sample_cob_sand.json"
+				},
+				{
+					"title": "City Of Brass Garden",
+					"desc": "Theme created using the free City Of Brass art assets",
+					"image": "detail/thumb/sample_cob_garden_t",
+					"link": "pages/samples/sample_cob_garden.json"
 				}
+			]
+		},
+		{
+			"category": " ",
+			"cards": [
+
 			]
 		},
 		{

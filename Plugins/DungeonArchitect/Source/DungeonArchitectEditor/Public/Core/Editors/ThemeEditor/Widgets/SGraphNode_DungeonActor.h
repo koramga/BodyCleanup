@@ -1,8 +1,8 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonActorBase.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonActorBase.h"
 
 #include "AssetThumbnail.h"
 #include "SGraphNode.h"
@@ -26,7 +26,7 @@ public:
     // End of SGraphNode interface
 
     // SNodePanel::SNode interface
-    virtual void MoveTo(const FVector2D& NewPosition, FNodeSet& NodeFilter) override;
+    virtual void MoveTo(const FVector2D& NewPosition, FNodeSet& NodeFilter, bool bMarkDirty = true) override;
 
     // End of SNodePanel::SNode interface
 

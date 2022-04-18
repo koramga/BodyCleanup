@@ -1,14 +1,14 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/ThemeGraphAppMode.h"
 
 #include "Core/DungeonBuilder.h"
 #include "Core/Editors/ThemeEditor/AppModes/Common/ThemeEditorAppTabFactoryMacros.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonActorTemplate.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonBase.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonMarker.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraph_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/DungeonThemeGraphHandler.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonActorTemplate.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonBase.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMarker.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraph_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/Widgets/SGraphPalette_PropActions.h"
 #include "Core/Editors/ThemeEditor/Widgets/SMarkerListView.h"
 #include "Core/Editors/ThemeEditor/Widgets/SThemeEditorDropTarget.h"
@@ -102,8 +102,28 @@ namespace ThemeGraphAppModeTabs {
 		TSharedRef<SDockTab> SpawnedTab = FWorkflowTabFactory::SpawnTab(Info);
 		IContentBrowserSingleton& ContentBrowserSingleton = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser").Get();
 
-		const FName ContentBrowserID = *("DA_ThemeEditor_ContentBrowser_" + FGuid::NewGuid().ToString());
-		const FContentBrowserConfig ContentBrowserConfig;
+		const FName ContentBrowserID = TEXT("DA_ThemeEditor_ContentBrowser");
+		FContentBrowserConfig ContentBrowserConfig;
+		{
+			/*
+			ContentBrowserConfig.ThumbnailLabel =  EThumbnailLabel::ClassName ;
+			ContentBrowserConfig.ThumbnailScale = 0.1f;
+			ContentBrowserConfig.InitialAssetViewType = EAssetViewType::Column;
+			ContentBrowserConfig.bShowBottomToolbar = true;
+			ContentBrowserConfig.bCanShowClasses = true;
+			ContentBrowserConfig.bUseSourcesView = true;
+			ContentBrowserConfig.bExpandSourcesView = true;
+			ContentBrowserConfig.bUsePathPicker = true;
+			ContentBrowserConfig.bCanShowFilters = true;
+			ContentBrowserConfig.bCanShowAssetSearch = true;
+			ContentBrowserConfig.bCanShowFolders = true;
+			ContentBrowserConfig.bCanShowRealTimeThumbnails = true;
+			ContentBrowserConfig.bCanShowLockButton = true;
+			*/
+			ContentBrowserConfig.bCanShowDevelopersFolder = true;
+			ContentBrowserConfig.bCanSetAsPrimaryBrowser = false;
+		}
+		
 		const TSharedRef<SWidget> ContentBrowser = ContentBrowserSingleton.CreateContentBrowser(ContentBrowserID, SpawnedTab, &ContentBrowserConfig);
 		SpawnedTab->SetContent(ContentBrowser);
 		
@@ -156,7 +176,7 @@ FThemeGraphAppMode::FThemeGraphAppMode(TSharedPtr<FDungeonArchitectThemeEditor> 
 {
 }
 
-void FThemeGraphAppMode::Init() {
+void FThemeGraphAppMode::Init(TSubclassOf<UDungeonBuilder> InBuilderClass) {
 	const TSharedPtr<FDungeonArchitectThemeEditor> ThemeEditor = ThemeEditorPtr.Pin();
 	if (!ThemeEditor.IsValid()) return;
 	
@@ -165,7 +185,6 @@ void FThemeGraphAppMode::Init() {
 	MarkerListView = SNew(SMarkerListView)
 		.OnMarkerDoubleClicked(this, &FThemeGraphAppMode::OnMarkerListDoubleClicked);
 	RefreshMarkerListView();
-
 
 	ThemeGraphHandler = MakeShareable(new FDungeonArchitectThemeGraphHandler);
 	ThemeGraphHandler->Bind();
@@ -206,18 +225,11 @@ void FThemeGraphAppMode::Init() {
 	TabFactories.RegisterFactory(MakeShareable(new ThemeGraphAppModeTabs::FThemeEditorTabFactory_PreviewSettings(ThemeEditor, PreviewSettingsWidget)));
 
 	TabLayout = FTabManager::NewLayout(
-            "ThemeGraphAppMode_Layout_v0.0.1")
+            "ThemeGraphAppMode_Layout_v0.0.2")
         ->AddArea
         (
             FTabManager::NewPrimaryArea()
             ->SetOrientation(Orient_Vertical)
-            ->Split
-            (
-                FTabManager::NewStack()
-                ->SetSizeCoefficient(0.1f)
-                ->SetHideTabWell(true)
-                ->AddTab(ThemeEditor->GetToolbarTabId(), ETabState::OpenedTab)
-            )
             ->Split
             (
                 FTabManager::NewSplitter()
@@ -380,33 +392,46 @@ void FThemeGraphAppMode::SelectedNodesChanged(const TSet<UObject*>& SelectedNode
 	}
 }
 
-void FThemeGraphAppMode::HandleAssetDropped(UObject* AssetObject) {
+void FThemeGraphAppMode::HandleAssetsDropped(const FDragDropEvent& InEvent, TArrayView<FAssetData> InAssets) const {
 	if (GraphEditor.IsValid()) {
-		UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph());
-		if (ThemeGraph) {
-			FVector2D GridLocation = GetAssetDropGridLocation();
-			ThemeGraph->CreateNewNode(AssetObject, GridLocation);
+		if (UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph())) {
+			FVector2D Offset = FVector2D::ZeroVector;
+			for (const FAssetData& InAsset : InAssets) {
+				if (UObject* AssetObject = InAsset.GetAsset()) {
+					const FVector2D GridLocation = GetAssetDropGridLocation() + Offset;
+					ThemeGraph->CreateNewNode(AssetObject, GridLocation);
+					Offset += FVector2D(20, 20);
+				}
+			}
 		}
 	}
 }
 
-bool FThemeGraphAppMode::IsAssetAcceptableForDrop(const UObject* AssetObject) const {
+bool FThemeGraphAppMode::AreAssetsAcceptableForDrop(TArrayView<FAssetData> InAssets) const {
 	if (GraphEditor.IsValid()) {
-		UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph());
-		if (ThemeGraph) {
-			bool bCanDrop = ThemeGraph->IsAssetAcceptableForDrop(AssetObject);
+		if (const UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph())) {
+			bool bAllAssetsValidForDrop = true;
+			for (const FAssetData AssetData : InAssets) {
+				if (const UObject* AssetObject = AssetData.GetAsset()) {
+					bool bCanDrop = ThemeGraph->IsAssetAcceptableForDrop(AssetObject);
 
-			if (!bCanDrop) {
-				// Check if a broker can convert this asset to an actor
-				FAssetData AssetData(AssetObject);
-				bool bHasActorFactory = FActorFactoryAssetProxy::GetFactoryForAsset(AssetData) != nullptr;
+					if (!bCanDrop) {
+						// Check if a broker can convert this asset to an actor
+						const bool bHasActorFactory = FActorFactoryAssetProxy::GetFactoryForAsset(AssetData) != nullptr;
 
-				if (bHasActorFactory) {
-					bCanDrop = true;
+						if (bHasActorFactory) {
+							bCanDrop = true;
+						}
+					}
+					
+					if (!bCanDrop) {
+						bAllAssetsValidForDrop = false;
+						break;
+					}
 				}
 			}
-
-			return bCanDrop;
+			
+			return bAllAssetsValidForDrop;
 		}
 	}
 	return false;
@@ -436,8 +461,8 @@ void FThemeGraphAppMode::CreateGraphEditorWidget(UEdGraph* InGraph) {
 		.GraphEvents(ThemeGraphHandler->GraphEvents);
 
 	AssetDropTarget = SNew(SThemeEditorDropTarget)
-		.OnAssetDropped(this, &FThemeGraphAppMode::HandleAssetDropped)
-		.OnIsAssetAcceptableForDrop(this, &FThemeGraphAppMode::IsAssetAcceptableForDrop)
+		.OnAssetsDropped(this, &FThemeGraphAppMode::HandleAssetsDropped)
+		.OnAreAssetsAcceptableForDrop(this, &FThemeGraphAppMode::AreAssetsAcceptableForDrop)
 		.Visibility(EVisibility::HitTestInvisible);
 
 	GraphEditorHost = SNew(SOverlay)

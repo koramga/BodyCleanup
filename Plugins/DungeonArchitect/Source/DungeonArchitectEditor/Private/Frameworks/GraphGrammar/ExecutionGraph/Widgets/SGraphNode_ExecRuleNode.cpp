@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/GraphGrammar/ExecutionGraph/Widgets/SGraphNode_ExecRuleNode.h"
 
@@ -32,8 +32,6 @@ protected:
 void SExecNodeOutputPin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) {
     this->SetCursor(EMouseCursor::Default);
 
-    typedef SExecNodeOutputPin ThisClass;
-
     bShowLabel = true;
 
     GraphPinObj = InPin;
@@ -45,9 +43,9 @@ void SExecNodeOutputPin::Construct(const FArguments& InArgs, UEdGraphPin* InPin)
     // Set up a hover for pins that is tinted the color of the pin.
     SBorder::Construct(SBorder::FArguments()
                        .BorderImage(this, &SExecNodeOutputPin::GetPinBorder)
-                       .BorderBackgroundColor(this, &ThisClass::GetPinColor)
-                       .OnMouseButtonDown(this, &ThisClass::OnPinMouseDown)
-                       .Cursor(this, &ThisClass::GetPinCursor)
+                       .BorderBackgroundColor(this, &SExecNodeOutputPin::GetPinColor)
+                       .OnMouseButtonDown(this, &SExecNodeOutputPin::OnPinMouseDown)
+                       .Cursor(this, &SExecNodeOutputPin::GetPinCursor)
     );
 }
 

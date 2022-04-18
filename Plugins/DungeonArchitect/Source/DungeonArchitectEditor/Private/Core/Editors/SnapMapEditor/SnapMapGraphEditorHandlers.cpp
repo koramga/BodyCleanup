@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapMapEditor/SnapMapGraphEditorHandlers.h"
 
@@ -128,10 +128,9 @@ private:
     FVector2D PanelCoordDropPosition = FVector2D(0, 0);
 };
 
-FReply FSnapMapExecGraphEditorHandler::OnNodeTypeDrop(TSharedPtr<FDragDropOperation> Operation) const {
-    FVector2D DropPosition = ContentHost.IsValid() ? ContentHost->GetPanelCoordDropPosition() : FVector2D::ZeroVector;
-    DropHandler->OnNodeTypeDrop(Operation, DropPosition, ExecutionGraphWidget,
-                                GrammarRules->ExecutionGraphScript->EdGraph);
+FReply FSnapMapExecGraphEditorHandler::OnNodeTypeDrop(const FGeometry& InGeometry, const FDragDropEvent& InEvent) const {
+    const FVector2D DropPosition = ContentHost.IsValid() ? ContentHost->GetPanelCoordDropPosition() : FVector2D::ZeroVector;
+    DropHandler->OnNodeTypeDrop(InEvent.GetOperation(), DropPosition, ExecutionGraphWidget, GrammarRules->ExecutionGraphScript->EdGraph);
     return FReply::Handled();
 }
 
@@ -284,11 +283,9 @@ void FSnapMapExecGraphEditorHandler::CreateGraphEditor() {
     GraphHandler->SetGraphEditor(ExecutionGraphWidget);
 
     ContentHost = SNew(SFlowExecGraphDropTarget)
-		.OnDrop_Raw(this, &FSnapMapExecGraphEditorHandler::OnNodeTypeDrop)
+		.OnDropped_Raw(this, &FSnapMapExecGraphEditorHandler::OnNodeTypeDrop)
 		.OnAllowDrop_Raw(this, &FSnapMapExecGraphEditorHandler::OnNodeTypeAllowDrop)
 		.OnIsRecognized_Raw(this, &FSnapMapExecGraphEditorHandler::OnIsNodeTypeDropRecognized)
-		.BackgroundColor(FLinearColor(1, 1, 1, 0.125f))
-		.BackgroundColorHover(FLinearColor(1, 1, 1, 0.25f))
 		.Content()
     [
         ExecutionGraphWidget.ToSharedRef()

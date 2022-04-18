@@ -40,8 +40,8 @@ protected :
 	virtual void PreEditChange(FProperty* PropertyThatWillChange) override;
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void PostEditMove(bool bFinished) override;
-	UFUNCTION()
-	void OnChangeSelectObject(UObject* SelectionObj);
+	//UFUNCTION()
+	//void OnChangeSelectObject(UObject* SelectionObj);
 
 	void DisplayLinkConnection(bool bShow = true);
 

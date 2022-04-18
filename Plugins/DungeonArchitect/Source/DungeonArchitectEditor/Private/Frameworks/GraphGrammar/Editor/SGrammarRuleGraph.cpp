@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/GraphGrammar/Editor/SGrammarRuleGraph.h"
 
@@ -273,10 +273,10 @@ namespace {
     */
 }
 
-FReply SGrammarRuleGraph::OnNodeTypeDrop(TSharedPtr<FDragDropOperation> Operation) {
+FReply SGrammarRuleGraph::OnNodeTypeDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent) {
     if (DropHandler.IsValid() && GraphEditor.IsValid() && Graph.IsValid()) {
         FVector2D DropPosition = DropTarget.IsValid() ? DropTarget->GetPanelCoordDropPosition() : FVector2D::ZeroVector;
-        DropHandler->OnNodeTypeDrop(Operation, DropPosition, GraphEditor, Graph);
+        DropHandler->OnNodeTypeDrop(InDragDropEvent.GetOperation(), DropPosition, GraphEditor, Graph);
     }
     return FReply::Unhandled();
 }
@@ -297,11 +297,11 @@ bool SGrammarRuleGraph::OnIsNodeTypeDropRecognized(TSharedPtr<FDragDropOperation
 
 TSharedPtr<SWidget> SGrammarRuleGraph::WrapDropTarget(TSharedRef<SWidget> Widget) {
     DropTarget = SNew(SGrammarRuleGraphDropTarget)
-		.OnDrop_Raw(this, &SGrammarRuleGraph::OnNodeTypeDrop)
+		.OnDropped_Raw(this, &SGrammarRuleGraph::OnNodeTypeDrop)
 		.OnAllowDrop_Raw(this, &SGrammarRuleGraph::OnNodeTypeAllowDrop)
 		.OnIsRecognized_Raw(this, &SGrammarRuleGraph::OnIsNodeTypeDropRecognized)
-		.BackgroundColor(FLinearColor(1, 1, 1, 0.125f))
-		.BackgroundColorHover(FLinearColor(1, 1, 1, 0.25f))
+		//.BackgroundColor(FLinearColor(1, 1, 1, 0.125f))
+		//.BackgroundColorHover(FLinearColor(1, 1, 1, 0.25f))
 		.Content()
     [
         Widget

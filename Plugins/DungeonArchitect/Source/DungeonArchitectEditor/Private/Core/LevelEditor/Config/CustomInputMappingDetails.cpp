@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Config/CustomInputMappingDetails.h"
 
@@ -177,7 +177,7 @@ void FDACustomInputActionMappingsNodeBuilder::AddActionMappingButton_OnClick()
 		FInputActionKeyMapping NewMapping(NewActionMappingName);
 		InputSettings->ActionMappings.Add(NewMapping);
 
-		ActionMappingsPropertyHandle->NotifyPostChange();
+		ActionMappingsPropertyHandle->NotifyPostChange(EPropertyChangeType::Unspecified);
 	}
 }
 
@@ -232,7 +232,7 @@ void FDACustomInputActionMappingsNodeBuilder::AddActionMappingToGroupButton_OnCl
 		FInputActionKeyMapping NewMapping(MappingSet.SharedName);
 		InputSettings->ActionMappings.Add(NewMapping);
 
-		ActionMappingsPropertyHandle->NotifyPostChange();
+		ActionMappingsPropertyHandle->NotifyPostChange(EPropertyChangeType::Unspecified);
 	}
 }
 
@@ -482,7 +482,7 @@ void FDACustomInputAxisMappingsNodeBuilder::AddAxisMappingButton_OnClick()
 		FInputAxisKeyMapping NewMapping(NewAxisMappingName);
 		InputSettings->AxisMappings.Add(NewMapping);
 
-		AxisMappingsPropertyHandle->NotifyPostChange();
+		AxisMappingsPropertyHandle->NotifyPostChange(EPropertyChangeType::Unspecified);
 	}
 }
 
@@ -537,7 +537,7 @@ void FDACustomInputAxisMappingsNodeBuilder::AddAxisMappingToGroupButton_OnClick(
 		FInputAxisKeyMapping NewMapping(MappingSet.SharedName);
 		InputSettings->AxisMappings.Add(NewMapping);
 
-		AxisMappingsPropertyHandle->NotifyPostChange();
+		AxisMappingsPropertyHandle->NotifyPostChange(EPropertyChangeType::Unspecified);
 	}
 }
 

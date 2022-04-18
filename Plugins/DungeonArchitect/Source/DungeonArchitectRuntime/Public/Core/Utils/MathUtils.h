@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -86,5 +86,55 @@ class DUNGEONARCHITECTRUNTIME_API FColorUtils {
 public:
     static FLinearColor BrightenColor(const FLinearColor& InColor, float SaturationMultiplier,
                                       float BrightnessMultiplier);
+};
+
+
+template<typename T>
+class TDASmoothValue {
+public:
+    void Initialize(const T& InValue) {
+        TargetValue = SmoothValue = InValue;
+    }
+
+    void Tick(float DeltaTime) {
+        if (RemainingTime > 0) {
+            float Alpha = FMath::Clamp(DeltaTime / RemainingTime, 0.0f, 1.0f);
+            SmoothValue = FMath::Lerp(SmoothValue, TargetValue, Alpha);
+            RemainingTime -= DeltaTime;
+            if (RemainingTime <= 0) {
+                SmoothValue = TargetValue;
+                RemainingTime = 0;
+            }
+        }
+    }
+
+    void SetTarget(const T& InValue, bool bInAnimate) {
+        if (TargetValue != InValue) {
+            TargetValue = InValue;
+            if (bInAnimate) {
+                RemainingTime = TimeToTarget;
+            }
+            else {
+                SmoothValue = TargetValue;
+                RemainingTime = 0;
+            }
+        }
+    }
+
+    T GetTargetValue() const { return TargetValue; }
+    T GetSmoothValue() const { return SmoothValue; }
+    
+    void SetTimeToTarget(float InTimeToTarget) { TimeToTarget = InTimeToTarget; }
+
+    T operator()() const {
+        return SmoothValue;
+    }
+    bool IsTransitioning() const { return RemainingTime > 0; }
+    
+private:
+    T TargetValue;
+    T SmoothValue;
+    float TimeToTarget = 0.1f;
+    float RemainingTime = 0.0f;
 };
 

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/GridFlow/GridFlowMiniMap.h"
 
@@ -84,8 +84,7 @@ void AGridFlowMiniMap::BuildLayout(UDungeonModel* DungeonModel, UDungeonConfig* 
             Width *= Aspect;
         }
 
-        FCanvasTileItem Item(FVector2D::ZeroVector, RenderedRTT->Resource, FVector2D(Width, Height),
-                             FLinearColor::White);
+        FCanvasTileItem Item(FVector2D::ZeroVector, RenderedRTT->GetResource(), FVector2D(Width, Height), FLinearColor::White);
         Canvas->DrawItem(Item);
         UKismetRenderingLibrary::EndDrawCanvasToRenderTarget(GetWorld(), RenderContext);
         UKismetRenderingLibrary::ReleaseRenderTarget2D(RenderedRTT);

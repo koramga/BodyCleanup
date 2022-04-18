@@ -88,7 +88,7 @@ void ABaseNPCCharacter::__OnAttackOverlapBegin(UPrimitiveComponent* OverlappedCo
 								OverlappedComp->GetComponentTransform().GetRotation(),
 								0,
 								CollisionShape,  
-								FCollisionQueryParams::FCollisionQueryParams(false));
+								FCollisionQueryParams::DefaultQueryParam);
 
 								for(FHitResult InputHitResult : AllResults)
 								{

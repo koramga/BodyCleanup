@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/GridCustom/GridCustomDungeonBuilder.h"
 
@@ -24,8 +24,8 @@ void UGridCustomDungeonBuilder::RegisterRoomAt(int32 X, int32 Y, int32 Z, int32&
     const int32 Min = gridConfig->MinCellSize;
     const int32 Max = gridConfig->MaxCellSize;
 
-    int32 Width = Min + FMath::RoundToInt((Max - Min) * random.FRand());
-    int32 Height = Min + FMath::RoundToInt((Max - Min) * random.FRand());
+    int32 Width = Min + FMath::RoundToInt((Max - Min) * Random.FRand());
+    int32 Height = Min + FMath::RoundToInt((Max - Min) * Random.FRand());
     RegisterRoom(X, Y, Z, Width, Height, RoomID);
 }
 
@@ -34,7 +34,7 @@ void UGridCustomDungeonBuilder::ConnectRooms(int32 Room1, int32 Room2) {
 }
 
 void UGridCustomDungeonBuilder::GetRandomOffset(int32 X, int32 Y, float Radius, int32& OutX, int32& OutY) {
-    float Angle = random.FRand() * PI * 2;
+    float Angle = Random.FRand() * PI * 2;
     int32 DX = FMath::RoundToInt(FMath::Cos(Angle) * Radius);
     int32 DY = FMath::RoundToInt(FMath::Sin(Angle) * Radius);
     OutX = X + DX;
@@ -53,7 +53,7 @@ void UGridCustomDungeonBuilder::GenerateCustomLayout_Implementation(UGridDungeon
         int32 Y = FMath::RoundToInt(FMath::Sin(Angle) * Radius);
         int32 Z = 0;
         if (bUseHeightVariation) {
-            Z = random.FRand() > 0.5 ? 1 : 0;
+            Z = Random.FRand() > 0.5 ? 1 : 0;
         }
         int32 RoomID;
         RegisterRoom(X, Y, Z, Width, Height, RoomID);

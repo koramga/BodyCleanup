@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/GraphGrammar/RuleGraph/Debugging/SGraphNode_DebugGrammarNode.h"
 
@@ -37,8 +37,6 @@ protected:
 void SDebugGrammarNodeOutputPin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) {
     this->SetCursor(EMouseCursor::Default);
 
-    typedef SDebugGrammarNodeOutputPin ThisClass;
-
     bShowLabel = true;
 
     GraphPinObj = InPin;
@@ -50,9 +48,9 @@ void SDebugGrammarNodeOutputPin::Construct(const FArguments& InArgs, UEdGraphPin
     // Set up a hover for pins that is tinted the color of the pin.
     SBorder::Construct(SBorder::FArguments()
                        .BorderImage(this, &SDebugGrammarNodeOutputPin::GetPinBorder)
-                       .BorderBackgroundColor(this, &ThisClass::GetPinColor)
-                       .OnMouseButtonDown(this, &ThisClass::OnPinMouseDown)
-                       .Cursor(this, &ThisClass::GetPinCursor)
+                       .BorderBackgroundColor(this, &SDebugGrammarNodeOutputPin::GetPinColor)
+                       .OnMouseButtonDown(this, &SDebugGrammarNodeOutputPin::OnPinMouseDown)
+                       .Cursor(this, &SDebugGrammarNodeOutputPin::GetPinCursor)
     );
 }
 
@@ -343,7 +341,7 @@ void SGraphNode_DebugGrammarDoorNode::GetNodeInfoPopups(FNodeInfoContext* Contex
 
 }
 
-void SGraphNode_DebugGrammarDoorNode::MoveTo(const FVector2D& NewPosition, FNodeSet& NodeFilter) {
+void SGraphNode_DebugGrammarDoorNode::MoveTo(const FVector2D& NewPosition, FNodeSet& NodeFilter, bool bMarkDirty) {
     // Ignored; position is set by the location of the attached state nodes
 }
 

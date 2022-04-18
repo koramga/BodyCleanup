@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/Grid/EditorMode/UI/SGridDungeonEdit.h"
 
@@ -31,12 +31,14 @@ void SGridDungeonEdit::Construct(const FArguments& InArgs) {
 
     BindCommands();
 
-    FPropertyEditorModule& PropertyEditorModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(
-        "PropertyEditor");
-    FDetailsViewArgs DetailsViewArgs(false, false, false, FDetailsViewArgs::HideNameArea);
+    FPropertyEditorModule& PropertyEditorModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+    FDetailsViewArgs DetailsViewArgs;
+    DetailsViewArgs.bUpdatesFromSelection = false;
+    DetailsViewArgs.bLockable = false;
+    DetailsViewArgs.bAllowSearch = false;
+    DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
 
     DetailsPanel = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
-    //DetailsPanel->SetIsPropertyVisibleDelegate(FIsPropertyVisible::CreateSP(this, &SGridDungeonEdit::GetIsPropertyVisible));
 
     TSharedRef<SWidget> DetailsPanelRef = DetailsPanel.ToSharedRef();
 

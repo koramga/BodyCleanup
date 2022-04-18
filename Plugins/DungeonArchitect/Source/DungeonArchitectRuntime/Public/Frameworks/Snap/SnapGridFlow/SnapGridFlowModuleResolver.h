@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -45,9 +45,9 @@ private:
 	}; 
 
 	struct FSGFModuleResolveState {
-		FSGFModuleResolveState(UFlowAbstractGraphBase* InGraph, const FRandomStream& InRandom)
+		FSGFModuleResolveState(UFlowAbstractGraphBase* InGraph, int32 InSeed)
 			: GraphQuery(InGraph)
-			, Random(InRandom)
+			, Random(FRandomStream(InSeed))
 		{
 		}
 		
@@ -68,8 +68,9 @@ private:
 		TArray<FSGFModuleAssemblySideCell> DoorIndices;
 		int32 ItemFitness = 0;
 		int32 ConnectionWeight = 0;
-		int32 ModuleLastUsedDepth = 0;
+		int32 ModuleLastUsedDepth = MAX_int32;
 		float ModuleWeight = 0;
+		uint64 FinalPriority = 0LL;
 	};
 	
 private:

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Customizations/DungeonArchitectStyle.h"
 
@@ -134,7 +134,12 @@ void FDungeonArchitectStyle::FStyle::Initialize() {
         Set("DungeonArchitect.LaunchPad.IconSideBar",
             new PLUGIN_IMAGE_BRUSH("Icons/LaunchPad/da_logo_sidebar_128", Icon128x128));
     }
-
+    
+    // Theme Editor
+    {
+        Set("DAMarkerGen.Build", new PLUGIN_IMAGE_BRUSH("Icons/Common/icon_compile_40x", Icon40x40));
+    }
+    
     // Snap Connection Editor
     {
         Set("SnapConnectionEditor.Rebuild", new PLUGIN_IMAGE_BRUSH("Icons/Common/icon_compile_40x", Icon40x40));
@@ -313,7 +318,8 @@ void FDungeonArchitectStyle::FStyle::Initialize() {
 
     Set("DungeonArchitect.RoundDarkBorder", new BOX_BRUSH("Common/GroupBorderLight", FMargin(4.0f / 16.0f)));
     Set("DungeonArchitect.ListView.LargeFont", DEFAULT_FONT("Regular", 16));
-
+    Set("DungeonArchitect.ListView.Font", DEFAULT_FONT("Regular", 12));
+    Set("DungeonArchitect.ListView.SmallFont", DEFAULT_FONT("Regular", 8));
     Set("DungeonArchitect.Fonts.Normal", DEFAULT_FONT("Regular", 12));
 
     // Close / Delete button style

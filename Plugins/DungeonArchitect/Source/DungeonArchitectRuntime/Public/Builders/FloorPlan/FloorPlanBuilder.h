@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -34,9 +34,9 @@ public:
 
 protected:
     virtual bool PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                       const FPropSocket& socket) override;
+                                       const FDAMarkerInfo& socket) override;
     virtual FTransform PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                             const FPropSocket& socket) override;
+                                             const FDAMarkerInfo& socket) override;
 
 private:
     void BuildLayout();

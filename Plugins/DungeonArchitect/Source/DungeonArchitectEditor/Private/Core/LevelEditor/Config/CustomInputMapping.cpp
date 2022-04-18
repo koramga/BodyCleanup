@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Config/CustomInputMapping.h"
 
@@ -329,13 +329,18 @@ void ADACustomInputConfigBinder::BindMissingInput(bool bShowUserPrompt) const
 
 		InputSettings->ForceRebuildKeymaps();
 		InputSettings->SaveKeyMappings();
-		InputSettings->UpdateDefaultConfigFile();
+		const bool bUpdateSuccess = InputSettings->TryUpdateDefaultConfigFile();
 
 		FEditorDelegates::OnActionAxisMappingsChanged.Broadcast();
-	}
 
-	if (bShowUserPrompt) {
-		FMessageDialog::Open(EAppMsgType::Ok, EAppReturnType::Ok, LOCTEXT("AddMissingInputResultKey", "Project Input configuration updated successfully"));
+		if (bShowUserPrompt) {
+			if (bUpdateSuccess) {
+				FMessageDialog::Open(EAppMsgType::Ok, EAppReturnType::Ok, LOCTEXT("AddMissingInputResultSuccessKey", "Project Input configuration updated successfully"));
+			}
+			else {
+				FMessageDialog::Open(EAppMsgType::Ok, EAppReturnType::Ok, LOCTEXT("AddMissingInputResultFailKey", "Failed to update project input configuration"));
+			}
+		}
 	}
 }
 

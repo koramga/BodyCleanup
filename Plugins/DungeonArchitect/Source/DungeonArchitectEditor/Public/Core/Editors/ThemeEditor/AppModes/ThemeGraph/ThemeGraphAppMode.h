@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -20,7 +20,7 @@ class FThemeGraphAppMode : public FThemeEditorAppModeBase {
 public:
 	FThemeGraphAppMode(TSharedPtr<FDungeonArchitectThemeEditor> InThemeEditor, TSharedPtr<SThemePreviewViewport> InPreviewViewport);
 	virtual ~FThemeGraphAppMode() override;
-	virtual void Init() override;
+	virtual void Init(TSubclassOf<UDungeonBuilder> InBuilderClass) override;
 	virtual void RegisterTabFactories(TSharedPtr<class FTabManager> InTabManager) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void ShowObjectDetails(UObject* ObjectProperties, bool bForceRefresh = false) const override;
@@ -29,8 +29,8 @@ public:
 	void RecreateDefaultMarkerNodes() const;
 	
 private:
-	void HandleAssetDropped(UObject* AssetObject);
-	bool IsAssetAcceptableForDrop(const UObject* AssetObject) const;
+	void HandleAssetsDropped(const FDragDropEvent& InEvent, TArrayView<FAssetData> InAssets) const;
+	bool AreAssetsAcceptableForDrop(TArrayView<FAssetData> InAssets) const;
 	void RefreshMarkerListView() const;
 	void OnMarkerListDoubleClicked(TSharedPtr<FMarkerListEntry> Entry) const;
 	void OnNodeDoubleClicked(class UEdGraphNode* Node) const;

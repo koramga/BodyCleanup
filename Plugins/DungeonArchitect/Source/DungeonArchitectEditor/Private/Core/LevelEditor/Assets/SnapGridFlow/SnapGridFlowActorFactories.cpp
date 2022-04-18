@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/LevelEditor/Assets/SnapGridFlow/SnapGridFlowActorFactories.h"
 
@@ -19,12 +19,10 @@ UObject* USnapGridFlowModuleBoundsActorFactory::GetAssetFromActorInstance(AActor
     return ModuleBoundsActor ? ModuleBoundsActor->BoundsComponent->ModuleBounds.LoadSynchronous() : nullptr;
 }
 
-AActor* USnapGridFlowModuleBoundsActorFactory::SpawnActor(UObject* Asset, ULevel* InLevel, const FTransform& Transform,
-                                                   EObjectFlags InObjectFlags, const FName Name) {
-    AActor* Actor = UActorFactory::SpawnActor(Asset, InLevel, Transform, InObjectFlags, Name);
-    ASnapGridFlowModuleBoundsActor* ModuleBoundsActor = Cast<ASnapGridFlowModuleBoundsActor>(Actor);
-    if (ModuleBoundsActor) {
-        ModuleBoundsActor->BoundsComponent->ModuleBounds = Cast<USnapGridFlowModuleBoundsAsset>(Asset);
+AActor* USnapGridFlowModuleBoundsActorFactory::SpawnActor(UObject* InAsset, ULevel* InLevel, const FTransform& InTransform, const FActorSpawnParameters& InSpawnParams) {
+    AActor* Actor = UActorFactory::SpawnActor(InAsset, InLevel, InTransform, InSpawnParams);
+    if (const ASnapGridFlowModuleBoundsActor* ModuleBoundsActor = Cast<ASnapGridFlowModuleBoundsActor>(Actor)) {
+        ModuleBoundsActor->BoundsComponent->ModuleBounds = Cast<USnapGridFlowModuleBoundsAsset>(InAsset);
     }
     return Actor;
 }

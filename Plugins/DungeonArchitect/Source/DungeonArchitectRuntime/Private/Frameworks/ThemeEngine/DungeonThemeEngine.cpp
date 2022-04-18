@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/ThemeEngine/DungeonThemeEngine.h"
 
@@ -7,6 +7,8 @@
 #include "Core/Utils/DungeonModelHelper.h"
 #include "Core/Utils/Rectangle.h"
 #include "Core/Volumes/DungeonThemeOverrideVolume.h"
+#include "Frameworks/MarkerGenerator/MarkerGenLayer.h"
+#include "Frameworks/MarkerGenerator/MarkerGenModel.h"
 #include "Frameworks/ThemeEngine/DungeonThemeAsset.h"
 #include "Frameworks/ThemeEngine/SceneProviders/DungeonSceneProvider.h"
 #include "Frameworks/ThemeEngine/SceneProviders/DungeonSceneProviderContext.h"
@@ -37,13 +39,13 @@ public:
 
     // Picks a theme from the list that has a definition for the defined socket
     static UDungeonThemeAsset* GetBestMatchedTheme(const FRandomStream& random, const TArray<UDungeonThemeAsset*>& Themes,
-                                            const FPropSocket& socket, PropBySocketTypeByTheme_t& PropBySocketTypeByTheme) {
+                                            const FDAMarkerInfo& socket, PropBySocketTypeByTheme_t& PropBySocketTypeByTheme) {
         TArray<UDungeonThemeAsset*> ValidThemes;
         for (UDungeonThemeAsset* Theme : Themes) {
             if (PropBySocketTypeByTheme.Contains(Theme)) {
                 PropBySocketType_t& PropBySocketType = PropBySocketTypeByTheme[Theme];
                 if (PropBySocketType.Num() > 0) {
-                    if (PropBySocketType.Contains(socket.SocketType) && PropBySocketType[socket.SocketType].Num() > 0) {
+                    if (PropBySocketType.Contains(socket.MarkerName) && PropBySocketType[socket.MarkerName].Num() > 0) {
                         ValidThemes.Add(Theme);
                     }
                 }
@@ -57,12 +59,11 @@ public:
         return ValidThemes[Index];
     }
 
-    static void AddMarker(TArray<FPropSocket>& Markers, const FString& InMarkerName, const FTransform& InTransform,
+    static void AddMarker(TArray<FDAMarkerInfo>& Markers, const FString& InMarkerName, const FTransform& InTransform,
             TSharedPtr<class IDungeonMarkerUserData> InUserData = nullptr) {
-        FPropSocket socket;
+        FDAMarkerInfo socket;
         socket.Id = Markers.Num();
-        socket.IsConsumed = false;
-        socket.SocketType = InMarkerName;
+        socket.MarkerName = InMarkerName;
         socket.Transform = InTransform;
         socket.UserData = InUserData;
         Markers.Add(socket);
@@ -70,8 +71,23 @@ public:
     
 };
 
-void FDungeonThemeEngine::Apply(TArray<FPropSocket>& InOutMarkers, const FRandomStream& InRandom,
+void FDungeonThemeEngine::Apply(TArray<FDAMarkerInfo>& Markers, const FRandomStream& InRandom,
         const FDungeonThemeEngineSettings& InSettings, const FDungeonThemeEngineEventHandlers& EventHandlers) {
+
+    // Run the Marker Generators on the existing marker list
+    if (InSettings.MarkerGenerator.IsValid()) {
+        for (UDungeonThemeAsset* Theme : InSettings.Themes) {
+            if (Theme && Theme->MarkerGenerationModel) {
+                for (UMarkerGenLayer* MarkerGenLayer : Theme->MarkerGenerationModel->Layers) {
+                    TArray<FDAMarkerInfo> NewMarkers;
+                    if (InSettings.MarkerGenerator->Process(MarkerGenLayer, Markers, InRandom, NewMarkers)) {
+                        Markers = NewMarkers;
+                    }
+                }
+            }
+        }
+    }
+    
     PropBySocketTypeByTheme_t PropBySocketTypeByTheme;
     for (UDungeonThemeAsset* Theme : InSettings.Themes) {
         FDAThemeEngineImpl::CreatePropLookup(Theme, PropBySocketTypeByTheme);
@@ -104,8 +120,8 @@ void FDungeonThemeEngine::Apply(TArray<FPropSocket>& InOutMarkers, const FRandom
     TArray<FDungeonMarkerInfo> MarkersToEmit;
 
     // Fill up the prop sockets with the defined mesh data 
-    for (int32 i = 0; i < InOutMarkers.Num(); i++) {
-        const FPropSocket& ThemeItem = InOutMarkers[i];
+    for (int32 i = 0; i < Markers.Num(); i++) {
+        const FDAMarkerInfo& ThemeItem = Markers[i];
 
         UDungeonThemeAsset* ThemeToUse = nullptr;
 
@@ -159,20 +175,20 @@ void FDungeonThemeEngine::Apply(TArray<FPropSocket>& InOutMarkers, const FRandom
 
         check(PropBySocketTypeByTheme.Contains(ThemeToUse));
         PropBySocketType_t* PropBySocketTypePtr = &PropBySocketTypeByTheme[ThemeToUse];
-        if (FallbackTheme != ThemeToUse && FallbackTheme != nullptr && !PropBySocketTypePtr->Contains(ThemeItem.SocketType)
+        if (FallbackTheme != ThemeToUse && FallbackTheme != nullptr && !PropBySocketTypePtr->Contains(ThemeItem.MarkerName)
         ) {
             // The theme we are about to use doesn't have any nodes attached to this marker.
             // Check if we can use a fallback theme
             PropBySocketType_t* FallbackPropBySocketTypePtr = &PropBySocketTypeByTheme[FallbackTheme];
-            if (FallbackPropBySocketTypePtr->Contains(ThemeItem.SocketType)) {
+            if (FallbackPropBySocketTypePtr->Contains(ThemeItem.MarkerName)) {
                 PropBySocketTypePtr = FallbackPropBySocketTypePtr;
             }
         }
 
         PropBySocketType_t& PropBySocketType = *PropBySocketTypePtr;
 
-        if (PropBySocketType.Contains(ThemeItem.SocketType)) {
-            const TArray<FPropTypeData>& Props = PropBySocketType[ThemeItem.SocketType];
+        if (PropBySocketType.Contains(ThemeItem.MarkerName)) {
+            const TArray<FPropTypeData>& Props = PropBySocketType[ThemeItem.MarkerName];
             for (const FPropTypeData& Prop : Props) {
                 bool bInsertMesh = false;
                 if (Prop.bUseSelectionLogic) {
@@ -254,11 +270,11 @@ void FDungeonThemeEngine::Apply(TArray<FPropSocket>& InOutMarkers, const FRandom
                     for (const FPropChildSocketData& ChildSocket : Prop.ChildSockets) {
                         FTransform childTransform;
                         FTransform::Multiply(&childTransform, &ChildSocket.Offset, &Transform);
-                        FDAThemeEngineImpl::AddMarker(InOutMarkers, ChildSocket.SocketType, childTransform);
+                        FDAThemeEngineImpl::AddMarker(Markers, ChildSocket.SocketType, childTransform);
 
                         // Sync the user data
-                        if (InOutMarkers.Num() > 0) {
-                            FPropSocket& NewSocket = InOutMarkers[InOutMarkers.Num() - 1];
+                        if (Markers.Num() > 0) {
+                            FDAMarkerInfo& NewSocket = Markers[Markers.Num() - 1];
                             NewSocket.ClusterThemeOverride = ThemeItem.ClusterThemeOverride;
                             NewSocket.UserData = ThemeItem.UserData;
                         }

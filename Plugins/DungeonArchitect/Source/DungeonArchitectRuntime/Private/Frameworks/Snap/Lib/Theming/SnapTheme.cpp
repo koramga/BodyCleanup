@@ -1,7 +1,18 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Snap/Lib/Theming/SnapTheme.h"
 
+
+FSnapThemeSceneProvider::FSnapThemeSceneProvider(UWorld* InWorld, ADungeon* InDungeon)
+    : FDungeonSceneProvider(InDungeon)
+    , WorldPtr(InWorld)
+{
+    
+}
+
+UWorld* FSnapThemeSceneProvider::GetDungeonWorld() {
+    return WorldPtr.Get();
+}
 
 void FSnapThemeSceneProvider::AddStaticMesh(UDungeonMesh* Mesh, const FDungeonSceneProviderContext& Context) {
     SceneProviderCommand_CreateMesh Command(Dungeon, LevelOverride, Context, Mesh);

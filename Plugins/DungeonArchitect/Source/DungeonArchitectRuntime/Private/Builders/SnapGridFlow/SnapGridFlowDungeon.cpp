@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/SnapGridFlow/SnapGridFlowDungeon.h"
 
@@ -95,7 +95,7 @@ void USnapGridFlowBuilder::BuildNonThemedDungeonImpl(UWorld* World, TSharedPtr<F
     else
     {
         UDungeonLevelStreamingModel* LevelStreamModel = Dungeon ? Dungeon->LevelStreamingModel : nullptr;
-        LevelStreamHandler = MakeShareable(new FSnapGridFlowStreamingChunkHandler(GetWorld(), SnapGridModel.Get(), LevelStreamModel));
+        LevelStreamHandler = MakeShareable(new FSnapGridFlowStreamingChunkHandler(GetWorld(), Dungeon, SnapGridModel.Get(), LevelStreamModel));
         LevelStreamHandler->ClearStreamingLevels();
         LevelStreamHandler->ChunkLoadedEvent.BindUObject(this, &USnapGridFlowBuilder::HandleChunkLoaded);
         LevelStreamHandler->ChunkFullyLoadedEvent.BindUObject(this, &USnapGridFlowBuilder::HandleChunkLoadedAndVisible);
@@ -119,7 +119,7 @@ void USnapGridFlowBuilder::BuildNonThemedDungeonImpl(UWorld* World, TSharedPtr<F
     // Create the debug draw actor
     if (Dungeon) {
         if (Dungeon->bDrawDebugData) {
-            CreateDebugVisualizations(Dungeon->Uid);
+            CreateDebugVisualizations(Dungeon->Uid, Dungeon->GetActorTransform());
         }
         else {
             DestroyDebugVisualizations(Dungeon->Uid);
@@ -187,7 +187,7 @@ bool USnapGridFlowBuilder::ExecuteFlowGraph() {
         FFlowProcessorSettings FlowProcessorSettings;
         FlowProcessorSettings.AttributeList = AttributeList;
         FlowProcessorSettings.SerializedAttributeList = SnapGridConfig->ParameterOverrides;
-        Result = FlowProcessor.Process(SnapGridFlowAsset->ExecScript, random, FlowProcessorSettings);
+        Result = FlowProcessor.Process(SnapGridFlowAsset->ExecScript, Random, FlowProcessorSettings);
         NumTries++;
         if (Result.ExecResult == EFlowTaskExecutionResult::Success) {
             break;
@@ -261,7 +261,7 @@ void USnapGridFlowBuilder::DestroyNonThemedDungeonImpl(UWorld* World) {
     }
 }
 
-void USnapGridFlowBuilder::CreateDebugVisualizations(const FGuid& DungeonID) const {
+void USnapGridFlowBuilder::CreateDebugVisualizations(const FGuid& DungeonID, const FTransform& InTransform) const {
     DestroyDebugVisualizations(DungeonID);
 
     if (!SnapGridModel.IsValid() || !SnapGridConfig.IsValid()) {
@@ -275,6 +275,14 @@ void USnapGridFlowBuilder::CreateDebugVisualizations(const FGuid& DungeonID) con
         AGridFlowAbstractGraphVisualizer* Visualizer = World->SpawnActor<AGridFlowAbstractGraphVisualizer>();
         Visualizer->DungeonID = DungeonID;
         Visualizer->SetAutoAlignToLevelViewport(true);
+        
+        // Set the transform
+        {
+            FTransform VisualizerTransform = InTransform;
+            VisualizerTransform.SetScale3D(FVector::OneVector);
+            Visualizer->SetActorTransform(VisualizerTransform);
+        }
+        
         if (SnapGridModel.IsValid() && SnapGridModel->AbstractGraph) {
             FGFAbstractGraphVisualizerSettings Settings;
             //const float ModuleWidth = FMath::Min(ModuleSize.X, ModuleSize.Y);
@@ -298,18 +306,18 @@ void USnapGridFlowBuilder::DestroyDebugVisualizations(const FGuid& DungeonID) co
     }
 }
 
-TArray<AActor*> USnapGridFlowBuilder::SpawnItemWithThemeEngine(UFlowGraphItem* ItemInfo, APlaceableMarkerActor* InMarkerActor) {
+TArray<AActor*> USnapGridFlowBuilder::SpawnItemWithThemeEngine(UFlowGraphItem* ItemInfo, const APlaceableMarkerActor* InMarkerActor) {
     TArray<AActor*> SpawnedActors;
-    if (SnapGridConfig.IsValid() && ItemInfo) {
+    if (SnapGridConfig.IsValid() && ItemInfo && Dungeon) {
         const FString MarkerName = ItemInfo->MarkerName.TrimStartAndEnd();
     
-        TArray<FPropSocket> MarkersToEmit;
-        FPropSocket& Marker = MarkersToEmit.AddDefaulted_GetRef();
+        TArray<FDAMarkerInfo> MarkersToEmit;
+        FDAMarkerInfo& Marker = MarkersToEmit.AddDefaulted_GetRef();
         Marker.Id = 0;
-        Marker.SocketType = MarkerName;
+        Marker.MarkerName = MarkerName;
         Marker.Transform = InMarkerActor->GetActorTransform();
 
-        const TSharedPtr<FSnapThemeSceneProvider> SceneProvider = MakeShareable(new FSnapThemeSceneProvider(GetWorld()));
+        const TSharedPtr<FSnapThemeSceneProvider> SceneProvider = MakeShareable(new FSnapThemeSceneProvider(GetWorld(), Dungeon));
         SceneProvider->SetLevelOverride(InMarkerActor->GetLevel());
     
         FDungeonThemeEngineSettings ThemeEngineSettings;
@@ -320,11 +328,11 @@ TArray<AActor*> USnapGridFlowBuilder::SpawnItemWithThemeEngine(UFlowGraphItem* I
         }
 
         FDungeonThemeEngineEventHandlers ThemeEventHandlers;
-        ThemeEventHandlers.PerformSelectionLogic = [this](const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FPropSocket& socket) {
+        ThemeEventHandlers.PerformSelectionLogic = [this](const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FDAMarkerInfo& socket) {
             return PerformSelectionLogic(SelectionLogics, socket);
         };
         
-        ThemeEventHandlers.PerformTransformLogic = [this](const TArray<UDungeonTransformLogic*>& TransformLogics, const FPropSocket& socket) {
+        ThemeEventHandlers.PerformTransformLogic = [this](const TArray<UDungeonTransformLogic*>& TransformLogics, const FDAMarkerInfo& socket) {
             return PerformTransformLogic(TransformLogics, socket);
         };
 
@@ -337,7 +345,7 @@ TArray<AActor*> USnapGridFlowBuilder::SpawnItemWithThemeEngine(UFlowGraphItem* I
         };
         
         // Invoke the Theme Engine
-        FDungeonThemeEngine::Apply(MarkersToEmit, random, ThemeEngineSettings, ThemeEventHandlers);
+        FDungeonThemeEngine::Apply(MarkersToEmit, Random, ThemeEngineSettings, ThemeEventHandlers);
 
         for (TWeakObjectPtr<AActor> SpawnedActor : SceneProvider->GetSpawnedActors()) {
             if (SpawnedActor.IsValid()) {
@@ -529,7 +537,7 @@ void USnapGridFlowBuilder::BuildPersistentSnapLevel(UWorld* InWorld, const TArra
 
     // Fix the module connections
     ULevel* PersistentLevel = InWorld->PersistentLevel;
-    FSnapGridFlowStreamingChunkHandler ChunkHandler(InWorld, SnapGridModel.Get(), nullptr);    // We'll use this to setup our doors
+    FSnapGridFlowStreamingChunkHandler ChunkHandler(InWorld, Dungeon, SnapGridModel.Get(), nullptr);    // We'll use this to setup our doors
     TArray<FSnapConnectionInstance> ConnectionInstances = SnapGridModel->Connections;
     for (const auto& Entry : ModuleConnections) {
         FGuid ChunkID = Entry.Key;
@@ -613,7 +621,7 @@ bool USnapGridFlowBuilder::CanBuildDungeon(FString& OutMessage) {
     return true;
 }
 
-bool USnapGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FPropSocket& Socket) {
+bool USnapGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FDAMarkerInfo& Socket) {
     for (UDungeonSelectorLogic* SelectionLogic : SelectionLogics) {
         USnapGridFlowSelectorLogic* GridFlowSelectionLogic = Cast<USnapGridFlowSelectorLogic>(SelectionLogic);
         if (!GridFlowSelectionLogic) {
@@ -622,7 +630,7 @@ bool USnapGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLo
         }
 
         // Perform blueprint based selection logic
-        const bool bSelected = GridFlowSelectionLogic->SelectNode(SnapGridModel.Get(), SnapGridConfig.Get(), this, SnapGridQuery.Get(), random, Socket.Transform);
+        const bool bSelected = GridFlowSelectionLogic->SelectNode(SnapGridModel.Get(), SnapGridConfig.Get(), this, SnapGridQuery.Get(), Random, Socket.Transform);
         if (!bSelected) {
             return false;
         }
@@ -630,7 +638,7 @@ bool USnapGridFlowBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLo
     return true;
 }
 
-FTransform USnapGridFlowBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& DungeonTransformLogics, const FPropSocket& Socket) {
+FTransform USnapGridFlowBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& DungeonTransformLogics, const FDAMarkerInfo& Socket) {
     FTransform result = FTransform::Identity;
 
     for (UDungeonTransformLogic* TransformLogic : DungeonTransformLogics) {
@@ -642,7 +650,7 @@ FTransform USnapGridFlowBuilder::PerformTransformLogic(const TArray<UDungeonTran
 
         FTransform LogicOffset;
         if (TransformLogic) {
-            GridFlowTransformLogic->GetNodeOffset(SnapGridModel.Get(), SnapGridConfig.Get(), SnapGridQuery.Get(), random,  LogicOffset);
+            GridFlowTransformLogic->GetNodeOffset(SnapGridModel.Get(), SnapGridConfig.Get(), SnapGridQuery.Get(), Random,  LogicOffset);
         }
         else {
             LogicOffset = FTransform::Identity;
@@ -679,9 +687,9 @@ void USnapGridFlowModel::Reset() {
 }
 
 ///////////////////////////// FSnapGridFlowStreamingChunkHandler /////////////////////////////
-FSnapGridFlowStreamingChunkHandler::FSnapGridFlowStreamingChunkHandler(UWorld* InWorld,
+FSnapGridFlowStreamingChunkHandler::FSnapGridFlowStreamingChunkHandler(UWorld* InWorld, TWeakObjectPtr<ADungeon> InDungeon,
         USnapGridFlowModel* InSnapGridModel, UDungeonLevelStreamingModel* InLevelStreamingModel)
-    : FSnapStreamingChunkHandlerBase(InWorld, InLevelStreamingModel)
+    : FSnapStreamingChunkHandlerBase(InWorld, InDungeon, InLevelStreamingModel)
     , SnapGridModel(InSnapGridModel)
 {
 }

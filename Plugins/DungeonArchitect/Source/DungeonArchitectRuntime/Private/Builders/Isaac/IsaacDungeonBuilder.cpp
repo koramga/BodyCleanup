@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/Isaac/IsaacDungeonBuilder.h"
 
@@ -93,7 +93,7 @@ void UIsaacDungeonBuilder::GenerateLevelLayout() {
     queue.Enqueue(start);
     visited.Add(start.room->Location);
 
-    int32 numRooms = random.RandRange(isaacConfig->MinRooms, isaacConfig->MaxRooms);
+    int32 numRooms = Random.RandRange(isaacConfig->MinRooms, isaacConfig->MaxRooms);
     bool isSpawnRoom = true;
     while (!queue.IsEmpty()) {
         FLevelGrowthNode top;
@@ -124,7 +124,7 @@ void UIsaacDungeonBuilder::GenerateLevelLayout() {
     }
 
     for (auto room : rooms) {
-        room->Layout = isaacConfig->RoomLayoutBuilder->GenerateLayout(room, random, isaacConfig->RoomWidth,
+        room->Layout = isaacConfig->RoomLayoutBuilder->GenerateLayout(room, Random, isaacConfig->RoomWidth,
                                                                       isaacConfig->RoomLength);
     }
 
@@ -146,7 +146,7 @@ void UIsaacDungeonBuilder::GenerateLevelLayout() {
 void UIsaacDungeonBuilder::AddNextRoomNode(TSharedPtr<FIsaacRoomFactory> roomFactory, TQueue<FLevelGrowthNode>& queue,
                                            TSet<FIntVector>& visited,
                                            int maxRooms, FIsaacRoomPtr parentRoom, int direction, float probability) {
-    if (random.FRand() > probability) return;
+    if (Random.FRand() > probability) return;
     if (rooms.Num() >= maxRooms) return;
 
     FIntVector nextPosition = parentRoom->Location + directions[direction];
@@ -167,7 +167,7 @@ void UIsaacDungeonBuilder::AddNextRoomNode(TSharedPtr<FIsaacRoomFactory> roomFac
         // first make sure we don't already have a connection between the two
         FIsaacRoomPtr nextRoom = GetRoomAt(nextPosition);
         if (!ContainsDoorBetween(parentRoom->Id, nextRoom->Id)) {
-            float loopTest = random.FRand();
+            float loopTest = Random.FRand();
             if (loopTest < isaacConfig->CycleProbability) {
                 // Connect the two rooms together
                 if (nextRoom.IsValid()) {
@@ -184,7 +184,7 @@ void UIsaacDungeonBuilder::ConnectRoomsWithDoors(FIsaacRoomPtr roomA, FIsaacRoom
     // Create a door between the two rooms
     roomA->AdjacentRooms.Add(roomB->Id);
     roomB->AdjacentRooms.Add(roomA->Id);
-    float doorPositionRatio = random.FRand();
+    float doorPositionRatio = Random.FRand();
     CreateDoor(roomA, roomB, doorPositionRatio);
 }
 
@@ -457,12 +457,12 @@ void UIsaacDungeonBuilder::MirrorDungeonWithVolume(ADungeonMirrorVolume* MirrorV
 }
 
 bool UIsaacDungeonBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                                 const FPropSocket& socket) {
+                                                 const FDAMarkerInfo& socket) {
     return false;
 }
 
 FTransform UIsaacDungeonBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                                       const FPropSocket& socket) {
+                                                       const FDAMarkerInfo& socket) {
     return FTransform::Identity;
 }
 

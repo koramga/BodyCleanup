@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapMapEditor/SnapMapEditor.h"
 
@@ -13,7 +13,6 @@
 #include "Frameworks/GraphGrammar/RuleGraph/EdGraph_Grammar.h"
 
 #include "Subsystems/AssetEditorSubsystem.h"
-#include "Toolkits/AssetEditorManager.h"
 #include "WorkflowOrientedApp/WorkflowTabManager.h"
 
 #define LOCTEXT_NAMESPACE "SnapMapEditor"

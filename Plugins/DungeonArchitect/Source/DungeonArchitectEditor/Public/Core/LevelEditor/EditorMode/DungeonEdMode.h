@@ -1,9 +1,10 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
 #include "EdMode.h"
 #include "EditorUndoClient.h"
+#include "UnrealWidget.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(DungeonDrawMode, Log, All);
 
@@ -120,7 +121,7 @@ public:
     virtual bool AllowWidgetMove() override;
     virtual bool ShouldDrawWidget() const override;
     virtual bool UsesTransformWidget() const override;
-    virtual EAxisList::Type GetWidgetAxisToDraw(FWidget::EWidgetMode InWidgetMode) const override;
+    virtual EAxisList::Type GetWidgetAxisToDraw(UE::Widget::EWidgetMode InWidgetMode) const override;
 
     virtual bool DisallowMouseDeltaTracking() const override;
 

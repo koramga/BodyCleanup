@@ -23,15 +23,7 @@ ABaseLevelActor::ABaseLevelActor()
 	LevelComponent = CreateDefaultSubobject<ULevelComponent>(TEXT("LevelComponent"));
 
 #if WITH_EDITORONLY_DATA
-//	LineBatchComponent = CreateEditorOnlyDefaultSubobject<ULineBatchComponent>(TEXT("SpawnPoint LinkLine"));
-//	if (LineBatchComponent)
-//	{
-//		LineBatchComponent->SetupAttachment(RootComponent);
-//		LineBatchComponent->SetHiddenInGame(true);
-//		LineBatchComponent->SetIsVisualizationComponent(true);
-//	}
-
-	USelection::SelectionChangedEvent.AddUObject(this, &ABaseLevelActor::OnChangeSelectObject);
+	//USelection::SelectionChangedEvent.AddUObject(this, &ABaseLevelActor::OnChangeSelectObject);
 #endif // WITH_EDITORONLY_DATA
 }
 
@@ -57,22 +49,22 @@ void ABaseLevelActor::PostEditMove(bool bFinished)
 	}
 }
 
-void ABaseLevelActor::OnChangeSelectObject(UObject* SelectionObj)
-{
-	if (false == IsValid(SelectionObj))
-	{
-		UE_LOG(LogTemp, Display, TEXT("SelectionObj is nullptr"));
-		return;
-	}
-
-	USelection* Selection = Cast<USelection>(SelectionObj);
-
-	if (false == IsValid(Selection))
-		return;
-
-	bIsSelected = Selection->IsSelected(this);
-	DisplayLinkConnection(bIsSelected);
-}
+//void ABaseLevelActor::OnChangeSelectObject(UObject* SelectionObj)
+//{
+//	if (false == IsValid(SelectionObj))
+//	{
+//		UE_LOG(LogTemp, Display, TEXT("SelectionObj is nullptr"));
+//		return;
+//	}
+//
+//	USelection* Selection = Cast<USelection>(SelectionObj);
+//
+//	if (false == IsValid(Selection))
+//		return;
+//
+//	bIsSelected = Selection->IsSelected(this);
+//	DisplayLinkConnection(bIsSelected);
+//}
 
 void ABaseLevelActor::DisplayLinkConnection(bool bShow)
 {

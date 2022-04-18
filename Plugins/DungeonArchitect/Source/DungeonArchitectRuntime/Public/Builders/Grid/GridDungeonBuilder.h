@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -65,9 +65,9 @@ protected:
 
     virtual void MirrorDungeonWithVolume(ADungeonMirrorVolume* MirrorVolume) override;
     virtual bool PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                       const FPropSocket& socket) override;
+                                       const FDAMarkerInfo& socket) override;
     virtual FTransform PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                             const FPropSocket& socket) override;
+                                             const FDAMarkerInfo& socket) override;
 
     FCell BuildCell();
     FCell BuildCell(const FRectangle& InBounds);

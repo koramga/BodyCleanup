@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/FloorPlan/FloorPlanBuilder.h"
 
@@ -600,8 +600,8 @@ void UFloorPlanBuilder::EmitSeparatorMarkers(const FString& WallMarkerName, cons
                                              const FVector& GridSize) {
     TArray<FTransform> WallTransforms;
 
-    for (const FPropSocket& Marker : WorldMarkers) {
-        if (Marker.SocketType == WallMarkerName) {
+    for (const FDAMarkerInfo& Marker : WorldMarkers) {
+        if (Marker.MarkerName == WallMarkerName) {
             WallTransforms.Add(Marker.Transform);
         }
     }
@@ -671,7 +671,7 @@ void UFloorPlanBuilder::GetDefaultMarkerNames(TArray<FString>& OutMarkerNames) {
 }
 
 bool UFloorPlanBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                              const FPropSocket& socket) {
+                                              const FDAMarkerInfo& socket) {
     for (UDungeonSelectorLogic* SelectionLogic : SelectionLogics) {
         UFloorPlanSelectorLogic* FloorSelectionLogic = Cast<UFloorPlanSelectorLogic>(SelectionLogic);
         if (!FloorSelectionLogic) {
@@ -696,7 +696,7 @@ bool UFloorPlanBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic
 }
 
 FTransform UFloorPlanBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                                    const FPropSocket& socket) {
+                                                    const FDAMarkerInfo& socket) {
     FTransform result = FTransform::Identity;
 
     for (UDungeonTransformLogic* TransformLogic : TransformLogics) {

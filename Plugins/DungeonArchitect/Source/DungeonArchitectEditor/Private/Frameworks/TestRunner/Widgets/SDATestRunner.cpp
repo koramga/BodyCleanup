@@ -1,8 +1,9 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/TestRunner/Widgets/SDATestRunner.h"
 
 #include "Core/LevelEditor/Customizations/DungeonArchitectStyle.h"
+#include "Frameworks/TestRunner/DATestRunnerCommands.h"
 
 #include "EditorStyleSet.h"
 #include "Framework/Commands/UICommandList.h"
@@ -28,24 +29,27 @@ namespace {
 void SDATestRunner::Construct(const FArguments& InArgs, const TSharedRef<SDockTab>& ConstructUnderTab,
                               const TSharedPtr<SWindow>& ConstructUnderWindow) {
     TabManager = FGlobalTabmanager::Get()->NewTabManager(ConstructUnderTab);
-    TSharedRef<FWorkspaceItem> AppMenuGroup = TabManager->AddLocalWorkspaceMenuCategory(
-        LOCTEXT("GridFlowPerfMenuGroupName", "Performance Stats"));
+    const TSharedRef<FWorkspaceItem> AppMenuGroup = TabManager->AddLocalWorkspaceMenuCategory(LOCTEXT("GridFlowPerfMenuGroupName", "Performance Stats"));
 
-    FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>(
-        "PropertyEditor");
-    const FDetailsViewArgs DetailsViewArgs(false, false, false, FDetailsViewArgs::HideNameArea, true);
+    FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+    FDetailsViewArgs DetailsViewArgs;
+    DetailsViewArgs.bUpdatesFromSelection = false;
+    DetailsViewArgs.bLockable = false;
+    DetailsViewArgs.bAllowSearch = false;
+    DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+    DetailsViewArgs.bHideSelectionTip = true;
+    
     PropertyEditor = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
     PropertyEditor->SetObject(GetSettingsObject());
 
-    TabManager->RegisterTabSpawner(DetailsTabId,
-                                   FOnSpawnTab::CreateRaw(this, &SDATestRunner::HandleTabManagerSpawnTab, DetailsTabId))
+    BindCommands();
+
+    TabManager->RegisterTabSpawner(DetailsTabId, FOnSpawnTab::CreateRaw(this, &SDATestRunner::HandleTabManagerSpawnTab, DetailsTabId))
               .SetDisplayName(LOCTEXT("DetailsTabTitle", "Perf Settings"))
               .SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "SessionFrontEnd.Tabs.Tools"))
               .SetGroup(AppMenuGroup);
 
-    TabManager->RegisterTabSpawner(HistogramTabId,
-                                   FOnSpawnTab::CreateRaw(this, &SDATestRunner::HandleTabManagerSpawnTab,
-                                                          HistogramTabId))
+    TabManager->RegisterTabSpawner(HistogramTabId, FOnSpawnTab::CreateRaw(this, &SDATestRunner::HandleTabManagerSpawnTab, HistogramTabId))
               .SetDisplayName(LOCTEXT("HistogramTabTitle", "Histogram"))
               .SetIcon(FSlateIcon(FEditorStyle::GetStyleSetName(), "SessionFrontEnd.Tabs.Tools"))
               .SetGroup(AppMenuGroup);
@@ -59,7 +63,7 @@ void SDATestRunner::Construct(const FArguments& InArgs, const TSharedRef<SDockTa
             ->SetOrientation(Orient_Horizontal)
             ->Split
             (
-                // session browser
+                // Details sub-tab
                 FTabManager::NewStack()
                 ->AddTab(DetailsTabId, ETabState::OpenedTab)
                 ->SetHideTabWell(true)
@@ -67,7 +71,7 @@ void SDATestRunner::Construct(const FArguments& InArgs, const TSharedRef<SDockTa
             )
             ->Split
             (
-                // applications
+                // Histogram tab
                 FTabManager::NewStack()
                 ->AddTab(HistogramTabId, ETabState::OpenedTab)
                 ->SetForegroundTab(HistogramTabId)
@@ -98,30 +102,25 @@ void SDATestRunner::Construct(const FArguments& InArgs, const TSharedRef<SDockTa
             MenuBarBuilder.MakeWidget()
         ]
 
-        + SVerticalBox::Slot()
-          .Padding(0)
-          .FillHeight(1.0f)
+        // Toolbar
+        +SVerticalBox::Slot()
+        .Padding(0)
+        .AutoHeight()
         [
             SNew(SBorder)
-            .BorderImage(FDungeonArchitectStyle::Get().GetBrush("PerfBackground"))
+            .Padding(0)
+            .BorderImage(FEditorStyle::GetBrush("NoBorder"))
+            .IsEnabled(FSlateApplication::Get().GetNormalExecutionAttribute())
             [
-                SNew(SVerticalBox)
-                // Toolbar
-                + SVerticalBox::Slot()
-                  .Padding(2)
-                  .AutoHeight()
-                [
-                    CreateToolbarWidget()
-                ]
-
-                // Content
-                + SVerticalBox::Slot()
-                  .Padding(2)
-                  .FillHeight(1.0f)
-                [
-                    TabManager->RestoreFrom(Layout, ConstructUnderWindow).ToSharedRef()
-                ]
+                CreateToolbarWidget()
             ]
+        ]
+        
+        +SVerticalBox::Slot()
+        .Padding(2)
+        .FillHeight(1.0f)
+        [
+            TabManager->RestoreFrom(Layout, ConstructUnderWindow).ToSharedRef()
         ]
 
         // StatusBar
@@ -136,6 +135,12 @@ void SDATestRunner::Construct(const FArguments& InArgs, const TSharedRef<SDockTa
     ];
 }
 
+void SDATestRunner::BindCommands() {
+    CommandList = MakeShareable(new FUICommandList);
+    CommandList->MapAction(FDATestRunnerCommands::Get().StartStopPerfRunner,
+        FExecuteAction::CreateSP(this, &SDATestRunner::OnStartStopClicked),
+        FCanExecuteAction::CreateSP(this, &SDATestRunner::IsStartStopButtonEnabled));
+}
 
 void SDATestRunner::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) {
     SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
@@ -172,52 +177,30 @@ void SDATestRunner::FillWindowMenu(FMenuBuilder& MenuBuilder, const TSharedPtr<F
     TabManager->PopulateLocalTabSpawnerMenu(MenuBuilder);
 }
 
-TSharedRef<SWidget> SDATestRunner::CreateToolbarWidget() {
-    return SNew(SBorder)
-        .BorderImage(FEditorStyle::GetBrush("ToolBar.Background"))
-        [
-            SNew(SHorizontalBox)
-            // Start / Stop button
-            + SHorizontalBox::Slot()
-              .AutoWidth()
-              .Padding(2)
-            [
-                SNew(SButton)
-				.ButtonStyle(FEditorStyle::Get(), "ToolBar.Button")
-				.OnClicked(this, &SDATestRunner::OnStartStopClicked)
-				.ToolTipText(LOCTEXT("GridFlowPerfRecord_Tooltip", "Start/stop Performance Test"))
-				.Content()
-                [
-                    SNew(SVerticalBox)
-                    + SVerticalBox::Slot()
-                    .AutoHeight()
-                    [
-                        SNew(SImage)
-                        .Image(this, &SDATestRunner::GetStartStopButtonBrush)
-                    ]
-                    + SVerticalBox::Slot()
-                    .AutoHeight()
-                    [
-                        SNew(STextBlock)
-						.Text(this, &SDATestRunner::GetStartStopButtonLabel)
-						.TextStyle(&FDungeonArchitectStyle::Get().GetWidgetStyle<FTextBlockStyle>(
-                                            "FlowEditor.Perf.ToolBar.Text"))
-						.Justification(ETextJustify::Center)
-                    ]
-                ]
-            ]
-        ];
+TSharedRef<SWidget> SDATestRunner::CreateToolbarWidget() const {
+    FToolBarBuilder ToolbarBuilder(CommandList.ToSharedRef(), FMultiBoxCustomization::None);
+    
+    ToolbarBuilder.BeginSection("Perf");
+    
+    ToolbarBuilder.AddToolBarButton(
+        FDATestRunnerCommands::Get().StartStopPerfRunner,
+        NAME_None,
+        TAttribute<FText>::Create(TAttribute<FText>::FGetter::CreateSP(this, &SDATestRunner::GetStartStopButtonLabel)),
+        TAttribute<FText>::Create(TAttribute<FText>::FGetter::CreateSP(this, &SDATestRunner::GetStartStopButtonTooltip)),
+        TAttribute<FSlateIcon>::Create(TAttribute<FSlateIcon>::FGetter::CreateSP(this, &SDATestRunner::GetStartStopButtonIcon)));
+    
+    ToolbarBuilder.EndSection();
+    
+    return ToolbarBuilder.MakeWidget();
 }
 
-FReply SDATestRunner::OnStartStopClicked() {
+void SDATestRunner::OnStartStopClicked() {
     if (bIsRunning) {
         HandleStopService();
     }
     else {
         HandleStartService();
     }
-
-    return FReply::Handled();
 }
 
 void SDATestRunner::HandleStartService() {
@@ -243,16 +226,23 @@ void SDATestRunner::HandleStopService() {
     bIsRunning = false;
 }
 
-const FSlateBrush* SDATestRunner::GetStartStopButtonBrush() const {
-    return bIsRunning
-               ? FDungeonArchitectStyle::Get().GetBrush("DungeonArchitect.Icons.Stop")
-               : FDungeonArchitectStyle::Get().GetBrush("DungeonArchitect.Icons.Play");
-}
-
 FText SDATestRunner::GetStartStopButtonLabel() const {
     return bIsRunning
-               ? LOCTEXT("StopButtonLabel", "Stop")
-               : LOCTEXT("StartButtonLabel", "Start");
+               ? LOCTEXT("PerfRunner.Buttons.Label.Stop", "Stop")
+               : LOCTEXT("PerfRunner.Buttons.Label.Start", "Start");
+}
+
+FText SDATestRunner::GetStartStopButtonTooltip() const {
+    return bIsRunning
+            ? LOCTEXT("PerfRunner.Buttons.Tooltip.Stop", "Stop the perf runner")
+            : LOCTEXT("PerfRunner.Buttons.Tooltip.Start", "Start the perf runner");
+}
+
+FSlateIcon SDATestRunner::GetStartStopButtonIcon() const {
+    const bool bShowStopIcon = bIsRunning;
+    return bShowStopIcon
+               ? FSlateIcon(FDungeonArchitectStyle::GetStyleSetName(), "DungeonArchitect.Icons.Stop")
+               : FSlateIcon(FDungeonArchitectStyle::GetStyleSetName(), "DungeonArchitect.Icons.Play");
 }
 
 void SDATestRunner::NotifyTestsComplete() {

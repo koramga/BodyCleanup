@@ -1,13 +1,11 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/Widgets/SDungeonOutputPin.h"
 
-#include "Core/Editors/ThemeEditor/Graph/EdGraph_DungeonProp.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraph_DungeonProp.h"
 
 void SDungeonOutputPin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) {
     this->SetCursor(EMouseCursor::Default);
-
-    typedef SDungeonOutputPin ThisClass;
 
     bShowLabel = true;
     IsEditable = true;
@@ -21,9 +19,9 @@ void SDungeonOutputPin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) 
     // Set up a hover for pins that is tinted the color of the pin.
     SBorder::Construct(SBorder::FArguments()
                        .BorderImage(this, &SDungeonOutputPin::GetPinBorder)
-                       .BorderBackgroundColor(this, &ThisClass::GetPinColor)
-                       .OnMouseButtonDown(this, &ThisClass::OnPinMouseDown)
-                       .Cursor(this, &ThisClass::GetPinCursor)
+                       .BorderBackgroundColor(this, &SDungeonOutputPin::GetPinColor)
+                       .OnMouseButtonDown(this, &SDungeonOutputPin::OnPinMouseDown)
+                       .Cursor(this, &SDungeonOutputPin::GetPinCursor)
                        .Padding(FMargin(5.0f))
     );
 }

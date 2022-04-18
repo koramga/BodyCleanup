@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -23,11 +23,10 @@ public:
 protected:
     TSharedRef<SDockTab> HandleTabManagerSpawnTab(const FSpawnTabArgs& Args, FName TabIdentifier) const;
     static void FillWindowMenu(FMenuBuilder& MenuBuilder, TSharedPtr<FTabManager> TabManager);
-    TSharedRef<SWidget> CreateToolbarWidget();
+    TSharedRef<SWidget> CreateToolbarWidget() const;
 
-    FReply OnStartStopClicked();
-    const FSlateBrush* GetStartStopButtonBrush() const;
-    FText GetStartStopButtonLabel() const;
+    void OnStartStopClicked();
+    bool IsStartStopButtonEnabled() const { return true; }
     virtual void NotifyTestsComplete();
     virtual bool ValidateConfiguration(FText& OutErrorMessage) { return true; }
     virtual FText GetStatusText() const;
@@ -45,10 +44,15 @@ protected:
 private:
     void HandleStartService();
     void HandleStopService();
-
+    void BindCommands();
+    FText GetStartStopButtonLabel() const;
+    FText GetStartStopButtonTooltip() const;
+    FSlateIcon GetStartStopButtonIcon() const;
+    
 protected:
     TSharedPtr<FTabManager> TabManager;
     TSharedPtr<IDetailsView> PropertyEditor;
+    TSharedPtr<FUICommandList> CommandList;
 
 private:
     bool bIsRunning = false;

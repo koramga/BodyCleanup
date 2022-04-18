@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/MiniMap/DungeonMiniMap.h"
 
@@ -308,7 +308,7 @@ void ADungeonMiniMap::BuildLayoutTexture(const FDungeonLayoutData& LayoutData) {
     MaskTexture->SRGB = 0;
 
     if (UTexture2D* MaskTex2D = Cast<UTexture2D>(MaskTexture)) {
-        FByteBulkData* BulkData = &MaskTex2D->PlatformData->Mips[0].BulkData;
+        FByteBulkData* BulkData = &MaskTex2D->GetPlatformData()->Mips[0].BulkData;
         void* TextureData = BulkData->Lock(LOCK_READ_WRITE);
         int32 NumBytes = MaskData.Num() * sizeof(FColor);
         FMemory::Memcpy(TextureData, MaskData.GetData(), NumBytes);

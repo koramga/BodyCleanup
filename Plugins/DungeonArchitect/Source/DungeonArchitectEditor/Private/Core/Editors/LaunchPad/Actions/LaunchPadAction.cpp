@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/LaunchPad/Actions/LaunchPadAction.h"
 
@@ -25,53 +25,43 @@ void SLaunchPadAction::Construct(const FArguments& InArgs, const FLaunchPadPageA
             ? &FEditorStyle::Get().GetWidgetStyle<FButtonStyle>("FlatButton.Success")
             : &FEditorStyle::Get().GetWidgetStyle<FButtonStyle>("FlatButton.Primary");
 
+
     ChildSlot
     [
-        SNew(SBox)
-        .WidthOverride(this, &SLaunchPadAction::GetButtonWidth)
-        [
-            SNew(SVerticalBox)
-            + SVerticalBox::Slot()
-            .AutoHeight()
-            [
-                SNew(SButton)
-				.ButtonStyle(ButtonStyle)
-				.OnClicked(this, &SLaunchPadAction::OnButtonClicked)
+        SNew(SButton)
+        .OnClicked(this, &SLaunchPadAction::OnButtonClicked)
+        .Text(Title)
+    ];
+    
+    /*
+    ChildSlot
+    [
+        SNew(SButton)
+		.OnClicked(this, &SLaunchPadAction::OnButtonClicked)
+		[
+		    SNew(SHorizontalBox)
+		    +SHorizontalBox::Slot()
+		    [
+                SNew(SBox)
+                .WidthOverride(16)
+                .HeightOverride(16)
                 [
-                    SNew(SVerticalBox)
-                    + SVerticalBox::Slot()
-                    .AutoHeight()
-                    [
-                        SNew(SHorizontalBox)
-                        + SHorizontalBox::Slot()[SNullWidget::NullWidget]
-                        + SHorizontalBox::Slot()
-                        .AutoWidth()
-                        [
-                            SNew(SBox)
-							.WidthOverride(36)
-							.HeightOverride(36)
-                            [
-                                SNew(SImage)
-                                .Image(FDALaunchPadStyle::Get().GetBrush(BrushKey))
-                            ]
-                        ]
-                        + SHorizontalBox::Slot()[SNullWidget::NullWidget]
-                    ]
-                    + SVerticalBox::Slot()
-                      .Padding(FMargin(0, 6, 0, 0))
-                      .AutoHeight()
-                    [
-                        SNew(STextBlock)
-						.Text(Title)
-						.AutoWrapText(true)
-						.Justification(ETextJustify::Center)
-						.TextStyle(FEditorStyle::Get(), "FlatButton.DefaultTextStyle")
-                    ]
+		            SNew(SImage)
+                    .Image(FDALaunchPadStyle::Get().GetBrush(BrushKey))
                 ]
-            ]
-            + SVerticalBox::Slot()[SNullWidget::NullWidget]
+		    ]
+		    +SHorizontalBox::Slot()
+		    [
+		        SNew(SBox)
+		        .HeightOverride(16)
+		        [
+    		        SNew(STextBlock)
+    		        .Text(Title)
+		        ]
+		    ]
         ]
     ];
+    */
 }
 
 FReply SLaunchPadAction::OnButtonClicked() {

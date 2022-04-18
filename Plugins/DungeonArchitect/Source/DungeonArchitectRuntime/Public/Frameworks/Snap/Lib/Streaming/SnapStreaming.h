@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -40,7 +40,7 @@ private:
 
 class FSnapStreamingChunkHandlerBase : public TSharedFromThis<FSnapStreamingChunkHandlerBase> {
 public:
-    FSnapStreamingChunkHandlerBase(TWeakObjectPtr<UWorld> InWorld, TWeakObjectPtr<UDungeonLevelStreamingModel> InLevelStreamingModel);
+    FSnapStreamingChunkHandlerBase(TWeakObjectPtr<UWorld> InWorld, TWeakObjectPtr<ADungeon> InDungeon, TWeakObjectPtr<UDungeonLevelStreamingModel> InLevelStreamingModel);
     virtual ~FSnapStreamingChunkHandlerBase() {}
     void RegisterEvents(USnapStreamingChunk* InChunk);
     void ClearStreamingLevels();
@@ -67,6 +67,7 @@ protected:
 
 protected:
     TWeakObjectPtr<UWorld> World;
+    TWeakObjectPtr<ADungeon> Dungeon;
     TWeakObjectPtr<UDungeonLevelStreamingModel> LevelStreamingModel;
 
 private:

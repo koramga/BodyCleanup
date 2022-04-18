@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/DungeonBuilder.h"
 
@@ -43,13 +43,13 @@ void CreatePropLookup(UDungeonThemeAsset* PropAsset, PropBySocketTypeByTheme_t& 
 
 // Picks a theme from the list that has a definition for the defined socket
 UDungeonThemeAsset* GetBestMatchedTheme(const FRandomStream& random, const TArray<UDungeonThemeAsset*>& Themes,
-                                        const FPropSocket& socket, PropBySocketTypeByTheme_t& PropBySocketTypeByTheme) {
+                                        const FDAMarkerInfo& socket, PropBySocketTypeByTheme_t& PropBySocketTypeByTheme) {
     TArray<UDungeonThemeAsset*> ValidThemes;
     for (UDungeonThemeAsset* Theme : Themes) {
         if (PropBySocketTypeByTheme.Contains(Theme)) {
             PropBySocketType_t& PropBySocketType = PropBySocketTypeByTheme[Theme];
             if (PropBySocketType.Num() > 0) {
-                if (PropBySocketType.Contains(socket.SocketType) && PropBySocketType[socket.SocketType].Num() > 0) {
+                if (PropBySocketType.Contains(socket.MarkerName) && PropBySocketType[socket.MarkerName].Num() > 0) {
                     ValidThemes.Add(Theme);
                 }
             }
@@ -76,7 +76,7 @@ void GenerateThemeOverrideList(UWorld* World, ADungeon* Dungeon, PropBySocketTyp
     if (World) {
         for (TActorIterator<ADungeonThemeOverrideVolume> VolumeIt(World); VolumeIt; ++VolumeIt) {
             ADungeonThemeOverrideVolume* Volume = *VolumeIt;
-            if (Volume->IsPendingKill() || !Volume->IsValidLowLevel()) {
+            if (!IsValid(Volume) || !Volume->IsValidLowLevel()) {
                 continue;
             }
             bool valid;
@@ -124,7 +124,7 @@ void UDungeonBuilder::BuildDungeon(UDungeonModel* InModel, UDungeonConfig* InCon
 
     _SocketIdCounter = 0;
     nrandom.Init(config->Seed);
-    random.Initialize(config->Seed);
+    Random.Initialize(config->Seed);
 
     BuildDungeonImpl(InWorld);
 
@@ -154,7 +154,7 @@ void UDungeonBuilder::BuildNonThemedDungeon(UDungeonModel* InModel, UDungeonConf
 
     _SocketIdCounter = 0;
     nrandom.Init(config->Seed);
-    random.Initialize(config->Seed);
+    Random.Initialize(config->Seed);
 
     BuildNonThemedDungeonImpl(InWorld, InSceneProvider);
 
@@ -180,6 +180,11 @@ void UDungeonBuilder::ApplyDungeonTheme(const TArray<UDungeonThemeAsset*>& InThe
     ThemeEngineSettings.Themes = InThemes;
     ThemeEngineSettings.ClusteredThemes = InClusteredThemes;
     ThemeEngineSettings.SceneProvider = InSceneProvider;
+
+    {
+        FTransform DungeonTransform = Dungeon ? Dungeon->GetActorTransform() : FTransform::Identity;
+        ThemeEngineSettings.MarkerGenerator = FMarkerGenProcessorFactory::Create(config, DungeonTransform);
+    }
     if (Dungeon) {
         ThemeEngineSettings.bRoleAuthority = Dungeon->HasAuthority(); 
     }
@@ -188,7 +193,7 @@ void UDungeonBuilder::ApplyDungeonTheme(const TArray<UDungeonThemeAsset*>& InThe
     if (InWorld) {
         for (TActorIterator<ADungeonThemeOverrideVolume> VolumeIt(InWorld); VolumeIt; ++VolumeIt) {
             ADungeonThemeOverrideVolume* ThemeOverrideVolume = *VolumeIt;
-            if (ThemeOverrideVolume->IsPendingKill() || !ThemeOverrideVolume->IsValidLowLevel()) {
+            if (!IsValid(ThemeOverrideVolume) || !ThemeOverrideVolume->IsValidLowLevel()) {
                 continue;
             }
             const bool bValid = !Dungeon || (ThemeOverrideVolume->Dungeon == Dungeon);
@@ -200,11 +205,11 @@ void UDungeonBuilder::ApplyDungeonTheme(const TArray<UDungeonThemeAsset*>& InThe
 
     // Prepare the Theme Engine callback handlers
     FDungeonThemeEngineEventHandlers EventHandlers;
-    EventHandlers.PerformSelectionLogic = [this](const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FPropSocket& socket) {
+    EventHandlers.PerformSelectionLogic = [this](const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FDAMarkerInfo& socket) {
         return PerformSelectionLogic(SelectionLogics, socket);
     };
     
-    EventHandlers.PerformTransformLogic = [this](const TArray<UDungeonTransformLogic*>& TransformLogics, const FPropSocket& socket) {
+    EventHandlers.PerformTransformLogic = [this](const TArray<UDungeonTransformLogic*>& TransformLogics, const FDAMarkerInfo& socket) {
         return PerformTransformLogic(TransformLogics, socket);
     };
 
@@ -217,14 +222,14 @@ void UDungeonBuilder::ApplyDungeonTheme(const TArray<UDungeonThemeAsset*>& InThe
     };
 
     // Invoke the Theme Engine
-    FDungeonThemeEngine::Apply(WorldMarkers, random, ThemeEngineSettings, EventHandlers);
+    FDungeonThemeEngine::Apply(WorldMarkers, Random, ThemeEngineSettings, EventHandlers);
 }
 
 
 void UDungeonBuilder::MirrorDungeon() {
     if (Dungeon) {
         for (TObjectIterator<ADungeonMirrorVolume> Volume; Volume; ++Volume) {
-            if (!Volume || Volume->IsPendingKill() || !Volume->IsValidLowLevel()) {
+            if (!Volume || !IsValid(*Volume) || !Volume->IsValidLowLevel()) {
                 continue;
             }
             if (Volume->Dungeon == Dungeon) {
@@ -271,28 +276,26 @@ void UDungeonBuilder::AddMarker(const FString& SocketType, const FTransform& _tr
 
 void UDungeonBuilder::AddMarker(const FString& SocketType, const FTransform& transform,
                                 TSharedPtr<class IDungeonMarkerUserData> InUserData) {
-    FPropSocket socket;
-    socket.Id = ++_SocketIdCounter;
-    socket.IsConsumed = false;
-    socket.SocketType = SocketType;
-    socket.Transform = transform;
-    socket.UserData = InUserData;
-    WorldMarkers.Add(socket);
+    FDAMarkerInfo Marker;
+    Marker.Id = ++_SocketIdCounter;
+    Marker.MarkerName = SocketType;
+    Marker.Transform = transform;
+    Marker.UserData = InUserData;
+    WorldMarkers.Add(Marker);
 }
 
-void UDungeonBuilder::AddMarker(TArray<FPropSocket>& pPropSockets, const FString& SocketType,
+void UDungeonBuilder::AddMarker(TArray<FDAMarkerInfo>& pPropSockets, const FString& SocketType,
                                 const FTransform& transform, TSharedPtr<class IDungeonMarkerUserData> InUserData) {
-    FPropSocket socket;
-    socket.Id = ++_SocketIdCounter;
-    socket.IsConsumed = false;
-    socket.SocketType = SocketType;
-    socket.Transform = transform;
-    socket.UserData = InUserData;
-    pPropSockets.Add(socket);
+    FDAMarkerInfo Marker;
+    Marker.Id = ++_SocketIdCounter;
+    Marker.MarkerName = SocketType;
+    Marker.Transform = transform;
+    Marker.UserData = InUserData;
+    pPropSockets.Add(Marker);
 }
 
 void UDungeonBuilder::EmitDungeonMarkers_Implementation() {
-    random.Initialize(config->Seed);
+    Random.Initialize(config->Seed);
 }
 
 void UDungeonBuilder::EmitMarker(const FString& SocketType, const FTransform& Transform) {
@@ -337,11 +340,11 @@ void UDungeonBuilder::ProcessMarkerReplacementVolumes() {
 
 void UDungeonBuilder::ProcessMarkerReplacementVolume(class ADungeonMarkerReplaceVolume* MarkerReplaceVolume) {
     if (!MarkerReplaceVolume) return;
-    for (FPropSocket& Socket : WorldMarkers) {
+    for (FDAMarkerInfo& Socket : WorldMarkers) {
         if (MarkerReplaceVolume->EncompassesPoint(Socket.Transform.GetLocation())) {
             for (const FMarkerReplaceEntry& Entry : MarkerReplaceVolume->Replacements) {
-                if (Socket.SocketType == Entry.MarkerName) {
-                    Socket.SocketType = Entry.ReplacementName;
+                if (Socket.MarkerName == Entry.MarkerName) {
+                    Socket.MarkerName = Entry.ReplacementName;
                 }
             }
         }

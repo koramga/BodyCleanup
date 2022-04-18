@@ -102,7 +102,7 @@ void ABaseModularActor::__OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 		FQuat::Identity,
 	0,
 		FCollisionShape::MakeBox(BoxComponent->GetScaledBoxExtent()),  
-		FCollisionQueryParams::FCollisionQueryParams(false));
+		FCollisionQueryParams::DefaultQueryParam);
 
 		FHitResult HitResult;
 		

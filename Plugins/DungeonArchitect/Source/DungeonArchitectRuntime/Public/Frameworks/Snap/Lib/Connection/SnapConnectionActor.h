@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -50,14 +50,14 @@ public:
 
 
 public:
-    void BuildConnectionInstance(ULevel* InHostLevel = nullptr);
+    void BuildConnectionInstance(ADungeon* InDungeon, ULevel* InHostLevel = nullptr);
     void DestroyConnectionInstance();
     void SetHiddenInGame(bool bInHidden);
     TArray<TWeakObjectPtr<AActor>> GetSpawnedInstancesPtr() const { return SpawnedInstances; }
     
 private:
     void Initialize();
-    void BuildImpl(int32 InSeed, ULevel* HostLevel = nullptr);
+    void BuildImpl(int32 InSeed, ADungeon* InDungeon, ULevel* HostLevel = nullptr);
     void BuildImplDeprecated(ULevel* HostLevel = nullptr);
     void CreateInstanceDeprecated(const FSnapConnectionVisualInfo_DEPRECATED& VisualInfo, ULevel* HostLevel = nullptr);
 

@@ -21,11 +21,13 @@ void ABaseAIController::BeginPlay()
 void ABaseAIController::OnPossess(APawn* InPawn)
 {
 	UE_LOG(LogTemp, Display, TEXT("koramga : <%s> OnPossess"), *InPawn->GetName());
+
+	UBlackboardComponent* BlackboardComponent = Blackboard.Get();
 	
 	if(IsValid(BehaviorTree)
 		&& IsValid(BlackboardData))
 	{
-		if(false == UseBlackboard(BlackboardData, Blackboard))
+		if(false == UseBlackboard(BlackboardData, BlackboardComponent))
 		{
 			UE_LOG(LogTemp, Display, TEXT("ABaseAIController::OnPossess UseBlackboard Failed.."));
 			return;			

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapMapEditor/AppModes/DebugAppMode.h"
 
@@ -75,7 +75,14 @@ FSnapMapEditor_DebugAppMode::FSnapMapEditor_DebugAppMode(TSharedPtr<class FSnapM
     // Create the visualization details property editor widget
     {
         FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-        const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true, this);
+        FDetailsViewArgs DetailsViewArgs;
+        DetailsViewArgs.bUpdatesFromSelection = false;
+        DetailsViewArgs.bLockable = false;
+        DetailsViewArgs.bAllowSearch = true;
+        DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+        DetailsViewArgs.bHideSelectionTip = true;
+        DetailsViewArgs.NotifyHook = this;
+        
         const TSharedRef<IDetailsView> PropertyEditorRef = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
         PropertyEditor = PropertyEditorRef;
         PropertyEditor->SetObject(InFlowEditor->GetDebugAppModeSettings());
@@ -195,19 +202,11 @@ void FSnapMapEditor_DebugAppMode::BindCommands(TSharedRef<FUICommandList> Toolki
 TSharedRef<FTabManager::FLayout> FSnapMapEditor_DebugAppMode::BuildEditorFrameLayout(
     TSharedPtr<class FSnapMapEditor> InFlowEditor) {
 
-    return FTabManager::NewLayout("Standalone_DungeonFlowEditor_DebugLayout_v0.0.8")
+    return FTabManager::NewLayout("Standalone_DungeonFlowEditor_DebugLayout_v0.0.9")
         ->AddArea
         (
             FTabManager::NewPrimaryArea()
             ->SetOrientation(Orient_Vertical)
-            // Toolbar
-            ->Split
-            (
-                FTabManager::NewStack()
-                ->SetSizeCoefficient(0.1f)
-                ->SetHideTabWell(true)
-                ->AddTab(InFlowEditor->GetToolbarTabId(), ETabState::OpenedTab)
-            )
             // Body of the editor
             ->Split
             (
@@ -289,15 +288,14 @@ void ASnapMapFlowEditorVisualization::LoadLevel(const FGuid& InNodeId, TSoftObje
             for (AActor* LevelActor : LevelActorList) {
                 if (ASnapConnectionActor* Connection = Cast<ASnapConnectionActor>(LevelActor)) {
                     Connection->ConnectionComponent->ConnectionState = ESnapConnectionState::Wall;
-                    Connection->BuildConnectionInstance(LoadedLevel);
+                    Connection->BuildConnectionInstance(nullptr, LoadedLevel);
                 }
             }
         }
     }
 }
 
-void ASnapMapFlowEditorVisualization::UpdateConnectionState(const FGuid& InNodeId, const FGuid& InConnectionId,
-                                                            bool bIsDoor) {
+void ASnapMapFlowEditorVisualization::UpdateConnectionState(const FGuid& InNodeId, const FGuid& InConnectionId, bool bIsDoor) {
     ULevelStreamingDynamic** SearchResult = LoadedLevels.Find(InNodeId);
     if (SearchResult) {
         ULevelStreamingDynamic* LevelStreaming = *SearchResult;
@@ -309,7 +307,7 @@ void ASnapMapFlowEditorVisualization::UpdateConnectionState(const FGuid& InNodeI
                     if (ASnapConnectionActor* Connection = Cast<ASnapConnectionActor>(LevelActor)) {
                         if (Connection->GetConnectionId() == InConnectionId) {
                             Connection->ConnectionComponent->ConnectionState = bIsDoor ? ESnapConnectionState::Door : ESnapConnectionState::Wall;
-                            Connection->BuildConnectionInstance(LoadedLevel);
+                            Connection->BuildConnectionInstance(nullptr, LoadedLevel);
                         }
                     }
                 }

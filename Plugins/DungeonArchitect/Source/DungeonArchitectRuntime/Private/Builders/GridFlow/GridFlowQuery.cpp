@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/GridFlow/GridFlowQuery.h"
 
@@ -279,9 +279,9 @@ void UGridFlowQuery::IsNearMarker(const FTransform& CurrentMarkerTransform, cons
         const float QueryDistanceSq = NearbyDistance * NearbyDistance;
         const FVector CurrentLocation = CurrentMarkerTransform.GetLocation();
 
-        for (const FPropSocket& Socket : Builder->GetMarkerList()) {
+        for (const FDAMarkerInfo& Socket : Builder->GetMarkerList()) {
             const float DistanceSq = (Socket.Transform.GetLocation() - CurrentLocation).SizeSquared();
-            if (DistanceSq < QueryDistanceSq && Socket.SocketType == NearbyMarkerName) {
+            if (DistanceSq < QueryDistanceSq && Socket.MarkerName == NearbyMarkerName) {
                 NumFound++;
             }
         }

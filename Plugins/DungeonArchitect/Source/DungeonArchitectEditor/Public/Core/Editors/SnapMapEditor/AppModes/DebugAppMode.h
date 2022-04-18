@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -70,8 +70,7 @@ class ASnapMapFlowEditorVisualization : public AActor {
 
 public:
     ASnapMapFlowEditorVisualization();
-    void LoadLevel(const FGuid& InNodeId, TSoftObjectPtr<UWorld> ModuleLevel,
-                             const FBox& ModuleBounds, const FTransform& InWorldTransform);
+    void LoadLevel(const FGuid& InNodeId, TSoftObjectPtr<UWorld> ModuleLevel, const FBox& ModuleBounds, const FTransform& InWorldTransform);
     void UnloadLevel(const FGuid& InNodeId);
     void UpdateConnectionState(const FGuid& InNodeId, const FGuid& InConnectionId, bool bIsDoor);
     void UnloadAllLevels();

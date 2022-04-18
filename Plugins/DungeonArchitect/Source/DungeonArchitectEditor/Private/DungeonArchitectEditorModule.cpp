@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "DungeonArchitectEditorModule.h"
 
@@ -20,8 +20,12 @@
 #include "Core/Editors/SnapConnectionEditor/SnapConnectionEditorCommands.h"
 #include "Core/Editors/SnapConnectionEditor/SnapConnectionEditorCustomization.h"
 #include "Core/Editors/SnapMapEditor/Viewport/SSnapMapEditorViewportToolbar.h"
+#include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/MarkerGeneratorAppMode.h"
+#include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/MarkerGeneratorAppModeCommands.h"
+#include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/PatternEditor/PatternEditorMode.h"
+#include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/PatternGraph/Editor/PatternGraphPinFactory.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonActorBase.h"
 #include "Core/Editors/ThemeEditor/DungeonArchitectThemeEditor.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonActorBase.h"
 #include "Core/Editors/ThemeEditor/Widgets/GraphPanelNodeFactory_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/Widgets/SDungeonEditorViewportToolbar.h"
 #include "Core/LevelEditor/Assets/GridFlow/GridFlowAssetTypeActions.h"
@@ -56,10 +60,12 @@
 #include "Frameworks/GraphGrammar/RuleGraph/EdGraphSchema_Grammar.h"
 #include "Frameworks/GraphGrammar/RuleGraph/GrammarGraphConnectionDrawingPolicy.h"
 #include "Frameworks/GraphGrammar/RuleGraph/GraphPanelNodeFactory_Grammar.h"
+#include "Frameworks/MarkerGenerator/Impl/Grid/MarkerGenGridLayer.h"
 #include "Frameworks/Snap/Lib/Connection/SnapConnectionActor.h"
 #include "Frameworks/Snap/Lib/Connection/SnapConnectionComponent.h"
 #include "Frameworks/Snap/SnapGridFlow/SnapGridFlowModuleDatabase.h"
 #include "Frameworks/Snap/SnapMap/SnapMapModuleDatabase.h"
+#include "Frameworks/TestRunner/DATestRunnerCommands.h"
 #include "Frameworks/ThemeEngine/Markers/PlaceableMarker.h"
 
 #include "AssetToolsModule.h"
@@ -107,6 +113,7 @@ public:
 		    RegisterCustomClassLayout<USnapMapModuleDatabase, FSnapModuleDatabaseCustomization>(PropertyEditorModule);
 		    RegisterCustomClassLayout<USnapGridFlowModuleDatabase, FSnapGridFlowModuleDatabaseCustomization>(PropertyEditorModule);
 		    RegisterCustomClassLayout<ADACustomInputConfigBinder, FDACustomInputBinderCustomization>(PropertyEditorModule);
+		    RegisterCustomClassLayout<UMarkerGenGridLayer, FMGPatternGridLayerCustomization>(PropertyEditorModule);
 		    FFlowEditorTaskCustomizations::RegisterTaskNodes(PropertyEditorModule);
 		    
             RegisterCustomPropertyTypeLayout<FGridSpatialConstraint3x3Data, FDAGridConstraintCustomization3x3>(PropertyEditorModule);
@@ -140,17 +147,24 @@ public:
         RegisterVisualNodeFactory(MakeShareable(new FGridFlowAbstractGraphPanelNodeFactory));
         RegisterVisualNodeFactory(MakeShareable(new FGridFlowTilemapGraphPanelNodeFactory));
 
+        // Register custom graph pins
+        RegisterVisualPinFactory(MakeShareable(new FMGPatternGraphPinFactory));
+
         // Register the asset brokers (used for asset to component mapping) 
         RegisterAssetBroker<FSnapConnectionAssetBroker, USnapConnectionComponent>(true, true);
         RegisterAssetBroker<FPlaceableMarkerAssetBroker, UPlaceableMarkerComponent>(true, true);
 
         // Register the dungeon draw editor mode
         FEditorModeRegistry::Get().RegisterMode<FEdModeDungeon>(
-            FEdModeDungeon::EM_Dungeon, NSLOCTEXT("EditorModes", "DungeonDrawMode", "Draw Dungeon"),
+            FEdModeDungeon::EM_Dungeon, LOCTEXT("DungeonDrawMode", "Draw Dungeon"),
             FSlateIcon(FDungeonArchitectStyle::GetStyleSetName(), "DungeonArchitect.TabIcon", "DungeonArchitect.TabIcon.Small"),
             true, 400
         );
-
+        
+        FEditorModeRegistry::Get().RegisterMode<FMGPatternEditMode>(
+                    FMGPatternEditMode::EM_PatternEditor, LOCTEXT("PatternEdModeLabel", "Pattern Editor"),
+                    FSlateIcon(), false);
+        
         // Hook on to the map change event to bind any missing inputs that the samples require
         InputBinderHook = MakeShareable(new FDACustomInputConfigBinderHook);
         InputBinderHook->AddHook();
@@ -195,12 +209,19 @@ public:
         CreatedAssetTypeActions.Empty();
 
         // Unregister all the visual node factories
-        for (TSharedPtr<FGraphPanelNodeFactory> VisualNodeFactory : CreatedVisualNodeFactories) {
+        for (const TSharedPtr<FGraphPanelNodeFactory>& VisualNodeFactory : CreatedVisualNodeFactories) {
             FEdGraphUtilities::UnregisterVisualNodeFactory(VisualNodeFactory);
         }
         CreatedVisualNodeFactories.Empty();
 
+        // Unregister all the visual pin factories
+        for (const TSharedPtr<FGraphPanelPinFactory>& VisualPinFactory : CreatedVisualPinFactories) {
+            FEdGraphUtilities::UnregisterVisualPinFactory(VisualPinFactory);
+        }
+        CreatedVisualPinFactories.Empty();
+
         FEditorModeRegistry::Get().UnregisterMode(FEdModeDungeon::EM_Dungeon);
+        FEditorModeRegistry::Get().UnregisterMode(FMGPatternEditMode::EM_PatternEditor);
 
         delete UEdGraphSchema_Grammar::GrammarGraphSupport;
         UEdGraphSchema_Grammar::GrammarGraphSupport = nullptr;
@@ -234,6 +255,7 @@ public:
 private:
     static void RegisterCommands() {
         FDungeonArchitectCommands::Register();
+        FMarkerGeneratorAppModeCommands::Register();
         FDungeonEditorViewportCommands::Register();
         FSnapMapEditorViewportCommands::Register();
         FSnapConnectionEditorCommands::Register();
@@ -241,10 +263,12 @@ private:
         FFlowEditorCommands::Register();
         FGridFlowEditorViewportCommands::Register();
         FDALevelToolbarCommands::Register();
+        FDATestRunnerCommands::Register();
     }
 
     static void UnregisterCommands() {
         FDungeonArchitectCommands::Unregister();
+        FMarkerGeneratorAppModeCommands::Unregister();
         FDungeonEditorViewportCommands::Unregister();
         FSnapMapEditorViewportCommands::Unregister();
         FSnapConnectionEditorCommands::Unregister();
@@ -252,6 +276,7 @@ private:
         FFlowEditorCommands::Unregister();
         FGridFlowEditorViewportCommands::Unregister();
         FDALevelToolbarCommands::Unregister();
+        FDATestRunnerCommands::Unregister();
     }
 
     static void InitializeStyles() {
@@ -272,6 +297,11 @@ private:
     void RegisterVisualNodeFactory(TSharedRef<FGraphPanelNodeFactory> VisualNodeFactory) {
         FEdGraphUtilities::RegisterVisualNodeFactory(VisualNodeFactory);
         CreatedVisualNodeFactories.Add(VisualNodeFactory);
+    }
+
+    void RegisterVisualPinFactory(TSharedRef<FGraphPanelPinFactory> VisualPinFactory) {
+        FEdGraphUtilities::RegisterVisualPinFactory(VisualPinFactory);
+        CreatedVisualPinFactories.Add(VisualPinFactory);
     }
 
     template<typename TComponent, typename TVisualizer>
@@ -351,6 +381,7 @@ private:
     /** All created asset type actions.  Cached here so that we can unregister them during shutdown. */
     TArray<TSharedPtr<IAssetTypeActions>> CreatedAssetTypeActions;
     TArray<TSharedPtr<FGraphPanelNodeFactory>> CreatedVisualNodeFactories;
+    TArray<TSharedPtr<FGraphPanelPinFactory>> CreatedVisualPinFactories;
     TArray<TSharedPtr<IComponentAssetBroker>> AssetBrokers;
 	TArray<FName> RegisteredComponentClassNames;
     TArray<FName> CustomLayoutClassNames;

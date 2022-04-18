@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -66,3 +66,4 @@ struct DUNGEONARCHITECTRUNTIME_API FIsaacBuilderMarkers {
     static const FString ST_WALLSEPARATOR;
     static const FString ST_GROUND;
 };
+

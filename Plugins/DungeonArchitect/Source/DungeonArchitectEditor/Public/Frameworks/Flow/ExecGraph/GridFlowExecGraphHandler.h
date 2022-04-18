@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -9,8 +9,8 @@ class UGridFlowExecEdGraph;
 
 DECLARE_DELEGATE_RetVal_OneParam(FReply, FExecGraphDelegate, TWeakObjectPtr<UGridFlowExecEdGraph>);
 DECLARE_DELEGATE_OneParam(FExecGraphChangedDelegate, TWeakObjectPtr<UGridFlowExecEdGraph>);
-DECLARE_DELEGATE_OneParam(FExecGraphNodeDelegate, UEdGraphNode*);
-DECLARE_DELEGATE_OneParam(FExecGraphSelectedNodeChangedDelegate, const TSet<class UObject*>&);
+DECLARE_DELEGATE_OneParam(FPatternRuleGraphNodeDelegate, UEdGraphNode*);
+DECLARE_DELEGATE_OneParam(FPatternRuleGraphSelectedNodeChangedDelegate, const TSet<class UObject*>&);
 
 class FGridFlowExecGraphHandler : public TSharedFromThis<FGridFlowExecGraphHandler> {
 public:
@@ -69,8 +69,8 @@ public:
     SGraphEditor::FGraphEditorEvents GraphEvents;
     TSharedPtr<FUICommandList> GraphEditorCommands;
 
-    FExecGraphNodeDelegate OnNodeDoubleClicked;
-    FExecGraphSelectedNodeChangedDelegate OnNodeSelectionChanged;
+    FPatternRuleGraphNodeDelegate OnNodeDoubleClicked;
+    FPatternRuleGraphSelectedNodeChangedDelegate OnNodeSelectionChanged;
 
 private:
     TSharedPtr<SGraphEditor> GraphEditor;

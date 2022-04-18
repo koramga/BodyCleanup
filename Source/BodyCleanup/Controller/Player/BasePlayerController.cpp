@@ -538,10 +538,12 @@ bool ABasePlayerController::GetLevelHitResultAtMousePosition(FHitResult& OutHitR
 	
 	for(const FHitResult& HitResult : HitResults)
 	{
-		if(HitResult.Actor.IsValid()
-			&& HitResult.Actor != this)
+		AActor* HitActor = HitResult.GetActor();
+		
+		if(IsValid(HitActor)
+			&& HitActor != this)
 		{
-			ULevelComponent* LevelComponent = HitResult.Actor->FindComponentByClass<ULevelComponent>();
+			ULevelComponent* LevelComponent = HitActor->FindComponentByClass<ULevelComponent>();
 
 			if(IsValid(LevelComponent))
 			{

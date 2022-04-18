@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -127,8 +127,8 @@ public:
     virtual bool SupportsBackgroundTask() const override { return false; }
     virtual bool SupportsTheming() const override { return false; }
     virtual bool SupportsLevelStreaming() const override { return true; }
-    virtual bool PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FPropSocket& socket) override;
-    virtual FTransform PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics, const FPropSocket& socket) override;
+    virtual bool PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics, const FDAMarkerInfo& socket) override;
+    virtual FTransform PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics, const FDAMarkerInfo& socket) override;
     
     virtual TSubclassOf<UDungeonModel> GetModelClass() override;
     virtual TSubclassOf<UDungeonConfig> GetConfigClass() override;
@@ -138,12 +138,12 @@ public:
 protected:
     bool GenerateModuleNodeGraph(TArray<SnapLib::FModuleNodePtr>& OutNodes) const;
     bool ExecuteFlowGraph();
-    void CreateDebugVisualizations(const FGuid& DungeonID) const;
+    void CreateDebugVisualizations(const FGuid& DungeonID, const FTransform& InTransform) const;
     void DestroyDebugVisualizations(const FGuid& DungeonID) const;
     void HandleChunkLoaded(USnapStreamingChunk* InChunk);
     void HandleChunkLoadedAndVisible(USnapStreamingChunk* InChunk);
     virtual bool IdentifyBuildSucceeded() const override;
-    TArray<AActor*> SpawnItemWithThemeEngine(UFlowGraphItem* ItemInfo, APlaceableMarkerActor* InMarkerActor);
+    TArray<AActor*> SpawnItemWithThemeEngine(UFlowGraphItem* ItemInfo, const APlaceableMarkerActor* InMarkerActor);
     TArray<AActor*> SpawnChunkPlaceableMarkers(const TArray<AActor*>& ChunkActors, const FGuid& AbstractNodeId, const FBox& ChunkBounds, const FString& ChunkName);
     void BuildPersistentSnapLevel(UWorld* InWorld, const TArray<SnapLib::FModuleNodePtr>& InModuleNodes, TSharedPtr<FDungeonSceneProvider> InSceneProvider);
     
@@ -158,7 +158,7 @@ protected:
 
 class FSnapGridFlowStreamingChunkHandler : public FSnapStreamingChunkHandlerBase {
 public:
-    FSnapGridFlowStreamingChunkHandler(UWorld* InWorld, USnapGridFlowModel* InSnapGridModel, UDungeonLevelStreamingModel* InLevelStreamingModel);
+    FSnapGridFlowStreamingChunkHandler(UWorld* InWorld, TWeakObjectPtr<ADungeon> InDungeon, USnapGridFlowModel* InSnapGridModel, UDungeonLevelStreamingModel* InLevelStreamingModel);
     virtual TArray<struct FSnapConnectionInstance>* GetConnections() const override;
     virtual void OnChunkVisible(USnapStreamingChunk* Chunk) override;
     virtual void OnChunkHidden(USnapStreamingChunk* Chunk) override;

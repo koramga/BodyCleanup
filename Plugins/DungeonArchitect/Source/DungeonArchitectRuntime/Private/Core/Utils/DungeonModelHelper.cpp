@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Utils/DungeonModelHelper.h"
 
@@ -112,7 +112,7 @@ bool UDungeonModelHelper::GetNodeId(const FName& DungeonTag, AActor* Actor, FNam
     if (!Actor) return false;
     if (!Actor->IsValidLowLevel()) return false;
     if (!Actor->ActorHasTag(DungeonTag)) return false;
-    if (Actor->IsPendingKill()) return false;
+    if (!IsValid(Actor)) return false;
 
     // Find the Node tag
     for (const FName& Tag : Actor->Tags) {

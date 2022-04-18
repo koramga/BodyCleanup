@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Snap/SnapGridFlow/SnapGridFlowModuleResolver.h"
 
@@ -90,10 +90,8 @@ namespace {
 
 bool FSnapGridFlowModuleResolver::Resolve(UFlowAbstractGraphBase* InGraph, TArray<SnapLib::FModuleNodePtr>& OutModuleNodes) const {
     if (!InGraph || !ModuleDatabase.IsValid()) return false;
-
-    const FRandomStream Random(Settings.Seed);
     
-    FSGFModuleResolveState ResolveState(InGraph, Random);
+    FSGFModuleResolveState ResolveState(InGraph, Settings.Seed);
     for (UFlowAbstractNode* GraphNode : InGraph->GraphNodes) {
         if (GraphNode->bActive) {
             FSGFResolveNodeGroupData& NodeGroupData = ResolveState.NodeGroups.FindOrAdd(GraphNode);
@@ -225,7 +223,7 @@ bool FSnapGridFlowModuleResolver::ResolveNode_Recursive(FSGFModuleResolveState& 
     FSGFModuleAssemblyBuilder::Build(InResolveState.GraphQuery, NodeGroupData.Group, NodeGroupData.ConstraintLinks, Assembly);
     
     TArray<FModuleFitCandidate> Candidates;
-    GetCandidates(InResolveState, InNode, 0, Assembly, Candidates);
+    GetCandidates(InResolveState, InNode, InDepth, Assembly, Candidates);
     if (Candidates.Num() == 0) {
         return false;
     }
@@ -386,18 +384,23 @@ void FSnapGridFlowModuleResolver::GetCandidates(FSGFModuleResolveState& InResolv
         }
     }
 
-    OutCandidates.Sort([](const FModuleFitCandidate& A, const FModuleFitCandidate& B) -> bool {
+    OutCandidates.Sort([&Random](const FModuleFitCandidate& A, const FModuleFitCandidate& B) -> bool {
         if (A.ItemFitness == B.ItemFitness) {
             if (FMath::IsNearlyEqual(A.ModuleWeight, B.ModuleWeight)) {
                 if (A.ConnectionWeight == B.ConnectionWeight) {
-                    return A.ModuleLastUsedDepth < B.ModuleLastUsedDepth;
+                    if (A.ModuleLastUsedDepth == B.ModuleLastUsedDepth) {
+                        return Random.FRand() < 0.5f;
+                    }
+                    else {
+                        return A.ModuleLastUsedDepth > B.ModuleLastUsedDepth;
+                    }
                 }
                 else {
                     return A.ConnectionWeight < B.ConnectionWeight;
                 }
             }
             else {
-                return A.ModuleWeight < B.ModuleWeight;
+                return A.ModuleWeight > B.ModuleWeight;
             }
         }
         else {
@@ -505,3 +508,4 @@ bool FSnapGridFlowModuleResolver::ResolveNode_Linear(FSGFModuleResolveState& InR
     RegisterNodeModule(InNode, InResolveState, Candidates[0]);
     return true;
 }
+

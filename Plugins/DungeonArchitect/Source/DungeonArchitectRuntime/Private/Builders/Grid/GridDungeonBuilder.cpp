@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/Grid/GridDungeonBuilder.h"
 
@@ -134,8 +134,8 @@ void UGridDungeonBuilder::BuildDungeonCellsDistributed() {
                 int offsetX, offsetY;
                 {
                     FIntVector offset = GenerateCellSize() / 2.0f;
-                    offsetX = FMath::RoundToInt(offset.X * random.FRand());
-                    offsetY = FMath::RoundToInt(offset.Y * random.FRand());
+                    offsetX = FMath::RoundToInt(offset.X * Random.FRand());
+                    offsetY = FMath::RoundToInt(offset.Y * Random.FRand());
                 }
 
                 int x = ix + offsetX;
@@ -287,10 +287,10 @@ void UGridDungeonBuilder::MirrorDungeonWithVolume(ADungeonMirrorVolume* MirrorVo
     // TODO: reflect doors and stair gridModel
 
     // Reflect the low level markers
-    TArray<FPropSocket> MarkersToAdd;
-    TArray<FPropSocket> MarkersToRemove;
+    TArray<FDAMarkerInfo> MarkersToAdd;
+    TArray<FDAMarkerInfo> MarkersToRemove;
 
-    for (const FPropSocket& Marker : WorldMarkers) {
+    for (const FDAMarkerInfo& Marker : WorldMarkers) {
         // Check if this point lies in the reflective side
         FVector DirectionToMarker = Marker.Transform.GetLocation() - MirrorLocation;
         FVector MarkerUp = FVector::CrossProduct(DirectionToMarker, MirrorAxis);
@@ -306,7 +306,7 @@ void UGridDungeonBuilder::MirrorDungeonWithVolume(ADungeonMirrorVolume* MirrorVo
                 MirroredRotation = FQuat(ReflectedVector.Rotation());
             }
 
-            FPropSocket ReflectedMarker = Marker;
+            FDAMarkerInfo ReflectedMarker = Marker;
             ReflectedMarker.Id = ++_SocketIdCounter;
             ReflectedMarker.Transform.SetLocation(MirroredLocation);
             ReflectedMarker.Transform.SetRotation(MirroredRotation);
@@ -320,18 +320,18 @@ void UGridDungeonBuilder::MirrorDungeonWithVolume(ADungeonMirrorVolume* MirrorVo
     }
 
     // Remove discarded markers
-    for (const FPropSocket& Marker : MarkersToRemove) {
+    for (const FDAMarkerInfo& Marker : MarkersToRemove) {
         WorldMarkers.Remove(Marker);
     }
 
     // Add reflected markers
-    for (const FPropSocket& Marker : MarkersToAdd) {
+    for (const FDAMarkerInfo& Marker : MarkersToAdd) {
         WorldMarkers.Add(Marker);
     }
 }
 
 bool UGridDungeonBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                                const FPropSocket& socket) {
+                                                const FDAMarkerInfo& socket) {
     for (UDungeonSelectorLogic* SelectionLogic : SelectionLogics) {
         UGridDungeonSelectorLogic* GridSelectionLogic = Cast<UGridDungeonSelectorLogic>(SelectionLogic);
         if (!GridSelectionLogic) {
@@ -349,7 +349,7 @@ bool UGridDungeonBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLog
         FGridCellInfo cellInfo = gridModel->GetGridCellLookup(gridX, gridY);
         FCell* cell = gridModel->GetCell(cellInfo.CellId);
         FCell& cellRef = cell ? *cell : InvalidCell;
-        bool selected = GridSelectionLogic->SelectNode(gridModel, gridConfig, this, gridQuery, cellRef, random, gridX,
+        bool selected = GridSelectionLogic->SelectNode(gridModel, gridConfig, this, gridQuery, cellRef, Random, gridX,
                                                        gridY, socket.Transform);
         if (!selected) {
             return false;
@@ -359,7 +359,7 @@ bool UGridDungeonBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLog
 }
 
 FTransform UGridDungeonBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                                      const FPropSocket& socket) {
+                                                      const FDAMarkerInfo& socket) {
     FTransform result = FTransform::Identity;
 
     for (UDungeonTransformLogic* TransformLogic : TransformLogics) {
@@ -379,7 +379,7 @@ FTransform UGridDungeonBuilder::PerformTransformLogic(const TArray<UDungeonTrans
         FCell& cellRef = cell ? *cell : InvalidCell;
         FTransform logicOffset;
         if (TransformLogic) {
-            GridTransformLogic->GetNodeOffset(gridModel, gridConfig, this, gridQuery, cellRef, random, gridX, gridY,
+            GridTransformLogic->GetNodeOffset(gridModel, gridConfig, this, gridQuery, cellRef, Random, gridX, gridY,
                                               socket.Transform, logicOffset);
         }
         else {
@@ -417,12 +417,12 @@ FCell UGridDungeonBuilder::BuildCell(const FRectangle& InBounds) {
 FIntVector UGridDungeonBuilder::GenerateCellSize() {
     int32 baseSize = GetRandomRoomSize();
     int32 width = baseSize;
-    float aspectRatio = 1 + (random.FRand() * 2 - 1) * gridConfig->RoomAspectDelta;
+    float aspectRatio = 1 + (Random.FRand() * 2 - 1) * gridConfig->RoomAspectDelta;
     aspectRatio = FMath::Max(aspectRatio, 0.1f);
     int32 length = FMath::RoundToInt(width * aspectRatio);
     width = FMath::Max(1, width);
     length = FMath::Max(1, length);
-    if (random.FRand() < 0.5f) {
+    if (Random.FRand() < 0.5f) {
         // Swap width / length
         int32 temp = width;
         width = length;
@@ -435,7 +435,7 @@ void UGridDungeonBuilder::Shuffle() {
     TArray<FCell>& cells = gridModel->Cells;
     int n = cells.Num();
     for (int i = 0; i < n; i++) {
-        int r = i + static_cast<int>(random.FRand() * (n - i));
+        int r = i + static_cast<int>(Random.FRand() * (n - i));
         FCell t = cells[r];
         cells[r] = cells[i];
         cells[i] = t;
@@ -802,7 +802,7 @@ void UGridDungeonBuilder::AddUserDefinedPlatforms(UWorld* World) {
 }
 
 void UGridDungeonBuilder::AddUserDefinedPlatform(AGridDungeonPlatformVolume* Volume) {
-    if (Volume->IsPendingKill()) {
+    if (!IsValid(Volume)) {
         return;
     }
     FRectangle Bounds;
@@ -841,7 +841,7 @@ void UGridDungeonBuilder::ApplyNegationVolumes(UWorld* World) {
         // Grab the bounds of all the negation volumes
         TArray<NegationVolumeInfo> NegationList;
         for (TObjectIterator<ADungeonNegationVolume> NegationVolume; NegationVolume; ++NegationVolume) {
-            if (!NegationVolume->IsValidLowLevel() || NegationVolume->IsPendingKill()) {
+            if (!NegationVolume->IsValidLowLevel() || !IsValid(*NegationVolume)) {
                 continue;
             }
             if (NegationVolume->Dungeon != Dungeon) {
@@ -936,7 +936,7 @@ void UGridDungeonBuilder::Seperate() {
                 FRectangle intersection = FRectangle::Intersect(c0, c1);
                 bool applyOnX = (intersection.Width() < intersection.Height());
                 if (intersection.Width() == intersection.Height()) {
-                    applyOnX = random.FRand() > 0.5f;
+                    applyOnX = Random.FRand() > 0.5f;
                 }
                 if (applyOnX) {
                     force.X = intersection.Width();
@@ -993,7 +993,7 @@ TArray<FCell*> UGridDungeonBuilder::GetCellsOfType(FCellType CellType) {
 }
 
 void UGridDungeonBuilder::GetRandomStream(FRandomStream& OutRandomStream) {
-    OutRandomStream = random;
+    OutRandomStream = Random;
 }
 
 void UGridDungeonBuilder::TriangulateRooms() {
@@ -1127,7 +1127,7 @@ void UGridDungeonBuilder::BuildMinimumSpanningTree() {
     for (FCell* room : rooms) {
         for (int32 otherDelauney : room->ConnectedRooms) {
             if (!room->FixedRoomConnections.Contains(otherDelauney)) {
-                float probability = random.FRand();
+                float probability = Random.FRand();
                 if (probability < gridConfig->SpanningTreeLoopProbability) {
                     FCell* other = gridModel->GetCell(otherDelauney);
                     if (other) {
@@ -1718,8 +1718,8 @@ int UGridDungeonBuilder::GetForceDirectionMultiplier(float a, float b, float a1,
 }
 
 FIntVector UGridDungeonBuilder::GetRandomPointInCircle(double radius) {
-    float angle = random.FRand() * PI * 2;
-    float u = random.FRand() + random.FRand();
+    float angle = Random.FRand() * PI * 2;
+    float u = Random.FRand() + Random.FRand();
     float r = (u > 1) ? 2 - u : u;
     r *= radius;
     int32 x = FMath::RoundToInt(FMath::Cos(angle) * r);
@@ -2173,7 +2173,7 @@ void UGridDungeonBuilder::GenerateDungeonHeights() {
             applyHeightVariation &= !cell->UserDefined;
 
             if (applyHeightVariation) {
-                float rand = random.FRand();
+                float rand = Random.FRand();
                 if (rand < gridConfig->HeightVariationProbability / 2.0f) {
                     top.CurrentHeight--;
                 }
@@ -2464,7 +2464,7 @@ void UGridDungeonBuilder::DrawDebugData(UWorld* InWorld, bool bPersistant, float
 void UGridDungeonBuilder::MirrorDungeon() {
     if (Dungeon) {
         for (TObjectIterator<ADungeonMirrorVolume> Volume; Volume; ++Volume) {
-            if (!Volume || Volume->IsPendingKill() || !Volume->IsValidLowLevel()) {
+            if (!Volume || !IsValid(*Volume) || !Volume->IsValidLowLevel()) {
                 continue;
             }
             if (Volume->Dungeon == Dungeon) {
@@ -3315,7 +3315,7 @@ void UGridDungeonBuilder::AssignClusteredThemesOnMarkers() {
     }
 
     TMap<int32, FString> ThemeNamesByClusterId;
-    for (FPropSocket& Marker : WorldMarkers) {
+    for (FDAMarkerInfo& Marker : WorldMarkers) {
         // Grab the user data we set in the EmitDungeonMarkers_Implementation function
         int32 CellId = -1;
         int32 ClusterId = -1;
@@ -3357,7 +3357,7 @@ FString UGridDungeonBuilder::GetClusterThemeForId(int32 ClusterId, int32 CellId)
 
     // TODO: Apply user defined constraints 
 
-    int32 Index = random.RandRange(0, NumThemes - 1);
+    int32 Index = Random.RandRange(0, NumThemes - 1);
     return Dungeon->ClusterThemes[Index].ClusterThemeName;
 }
 

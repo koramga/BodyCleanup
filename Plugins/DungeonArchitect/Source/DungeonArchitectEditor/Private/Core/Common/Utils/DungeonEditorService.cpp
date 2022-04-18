@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Common/Utils/DungeonEditorService.h"
 
@@ -43,14 +43,15 @@ AActor* FDungeonEditorService::CreateGroupActor(UWorld* World, const TArray<AAct
 
 void CopyFoliageToLevel(ULevel* SourceLevel, ULevel* TargetLevel, const FTransform& LevelTransform,
                         TArray<FGuid>& OutFoliageList) {
+    /*
     AInstancedFoliageActor* SourceIFA = AInstancedFoliageActor::GetInstancedFoliageActorForLevel(
-        SourceLevel, /*bCreateIfNone*/ false);
+        SourceLevel,  false);
     if (!SourceIFA) return;
 
     //SourceIFA->MoveSelectedInstancesToLevel(PersistentLevel);
 
     AInstancedFoliageActor* TargetIFA = AInstancedFoliageActor::GetInstancedFoliageActorForLevel(
-        TargetLevel, /*bCreateIfNone*/ true);
+        TargetLevel, true);
 
     SourceIFA->Modify();
     TargetIFA->Modify();
@@ -81,7 +82,7 @@ void CopyFoliageToLevel(ULevel* SourceLevel, ULevel* TargetLevel, const FTransfo
         bool bRebuildFoliageTree = true;
         MeshInfo->RemoveInstances(SourceIFA, SourceInstancesToRemove, bRebuildFoliageTree);
     }
-
+    */
 }
 
 void UnloadLevel(UWorld* ThisWorld, ULevel* Level, FName LevelPackageName) {
@@ -108,7 +109,7 @@ void UnloadLevel(UWorld* ThisWorld, ULevel* Level, FName LevelPackageName) {
 
             int32 Index = ThisWorld->GetStreamingLevels().IndexOfByPredicate(Predicate);
             if (Index != INDEX_NONE) {
-                ThisWorld->GetStreamingLevels()[Index]->MarkPendingKill();
+                ThisWorld->GetStreamingLevels()[Index]->MarkAsGarbage();
                 ThisWorld->RemoveStreamingLevelAt(Index);
             }
         }
@@ -257,8 +258,9 @@ void FDungeonEditorService::ForceDeleteAssets(const TArray<UObject*>& InObjectsT
 
 void FDungeonEditorService::DestroyFoliage(ULevel* Level, const TArray<FGuid>& InFoliageList) {
     if (!Level) return;
+    /*
     AInstancedFoliageActor* IFA = AInstancedFoliageActor::GetInstancedFoliageActorForLevel(
-        Level, /*bCreateIfNone*/ false);
+        Level, false);
     if (!IFA) return;
     IFA->Modify();
 
@@ -273,6 +275,7 @@ void FDungeonEditorService::DestroyFoliage(ULevel* Level, const TArray<FGuid>& I
         }
         MeshInfo->RemoveInstances(IFA, SourceInstancesToRemove, true);
     }
+    */
 }
 
 void FDungeonEditorService::BuildMapGeometry(UWorld* World) {

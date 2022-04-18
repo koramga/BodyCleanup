@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/FlowEditor/BaseEditors/SnapGridFlowEditor.h"
 
@@ -140,60 +140,48 @@ FString FSnapGridFlowEditor::GetWorldCentricTabPrefix() const {
 }
 
 TSharedPtr<FTabManager::FLayout> FSnapGridFlowEditor::CreateFrameLayout() const {
-    TSharedPtr<FTabManager::FLayout> Layout = FTabManager::NewLayout(ConstructLayoutName("0.3.2"))
+    TSharedPtr<FTabManager::FLayout> Layout = FTabManager::NewLayout(ConstructLayoutName("0.3.3"))
         ->AddArea
         (
             FTabManager::NewPrimaryArea()
             ->SetOrientation(Orient_Vertical)
             ->Split
             (
-                FTabManager::NewStack()
-                ->SetSizeCoefficient(0.1f)
-                ->SetHideTabWell(true)
-                ->AddTab(GetToolbarTabId(), ETabState::OpenedTab)
+
+                FTabManager::NewSplitter()
+                ->SetSizeCoefficient(0.35f)
+                ->SetOrientation(Orient_Horizontal)
+                ->Split // Exec Graph
+                (
+                    FTabManager::NewStack()
+                    ->SetSizeCoefficient(0.85f)
+                    ->AddTab(FFlowEditorTabs::ExecGraphID, ETabState::OpenedTab)
+                    ->SetHideTabWell(true)
+                )
+                ->Split // Details Tab
+                (
+                    FTabManager::NewStack()
+                    ->SetSizeCoefficient(0.15f)
+                    ->AddTab(FFlowEditorTabs::DetailsID, ETabState::OpenedTab)
+                )
             )
             ->Split
             (
                 FTabManager::NewSplitter()
-                ->SetOrientation(Orient_Vertical)
-                ->Split
+                ->SetSizeCoefficient(0.65f)
+                ->SetOrientation(Orient_Horizontal)
+                ->Split // Domain Editors
                 (
-
-                    FTabManager::NewSplitter()
-                    ->SetSizeCoefficient(0.35f)
-                    ->SetOrientation(Orient_Horizontal)
-                    ->Split // Exec Graph
-                    (
-                        FTabManager::NewStack()
-                        ->SetSizeCoefficient(0.85f)
-                        ->AddTab(FFlowEditorTabs::ExecGraphID, ETabState::OpenedTab)
-                        ->SetHideTabWell(true)
-                    )
-                    ->Split // Details Tab
-                    (
-                        FTabManager::NewStack()
-                        ->SetSizeCoefficient(0.15f)
-                        ->AddTab(FFlowEditorTabs::DetailsID, ETabState::OpenedTab)
-                    )
+                CreateDomainEditorLayout()
+                    ->SetSizeCoefficient(0.6f)
                 )
-                ->Split
+                ->Split // Preview Viewport 3D / Performance
                 (
-                    FTabManager::NewSplitter()
-                    ->SetSizeCoefficient(0.65f)
-                    ->SetOrientation(Orient_Horizontal)
-                    ->Split // Domain Editors
-                    (
-                    CreateDomainEditorLayout()
-                        ->SetSizeCoefficient(0.6f)
-                    )
-                    ->Split // Preview Viewport 3D / Performance
-                    (
-                        FTabManager::NewStack()
-                        // ->AddTab(FFlowEditorTabs::ViewportID, ETabState::OpenedTab)
-                        ->AddTab(FFlowEditorTabs::PerformanceID, ETabState::OpenedTab)
-                        ->SetForegroundTab(FFlowEditorTabs::PerformanceID)
-                        ->SetSizeCoefficient(0.4f)
-                    )
+                    FTabManager::NewStack()
+                    // ->AddTab(FFlowEditorTabs::ViewportID, ETabState::OpenedTab)
+                    ->AddTab(FFlowEditorTabs::PerformanceID, ETabState::OpenedTab)
+                    ->SetForegroundTab(FFlowEditorTabs::PerformanceID)
+                    ->SetSizeCoefficient(0.4f)
                 )
             )
         );

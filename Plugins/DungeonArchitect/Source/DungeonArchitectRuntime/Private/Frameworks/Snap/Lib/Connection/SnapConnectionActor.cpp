@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Snap/Lib/Connection/SnapConnectionActor.h"
 
@@ -186,7 +186,7 @@ void ASnapConnectionActor::UpdateConstraintDecal() {
 
 #endif	// WITH_EDITORONLY_DATA
 
-void ASnapConnectionActor::BuildImpl(int32 InSeed, ULevel* HostLevel) {
+void ASnapConnectionActor::BuildImpl(int32 InSeed, ADungeon* InDungeon, ULevel* HostLevel) {
     USnapConnectionInfo* ConnectionInfo = ConnectionComponent->ConnectionInfo;
     if (!ConnectionInfo->ThemeAsset) {
         UE_LOG(LogSnapConnectionActor, Error, TEXT("Missing Theme asset reference. Cannot build snap connection instance"));
@@ -230,15 +230,15 @@ void ASnapConnectionActor::BuildImpl(int32 InSeed, ULevel* HostLevel) {
             return;
     }
 
-    TArray<FPropSocket> MarkersToEmit;
-    FPropSocket& StartMarker = MarkersToEmit.AddDefaulted_GetRef();
+    TArray<FDAMarkerInfo> MarkersToEmit;
+    FDAMarkerInfo& StartMarker = MarkersToEmit.AddDefaulted_GetRef();
     StartMarker.Id = 0;
-    StartMarker.SocketType = MarkerName;
+    StartMarker.MarkerName = MarkerName;
     StartMarker.Transform = GetActorTransform(); 
 
     UWorld* World = GetWorld();
-    ULevel* LevelOverride = (ConnectionState == ESnapConnectionState::Door) ? World->PersistentLevel : GetLevel();
-    TSharedPtr<FSnapThemeSceneProvider> SceneProvider = MakeShareable(new FSnapThemeSceneProvider(World));
+    ULevel* LevelOverride = HostLevel; //(ConnectionState == ESnapConnectionState::Door) ? World->PersistentLevel : GetLevel();
+    TSharedPtr<FSnapThemeSceneProvider> SceneProvider = MakeShareable(new FSnapThemeSceneProvider(World, InDungeon));
     SceneProvider->SetLevelOverride(LevelOverride);
     FDungeonThemeEngineSettings ThemeEngineSettings;
     ThemeEngineSettings.Themes = { ConnectionInfo->ThemeAsset };
@@ -365,7 +365,7 @@ TArray<AActor*> ASnapConnectionActor::GetSpawnedInstances() const {
     return Result;
 }
 
-void ASnapConnectionActor::BuildConnectionInstance(ULevel* InHostLevel) {
+void ASnapConnectionActor::BuildConnectionInstance(ADungeon* InDungeon, ULevel* InHostLevel) {
     if (!ConnectionComponent) {
         return;
     }
@@ -381,7 +381,7 @@ void ASnapConnectionActor::BuildConnectionInstance(ULevel* InHostLevel) {
 
     if (ConnectionInfo->Version == static_cast<int32>(ESnapConnectionInfoVersion::LatestVersion)) {
         const int32 Seed = GetTypeHash(GetActorLocation()); 
-        BuildImpl(Seed, InHostLevel);
+        BuildImpl(Seed, InDungeon, InHostLevel);
     }
     else {
         BuildImplDeprecated(InHostLevel);

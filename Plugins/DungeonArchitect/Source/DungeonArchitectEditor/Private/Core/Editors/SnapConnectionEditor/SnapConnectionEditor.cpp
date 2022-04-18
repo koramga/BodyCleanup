@@ -1,14 +1,14 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapConnectionEditor/SnapConnectionEditor.h"
 
 #include "Core/Editors/SnapConnectionEditor/Preview3D/SSnapConnectionPreview3DViewport.h"
 #include "Core/Editors/SnapConnectionEditor/SnapConnectionEditorCommands.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonActorTemplate.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonMarker.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonMesh.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraph_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/DungeonThemeGraphHandler.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonActorTemplate.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMarker.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonMesh.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraph_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/Widgets/SThemeEditorDropTarget.h"
 #include "Frameworks/Snap/Lib/Connection/SnapConnectionActor.h"
 #include "Frameworks/Snap/Lib/Connection/SnapConnectionComponent.h"
@@ -95,7 +95,14 @@ void FSnapConnectionEditor::InitSnapConnectionEditor(const EToolkitMode::Type Mo
     // Create the details view
     {
         FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-        const FDetailsViewArgs DetailsViewArgs(false, false, true, FDetailsViewArgs::HideNameArea, true, this);
+        FDetailsViewArgs DetailsViewArgs;
+        DetailsViewArgs.bUpdatesFromSelection = false;
+        DetailsViewArgs.bLockable = false;
+        DetailsViewArgs.bAllowSearch = true;
+        DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+        DetailsViewArgs.bHideSelectionTip = true;
+        DetailsViewArgs.NotifyHook = this;
+
         DetailsPanel = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
         DetailsPanel->SetObject(AssetBeingEdited);
     }
@@ -112,18 +119,11 @@ void FSnapConnectionEditor::InitSnapConnectionEditor(const EToolkitMode::Type Mo
 
     // Default layout
     const TSharedRef<FTabManager::FLayout> StandaloneDefaultLayout = FTabManager::NewLayout(
-            "Standalone_SnapConnectionEditor_Layout_v1.0.0")
+            "Standalone_SnapConnectionEditor_Layout_v1.0.1")
         ->AddArea
         (
             FTabManager::NewPrimaryArea()
             ->SetOrientation(Orient_Vertical)
-            ->Split
-            (
-                FTabManager::NewStack()
-                ->SetSizeCoefficient(0.1f)
-                ->SetHideTabWell(true)
-                ->AddTab(GetToolbarTabId(), ETabState::OpenedTab)
-            )
             ->Split
             (
                 FTabManager::NewSplitter()
@@ -353,8 +353,8 @@ TStatId FSnapConnectionEditor::GetStatId() const {
 
 TSharedRef<SDockTab> FSnapConnectionEditor::SpawnTab_Graph(const FSpawnTabArgs& Args) {
     AssetDropTarget = SNew(SThemeEditorDropTarget)
-		.OnAssetDropped(this, &FSnapConnectionEditor::HandleAssetDropped)
-		.OnIsAssetAcceptableForDrop(this, &FSnapConnectionEditor::IsAssetAcceptableForDrop)
+		.OnAssetsDropped(this, &FSnapConnectionEditor::HandleAssetDropped)
+		.OnAreAssetsAcceptableForDrop(this, &FSnapConnectionEditor::AreAssetsAcceptableForDrop)
 		.Visibility(EVisibility::HitTestInvisible);
 
     return SNew(SDockTab)
@@ -404,7 +404,6 @@ TSharedRef<SDockTab> FSnapConnectionEditor::SpawnTab_PreviewSettings(const FSpaw
     }
 
     TSharedRef<SDockTab> SpawnedTab = SNew(SDockTab)
-    .Icon(FEditorStyle::GetBrush("Kismet.Tabs.Palette"))
     .Label(LOCTEXT("PreviewSettingsTitle", "Preview Settings"))
     [
         SNew(SBox)
@@ -432,10 +431,9 @@ TSharedRef<SDockTab> FSnapConnectionEditor::SpawnTab_ContentBrowser(const FSpawn
         .TabColorScale(GetTabColorScale());
     
     IContentBrowserSingleton& ContentBrowserSingleton = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser").Get();
-    const FName ContentBrowserInstanceID = *("DA_SnapConnectionEd_ContentBrowser_" + (AssetBeingEdited ? AssetBeingEdited->GetFullName() : "[NONE]")); 
-    FContentBrowserConfig ContentBrowserConfig;
-    TSharedRef<SWidget, ESPMode::NotThreadSafe> ContentBrowser = ContentBrowserSingleton.CreateContentBrowser(
-            ContentBrowserInstanceID, SpawnedTab, &ContentBrowserConfig);
+    const FName ContentBrowserInstanceID = *("DA_SnapConnectionEd_ContentBrowser_" + (AssetBeingEdited ? AssetBeingEdited->GetFullName() : "[NONE]"));
+    const FContentBrowserConfig ContentBrowserConfig;
+    const TSharedRef<SWidget> ContentBrowser = ContentBrowserSingleton.CreateContentBrowser(ContentBrowserInstanceID, SpawnedTab, &ContentBrowserConfig);
     
     SpawnedTab->SetContent(ContentBrowser);
     return SpawnedTab;
@@ -534,33 +532,47 @@ FVector2D FSnapConnectionEditor::GetAssetDropGridLocation() const {
     return GridLocation;
 }
 
-void FSnapConnectionEditor::HandleAssetDropped(UObject* AssetObject) {
+void FSnapConnectionEditor::HandleAssetDropped(const FDragDropEvent& InEvent, TArrayView<FAssetData> InAssetView) const {
+    FVector2D Offset = FVector2D::ZeroVector;
+    
     if (GraphEditor.IsValid()) {
-        UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph());
-        if (ThemeGraph) {
-            const FVector2D GridLocation = GetAssetDropGridLocation();
-            ThemeGraph->CreateNewNode(AssetObject, GridLocation);
+        if (UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph())) {
+            const FVector2D GridLocation = GetAssetDropGridLocation() + Offset;
+            for (const FAssetData& Asset : InAssetView) {
+                if (UObject* AssetObject = Asset.GetAsset()) {
+                    ThemeGraph->CreateNewNode(AssetObject, GridLocation);
+                }
+            }
+            Offset += FVector2D(20, 20);
         }
     }
 }
 
-bool FSnapConnectionEditor::IsAssetAcceptableForDrop(const UObject* AssetObject) const {
+bool FSnapConnectionEditor::AreAssetsAcceptableForDrop(TArrayView<FAssetData> InAssetObjects) const {
     if (GraphEditor.IsValid()) {
-        UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph());
-        if (ThemeGraph) {
-            bool bCanDrop = ThemeGraph->IsAssetAcceptableForDrop(AssetObject);
+        if (const UEdGraph_DungeonProp* ThemeGraph = Cast<UEdGraph_DungeonProp>(GraphEditor->GetCurrentGraph())) {
+            bool bAllAssetsValidForDrop = true;
 
-            if (!bCanDrop) {
-                // Check if a broker can convert this asset to an actor
-                const FAssetData AssetData(AssetObject);
-                const bool bHasActorFactory = FActorFactoryAssetProxy::GetFactoryForAsset(AssetData) != nullptr;
+            for (FAssetData AssetData : InAssetObjects) {
+                if (const UObject* AssetObject = AssetData.GetAsset()) {
+                    bool bCanDrop = ThemeGraph->IsAssetAcceptableForDrop(AssetObject);
 
-                if (bHasActorFactory) {
-                    bCanDrop = true;
+                    if (!bCanDrop) {
+                        // Check if a broker can convert this asset to an actor
+                        const bool bHasActorFactory = FActorFactoryAssetProxy::GetFactoryForAsset(AssetData) != nullptr;
+                        if (bHasActorFactory) {
+                            bCanDrop = true;
+                        }
+                    }
+
+                    if (!bCanDrop) {
+                        bAllAssetsValidForDrop = false;
+                        break;
+                    }
                 }
             }
 
-            return bCanDrop;
+            return bAllAssetsValidForDrop;
         }
     }
     return false;
@@ -703,7 +715,7 @@ void FSnapConnectionEditor::RebuildPreviewObjectImpl() {
         USnapConnectionComponent* ConnectionComponent = ConnectionActor->ConnectionComponent;
         ConnectionComponent->ConnectionInfo = AssetBeingEdited;
         SetConnectionStateFromMarker(PreviewMarkerName, ConnectionComponent);
-        ConnectionActor->BuildConnectionInstance();
+        ConnectionActor->BuildConnectionInstance(nullptr);
         ConnectionInstanceActors = ConnectionActor->GetSpawnedInstancesPtr();
     }
 

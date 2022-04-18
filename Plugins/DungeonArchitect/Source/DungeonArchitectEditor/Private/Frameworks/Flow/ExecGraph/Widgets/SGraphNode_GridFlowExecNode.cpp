@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/Flow/ExecGraph/Widgets/SGraphNode_GridFlowExecNode.h"
 
@@ -35,8 +35,6 @@ protected:
 void SGridFlowExecNodeOutputPin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) {
     this->SetCursor(EMouseCursor::Default);
 
-    typedef SGridFlowExecNodeOutputPin ThisClass;
-
     bShowLabel = true;
 
     GraphPinObj = InPin;
@@ -48,9 +46,9 @@ void SGridFlowExecNodeOutputPin::Construct(const FArguments& InArgs, UEdGraphPin
     // Set up a hover for pins that is tinted the color of the pin.
     SBorder::Construct(SBorder::FArguments()
                        .BorderImage(this, &SGridFlowExecNodeOutputPin::GetPinBorder)
-                       .BorderBackgroundColor(this, &ThisClass::GetPinColor)
-                       .OnMouseButtonDown(this, &ThisClass::OnPinMouseDown)
-                       .Cursor(this, &ThisClass::GetPinCursor)
+                       .BorderBackgroundColor(this, &SGridFlowExecNodeOutputPin::GetPinColor)
+                       .OnMouseButtonDown(this, &SGridFlowExecNodeOutputPin::OnPinMouseDown)
+                       .Cursor(this, &SGridFlowExecNodeOutputPin::GetPinCursor)
     );
 }
 

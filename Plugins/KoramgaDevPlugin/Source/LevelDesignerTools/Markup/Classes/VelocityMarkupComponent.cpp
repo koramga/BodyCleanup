@@ -44,7 +44,7 @@ void UVelocityMarkupComponent::UpdateFromMarkup(UObject* Object) const
 		{
 			PrimitiveComponent->SetSimulatePhysics(true);
 			PrimitiveComponent->SetPhysicsLinearVelocity(GetLinearVelocity());
-			PrimitiveComponent->SetPhysicsAngularVelocity(GetAngularVelocity());
+			PrimitiveComponent->SetPhysicsAngularVelocityInDegrees(GetAngularVelocity());
 		}		
 	}
 }

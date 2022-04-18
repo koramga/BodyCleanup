@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -7,7 +7,6 @@
 
 #include "Misc/NotifyHook.h"
 #include "Tickable.h"
-#include "Toolkits/AssetEditorManager.h"
 #include "UObject/GCObject.h"
 #include "SnapMapEditor.generated.h"
 

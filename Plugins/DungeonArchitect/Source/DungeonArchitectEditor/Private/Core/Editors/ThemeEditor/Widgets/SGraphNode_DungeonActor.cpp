@@ -1,9 +1,9 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/Widgets/SGraphNode_DungeonActor.h"
 
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraphNode_DungeonBase.h"
 #include "Core/Editors/ThemeEditor/DungeonArchitectThemeEditor.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraphNode_DungeonBase.h"
 #include "Core/Editors/ThemeEditor/Widgets/SDungeonOutputPin.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
@@ -394,9 +394,9 @@ void SGraphNode_DungeonActor::RebuildExecutionOrder() {
 }
 
 
-void SGraphNode_DungeonActor::MoveTo(const FVector2D& NewPosition, FNodeSet& NodeFilter) {
+void SGraphNode_DungeonActor::MoveTo(const FVector2D& NewPosition, FNodeSet& NodeFilter, bool bMarkDirty) {
     RebuildExecutionOrder();
-    return SGraphNode::MoveTo(NewPosition, NodeFilter);
+    return SGraphNode::MoveTo(NewPosition, NodeFilter, bMarkDirty);
 }
 
 #undef LOCTEXT_NAMESPACE

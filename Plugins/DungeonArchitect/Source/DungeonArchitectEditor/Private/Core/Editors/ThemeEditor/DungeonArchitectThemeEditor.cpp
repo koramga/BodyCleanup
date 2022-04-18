@@ -1,13 +1,14 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/ThemeEditor/DungeonArchitectThemeEditor.h"
 
 #include "Core/Common/DungeonArchitectCommands.h"
 #include "Core/DungeonBuilder.h"
 #include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/MarkerGeneratorAppMode.h"
+#include "Core/Editors/ThemeEditor/AppModes/MarkerGenerator/MarkerGeneratorAppModeCommands.h"
 #include "Core/Editors/ThemeEditor/AppModes/ThemeEditorAppModeBase.h"
+#include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/Graph/EdGraph_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/AppModes/ThemeGraph/ThemeGraphAppMode.h"
-#include "Core/Editors/ThemeEditor/Graph/EdGraph_DungeonProp.h"
 #include "Core/Editors/ThemeEditor/Widgets/SThemePreviewViewport.h"
 #include "Core/LevelEditor/Customizations/DungeonArchitectStyle.h"
 #include "Frameworks/MarkerGenerator/MarkerGenModel.h"
@@ -45,12 +46,13 @@ void FDungeonArchitectThemeEditor::InitDungeonEditor(const EToolkitMode::Type Mo
                                                      UDungeonThemeAsset* PropData) {
     // Initialize the asset editor and spawn nothing (dummy layout)
     GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()->CloseOtherEditors(PropData, this);
-
     AssetBeingEdited = PropData;
+
+    const TSubclassOf<UDungeonBuilder> ActiveDungeonBuilderClass = AssetBeingEdited->PreviewViewportProperties->BuilderClass; 
     if (!AssetBeingEdited->UpdateGraph) {
         UEdGraph_DungeonProp* DungeonGraph = NewObject<UEdGraph_DungeonProp>(
                 AssetBeingEdited, UEdGraph_DungeonProp::StaticClass(), NAME_None, RF_Transactional);
-        DungeonGraph->RecreateDefaultMarkerNodes(AssetBeingEdited->PreviewViewportProperties->BuilderClass);
+        DungeonGraph->RecreateDefaultMarkerNodes(ActiveDungeonBuilderClass);
         AssetBeingEdited->UpdateGraph = DungeonGraph;
         AssetBeingEdited->Modify();
     }
@@ -78,7 +80,7 @@ void FDungeonArchitectThemeEditor::InitDungeonEditor(const EToolkitMode::Type Mo
 
     for (const auto& Entry : AppModes) {
         TSharedPtr<FThemeEditorAppModeBase> AppMode = Entry.Value;
-        AppMode->Init();
+        AppMode->Init(ActiveDungeonBuilderClass);
         AddApplicationMode(Entry.Key, AppMode.ToSharedRef());        
     }
 
@@ -90,7 +92,7 @@ bool FDungeonArchitectThemeEditor::CanAccessModeThemeGraph() const {
 }
 
 bool FDungeonArchitectThemeEditor::CanAccessModeMarkerGenerator() const {
-    return false;
+    return true;
 }
 
 FName FDungeonArchitectThemeEditor::GetToolkitFName() const {
@@ -151,7 +153,7 @@ void FDungeonArchitectThemeEditor::BindCommands() {
 
 void FDungeonArchitectThemeEditor::NotifyBuilderClassChanged(TSubclassOf<UDungeonBuilder> InBuilderClass) {
     for (const auto& Entry : AppModes) {
-        Entry.Value->OnBuilderClassChanged(InBuilderClass);        
+        Entry.Value->SetBuilderClass(InBuilderClass);        
     }
 }
 
@@ -226,7 +228,7 @@ FText FDungeonArchitectThemeEditor::GetLocalizedMode(FName InMode) {
 
     if (LocModes.Num() == 0) {
         LocModes.Add(AppModeID_GraphEditor, LOCTEXT("ThemeGraphModeLabel", "Theme Graph"));
-        LocModes.Add(AppModeID_MarkerGenerator, LOCTEXT("MarkerGeneratorModeLabel", "Marker Generator"));
+        LocModes.Add(AppModeID_MarkerGenerator, LOCTEXT("MarkerGeneratorModeLabel", "Pattern Matcher"));
     }
 
     check(InMode != NAME_None);
@@ -264,8 +266,8 @@ void FThemeEditorToolbar::AddThemeGraphToolbar(TSharedPtr<FExtender> Extender) {
 void FThemeEditorToolbar::AddMarkerGeneratorToolbar(TSharedPtr<FExtender> Extender) {
     const TSharedPtr<FDungeonArchitectThemeEditor> ThemeEditor = ThemeEditorPtr.Pin();
     if (ThemeEditor.IsValid()) {
-        Extender->AddToolBarExtension("Asset",
-            EExtensionHook::After,
+        Extender->AddToolBarExtension("Support",
+            EExtensionHook::Before,
             ThemeEditor->GetToolkitCommands(),
             FToolBarExtensionDelegate::CreateSP(this, &FThemeEditorToolbar::FillMarkerGeneratorToolbar));
     }
@@ -297,7 +299,6 @@ void FThemeEditorToolbar::FillModesToolbar(FToolBarBuilder& ToolbarBuilder) cons
 		.CanBeSelected(ThemeEditor.Get(), &FDungeonArchitectThemeEditor::CanAccessModeThemeGraph)
 		.ToolTipText(LOCTEXT("ModeButtonTooltip_ThemeGraph", "Switch to Theme Graph Mode"))
 		.IconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDesignMode"))
-		.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDesignMode.Small"))
     );
 
     ThemeEditor->AddToolbarWidget(SNew(SSpacer).Size(FVector2D(4.0f, 1.0f)));
@@ -311,7 +312,6 @@ void FThemeEditorToolbar::FillModesToolbar(FToolBarBuilder& ToolbarBuilder) cons
 		.CanBeSelected(ThemeEditor.Get(), &FDungeonArchitectThemeEditor::CanAccessModeMarkerGenerator)
 		.ToolTipText(LOCTEXT("ModeButtonTooltip_MarkerGenerator", "Switch to Marker generation mode"))
 		.IconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToVisualizeMode"))
-		.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToVisualizeMode.Small"))
     );
 
     // Right side padding
@@ -323,7 +323,9 @@ void FThemeEditorToolbar::FillThemeGraphToolbar(FToolBarBuilder& ToolbarBuilder)
 }
 
 void FThemeEditorToolbar::FillMarkerGeneratorToolbar(FToolBarBuilder& ToolbarBuilder) {
-    
+    const FMarkerGeneratorAppModeCommands& Commands = FMarkerGeneratorAppModeCommands::Get();
+    ToolbarBuilder.AddSeparator();
+    ToolbarBuilder.AddToolBarButton(Commands.Build);
 }
 
 

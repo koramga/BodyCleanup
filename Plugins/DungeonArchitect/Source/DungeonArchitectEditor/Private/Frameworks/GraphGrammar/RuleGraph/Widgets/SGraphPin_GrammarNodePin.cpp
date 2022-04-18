@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/GraphGrammar/RuleGraph/Widgets/SGraphPin_GrammarNodePin.h"
 
@@ -7,8 +7,6 @@
 
 void SGraphPin_GrammarNodePin::Construct(const FArguments& InArgs, UEdGraphPin* InPin) {
     this->SetCursor(EMouseCursor::Default);
-
-    typedef SGraphPin_GrammarNodePin ThisClass;
 
     bShowLabel = true;
     IsEditable = true;
@@ -22,9 +20,9 @@ void SGraphPin_GrammarNodePin::Construct(const FArguments& InArgs, UEdGraphPin* 
     // Set up a hover for pins that is tinted the color of the pin.
     SBorder::Construct(SBorder::FArguments()
                        .BorderImage(this, &SGraphPin_GrammarNodePin::GetPinBorder)
-                       .BorderBackgroundColor(this, &ThisClass::GetPinColor)
-                       .OnMouseButtonDown(this, &ThisClass::OnPinMouseDown)
-                       .Cursor(this, &ThisClass::GetPinCursor)
+                       .BorderBackgroundColor(this, &SGraphPin_GrammarNodePin::GetPinColor)
+                       .OnMouseButtonDown(this, &SGraphPin_GrammarNodePin::OnPinMouseDown)
+                       .Cursor(this, &SGraphPin_GrammarNodePin::GetPinCursor)
                        .Padding(FMargin(5.0f))
     );
 }

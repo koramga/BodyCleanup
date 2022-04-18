@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/Grid/EditorMode/GridDungeonEdModeRenderer.h"
 
@@ -16,9 +16,9 @@
 #include "SceneManagement.h"
 #include "UnrealClient.h"
 
-const FVector TangentX(1, 0, 0);
-const FVector TangentY(0, 1, 0);
-const FVector TangentZ(0, 0, 1);
+const FVector3f TangentX(1, 0, 0);
+const FVector3f TangentY(0, 1, 0);
+const FVector3f TangentZ(0, 0, 1);
 
 FGridDungeonEdModeRenderer::FGridDungeonEdModeRenderer(UGridDungeonEdModeHandler* pModeHandler)
     : ModeHandler(pModeHandler) {
@@ -174,10 +174,10 @@ void FGridDungeonEdModeRenderer::AddQuadBorder(FPrimitiveDrawInterface* PDI, con
 
 void FGridDungeonEdModeRenderer::AddQuad(FDynamicMeshBuilder& MeshBuilder, const FVector& V0, const FVector& V1,
                                          const FVector& V2, const FVector& V3, const FColor& Color) {
-    const int32 VertexOffset = MeshBuilder.AddVertex(V0, FVector2D::ZeroVector, TangentX, TangentY, TangentZ, Color);
-    MeshBuilder.AddVertex(V1, FVector2D::ZeroVector, TangentX, TangentY, TangentZ, Color);
-    MeshBuilder.AddVertex(V2, FVector2D::ZeroVector, TangentX, TangentY, TangentZ, Color);
-    MeshBuilder.AddVertex(V3, FVector2D::ZeroVector, TangentX, TangentY, TangentZ, Color);
+    const int32 VertexOffset = MeshBuilder.AddVertex(FVector3f(V0), FVector2f::ZeroVector, TangentX, TangentY, TangentZ, Color);
+    MeshBuilder.AddVertex(FVector3f(V1), FVector2f::ZeroVector, TangentX, TangentY, TangentZ, Color);
+    MeshBuilder.AddVertex(FVector3f(V2), FVector2f::ZeroVector, TangentX, TangentY, TangentZ, Color);
+    MeshBuilder.AddVertex(FVector3f(V3), FVector2f::ZeroVector, TangentX, TangentY, TangentZ, Color);
 
     MeshBuilder.AddTriangle(VertexOffset + 1, VertexOffset, VertexOffset + 2);
     MeshBuilder.AddTriangle(VertexOffset + 2, VertexOffset, VertexOffset + 3);

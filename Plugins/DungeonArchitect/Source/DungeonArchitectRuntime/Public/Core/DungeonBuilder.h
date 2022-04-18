@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #pragma once
 #include "CoreMinimal.h"
@@ -67,7 +67,7 @@ public:
                    TSharedPtr<class IDungeonMarkerUserData> InUserData = nullptr);
     void AddMarker(const FString& SocketType, const FTransform& _transform, int count, const FVector& InterOffset,
                    TSharedPtr<class IDungeonMarkerUserData> InUserData = nullptr);
-    void AddMarker(TArray<FPropSocket>& pPropSockets, const FString& SocketType, const FTransform& transform,
+    void AddMarker(TArray<FDAMarkerInfo>& pPropSockets, const FString& SocketType, const FTransform& transform,
                    TSharedPtr<class IDungeonMarkerUserData> InUserData = nullptr);
 
     virtual void GetDefaultMarkerNames(TArray<FString>& OutMarkerNames) {
@@ -82,9 +82,9 @@ public:
 
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = Dungeon)
-    TArray<FPropSocket> GetMarkers() const { return WorldMarkers; }
+    TArray<FDAMarkerInfo> GetMarkers() const { return WorldMarkers; }
 
-    const TArray<FPropSocket>& GetMarkerList() const { return WorldMarkers; }
+    const TArray<FDAMarkerInfo>& GetMarkerList() const { return WorldMarkers; }
 
     void EmitCustomMarkers(TArray<UDungeonMarkerEmitter*> MarkerEmitters);
 
@@ -110,12 +110,12 @@ protected:
     }
 
     virtual bool PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                       const FPropSocket& socket) {
+                                       const FDAMarkerInfo& socket) {
         return false;
     }
 
     virtual FTransform PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                             const FPropSocket& socket) {
+                                             const FDAMarkerInfo& socket) {
         return FTransform::Identity;
     }
 
@@ -126,7 +126,7 @@ public:
 
 protected:
     PMRandom nrandom;
-    FRandomStream random;
+    FRandomStream Random;
 
     UPROPERTY()
     ADungeon* Dungeon;
@@ -142,6 +142,6 @@ protected:
     bool bBuildSucceeded = true;
 
     // The marker list
-    TArray<FPropSocket> WorldMarkers;
+    TArray<FDAMarkerInfo> WorldMarkers;
 };
 

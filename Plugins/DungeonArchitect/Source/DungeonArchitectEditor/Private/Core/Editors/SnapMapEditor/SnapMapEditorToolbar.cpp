@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Core/Editors/SnapMapEditor/SnapMapEditorToolbar.h"
 
@@ -92,7 +92,7 @@ void FSnapMapEditorToolbar::FillModesToolbar(FToolBarBuilder& ToolbarBuilder) {
 		.CanBeSelected(FlowEditorPtr.Get(), &FSnapMapEditor::CanAccessGraphEditMode)
 		.ToolTipText(LOCTEXT("GraphEditorModeButtonTooltip", "Switch to Graph Grammar Design Mode"))
 		.IconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDesignMode"))
-		.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDesignMode.Small"))
+		//.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDesignMode.Small"))
     );
 
     FlowEditorPtr->AddToolbarWidget(SNew(SSnapMapEditorModeSeparator));
@@ -106,7 +106,7 @@ void FSnapMapEditorToolbar::FillModesToolbar(FToolBarBuilder& ToolbarBuilder) {
 		.CanBeSelected(FlowEditorPtr.Get(), &FSnapMapEditor::CanAccessVisualizationMode)
 		.ToolTipText(LOCTEXT("VisualizationModeButtonTooltip", "Switch to Visualization mode"))
 		.IconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToVisualizeMode"))
-		.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToVisualizeMode.Small"))
+		//.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToVisualizeMode.Small"))
     );
 
     FlowEditorPtr->AddToolbarWidget(SNew(SSnapMapEditorModeSeparator));
@@ -120,7 +120,7 @@ void FSnapMapEditorToolbar::FillModesToolbar(FToolBarBuilder& ToolbarBuilder) {
 		.CanBeSelected(FlowEditorPtr.Get(), &FSnapMapEditor::CanAccessDebugMode)
 		.ToolTipText(LOCTEXT("VisualizationModeButtonTooltip", "Switch to Debug mode"))
 		.IconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDebugMode"))
-		.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDebugMode.Small"))
+		//.SmallIconImage(FDungeonArchitectStyle::Get().GetBrush("DA.SnapEd.SwitchToDebugMode.Small"))
     );
 
     // Right side padding

@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Frameworks/GraphGrammar/Editor/SGrammarRuleEditor.h"
 
@@ -168,7 +168,7 @@ void SGrammarRuleEditor::FocusOnGraphNode(UEdGraphNode* GrammarNode) {
 }
 
 void SGrammarRuleEditor::AddRHSWidget(UEdGraph_Grammar* RHSGraph) {
-    SVerticalBox::FSlot& Slot = RHSWidgets->AddSlot();
+    SVerticalBox::FScopedWidgetSlotArguments Slot = RHSWidgets->AddSlot();
     Slot.AutoHeight();
     Slot.AttachWidget(
         SNew(SGrammarRuleGraph, RHSGraph)

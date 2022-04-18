@@ -1,4 +1,4 @@
-//$ Copyright 2015-21, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
+//$ Copyright 2015-22, Code Respawn Technologies Pvt Ltd - All Rights Reserved $//
 
 #include "Builders/SnapMap/SnapMapDungeonBuilder.h"
 
@@ -96,7 +96,7 @@ void USnapMapDungeonBuilder::BuildNonThemedDungeonImpl(UWorld* World, TSharedPtr
     }
     else {
         UDungeonLevelStreamingModel* LevelStreamModel = Dungeon ? Dungeon->LevelStreamingModel : nullptr;
-        LevelStreamHandler = MakeShareable(new FSnapMapStreamingChunkHandler(GetWorld(), SnapMapModel.Get(), LevelStreamModel));
+        LevelStreamHandler = MakeShareable(new FSnapMapStreamingChunkHandler(GetWorld(), Dungeon, SnapMapModel.Get(), LevelStreamModel));
         LevelStreamHandler->ClearStreamingLevels();
 
         FGuid SpawnRoomId = GraphRootNode->ModuleInstanceId;
@@ -197,7 +197,7 @@ void USnapMapDungeonBuilder::BuildPersistentSnapLevel(UWorld* InWorld, SnapLib::
     
     // Fix the module connections
     ULevel* PersistentLevel = InWorld->PersistentLevel;
-    FSnapMapStreamingChunkHandler ChunkHandler(InWorld, SnapMapModel.Get(), nullptr);    // We'll use this to setup our doors
+    FSnapMapStreamingChunkHandler ChunkHandler(InWorld, Dungeon, SnapMapModel.Get(), nullptr);    // We'll use this to setup our doors
     TArray<FSnapConnectionInstance> ConnectionInstances = SnapMapModel->Connections;
     for (const auto& Entry : ModuleConnections) {
         FGuid ChunkID = Entry.Key;
@@ -224,7 +224,7 @@ namespace {
 
         // Grab the bounds of all the negation volumes
         for (TObjectIterator<ADungeonNegationVolume> NegationVolume; NegationVolume; ++NegationVolume) {
-            if (!NegationVolume->IsValidLowLevel() || NegationVolume->IsPendingKill()) {
+            if (!NegationVolume->IsValidLowLevel() || !IsValid(*NegationVolume)) {
                 continue;
             }
             if (NegationVolume->Dungeon != InDungeon) {
@@ -257,7 +257,7 @@ SnapLib::FModuleNodePtr USnapMapDungeonBuilder::GenerateModuleNodeGraph(int32 In
     }
 
     SnapLib::FGrowthStaticState StaticState;
-    StaticState.Random = random;
+    StaticState.Random = Random;
     StaticState.BoundsContraction = SnapMapConfig->CollisionTestContraction;
     StaticState.DungeonBaseTransform = Dungeon
                                            ? FTransform(FRotator::ZeroRotator, Dungeon->GetActorLocation())
@@ -296,7 +296,7 @@ void USnapMapDungeonBuilder::BuildPreviewSnapLayout() {
     }
 
     const int32 Seed = config->Seed;
-    random.Initialize(Seed);
+    Random.Initialize(Seed);
     SnapMapModel->Reset();
     if (LevelStreamHandler.IsValid()) {
         LevelStreamHandler->ClearStreamingLevels();
@@ -453,18 +453,18 @@ bool USnapMapDungeonBuilder::CanBuildDungeon(FString& OutMessage) {
 }
 
 bool USnapMapDungeonBuilder::PerformSelectionLogic(const TArray<UDungeonSelectorLogic*>& SelectionLogics,
-                                                   const FPropSocket& socket) {
+                                                   const FDAMarkerInfo& socket) {
     return false;
 }
 
 FTransform USnapMapDungeonBuilder::PerformTransformLogic(const TArray<UDungeonTransformLogic*>& TransformLogics,
-                                                         const FPropSocket& socket) {
+                                                         const FDAMarkerInfo& socket) {
     return FTransform::Identity;
 }
 
 ///////////////////////////////////// FSnapMapStreamingChunkHandler /////////////////////////////////////
-FSnapMapStreamingChunkHandler::FSnapMapStreamingChunkHandler(UWorld* InWorld, USnapMapDungeonModel* InSnapMapModel, UDungeonLevelStreamingModel* InLevelStreamingModel)
-        : FSnapStreamingChunkHandlerBase(InWorld, InLevelStreamingModel)
+FSnapMapStreamingChunkHandler::FSnapMapStreamingChunkHandler(UWorld* InWorld, TWeakObjectPtr<ADungeon> InDungeon, USnapMapDungeonModel* InSnapMapModel, UDungeonLevelStreamingModel* InLevelStreamingModel)
+        : FSnapStreamingChunkHandlerBase(InWorld, InDungeon, InLevelStreamingModel)
         , SnapMapModel(InSnapMapModel)
 {
 }
