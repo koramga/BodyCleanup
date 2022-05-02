@@ -127,6 +127,8 @@ void UBaseAnimInstance::SetAnimationType(EAnimationType InputAnimationType)
 
 void UBaseAnimInstance::__OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInterrupt)
 {
+	UE_LOG(LogTemp, Display, TEXT("AnimMontage Left : <%s>"), *AnimMontage->GetName());
+	
 	OnMontageLeft(AnimMontage, bIsInterrupt);
 
 	LeftAnimationType(AnimationType);
@@ -135,7 +137,9 @@ void UBaseAnimInstance::__OnMontageLeft(UAnimMontage* AnimMontage, bool bIsInter
 void UBaseAnimInstance::SetAnimationMontage(UAnimMontage* AnimMontage)
 {
 	if(IsValid(AnimMontage))
-	{
+	{		
+		UE_LOG(LogTemp, Display, TEXT("Activate Montage : <%s>"), *AnimMontage->GetName());
+		
 		Montage_Play(AnimMontage);
 		
 		FOnMontageEnded BlendEnded;

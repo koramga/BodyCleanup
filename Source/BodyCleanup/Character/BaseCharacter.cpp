@@ -225,7 +225,7 @@ void ABaseCharacter::SetAnimationType(EAnimationType AnimationType, UAnimMontage
 		BaseAnimInstance->SetAnimationType(AnimationType);
 
 		if(IsValid(Montage))
-		{
+		{			
 			BaseAnimInstance->SetAnimationMontage(Montage);
 		}
 	}	
